@@ -1,0 +1,22 @@
+dotnet clean
+dotnet restore
+dotnet build
+
+dotnet add package Microsoft.EntityFrameworkCore
+dotnet add package Microsoft.EntityFrameworkCore.SqlServer
+dotnet add package Microsoft.EntityFrameworkCore.Design
+
+sqllocaldb info
+sqllocaldb info NazivInstance
+sqllocaldb create Instanca -s	// s startuje instancu po kreiranju
+sqllocaldb delete Instanca 	// Brisanje
+sqllocaldb start Instanca
+
+dotnet tool install dotnet-ef -g //instalacija entity frameworka
+dotnet tool update dotnet-ef -g
+
+dotnet ef migrations add V1 //pravljenje migracije
+dotnet ef database update //nakon kreiranja migracije update baza
+
+dotnet ef database drop
+dotnet ef migrations remove
