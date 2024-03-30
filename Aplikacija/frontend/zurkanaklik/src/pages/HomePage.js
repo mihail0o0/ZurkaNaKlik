@@ -1,6 +1,6 @@
 import PageSpacer from "../components/PageSpacer";
 
-function Home() {
+function HomePage() {
     return ( 
         <>
         <h1>Hello world!</h1>
@@ -10,4 +10,4 @@ function Home() {
      );
 }
 
-export default Home;
+export default HomePage;

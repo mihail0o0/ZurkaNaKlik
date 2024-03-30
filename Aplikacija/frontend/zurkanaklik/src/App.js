@@ -11,14 +11,23 @@ import './App.css';
 import RootHeader from "./layouts/RootHeader";
 
 // pages
-import Home from "./pages/Home";
+import HomePage from "./pages/HomePage";
+import PageNotFound from "./pages/PageNotFound";
+import LoginPage from "./pages/LoginPage";
+import TestingPage from "./pages/TestingPage";
 
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<RootHeader />}>
-      <Route index element={<Home />} />
+      <Route index element={<HomePage />} />
+      <Route path="login" element={<LoginPage />} />
+
+      <Route path="testing" element={<TestingPage />} />
+
+      <Route path="*" element={<PageNotFound />} />
     </Route>
+
   )
 )
 
