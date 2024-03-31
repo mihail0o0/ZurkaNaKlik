@@ -1,4 +1,4 @@
-import PageSpacer from "../components/PageSpacer";
+import { PageSpacer } from "../common/commonComponents";
 
 function HomePage() {
     return ( 
