@@ -55,10 +55,9 @@ p {
 
 .containerWrapper {
   position: relative;
-  left: 50%;
-  max-width: 1600px;
-  width: fit-content;
-  transform: translateX(-50%);
+  margin: auto;
+  width: 75%;
+  max-width: 1500px;
 }
 
 .mainButton:hover {
@@ -136,6 +135,10 @@ p {
 .inputWrapperFocused {
   border: 2px solid var(--mainColor);
   color: black;
+}
+
+.inputWrapperFilled {
+  color: black !important;
 }
 
 .formInputsWrapper{

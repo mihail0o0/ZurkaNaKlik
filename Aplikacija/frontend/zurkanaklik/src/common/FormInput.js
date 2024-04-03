@@ -1,8 +1,15 @@
 import { useRef, useState } from "react";
 
-function FormInput({ icon, text, suffixIcon, hidden, onInputChange }) {
+function FormInput({ icon, text, suffixIcon, onInputChange = () =>{} }) {
     const divRef = useRef(null);
+    const inputRef = useRef(null);
+    const [inputText, setInputText] = useState('');
     const [visibilityIcon, setVisibilityIcon] = useState("visibility_off");
+
+    const handleTextChange = (event) => {
+        setInputText(event.target.value);
+        onInputChange(event.target.value);
+    };
 
     const changeVisibilityIcon = () => {
         (visibilityIcon === "visibility") ? setVisibilityIcon("visibility_off") : setVisibilityIcon("visibility");
@@ -32,11 +39,13 @@ function FormInput({ icon, text, suffixIcon, hidden, onInputChange }) {
             <div className="formTextIconContainer">
                 {icon && <i style={iconStyle} className="material-icons">{icon}</i>}
                 <input
+                    ref={inputRef}
                     type={(suffixIcon && visibilityIcon === "visibility_off") ? "password" : "text"}
                     className="formTextInput"
                     placeholder={text}
                     onFocus={handleFocusChange}
                     onBlur={handleBlurChange}
+                    onChange={handleTextChange}
                 />
             </div>
             {suffixIcon && <i onClick={changeVisibilityIcon} className="material-icons hoverPointer">{visibilityIcon}</i>}

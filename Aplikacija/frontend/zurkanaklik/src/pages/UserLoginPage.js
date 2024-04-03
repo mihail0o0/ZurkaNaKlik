@@ -15,7 +15,7 @@ function UserLoginPage() {
                 </div>
                 <div className={loginStyle.optionsWrapper}>
                     <LoginLabel text={"Nudite usluge keteringa?"} linkText={"Oglasite se"} link={"/catering/register"} />
-                    <LoginLabel text={"Nemate nalog?"} linkText={"Otvorite ga"} link={"/user/register"} />
+                    <LoginLabel text={"Nemate nalog?"} linkText={"Registrujte se"} link={"/user/register"} />
                 </div>
             </div>
             <div className={loginStyle.loginElements}>
