@@ -1,20 +1,20 @@
-function MainButton({ text, onClick, grey, icon, wide, paddingX, paddingY, iconMargin }) {
+function MainButton({ text, onClick, grey, icon, wide, center, paddingX, paddingY, iconMargin }) {
     let buttonStyle = {
         position: "relative",
         display: "flex",
         alignItems: "center",
-        justifyContent: "flex-start",
+        justifyContent: (center) ? "center" : "flex-start",
         paddingTop: paddingY ?? "20px",
         paddingBottom: paddingY ?? "20px",
         paddingLeft: paddingX ?? "28px",
         paddingRight: paddingX ?? "28px",
         border: "none",
         borderRadius: "var(--borderRadiusMedium)",
-        backgroundColor: grey ? "var(--lightGrey)" : "var(--mainColor)",
-        color: grey ? "black" : "white",
+        backgroundColor: (grey) ? "var(--lightGrey)" : "var(--mainColor)",
+        color: (grey) ? "black" : "white",
         fontSize: "19px",
         fontWeight: "500",
-        width: wide ? "100%" : "fit-content",
+        width: (wide) ? "100%" : "fit-content",
         tranition: "150ms all"
     };
 

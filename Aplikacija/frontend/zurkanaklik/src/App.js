@@ -13,7 +13,7 @@ import RootHeader from "./layouts/RootHeader";
 // pages
 import HomePage from "./pages/HomePage";
 import PageNotFound from "./pages/PageNotFound";
-import LoginPage from "./pages/LoginPage";
+import UserLoginPage from "./pages/UserLoginPage";
 import TestingPage from "./pages/TestingPage";
 
 
@@ -21,7 +21,7 @@ const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<RootHeader />}>
       <Route index element={<HomePage />} />
-      <Route path="login" element={<LoginPage />} />
+      <Route path="login" element={<UserLoginPage />} />
 
       <Route path="testing" element={<TestingPage />} />
 

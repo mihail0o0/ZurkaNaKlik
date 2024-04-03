@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import pnfStyle from './pageNotFound/pageNotFound.module.css';
 
 // components
 import { MainButton, PageSpacer } from "../common/commonComponents";
@@ -11,19 +12,19 @@ function PageNotFound() {
 
     const handleClick = () => {
         navigate('/');
-    }
+    };
 
     return (
         <>
-            <div className="containerWrapper pageNotFoundWrapper">
-                <div className="pageNotFoundText">
+            <div className={`containerWrapper ${pnfStyle.wrapper}`}>
+                <div className={pnfStyle.text}>
                     <div className="pageNotFoundTextContainer">
                         <h1>Uuuups!</h1>
                         <p>Stranica koju ste zatražili nažalost ne postoji.</p>
                     </div>
-                    <MainButton text={"Nazad na početnu"} onClick={handleClick}/>
+                    <MainButton text={'Nazad na pocetnu'} onClick={handleClick}/>
                 </div>
-                <PNF className="pageNotFoundImage"></PNF>
+                <PNF className={pnfStyle.image}></PNF>
             </div>
             <PageSpacer />
         </>
