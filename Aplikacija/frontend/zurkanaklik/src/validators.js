@@ -1,9 +1,10 @@
 import Joi from 'joi';
 
+const customTlds = ['com', 'net', 'org', 'io'];
+
 const emailVal = Joi.string()
     .required()
-    .email()
-    .alphanum()
+    .email({ tlds: { allow: customTlds } })
     .label('Email');
 
 const passwordVal = Joi.string()
