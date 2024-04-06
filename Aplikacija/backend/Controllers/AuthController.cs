@@ -19,7 +19,7 @@ namespace backend.Controllers
         }
 
         [HttpPost("RegistrationKorisnik")]
-        public async Task<ActionResult> RegistrationKorisnik(RegistrationKorisnik request){
+        public async Task<ActionResult> RegistrationKorisnik([FromBody]RegistrationKorisnik request){
 
             try{
                  
@@ -49,8 +49,7 @@ namespace backend.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult> Login(LoginKorisnik request){
-
+        public async Task<ActionResult> Login([FromBody] LoginKorisnik request){
             try{
                 var korisnik = await Context.KorisnikAgencijas.FirstOrDefaultAsync(p => p.Email == request.Email);
 
@@ -64,7 +63,7 @@ namespace backend.Controllers
 
                 string token = CreateToken(korisnik!);
 
-                return Ok(token);
+                return Ok(new {token});
             }
             catch (Exception e)
             {
@@ -72,7 +71,7 @@ namespace backend.Controllers
             }
         }
         
-        private string CreateToken(KorisnikAgencija korisnikAgencija){
+        private string CreateToken([FromBody] KorisnikAgencija korisnikAgencija){
 
             List<Claim> claims = new List<Claim>{
                 new Claim(ClaimTypes.Name, korisnikAgencija.Ime),

@@ -8970,31 +8970,24 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\dusan\\.nuget\\packages\\": {},
-    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
+    "/home/mix/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Softversko inzenjerstvo\\si.24.20.zur\\Aplikacija\\backend\\WebTemplate.csproj",
+      "projectUniqueName": "/home/mix/Documents/myDocuments/Skrrr/ProjekatSII/si.24.20.zur/Aplikacija/backend/WebTemplate.csproj",
       "projectName": "WebTemplate",
-      "projectPath": "D:\\Softversko inzenjerstvo\\si.24.20.zur\\Aplikacija\\backend\\WebTemplate.csproj",
-      "packagesPath": "C:\\Users\\dusan\\.nuget\\packages\\",
-      "outputPath": "D:\\Softversko inzenjerstvo\\si.24.20.zur\\Aplikacija\\backend\\obj\\",
+      "projectPath": "/home/mix/Documents/myDocuments/Skrrr/ProjekatSII/si.24.20.zur/Aplikacija/backend/WebTemplate.csproj",
+      "packagesPath": "/home/mix/.nuget/packages/",
+      "outputPath": "/home/mix/Documents/myDocuments/Skrrr/ProjekatSII/si.24.20.zur/Aplikacija/backend/obj/",
       "projectStyle": "PackageReference",
-      "fallbackFolders": [
-        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-      ],
       "configFilePaths": [
-        "C:\\Users\\dusan\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        "/home/mix/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
       ],
       "sources": {
-        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -9007,11 +9000,6 @@
         "warnAsError": [
           "NU1605"
         ]
-      },
-      "restoreAuditProperties": {
-        "enableAudit": "true",
-        "auditLevel": "low",
-        "auditMode": "direct"
       }
     },
     "frameworks": {
@@ -9084,7 +9072,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.200/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/usr/lib/dotnet/sdk/8.0.103/PortableRuntimeIdentifierGraph.json"
       }
     }
   }
