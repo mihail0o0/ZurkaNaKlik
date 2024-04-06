@@ -8970,7 +8970,8 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\dusan\\.nuget\\packages\\": {}
+    "C:\\Users\\dusan\\.nuget\\packages\\": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
@@ -8981,8 +8982,12 @@
       "packagesPath": "C:\\Users\\dusan\\.nuget\\packages\\",
       "outputPath": "D:\\Softversko inzenjerstvo\\si.24.20.zur\\Aplikacija\\backend\\obj\\",
       "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+      ],
       "configFilePaths": [
         "C:\\Users\\dusan\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [

@@ -18,8 +18,8 @@ namespace backend.Controllers
             _configuration = configuration;
         }
 
-        [HttpPost("register")]
-        public async Task<ActionResult> Register(RegistrationKorisnik request){
+        [HttpPost("RegistrationKorisnik")]
+        public async Task<ActionResult> RegistrationKorisnik(RegistrationKorisnik request){
 
             try{
                  
@@ -52,7 +52,7 @@ namespace backend.Controllers
         public async Task<ActionResult> Login(LoginKorisnik request){
 
             try{
-                var korisnik = await Context.Korisniks.FirstOrDefaultAsync(p => p.Email == request.Email);
+                var korisnik = await Context.KorisnikAgencijas.FirstOrDefaultAsync(p => p.Email == request.Email);
 
                 if (korisnik == null){
                     return BadRequest("Korisnik ne postoji, ili ste uneli pogresan email");
@@ -72,12 +72,12 @@ namespace backend.Controllers
             }
         }
         
-        private string CreateToken(Korisnik korisnik){
+        private string CreateToken(KorisnikAgencija korisnikAgencija){
 
             List<Claim> claims = new List<Claim>{
-                new Claim(ClaimTypes.Name, korisnik.Ime),
-                new Claim(ClaimTypes.Email, korisnik.Email),
-                new Claim(ClaimTypes.Role, korisnik.Role.ToString())
+                new Claim(ClaimTypes.Name, korisnikAgencija.Ime),
+                new Claim(ClaimTypes.Email, korisnikAgencija.Email),
+                new Claim(ClaimTypes.Role, korisnikAgencija.Role.ToString())
             };
 
             
@@ -103,3 +103,5 @@ namespace backend.Controllers
         }
     }
 }
+
+//http only cooke na backend i tu da smestam jwt i to da seljem

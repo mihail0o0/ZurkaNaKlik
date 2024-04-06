@@ -20,3 +20,7 @@ dotnet ef database update //nakon kreiranja migracije update baza
 
 dotnet ef database drop
 dotnet ef migrations remove
+
+
+
+bearer "token"

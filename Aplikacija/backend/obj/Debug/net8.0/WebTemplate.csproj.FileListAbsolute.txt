@@ -12,6 +12,7 @@ D:\Softversko inzenjerstvo\si.24.20.zur\Aplikacija\backend\bin\Debug\net8.0\Cast
 D:\Softversko inzenjerstvo\si.24.20.zur\Aplikacija\backend\bin\Debug\net8.0\dotenv.net.dll
 D:\Softversko inzenjerstvo\si.24.20.zur\Aplikacija\backend\bin\Debug\net8.0\DotNetEnv.dll
 D:\Softversko inzenjerstvo\si.24.20.zur\Aplikacija\backend\bin\Debug\net8.0\Humanizer.dll
+D:\Softversko inzenjerstvo\si.24.20.zur\Aplikacija\backend\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
 D:\Softversko inzenjerstvo\si.24.20.zur\Aplikacija\backend\bin\Debug\net8.0\Microsoft.AspNetCore.OpenApi.dll
 D:\Softversko inzenjerstvo\si.24.20.zur\Aplikacija\backend\bin\Debug\net8.0\Microsoft.Bcl.AsyncInterfaces.dll
 D:\Softversko inzenjerstvo\si.24.20.zur\Aplikacija\backend\bin\Debug\net8.0\Microsoft.CodeAnalysis.dll
@@ -38,7 +39,10 @@ D:\Softversko inzenjerstvo\si.24.20.zur\Aplikacija\backend\bin\Debug\net8.0\Micr
 D:\Softversko inzenjerstvo\si.24.20.zur\Aplikacija\backend\bin\Debug\net8.0\Microsoft.SqlServer.Server.dll
 D:\Softversko inzenjerstvo\si.24.20.zur\Aplikacija\backend\bin\Debug\net8.0\Microsoft.Win32.SystemEvents.dll
 D:\Softversko inzenjerstvo\si.24.20.zur\Aplikacija\backend\bin\Debug\net8.0\Mono.TextTemplating.dll
+D:\Softversko inzenjerstvo\si.24.20.zur\Aplikacija\backend\bin\Debug\net8.0\Scrutor.dll
 D:\Softversko inzenjerstvo\si.24.20.zur\Aplikacija\backend\bin\Debug\net8.0\Sprache.dll
+D:\Softversko inzenjerstvo\si.24.20.zur\Aplikacija\backend\bin\Debug\net8.0\Swashbuckle.AspNetCore.Filters.dll
+D:\Softversko inzenjerstvo\si.24.20.zur\Aplikacija\backend\bin\Debug\net8.0\Swashbuckle.AspNetCore.Filters.Abstractions.dll
 D:\Softversko inzenjerstvo\si.24.20.zur\Aplikacija\backend\bin\Debug\net8.0\Swashbuckle.AspNetCore.Swagger.dll
 D:\Softversko inzenjerstvo\si.24.20.zur\Aplikacija\backend\bin\Debug\net8.0\Swashbuckle.AspNetCore.SwaggerGen.dll
 D:\Softversko inzenjerstvo\si.24.20.zur\Aplikacija\backend\bin\Debug\net8.0\Swashbuckle.AspNetCore.SwaggerUI.dll
@@ -142,7 +146,3 @@ D:\Softversko inzenjerstvo\si.24.20.zur\Aplikacija\backend\obj\Debug\net8.0\refi
 D:\Softversko inzenjerstvo\si.24.20.zur\Aplikacija\backend\obj\Debug\net8.0\WebTemplate.pdb
 D:\Softversko inzenjerstvo\si.24.20.zur\Aplikacija\backend\obj\Debug\net8.0\WebTemplate.genruntimeconfig.cache
 D:\Softversko inzenjerstvo\si.24.20.zur\Aplikacija\backend\obj\Debug\net8.0\ref\WebTemplate.dll
-D:\Softversko inzenjerstvo\si.24.20.zur\Aplikacija\backend\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
-D:\Softversko inzenjerstvo\si.24.20.zur\Aplikacija\backend\bin\Debug\net8.0\Scrutor.dll
-D:\Softversko inzenjerstvo\si.24.20.zur\Aplikacija\backend\bin\Debug\net8.0\Swashbuckle.AspNetCore.Filters.dll
-D:\Softversko inzenjerstvo\si.24.20.zur\Aplikacija\backend\bin\Debug\net8.0\Swashbuckle.AspNetCore.Filters.Abstractions.dll
