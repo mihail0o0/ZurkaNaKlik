@@ -40,7 +40,7 @@ namespace backend.Controllers
                 await Context.Korisniks.AddAsync(korisnik);
                 await Context.SaveChangesAsync();
 
-                return Ok(Context.Korisniks);
+                return Ok(new {Context.Korisniks});
             }
             catch (Exception e)
             {
