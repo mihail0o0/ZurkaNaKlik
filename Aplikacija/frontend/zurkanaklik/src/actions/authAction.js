@@ -10,6 +10,8 @@ async function authAction(route, schema, payload) {
         
         return [valType, valError];
     }
+    
+    // call backend funciton
 
     
 

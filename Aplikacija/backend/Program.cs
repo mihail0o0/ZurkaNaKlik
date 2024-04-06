@@ -11,7 +11,7 @@ DotNetEnv.Env.Load();
 
 builder.Services.AddDbContext<ZurkaNaKlikDbContext>(options =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefoultDatabase"));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultDatabase"));
 });
 
 builder.Services.AddCors(options =>
