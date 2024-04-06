@@ -1,0 +1,169 @@
+*,
+*::after,
+*::before {
+  box-sizing: border-box;
+}
+
+:root {
+  --mainColor: #D45A6B;
+  --lightText: #a9a9a9;
+  --lightGrey: #EEEEEE;
+  --mediumGrey: #D2D2D2;
+  --golden: #FFC700;
+  --blur: 8px;
+  --borderRadiusBig: 35px;
+  --borderRadiusMedium: 20px;
+}
+
+body {
+  margin: 0;
+  font-family: 'Nunito';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #EFEFEF;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: 'Poppins';
+}
+
+p {
+  font-size: 20px;
+}
+
+
+/* OTHER */
+.page-spacer {
+  width: 100%;
+  height: 400px;
+}
+
+.mediumSpace {
+  width: 100%;
+  height: 100px;
+}
+
+.smallSpace {
+  width: 100%;
+  height: 50px;
+}
+
+.containerWrapper {
+  position: relative;
+  margin: auto;
+  width: 75%;
+  max-width: 1500px;
+}
+
+.mainButton:hover {
+  background-color: #cb3c4f !important;
+  transition: 150ms all;
+}
+
+.textLink {
+  position: relative;
+  text-decoration: none;
+  color: var(--mainColor);
+}
+
+.textLink::after {
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  content: '';
+  background-color: var(--mainColor);
+  border-radius: 5px;
+  width: 100%;
+  height: 3px;
+  transform: scaleX(0);
+  transform-origin: 100%;
+  transition: 150ms transform;
+}
+
+.textLink:hover::after {
+  transform: scaleX(1);
+  transform-origin: 0;
+  transition: 150ms transform;
+}
+
+.hoverPointer {
+  cursor: pointer;
+}
+
+/* TESTING */
+.testingPageWrapper {
+  background-color: white;
+  padding: 60px;
+  border-radius: var(--borderRadiusBig);
+  margin-top: 70px;
+}
+
+.blackColor {
+  color: black !important;
+}
+
+/* FORM */
+.inputWrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 16px 20px;
+  color: var(--lightText);
+  border: 2px solid var(--lightText);
+  border-radius: var(--borderRadiusMedium);
+}
+
+.formTextIconContainer{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+}
+
+
+.inputWrapper i{
+  color: var(--lightText);
+}
+
+.inputWrapperFocused {
+  border: 2px solid var(--mainColor);
+  color: black;
+}
+
+.inputWrapperFilled {
+  color: black !important;
+}
+
+.formInputsWrapper{
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.loginForm{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 18px;
+  height: 100%;
+}
+
+.formTextInput {
+  width: 100%;
+  height: 100%;
+  font-size: 16px;
+  outline: none;
+  border: none;
+  color: var(--lightText);
+}
+
+.formTextInput:focus {
+  color: black;
+}
