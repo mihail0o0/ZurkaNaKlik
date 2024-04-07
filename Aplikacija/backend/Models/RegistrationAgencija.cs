@@ -15,7 +15,7 @@ namespace backend.Models
         public string? SlikaProfila { get; set; }
         public string? Lokacija { get; set; }
         [Required]
-        public string? Opis { get; set; }
+        public required string? Opis { get; set; }
         // public Meni Meni { get; set; }
         
     }
