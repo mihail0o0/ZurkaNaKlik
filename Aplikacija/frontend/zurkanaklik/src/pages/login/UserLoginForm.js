@@ -9,9 +9,12 @@ function UserLoginPage() {
     const [emailText, setMailText] = useState('');
     const [passwordText, setPasswordText] = useState('');
 
-    const [emailError, setEmailError] = useState();
-    const [passwordError, setPasswordError] = useState();
+    const [pending, setPending] = useState(null);
+    const [emailError, setEmailError] = useState(null);
+    const [passwordError, setPasswordError] = useState(null);
+    const [cancelToken, setCancelToken] = useState(null);
 
+    
     const handleMailTextChange = (newText) => {
         setMailText(newText);
     };
