@@ -8,10 +8,8 @@ namespace backend.Models
 {
     public class Agencija : KorisnikAgencija
     {
-        [Required]
-        public string? Lokacija { get; set; }
-        [Required]
-        public string? Opis { get; set; }
+        public required string Lokacija { get; set; }
+        public required string Opis { get; set; }
         [Column("Role")]
         public override Roles Role { get; set; }
         // public Meni Meni { get; set; }
