@@ -1,4 +1,7 @@
 # .NET
+/obj
+/bin
+
 *.obj
 *.bin
 *.exe
