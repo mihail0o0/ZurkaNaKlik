@@ -21,7 +21,14 @@ const nameVal = Joi.string()
     .alphanum()
     .label('Ime');
 
-const phoneNumberVal = Joi.string()
+const lastNameVal = Joi.string()
+    .required()
+    .min(10)
+    .max(40)
+    .alphanum()
+    .label('Prezime');
+
+    const phoneNumberVal = Joi.string()
     .required()
     .alphanum()
     .pattern(new RegExp('^(\\+381)[0-9]{9}$'))
@@ -63,6 +70,7 @@ export const userLoginSchema = Joi.object({
 
 export const userRegisterSchema = Joi.object({
     name: nameVal,
+    lastName: lastNameVal,
     email: emailVal,
     phoneNumber: phoneNumberVal,
     password: passwordVal

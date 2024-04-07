@@ -5,7 +5,7 @@ import authAction from '../../actions/authAction';
 import { userLoginSchema } from "../../validators";
 
 function UserLoginPage() {
-    let actionRoute = '/user/login';
+    let actionRoute = 'Auth/login';
     const [emailText, setMailText] = useState('');
     const [passwordText, setPasswordText] = useState('');
 
@@ -29,11 +29,11 @@ function UserLoginPage() {
         };
 
         try {
-            let authResult = await authAction(actionRoute, userLoginSchema, payload);
+            // role = 0 odnosno obican admin
+            let authResult = await authAction(actionRoute, userLoginSchema, payload, 0);
         }
         catch(error){
             console.log(error);
-
         }
         
         

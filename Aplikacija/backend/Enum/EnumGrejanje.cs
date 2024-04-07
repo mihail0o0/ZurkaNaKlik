@@ -2,7 +2,7 @@ namespace backend.Enum
 {
     public enum EnumGrejanje
     {
-        TApec,
+        TA_pec,
         Klima,
         Sporet,
         Kotao,
