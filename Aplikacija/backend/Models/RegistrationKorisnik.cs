@@ -6,8 +6,8 @@ namespace backend.Models
     public class RegistrationKorisnik
     {
         public required string Ime { get; set; }
-        [EmailAddress(ErrorMessage = "Email adresa nije u ispravnom formatu.")]
         public required string Prezime { get; set; }
+        [EmailAddress(ErrorMessage = "Email adresa nije u ispravnom formatu.")]
         public required string Email { get; set; }
         public required string BrTel { get; set; }
         public required string Lozinka { get; set; }

@@ -1,8 +1,24 @@
 import { userLoginSchema, userRegisterSchema, agencyLoginSchema, agencyRegisterSchema } from "../validators";
 let server = "https://localhost:7080/";
 
-async function authAction(route, schema, payload) {
-    let valResult = schema.validate(payload);
+// formatira objekat sa podacima da bude u formatu kao na serveru
+function formatPayload(route, payload, role){
+    payload.role = role;
+
+    return {
+        ime: payload.name,
+        prezime: payload.lastName,
+        email: payload.email,
+        brTel: payload.phoneNumber,
+        lozinka: payload.password,
+        role: payload.role
+    };
+}
+
+// handle pending state, stop request, etc...
+async function authAction(route, schema, payload, role) {
+    const valResult = schema.validate(payload);
+    const formatedPayload = formatPayload(route, payload, role);
 
     if (valResult.error) {
         let valType = valResult?.error?.details[0].path[0];
@@ -13,15 +29,12 @@ async function authAction(route, schema, payload) {
 
     try {
         // call backend funciton
-        const response = await fetch(server + 'Auth/login', {
+        const response = await fetch(server + route, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({
-                email:payload.email,
-                lozinka: payload.password
-            })
+            body: JSON.stringify(formatedPayload)
         });
 
         if (!response.ok) throw Error('Network response is not ok');
