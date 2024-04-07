@@ -109,7 +109,7 @@ namespace backend.Controllers
 
                 string token = CreateToken(korisnik!);
 
-                return Ok(token);
+                return Ok(new {token});
             }
             catch (Exception e)
             {
@@ -117,7 +117,7 @@ namespace backend.Controllers
             }
         }
         
-        private string CreateToken(KorisnikAgencija korisnikAgencija){
+        private string CreateToken([FromBody] KorisnikAgencija korisnikAgencija){
 
             List<Claim> claims = new List<Claim>{
                 new Claim(ClaimTypes.Name, korisnikAgencija.Ime),
