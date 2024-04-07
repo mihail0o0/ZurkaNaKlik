@@ -10,7 +10,7 @@ namespace backend.Models
         public override Roles Role { get; set; }
         //List<OglasObjekta> ListaOglasaObjekta
         //List<OglasObjekta> ListaOmiljenihOglasaObjekata 
-        public string? SlikaProfila { get; set; }
+        
 
     }
 }

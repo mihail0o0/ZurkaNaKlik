@@ -16,5 +16,6 @@ namespace backend.Models
         public required string LozinkaHash { get; set; }
         [Column("Role")]
         public virtual Roles Role { get; set; }
+        public string? SlikaProfila { get; set; }
     }
 }
