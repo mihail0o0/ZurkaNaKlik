@@ -25,6 +25,12 @@ namespace backend.Controllers
                  
                 string lozinkaHash = BCrypt.Net.BCrypt.HashPassword(request.Lozinka);
 
+                var postojiEmail = await Context.Korisniks.AnyAsync(k => k.Email == request.Email);
+                if (postojiEmail)
+                {
+                    return BadRequest("Korisnik sa ovim email-om već postoji.");
+                }
+
                 var korisnik = new Korisnik
                 {
                     Ime = request.Ime,
@@ -48,8 +54,48 @@ namespace backend.Controllers
             }
         }
 
+        [HttpPost("RegistrationAgencija")]
+        public async Task<ActionResult> RegistrationAgencija([FromBody]RegistrationAgencija request){
+
+            try{
+                 
+                string lozinkaHash = BCrypt.Net.BCrypt.HashPassword(request.Lozinka);
+
+                var postojiEmail = await Context.Korisniks.AnyAsync(k => k.Email == request.Email);
+                if (postojiEmail)
+                {
+                    return BadRequest("Korisnik sa ovim email-om već postoji.");
+                }
+
+                var agencija = new Agencija
+                {
+                    Ime = request.Ime,
+                    Email = request.Email,
+                    BrTel = request.BrTel,
+                    LozinkaHash = lozinkaHash,
+                    Role = request.Role,
+                    SlikaProfila = request.SlikaProfila,
+                    Lokacija = request.Lokacija,
+                    Opis = request.Opis,
+
+
+                };
+
+
+                await Context.Agencije.AddAsync(agencija);
+                await Context.SaveChangesAsync();
+
+                return Ok(new {Context.Agencije});
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
         [HttpPost("login")]
-        public async Task<ActionResult> Login([FromBody] LoginKorisnik request){
+        public async Task<ActionResult> Login([FromBody]LoginKorisnik request){
+
             try{
                 var korisnik = await Context.KorisnikAgencijas.FirstOrDefaultAsync(p => p.Email == request.Email);
 

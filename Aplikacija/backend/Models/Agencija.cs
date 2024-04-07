@@ -16,7 +16,7 @@ namespace backend.Models
         public override Roles Role { get; set; }
         // public Meni Meni { get; set; }
         [Range(0, 5)]
-        public int Ocena { get; set; }
+        public int? Ocena { get; set; }
         public int BrojOcena { get; set; } = 0;
 
     }
