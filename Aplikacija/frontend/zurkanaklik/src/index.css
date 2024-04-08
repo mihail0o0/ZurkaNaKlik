@@ -120,7 +120,7 @@ p {
   border-radius: var(--borderRadiusMedium);
 }
 
-.formTextIconContainer{
+.formTextIconContainer {
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -128,7 +128,7 @@ p {
 }
 
 
-.inputWrapper i{
+.inputWrapper i {
   color: var(--lightText);
 }
 
@@ -141,13 +141,13 @@ p {
   color: black !important;
 }
 
-.formInputsWrapper{
+.formInputsWrapper {
   display: flex;
   flex-direction: column;
   gap: 9px;
 }
 
-.loginForm{
+.loginForm {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -166,4 +166,10 @@ p {
 
 .formTextInput:focus {
   color: black;
+}
+
+.inputError {
+  margin: 0;
+  font-size: 16px;
+  color: red;
 }

@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 
-function FormInput({ icon, text, suffixIcon, onInputChange = () =>{} }) {
+function FormInput({ icon, text, suffixIcon, onInputChange = () => { }, error }) {
     const divRef = useRef(null);
     const inputRef = useRef(null);
     const [inputText, setInputText] = useState('');
@@ -9,6 +9,7 @@ function FormInput({ icon, text, suffixIcon, onInputChange = () =>{} }) {
     const handleTextChange = (event) => {
         setInputText(event.target.value);
         onInputChange(event.target.value);
+        console.log(error);
     };
 
     const changeVisibilityIcon = () => {
@@ -35,20 +36,23 @@ function FormInput({ icon, text, suffixIcon, onInputChange = () =>{} }) {
     };
 
     return (
-        <div ref={divRef} className="inputWrapper">
-            <div className="formTextIconContainer">
-                {icon && <i style={iconStyle} className="material-icons">{icon}</i>}
-                <input
-                    ref={inputRef}
-                    type={(suffixIcon && visibilityIcon === "visibility_off") ? "password" : "text"}
-                    className="formTextInput"
-                    placeholder={text}
-                    onFocus={handleFocusChange}
-                    onBlur={handleBlurChange}
-                    onChange={handleTextChange}
-                />
+        <div className="imputErrorWrapper">
+            <div ref={divRef} className="inputWrapper">
+                <div className="formTextIconContainer">
+                    {icon && <i style={iconStyle} className="material-icons">{icon}</i>}
+                    <input
+                        ref={inputRef}
+                        type={(suffixIcon && visibilityIcon === "visibility_off") ? "password" : "text"}
+                        className="formTextInput"
+                        placeholder={text}
+                        onFocus={handleFocusChange}
+                        onBlur={handleBlurChange}
+                        onChange={handleTextChange}
+                    />
+                </div>
+                {suffixIcon && <i onClick={changeVisibilityIcon} className="material-icons hoverPointer">{visibilityIcon}</i>}
             </div>
-            {suffixIcon && <i onClick={changeVisibilityIcon} className="material-icons hoverPointer">{visibilityIcon}</i>}
+            <p className="inputError">{error}</p>
         </div>
     );
 }

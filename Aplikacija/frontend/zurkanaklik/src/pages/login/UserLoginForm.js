@@ -9,9 +9,12 @@ function UserLoginPage() {
     const [emailText, setMailText] = useState('');
     const [passwordText, setPasswordText] = useState('');
 
-    const [emailError, setEmailError] = useState('');
-    const [passwordError, setPasswordError] = useState('');
+    const [pending, setPending] = useState(null);
+    const [emailError, setEmailError] = useState(null);
+    const [passwordError, setPasswordError] = useState(null);
+    const [cancelToken, setCancelToken] = useState(null);
 
+    
     const handleMailTextChange = (newText) => {
         setMailText(newText);
     };
@@ -22,6 +25,8 @@ function UserLoginPage() {
 
     const submitHandler = async (event) => {
         event.preventDefault();
+        setEmailError();
+        setPasswordError();
 
         const payload = {
             email: emailText,
@@ -29,21 +34,25 @@ function UserLoginPage() {
         };
 
         try {
-            // role = 0 odnosno obican admin
-            let authResult = await authAction(actionRoute, userLoginSchema, payload, 0);
+            // role = 1 odnosno obican korisnik
+            let authResult = await authAction(actionRoute, userLoginSchema, payload, 1);
         }
-        catch(error){
-            console.log(error);
+        catch (error) {
+            if (error.message == 'Validation Error') {
+                console.log(error.type, error.error);
+                if (error.type == 'email') setEmailError(error.error);
+                else if (error.type == 'password') setPasswordError(error.error);
+            }
         }
-        
-        
+
+
     };
 
     return (
         <Form className="loginForm" method="post" action={actionRoute}>
             <div className="formInputsWrapper">
-                <FormInput onInputChange={handleMailTextChange} icon={"mail"} text={"Email"} />
-                <FormInput onInputChange={handlePasswordTextChange} icon={"lock"} text={"Password"} suffixIcon={true} />
+                <FormInput onInputChange={handleMailTextChange} icon={"mail"} text={"Email"} error={emailError} />
+                <FormInput onInputChange={handlePasswordTextChange} icon={"lock"} text={"Password"} suffixIcon={true} error={passwordError} />
             </div>
             <MainButton text={"Prijavi se"} onClick={submitHandler} wide={true} center={true} paddingY={"16px"} />
 
