@@ -12,8 +12,6 @@ namespace backend.Models
         public required string BrTel { get; set; }
         public required string Lozinka { get; set; }
         public Roles Role { get; set; } = Roles.Korisnik;
-        //List<OglasObjekta> ListaOglasaObjekta
-        //List<OglasObjekta> ListaOmiljenihOglasaObjekata 
-        public string? SlikaProfila { get; set; }
+        public required string Lokacija { get; set; }
     }
 }

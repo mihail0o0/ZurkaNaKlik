@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebTemplate.Models;
 
@@ -11,9 +12,11 @@ using WebTemplate.Models;
 namespace WebTemplate.Migrations
 {
     [DbContext(typeof(ZurkaNaKlikDbContext))]
-    partial class ZurkaNaKlikDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240408171351_v1")]
+    partial class v1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,21 +24,6 @@ namespace WebTemplate.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("KorisnikOglasObjekta", b =>
-                {
-                    b.Property<int>("ListaKorisnikaKojimaJeOmiljeniOglasId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ListaOmiljenihOglasaObjekataId")
-                        .HasColumnType("int");
-
-                    b.HasKey("ListaKorisnikaKojimaJeOmiljeniOglasId", "ListaOmiljenihOglasaObjekataId");
-
-                    b.HasIndex("ListaOmiljenihOglasaObjekataId");
-
-                    b.ToTable("KorisnikOglasObjekta");
-                });
 
             modelBuilder.Entity("backend.Models.KorisnikAgencija", b =>
                 {
@@ -120,6 +108,12 @@ namespace WebTemplate.Migrations
                     b.Property<int>("Grejanje")
                         .HasColumnType("int");
 
+                    b.Property<int?>("KorisnikId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("KorisnikId1")
+                        .HasColumnType("int");
+
                     b.Property<int>("Kvadratura")
                         .HasColumnType("int");
 
@@ -154,15 +148,14 @@ namespace WebTemplate.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("VlasnikOglasaId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime?>("ZausetiDani")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("VlasnikOglasaId");
+                    b.HasIndex("KorisnikId");
+
+                    b.HasIndex("KorisnikId1");
 
                     b.ToTable("OglasObjektas");
                 });
@@ -194,33 +187,22 @@ namespace WebTemplate.Migrations
                     b.HasDiscriminator().HasValue("Korisnik");
                 });
 
-            modelBuilder.Entity("KorisnikOglasObjekta", b =>
-                {
-                    b.HasOne("backend.Models.Korisnik", null)
-                        .WithMany()
-                        .HasForeignKey("ListaKorisnikaKojimaJeOmiljeniOglasId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("backend.Models.OglasObjekta", null)
-                        .WithMany()
-                        .HasForeignKey("ListaOmiljenihOglasaObjekataId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("backend.Models.OglasObjekta", b =>
                 {
-                    b.HasOne("backend.Models.Korisnik", "VlasnikOglasa")
+                    b.HasOne("backend.Models.Korisnik", null)
                         .WithMany("ListaObjavljenihOglasaObjekta")
-                        .HasForeignKey("VlasnikOglasaId");
+                        .HasForeignKey("KorisnikId");
 
-                    b.Navigation("VlasnikOglasa");
+                    b.HasOne("backend.Models.Korisnik", null)
+                        .WithMany("ListaOmiljenihOglasaObjekata")
+                        .HasForeignKey("KorisnikId1");
                 });
 
             modelBuilder.Entity("backend.Models.Korisnik", b =>
                 {
                     b.Navigation("ListaObjavljenihOglasaObjekta");
+
+                    b.Navigation("ListaOmiljenihOglasaObjekata");
                 });
 #pragma warning restore 612, 618
         }

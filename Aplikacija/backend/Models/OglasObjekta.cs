@@ -7,6 +7,8 @@ namespace backend.Models
 {
     public class OglasObjekta
     {
+        [Key]
+        public int Id { get; set; }
         public required List<EnumTipProslava> ListaTipProslava { get; set; }
         public required List<EnumTipProstora> ListaTipProstora { get; set; }
         public required string Naziv { get; set; }
@@ -24,7 +26,8 @@ namespace backend.Models
         public required List<string> Slike { get; set; }
         public int? Ocena { get; set; }
         public int BrojOcena { get; set; }
-        public DateTime? ZausetiDani { get; set; }
-
+        public DateTime? ZauzetiDani { get; set; }
+        public /* required */Korisnik? VlasnikOglasa { get; set; }
+        public List<Korisnik>? ListaKorisnikaKojimaJeOmiljeniOglas { get; set; }
     }
 }
