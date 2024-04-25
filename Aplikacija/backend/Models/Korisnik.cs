@@ -12,7 +12,9 @@ namespace backend.Models
         public List<OglasObjekta>? ListaObjavljenihOglasaObjekta { get; set; }
         [InverseProperty("ListaKorisnikaKojimaJeOmiljeniOglas")]
         public List<OglasObjekta>? ListaOmiljenihOglasaObjekata { get; set; }
-        //public List<OglasObjekta>? ListaZakupljenihOglasaObjekata { get; set; }
+
+
+        public List<ZakupljeniOglas>? ListaZakupljenihOglasa { get; set; }
         
         
 

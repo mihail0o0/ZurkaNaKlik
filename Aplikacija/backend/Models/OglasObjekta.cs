@@ -26,8 +26,8 @@ namespace backend.Models
         public required List<string> Slike { get; set; }
         public int? Ocena { get; set; }
         public int BrojOcena { get; set; }
-        public DateTime? ZauzetiDani { get; set; }
-        public /* required */Korisnik? VlasnikOglasa { get; set; }
+        public List<DateTime>? ZauzetiDani { get; set; }
+        public Korisnik? VlasnikOglasa { get; set; }
         public List<Korisnik>? ListaKorisnikaKojimaJeOmiljeniOglas { get; set; }
     }
 }
