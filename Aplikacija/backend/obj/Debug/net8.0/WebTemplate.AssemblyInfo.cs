@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("WebTemplate")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+0d51b44c1dad550423538f4eb257dcc7fe73547d")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+15b7184b9520a4ab0a9e224b1769160eb1ac7939")]
 [assembly: System.Reflection.AssemblyProductAttribute("WebTemplate")]
 [assembly: System.Reflection.AssemblyTitleAttribute("WebTemplate")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

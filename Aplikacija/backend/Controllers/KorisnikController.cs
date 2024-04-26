@@ -22,37 +22,40 @@ namespace backend.Controllers
         }
 
         [HttpPut("DodajOmiljeniOglas/{idKorisnika}/{idOglasa}")]
-        public async Task<ActionResult> DodajOmiljeniOglas(int idKorisnika, int idOglasa){
+        public async Task<ActionResult> DodajOmiljeniOglas(int idKorisnika, int idOglasa)
+        {
+            try
+            {
+                Korisnik? korisnik = await Context.Korisniks.Include(k => k.ListaOmiljenihOglasaObjekata).FirstOrDefaultAsync(k => k.Id == idKorisnika);
 
-            try{
-
-                Korisnik? korisnik = await Context.Korisniks.FindAsync(idKorisnika);
-
-                if(korisnik == null){
-
+                if (korisnik == null)
+                {
                     return BadRequest("Korisnik ne postoji");
                 }
 
-                OglasObjekta? oglas = await Context.OglasObjektas.FindAsync(idOglasa);
+                OglasObjekta? oglas = await Context.OglasObjektas.FirstOrDefaultAsync(o => o.Id == idOglasa);
 
-                // if(oglas == null){
+                if (oglas == null)
+                {
+                    return BadRequest("Oglas ne postoji");
+                }
 
-                //     return BadRequest("Oglas ne postoji");
-                // }
+                if (korisnik.ListaOmiljenihOglasaObjekata != null && korisnik.ListaOmiljenihOglasaObjekata.Any(o => o.Id == idOglasa))
+                {
+                    return BadRequest("Oglas već postoji u listi omiljenih oglasa korisnika");
+                }
 
+                korisnik.ListaOmiljenihOglasaObjekata?.Add(oglas);
+                await Context.SaveChangesAsync();
 
-                // korisnik.ListaOmiljenihOglasaObjekata.Add(oglas);
-
-                // Context.Korisniks.Update(korisnik);
-
-                // Context.SaveChangesAsync();
-
-                return Ok(korisnik);
+                return Ok(korisnik.ListaOmiljenihOglasaObjekata);
             }
             catch (Exception e)
             {
                 return BadRequest(e.Message);
             }
         }
+
+
     }
 }

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Text.Json.Serialization;
 
 namespace backend.Models
 {
@@ -26,8 +27,10 @@ namespace backend.Models
         public required List<string> Slike { get; set; }
         public int? Ocena { get; set; }
         public int BrojOcena { get; set; }
+        [JsonIgnore]
+        public List<Korisnik>? ListaKorisnikaOmiljeniOglas { get; set; }
+        [JsonIgnore]
         public List<DateTime>? ZauzetiDani { get; set; }
         public Korisnik? VlasnikOglasa { get; set; }
-        public List<Korisnik>? ListaKorisnikaKojimaJeOmiljeniOglas { get; set; }
     }
 }

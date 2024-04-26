@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using System.Text.Json.Serialization;
 
 namespace backend.Models
 
@@ -8,12 +9,16 @@ namespace backend.Models
         public required string Prezime { get; set; }
         [Column("Role")]
         public override Roles Role { get; set; }
+
         [InverseProperty("VlasnikOglasa")]
+        [JsonIgnore]
         public List<OglasObjekta>? ListaObjavljenihOglasaObjekta { get; set; }
-        [InverseProperty("ListaKorisnikaKojimaJeOmiljeniOglas")]
+
+        [InverseProperty("ListaKorisnikaOmiljeniOglas")]
+        [JsonIgnore]
         public List<OglasObjekta>? ListaOmiljenihOglasaObjekata { get; set; }
-
-
+        
+        [JsonIgnore]
         public List<ZakupljeniOglas>? ListaZakupljenihOglasa { get; set; }
         
         
