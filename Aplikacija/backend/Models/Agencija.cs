@@ -16,5 +16,7 @@ namespace backend.Models
         public int? Ocena { get; set; }
         public int BrojOcena { get; set; } = 0;
 
+        public List<MeniKeteringa>? Meni { get; set; }
+
     }
 }
