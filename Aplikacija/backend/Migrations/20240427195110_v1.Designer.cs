@@ -12,8 +12,8 @@ using WebTemplate.Models;
 namespace WebTemplate.Migrations
 {
     [DbContext(typeof(ZurkaNaKlikDbContext))]
-    [Migration("20240408174051_v2")]
-    partial class v2
+    [Migration("20240427195110_v1")]
+    partial class v1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -27,13 +27,13 @@ namespace WebTemplate.Migrations
 
             modelBuilder.Entity("KorisnikOglasObjekta", b =>
                 {
-                    b.Property<int>("ListaKorisnikaKojimaJeOmiljeniOglasId")
+                    b.Property<int>("ListaKorisnikaOmiljeniOglasId")
                         .HasColumnType("int");
 
                     b.Property<int>("ListaOmiljenihOglasaObjekataId")
                         .HasColumnType("int");
 
-                    b.HasKey("ListaKorisnikaKojimaJeOmiljeniOglasId", "ListaOmiljenihOglasaObjekataId");
+                    b.HasKey("ListaKorisnikaOmiljeniOglasId", "ListaOmiljenihOglasaObjekataId");
 
                     b.HasIndex("ListaOmiljenihOglasaObjekataId");
 
@@ -87,6 +87,44 @@ namespace WebTemplate.Migrations
                     b.HasDiscriminator<string>("Discriminator").HasValue("KorisnikAgencija");
 
                     b.UseTphMappingStrategy();
+                });
+
+            modelBuilder.Entity("backend.Models.MeniKeteringa", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AgencijaId")
+                        .HasColumnType("int");
+
+                    b.Property<double>("CenaPoOsobi")
+                        .HasColumnType("float");
+
+                    b.Property<string>("Naslov")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Opis")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Slika")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("ZahtevZaKeteringId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AgencijaId");
+
+                    b.HasIndex("ZahtevZaKeteringId");
+
+                    b.ToTable("MeniKeteringas");
                 });
 
             modelBuilder.Entity("backend.Models.OglasObjekta", b =>
@@ -160,14 +198,72 @@ namespace WebTemplate.Migrations
                     b.Property<int?>("VlasnikOglasaId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime?>("ZausetiDani")
-                        .HasColumnType("datetime2");
+                    b.Property<string>("ZauzetiDani")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("VlasnikOglasaId");
 
                     b.ToTable("OglasObjektas");
+                });
+
+            modelBuilder.Entity("backend.Models.ZahtevZaKetering", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("DatumRezervacije")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("StatusRezervacije")
+                        .HasColumnType("bit");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ZahtevZaKeterings");
+                });
+
+            modelBuilder.Entity("backend.Models.ZakupljeniOglas", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("DatumZakupa")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("KorisnikId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("OglasId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("ZakupljenDo")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("ZakupljenOd")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("ZakupljeniOglas")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("KorisnikId");
+
+                    b.HasIndex("OglasId");
+
+                    b.HasIndex("ZakupljeniOglas")
+                        .IsUnique()
+                        .HasFilter("[ZakupljeniOglas] IS NOT NULL");
+
+                    b.ToTable("ZakupljeniOglasi");
                 });
 
             modelBuilder.Entity("backend.Models.Agencija", b =>
@@ -201,7 +297,7 @@ namespace WebTemplate.Migrations
                 {
                     b.HasOne("backend.Models.Korisnik", null)
                         .WithMany()
-                        .HasForeignKey("ListaKorisnikaKojimaJeOmiljeniOglasId")
+                        .HasForeignKey("ListaKorisnikaOmiljeniOglasId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -210,6 +306,21 @@ namespace WebTemplate.Migrations
                         .HasForeignKey("ListaOmiljenihOglasaObjekataId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("backend.Models.MeniKeteringa", b =>
+                {
+                    b.HasOne("backend.Models.Agencija", "Agencija")
+                        .WithMany("Meni")
+                        .HasForeignKey("AgencijaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("backend.Models.ZahtevZaKetering", null)
+                        .WithMany("ZakupljeniMeniji")
+                        .HasForeignKey("ZahtevZaKeteringId");
+
+                    b.Navigation("Agencija");
                 });
 
             modelBuilder.Entity("backend.Models.OglasObjekta", b =>
@@ -221,9 +332,49 @@ namespace WebTemplate.Migrations
                     b.Navigation("VlasnikOglasa");
                 });
 
+            modelBuilder.Entity("backend.Models.ZakupljeniOglas", b =>
+                {
+                    b.HasOne("backend.Models.Korisnik", "Korisnik")
+                        .WithMany("ListaZakupljenihOglasa")
+                        .HasForeignKey("KorisnikId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("backend.Models.OglasObjekta", "Oglas")
+                        .WithMany()
+                        .HasForeignKey("OglasId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("backend.Models.ZahtevZaKetering", "ZahtevZaKetering")
+                        .WithOne("ZakupljeniOglas")
+                        .HasForeignKey("backend.Models.ZakupljeniOglas", "ZakupljeniOglas");
+
+                    b.Navigation("Korisnik");
+
+                    b.Navigation("Oglas");
+
+                    b.Navigation("ZahtevZaKetering");
+                });
+
+            modelBuilder.Entity("backend.Models.ZahtevZaKetering", b =>
+                {
+                    b.Navigation("ZakupljeniMeniji");
+
+                    b.Navigation("ZakupljeniOglas")
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("backend.Models.Agencija", b =>
+                {
+                    b.Navigation("Meni");
+                });
+
             modelBuilder.Entity("backend.Models.Korisnik", b =>
                 {
                     b.Navigation("ListaObjavljenihOglasaObjekta");
+
+                    b.Navigation("ListaZakupljenihOglasa");
                 });
 #pragma warning restore 612, 618
         }

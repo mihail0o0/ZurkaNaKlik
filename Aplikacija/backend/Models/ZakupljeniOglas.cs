@@ -12,11 +12,11 @@ namespace backend.Models
         public required OglasObjekta Oglas { get; set; }
         public required Korisnik Korisnik { get; set; }
         public DateTime DatumZakupa { get; set; }
-
         public DateTime ZakupljenOd { get; set; }
         public DateTime ZakupljenDo { get; set; }
 
-        //public ZahtevZaKetering? ZahtevZaKetering { get; set; }
+        [ForeignKey("ZakupljeniOglas")]
+        public ZahtevZaKetering? ZahtevZaKetering { get; set; }
 
 
     }
