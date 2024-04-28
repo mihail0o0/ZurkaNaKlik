@@ -9,10 +9,23 @@ namespace backend.Models
     {
         [Key]
         public int Id { get; set; }
-        public required Agencija Agencija { get; set; }
-        public required string Naslov { get; set; }
-        public required string Opis { get; set; }
+        public required string Naslov { get; set; }// Novogodisnji/Koktel/Svesdki/Silver itd
+
+        public required int CenaMenija { get; set; } //po kg
+    
         public required string Slika { get; set; }
-        public required double CenaPoOsobi { get; set; }
+
+        public required string Opis { get; set; }
+
+       // public int KolicinaUKG { get; set; } //?
+
+
+
+        public required List<string> StavkeJela {get; set; }// pecivo, cevapi
+        public required Kategorija? Kategorija { get; set; }//Slatko/slano
+
+
     }
+
+    
 }

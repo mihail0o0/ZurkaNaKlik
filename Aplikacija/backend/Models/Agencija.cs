@@ -11,12 +11,16 @@ namespace backend.Models
         public string? Opis { get; set; }
         [Column("Role")]
         public override Roles Role { get; set; }
-        // public Meni Meni { get; set; }
+
         [Range(0, 5)]
         public int? Ocena { get; set; }
+
+        public bool MogucnostDostave { get; set; } //true = hoce dostavu ili false nece
+
+        public int CenaDostave { get; set; } //fiksna cena dostave ako je ovo gore true
         public int BrojOcena { get; set; } = 0;
 
-        public List<MeniKeteringa>? Meni { get; set; }
+        public List<Kategorija>? KategorijeMenija { get; set; } //slatko/slano/posno
 
     }
 }

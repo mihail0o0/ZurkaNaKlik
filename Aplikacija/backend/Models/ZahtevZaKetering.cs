@@ -14,6 +14,6 @@ namespace backend.Models
         public bool StatusRezervacije { get; set; }
         public DateTime DatumRezervacije { get; set; }
 
-        public required List<MeniKeteringa> ZakupljeniMeniji { get; set; }
+        public required List<MeniKeteringa>? ZakupljeniMeniji { get; set; }
     }
 }
