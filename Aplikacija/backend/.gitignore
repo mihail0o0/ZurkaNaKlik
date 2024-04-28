@@ -28,7 +28,7 @@ bld/
 [Bb]in/
 [Oo]bj/
 [Ll]og/
-#test/
+test/test.txt
 
 .env
 # Visual Studio Code
