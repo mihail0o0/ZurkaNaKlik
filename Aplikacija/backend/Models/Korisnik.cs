@@ -8,7 +8,7 @@ namespace backend.Models
     {
         public required string Prezime { get; set; }
         [Column("Role")]
-        public override Roles Role { get; set; }
+        public override Roles Role { get; set; } 
 
         [InverseProperty("VlasnikOglasa")]
         

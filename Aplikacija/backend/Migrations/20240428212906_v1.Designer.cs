@@ -12,13 +12,8 @@ using WebTemplate.Models;
 namespace WebTemplate.Migrations
 {
     [DbContext(typeof(ZurkaNaKlikDbContext))]
-<<<<<<<< HEAD:Aplikacija/backend/Migrations/20240428213627_v1.Designer.cs
-    [Migration("20240428213627_v1")]
+    [Migration("20240428212906_v1")]
     partial class v1
-========
-    [Migration("20240428214005_v2")]
-    partial class v2
->>>>>>>> 4e0abd633e2eaf10dc97262a6eb0d1c4bf6d6cb0:Aplikacija/backend/Migrations/20240428214005_v2.Designer.cs
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -130,15 +125,11 @@ namespace WebTemplate.Migrations
                     b.Property<int?>("KategorijaId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Naziv")
+                    b.Property<string>("Naslov")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Opis")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("SastavMenija")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -147,6 +138,7 @@ namespace WebTemplate.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("StavkeJela")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("ZahtevZaKeteringId")
@@ -218,8 +210,8 @@ namespace WebTemplate.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<double?>("Ocena")
-                        .HasColumnType("float");
+                    b.Property<int?>("Ocena")
+                        .HasColumnType("int");
 
                     b.Property<string>("Opis")
                         .IsRequired()
@@ -252,9 +244,6 @@ namespace WebTemplate.Migrations
 
                     b.Property<DateTime>("DatumRezervacije")
                         .HasColumnType("datetime2");
-
-                    b.Property<int>("KonacnaCena")
-                        .HasColumnType("int");
 
                     b.Property<bool>("StatusRezervacije")
                         .HasColumnType("bit");

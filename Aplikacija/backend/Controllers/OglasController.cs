@@ -20,7 +20,7 @@ namespace backend.Controllers
         }
 
         [HttpPost("DodajOglas/{idKorisnik}")]
-        public async Task<ActionResult> RegistrationKorisnik([FromBody]OglasObjekta dodatOglas, int idKorisnik){
+        public async Task<ActionResult> DodajOglas([FromBody]OglasObjekta dodatOglas, int idKorisnik){
 
             try{
 

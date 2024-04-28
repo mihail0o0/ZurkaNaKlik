@@ -16,6 +16,7 @@ namespace backend.Models
         [RegularExpression(@"^\+381 \d{9}$")]
         public required string BrTel { get; set; }
         public required string LozinkaHash { get; set; }
+        
         [Column("Role")]
         public virtual Roles Role { get; set; } 
         public string? SlikaProfila { get; set; }

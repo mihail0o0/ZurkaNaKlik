@@ -22,7 +22,7 @@ namespace backend.Models
 
 
         public required List<string> SastavMenija {get; set; }// pecivo, cevapi
-        public required Kategorija? Kategorija { get; set; }//Slatko/slano
+        public  Kategorija? Kategorija { get; set; }//Slatko/slano
 
 
     }
