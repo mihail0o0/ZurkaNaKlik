@@ -3,16 +3,15 @@ import { Form } from "react-router-dom";
 import { FormInput, MainButton } from "../../common/commonComponents";
 import authAction from '../../actions/authAction';
 import { userLoginSchema } from "../../validators";
+import { useQuery, useMutation } from '@tanstack/react-query';
 
 function UserLoginPage() {
     let actionRoute = 'Auth/login';
     const [emailText, setMailText] = useState('');
     const [passwordText, setPasswordText] = useState('');
 
-    const [pending, setPending] = useState(null);
     const [emailError, setEmailError] = useState(null);
     const [passwordError, setPasswordError] = useState(null);
-    const [cancelToken, setCancelToken] = useState(null);
 
     
     const handleMailTextChange = (newText) => {

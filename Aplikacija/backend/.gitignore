@@ -1,6 +1,5 @@
 # .NET
-/obj/
-/bin/
+obj/Debug/net8.0/WebTemplate.AssemblyInfo.cs
 
 *.obj
 *.bin
@@ -29,6 +28,7 @@ bld/
 [Bb]in/
 [Oo]bj/
 [Ll]og/
+#test/
 
 .env
 # Visual Studio Code
@@ -50,7 +50,7 @@ bld/
 # The packages folder can be ignored because of PackageReference 
 */packages/
 # except build/, which is used as an MSBuild target.
-!/packages/build/
+#!/packages/build/
 # Uncomment if necessary however generally it will be regenerated when needed
 #!/packages/repositories.config
 

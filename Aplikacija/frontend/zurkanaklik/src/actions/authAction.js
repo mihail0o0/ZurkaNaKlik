@@ -20,14 +20,15 @@ function formatPayload(route, payload, role) {
 // handle pending state, stop request, etc...
 async function authAction(route, schema, payload, role) {
     const valResult = schema.validate(payload);
-    const formatedPayload = formatPayload(route, payload, role);
-
+    
     if (valResult.error) {
         let valType = valResult?.error?.details[0].path[0];
         let valError = valResult?.error?.details[0].message;
-
+        
         throw new AuthError('Validation Error', valType, valError);
     }
+    
+    const formatedPayload = formatPayload(route, payload, role);
 
     try {
         // call backend funciton
@@ -48,10 +49,8 @@ async function authAction(route, schema, payload, role) {
     catch (error) {
         throw new Error('Error in network request:', error);
     }
-
-
-
-    return;
+    
+    return formatedPayload;
 }
 
 export default authAction;
