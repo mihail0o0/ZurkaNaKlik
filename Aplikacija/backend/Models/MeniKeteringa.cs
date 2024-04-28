@@ -19,10 +19,8 @@ namespace backend.Models
 
        // public int KolicinaUKG { get; set; } //?
 
-
-
-        public required List<string> StavkeJela {get; set; }// pecivo, cevapi
-        public required Kategorija? Kategorija { get; set; }//Slatko/slano
+        public  List<string>? StavkeJela {get; set; }// pecivo, cevapi
+        public  Kategorija? Kategorija { get; set; }//Slatko/slano
 
 
     }

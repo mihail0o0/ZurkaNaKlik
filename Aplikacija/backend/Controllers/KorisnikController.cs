@@ -8,8 +8,8 @@ using Microsoft.Extensions.Logging;
 
 namespace backend.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
+        [ApiController]
+        [Route("api/[controller]")]
     public class KorisnikController : Controller
     {
         public ZurkaNaKlikDbContext Context { get; set; }

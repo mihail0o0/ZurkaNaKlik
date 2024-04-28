@@ -12,7 +12,7 @@ using WebTemplate.Models;
 namespace WebTemplate.Migrations
 {
     [DbContext(typeof(ZurkaNaKlikDbContext))]
-    [Migration("20240427195110_v1")]
+    [Migration("20240428212906_v1")]
     partial class v1
     {
         /// <inheritdoc />
@@ -20,7 +20,7 @@ namespace WebTemplate.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.3")
+                .HasAnnotation("ProductVersion", "8.0.4")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -38,6 +38,28 @@ namespace WebTemplate.Migrations
                     b.HasIndex("ListaOmiljenihOglasaObjekataId");
 
                     b.ToTable("KorisnikOglasObjekta");
+                });
+
+            modelBuilder.Entity("backend.Models.Kategorija", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("AgencijaId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Naziv")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AgencijaId");
+
+                    b.ToTable("Kategorijas");
                 });
 
             modelBuilder.Entity("backend.Models.KorisnikAgencija", b =>
@@ -97,11 +119,11 @@ namespace WebTemplate.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("AgencijaId")
+                    b.Property<int>("CenaMenija")
                         .HasColumnType("int");
 
-                    b.Property<double>("CenaPoOsobi")
-                        .HasColumnType("float");
+                    b.Property<int?>("KategorijaId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Naslov")
                         .IsRequired()
@@ -115,12 +137,16 @@ namespace WebTemplate.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("StavkeJela")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int?>("ZahtevZaKeteringId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AgencijaId");
+                    b.HasIndex("KategorijaId");
 
                     b.HasIndex("ZahtevZaKeteringId");
 
@@ -273,6 +299,12 @@ namespace WebTemplate.Migrations
                     b.Property<int>("BrojOcena")
                         .HasColumnType("int");
 
+                    b.Property<int>("CenaDostave")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("MogucnostDostave")
+                        .HasColumnType("bit");
+
                     b.Property<int?>("Ocena")
                         .HasColumnType("int");
 
@@ -308,19 +340,26 @@ namespace WebTemplate.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("backend.Models.MeniKeteringa", b =>
+            modelBuilder.Entity("backend.Models.Kategorija", b =>
                 {
                     b.HasOne("backend.Models.Agencija", "Agencija")
-                        .WithMany("Meni")
-                        .HasForeignKey("AgencijaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .WithMany("KategorijeMenija")
+                        .HasForeignKey("AgencijaId");
+
+                    b.Navigation("Agencija");
+                });
+
+            modelBuilder.Entity("backend.Models.MeniKeteringa", b =>
+                {
+                    b.HasOne("backend.Models.Kategorija", "Kategorija")
+                        .WithMany("ListaMenija")
+                        .HasForeignKey("KategorijaId");
 
                     b.HasOne("backend.Models.ZahtevZaKetering", null)
                         .WithMany("ZakupljeniMeniji")
                         .HasForeignKey("ZahtevZaKeteringId");
 
-                    b.Navigation("Agencija");
+                    b.Navigation("Kategorija");
                 });
 
             modelBuilder.Entity("backend.Models.OglasObjekta", b =>
@@ -357,6 +396,11 @@ namespace WebTemplate.Migrations
                     b.Navigation("ZahtevZaKetering");
                 });
 
+            modelBuilder.Entity("backend.Models.Kategorija", b =>
+                {
+                    b.Navigation("ListaMenija");
+                });
+
             modelBuilder.Entity("backend.Models.ZahtevZaKetering", b =>
                 {
                     b.Navigation("ZakupljeniMeniji");
@@ -367,7 +411,7 @@ namespace WebTemplate.Migrations
 
             modelBuilder.Entity("backend.Models.Agencija", b =>
                 {
-                    b.Navigation("Meni");
+                    b.Navigation("KategorijeMenija");
                 });
 
             modelBuilder.Entity("backend.Models.Korisnik", b =>

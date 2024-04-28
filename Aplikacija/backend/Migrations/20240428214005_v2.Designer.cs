@@ -12,8 +12,8 @@ using WebTemplate.Models;
 namespace WebTemplate.Migrations
 {
     [DbContext(typeof(ZurkaNaKlikDbContext))]
-    [Migration("20240428194350_v3")]
-    partial class v3
+    [Migration("20240428214005_v2")]
+    partial class v2
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -138,7 +138,6 @@ namespace WebTemplate.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("StavkeJela")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("ZahtevZaKeteringId")
