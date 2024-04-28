@@ -12,11 +12,8 @@ namespace backend.Models
         public required string Lozinka { get; set; }
         [Column("Role")]
         public virtual Roles Role { get; set; } = Roles.Agencija;
-        public string? SlikaProfila { get; set; }
-        public string? Lokacija { get; set; }
-        [Required]
-        public required string? Opis { get; set; }
-        // public Meni Meni { get; set; }
+        public required string Lokacija { get; set; }
+        
         
     }
 }

@@ -2,11 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Text.Json.Serialization;
 
 namespace backend.Models
 {
     public class OglasObjekta
     {
+        [Key]
+        public int Id { get; set; }
         public required List<EnumTipProslava> ListaTipProslava { get; set; }
         public required List<EnumTipProstora> ListaTipProstora { get; set; }
         public required string Naziv { get; set; }
@@ -24,7 +27,10 @@ namespace backend.Models
         public required List<string> Slike { get; set; }
         public int? Ocena { get; set; }
         public int BrojOcena { get; set; }
-        public DateTime? ZausetiDani { get; set; }
-
+        [JsonIgnore]
+        public List<Korisnik>? ListaKorisnikaOmiljeniOglas { get; set; }
+        [JsonIgnore]
+        public List<DateTime>? ZauzetiDani { get; set; }
+        public Korisnik? VlasnikOglasa { get; set; }
     }
 }

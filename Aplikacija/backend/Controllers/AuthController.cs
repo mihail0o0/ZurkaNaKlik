@@ -2,6 +2,7 @@ using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
+using backend.DTOs;
 
 namespace backend.Controllers
 
@@ -22,6 +23,11 @@ namespace backend.Controllers
         public async Task<ActionResult> RegistrationKorisnik([FromBody]RegistrationKorisnik request){
 
             try{
+
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
                  
                 string lozinkaHash = BCrypt.Net.BCrypt.HashPassword(request.Lozinka);
 
@@ -39,7 +45,7 @@ namespace backend.Controllers
                     BrTel = request.BrTel,
                     LozinkaHash = lozinkaHash,
                     Role = request.Role,
-                    SlikaProfila = request.SlikaProfila
+                    Lokacija = request.Lokacija
                 };
 
 
@@ -58,7 +64,11 @@ namespace backend.Controllers
         public async Task<ActionResult> RegistrationAgencija([FromBody]RegistrationAgencija request){
 
             try{
-                 
+                
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
                 string lozinkaHash = BCrypt.Net.BCrypt.HashPassword(request.Lozinka);
 
                 var postojiEmail = await Context.Korisniks.AnyAsync(k => k.Email == request.Email);
@@ -74,18 +84,14 @@ namespace backend.Controllers
                     BrTel = request.BrTel,
                     LozinkaHash = lozinkaHash,
                     Role = request.Role,
-                    SlikaProfila = request.SlikaProfila,
                     Lokacija = request.Lokacija,
-                    Opis = request.Opis,
-
-
                 };
 
 
                 await Context.Agencije.AddAsync(agencija);
                 await Context.SaveChangesAsync();
 
-                return Ok(new {Context.Agencije});
+                return Ok(new {agencija});
             }
             catch (Exception e)
             {
@@ -94,20 +100,25 @@ namespace backend.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult> Login([FromBody]LoginKorisnik request){
+        public async Task<ActionResult> Login([FromBody]Login request){
 
             try{
-                var korisnik = await Context.KorisnikAgencijas.FirstOrDefaultAsync(p => p.Email == request.Email);
+                var loginObject = await Context.KorisnikAgencijas.FirstOrDefaultAsync(p => p.Email == request.Email);
 
-                if (korisnik == null){
+                if (loginObject == null){
                     return BadRequest("Korisnik ne postoji, ili ste uneli pogresan email");
                 }
 
-                if(!BCrypt.Net.BCrypt.Verify(request.Lozinka, korisnik?.LozinkaHash)){
+                if(!BCrypt.Net.BCrypt.Verify(request.Lozinka, loginObject?.LozinkaHash)){
                     return BadRequest("Pogresna sifra");
                 }
 
-                string token = CreateToken(korisnik!);
+                var login = new LoginObject{
+                    Email = loginObject!.Email,
+                    Role = loginObject.Role
+                };
+
+                string token = CreateToken(login!);
 
                 return Ok(new {token});
             }
@@ -117,12 +128,11 @@ namespace backend.Controllers
             }
         }
         
-        private string CreateToken([FromBody] KorisnikAgencija korisnikAgencija){
+        private string CreateToken(LoginObject loginObject){
 
             List<Claim> claims = new List<Claim>{
-                new Claim(ClaimTypes.Name, korisnikAgencija.Ime),
-                new Claim(ClaimTypes.Email, korisnikAgencija.Email),
-                new Claim(ClaimTypes.Role, korisnikAgencija.Role.ToString())
+                new Claim(ClaimTypes.Email, loginObject.Email),
+                new Claim(ClaimTypes.Role, loginObject.Role.ToString())
             };
 
             
@@ -150,3 +160,5 @@ namespace backend.Controllers
 }
 
 //http only cooke na backend i tu da smestam jwt i to da seljem
+
+

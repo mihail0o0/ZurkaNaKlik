@@ -3,7 +3,7 @@ using System.ComponentModel;
 namespace backend.Models
 
 {
-    public class LoginKorisnik
+    public class Login
     {
         [EmailAddress(ErrorMessage = "Email adresa nije u ispravnom formatu.")]
         public required string Email { get; set; }

@@ -21,7 +21,22 @@ namespace backend.Controllers
                  
                 var listaKorisnika = await Context.Korisniks.ToListAsync<Korisnik>();
 
-                return Ok(listaKorisnika);
+                return Ok(new {listaKorisnika});
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        [HttpGet("Sve agencije")]
+        public async Task<ActionResult> SveAgencije(){
+
+            try{
+                 
+                var listaAgencija = await Context.Agencije.ToListAsync<Agencija>();
+
+                return Ok(new {listaAgencija});
             }
             catch (Exception e)
             {
