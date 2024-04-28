@@ -52,7 +52,7 @@ namespace backend.Controllers
 
                 };
 
-                // korisnik.ListaOmiljenihOglasaObjekata?.Add(oglas);
+                
 
 
                 await Context.OglasObjektas.AddAsync(oglas);
