@@ -9,7 +9,7 @@ namespace backend.Models
     {
         [Key]
         public int Id { get; set; }
-        public required string Naslov { get; set; }// Novogodisnji/Koktel/Svesdki/Silver itd
+        public required string Naziv { get; set; }// Novogodisnji/Koktel/Svesdki/Silver itd
 
         public required int CenaMenija { get; set; } //po kg
     
@@ -19,8 +19,10 @@ namespace backend.Models
 
        // public int KolicinaUKG { get; set; } //?
 
-        public  List<string>? StavkeJela {get; set; }// pecivo, cevapi
-        public  Kategorija? Kategorija { get; set; }//Slatko/slano
+
+
+        public required List<string> SastavMenija {get; set; }// pecivo, cevapi
+        public required Kategorija? Kategorija { get; set; }//Slatko/slano
 
 
     }

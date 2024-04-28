@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebTemplate.Models;
 
@@ -11,9 +12,11 @@ using WebTemplate.Models;
 namespace WebTemplate.Migrations
 {
     [DbContext(typeof(ZurkaNaKlikDbContext))]
-    partial class ZurkaNaKlikDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240428170027_v3")]
+    partial class v3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -122,15 +125,11 @@ namespace WebTemplate.Migrations
                     b.Property<int?>("KategorijaId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Naziv")
+                    b.Property<string>("Naslov")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Opis")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("SastavMenija")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -139,6 +138,7 @@ namespace WebTemplate.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("StavkeJela")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("ZahtevZaKeteringId")
@@ -210,8 +210,8 @@ namespace WebTemplate.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<double?>("Ocena")
-                        .HasColumnType("float");
+                    b.Property<int?>("Ocena")
+                        .HasColumnType("int");
 
                     b.Property<string>("Opis")
                         .IsRequired()
@@ -244,9 +244,6 @@ namespace WebTemplate.Migrations
 
                     b.Property<DateTime>("DatumRezervacije")
                         .HasColumnType("datetime2");
-
-                    b.Property<int>("KonacnaCena")
-                        .HasColumnType("int");
 
                     b.Property<bool>("StatusRezervacije")
                         .HasColumnType("bit");
