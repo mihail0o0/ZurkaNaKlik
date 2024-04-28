@@ -12,8 +12,8 @@ using WebTemplate.Models;
 namespace WebTemplate.Migrations
 {
     [DbContext(typeof(ZurkaNaKlikDbContext))]
-    [Migration("20240428170027_v3")]
-    partial class v3
+    [Migration("20240428214241_v2")]
+    partial class v2
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -125,7 +125,7 @@ namespace WebTemplate.Migrations
                     b.Property<int?>("KategorijaId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Naslov")
+                    b.Property<string>("Naziv")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -133,11 +133,11 @@ namespace WebTemplate.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Slika")
+                    b.Property<string>("SastavMenija")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("StavkeJela")
+                    b.Property<string>("Slika")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -210,8 +210,8 @@ namespace WebTemplate.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("Ocena")
-                        .HasColumnType("int");
+                    b.Property<double?>("Ocena")
+                        .HasColumnType("float");
 
                     b.Property<string>("Opis")
                         .IsRequired()
@@ -244,6 +244,9 @@ namespace WebTemplate.Migrations
 
                     b.Property<DateTime>("DatumRezervacije")
                         .HasColumnType("datetime2");
+
+                    b.Property<int>("KonacnaCena")
+                        .HasColumnType("int");
 
                     b.Property<bool>("StatusRezervacije")
                         .HasColumnType("bit");
