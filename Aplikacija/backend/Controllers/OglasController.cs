@@ -20,7 +20,7 @@ namespace backend.Controllers
         }
 
         [HttpPost("DodajOglas/{idKorisnik}")]
-        public async Task<ActionResult> RegistrationKorisnik([FromBody]OglasObjekta dodatOglas, int idKorisnik){
+        public async Task<ActionResult> DodajOglas([FromBody]OglasObjekta dodatOglas, int idKorisnik){
 
             try{
 
@@ -52,8 +52,35 @@ namespace backend.Controllers
 
                 };
 
-                
+                await Context.OglasObjektas.AddAsync(oglas);
+                await Context.SaveChangesAsync();
 
+                return Ok(new {Context.OglasObjektas});
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        [HttpDelete("ObrisiOglas/{idOglasa}/{idKorisnik}")]
+        public async Task<ActionResult> RegistrationKorisnik(int idOglasa, int idKorisnik){
+
+            try{
+
+                Korisnik? korisnik = await Context.Korisniks.FindAsync(idKorisnik);
+                
+                if (korisnik == null){
+                    return BadRequest("Korisnik ne postoji");
+                }
+
+                OglasObjekta? oglas = await Context.OglasObjektas.FindAsync(idOglasa);
+                
+                if (oglas == null){
+                    return BadRequest("Oglas ne postoji");
+                }
+                
+                
 
                 await Context.OglasObjektas.AddAsync(oglas);
                 await Context.SaveChangesAsync();

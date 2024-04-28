@@ -27,6 +27,8 @@ namespace WebTemplate.Migrations
                     Discriminator = table.Column<string>(type: "nvarchar(21)", maxLength: 21, nullable: false),
                     Opis = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Ocena = table.Column<int>(type: "int", nullable: true),
+                    MogucnostDostave = table.Column<bool>(type: "bit", nullable: true),
+                    CenaDostave = table.Column<int>(type: "int", nullable: true),
                     BrojOcena = table.Column<int>(type: "int", nullable: true),
                     Prezime = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
@@ -47,6 +49,25 @@ namespace WebTemplate.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ZahtevZaKeterings", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Kategorijas",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Naziv = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    AgencijaId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Kategorijas", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Kategorijas_KorisnikAgencijas_AgencijaId",
+                        column: x => x.AgencijaId,
+                        principalTable: "KorisnikAgencijas",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -91,22 +112,22 @@ namespace WebTemplate.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    AgencijaId = table.Column<int>(type: "int", nullable: false),
                     Naslov = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Opis = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CenaMenija = table.Column<int>(type: "int", nullable: false),
                     Slika = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CenaPoOsobi = table.Column<double>(type: "float", nullable: false),
+                    Opis = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    StavkeJela = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    KategorijaId = table.Column<int>(type: "int", nullable: true),
                     ZahtevZaKeteringId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_MeniKeteringas", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_MeniKeteringas_KorisnikAgencijas_AgencijaId",
-                        column: x => x.AgencijaId,
-                        principalTable: "KorisnikAgencijas",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        name: "FK_MeniKeteringas_Kategorijas_KategorijaId",
+                        column: x => x.KategorijaId,
+                        principalTable: "Kategorijas",
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_MeniKeteringas_ZahtevZaKeterings_ZahtevZaKeteringId",
                         column: x => x.ZahtevZaKeteringId,
@@ -174,14 +195,19 @@ namespace WebTemplate.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Kategorijas_AgencijaId",
+                table: "Kategorijas",
+                column: "AgencijaId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_KorisnikOglasObjekta_ListaOmiljenihOglasaObjekataId",
                 table: "KorisnikOglasObjekta",
                 column: "ListaOmiljenihOglasaObjekataId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_MeniKeteringas_AgencijaId",
+                name: "IX_MeniKeteringas_KategorijaId",
                 table: "MeniKeteringas",
-                column: "AgencijaId");
+                column: "KategorijaId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_MeniKeteringas_ZahtevZaKeteringId",
@@ -222,6 +248,9 @@ namespace WebTemplate.Migrations
 
             migrationBuilder.DropTable(
                 name: "ZakupljeniOglasi");
+
+            migrationBuilder.DropTable(
+                name: "Kategorijas");
 
             migrationBuilder.DropTable(
                 name: "OglasObjektas");
