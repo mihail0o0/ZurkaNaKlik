@@ -82,7 +82,7 @@ namespace backend.Controllers
             try{
                 
                 //var svimeniji = await Context.MeniKeteringas.Include(x=> x.Kategorija).Where(x => x.Kategorija).ToListAsync();
-                var svimeniji = await Context.Kategorijas.Include(x=> x.ListaMenija).Include(x => x.Agencija).Where(x =>x.Agencija.Id == idAgencije).Select(x => new {
+                var svimeniji = await Context.Kategorijas.Include(x=> x.ListaMenija).Include(x => x.Agencija).Where(x =>x.Agencija!.Id == idAgencije).Select(x => new {
                     x.ListaMenija
                 })
                 .ToListAsync();
@@ -150,31 +150,7 @@ namespace backend.Controllers
 
             
         }
-        // [HttpPut("AzurirajMeni")]
-        // public async Task<ActionResult> AzurirajMeni([FromBody]MeniKeteringa meni)
-        // {
-        //     try
-        //     {
-               
-
-        //         var azuriranMeni = new MeniKeteringa {
-        //             Slika = meni.Slika,
-
-        //         }
-
-             
-
-        //         Context.MeniKeteringas.Update(meni);
-
-        //         await Context.SaveChangesAsync(); 
-
-        //         return Ok(meni); 
-        //     }
-        //     catch (Exception ex)
-        //     {
-        //         return BadRequest(ex.Message); 
-        //     }
-        // }
+      
        [HttpPut("PromeniSliku/{MeniID}/{NovaSlika}")]
         public async Task<ActionResult> PromeniSliku(int MeniID, string NovaSlika)
         {
@@ -189,7 +165,7 @@ namespace backend.Controllers
 
                 meni.Slika = NovaSlika; 
 
-                Context.MeniKeteringas.Update(meni); 
+                //Context.MeniKeteringas.Update(meni); 
 
                 await Context.SaveChangesAsync(); 
 
@@ -215,7 +191,7 @@ namespace backend.Controllers
 
                 meni.Opis = NoviOpis; 
 
-                Context.MeniKeteringas.Update(meni); 
+                //Context.MeniKeteringas.Update(meni); 
 
                 await Context.SaveChangesAsync(); 
 
@@ -243,9 +219,10 @@ namespace backend.Controllers
                 }
                 else {
                     meni.SastavMenija.Add(StavkaUMeniju);
+                   // Context.MeniKeteringas.Update(meni);
                 }
 
-                Context.MeniKeteringas.Update(meni);
+                
                 await Context.SaveChangesAsync();
                 return Ok(meni);
             }

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace WebTemplate.Migrations
 {
     /// <inheritdoc />
-    public partial class v1 : Migration
+    public partial class v21 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -113,19 +113,11 @@ namespace WebTemplate.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-<<<<<<<< HEAD:Aplikacija/backend/Migrations/20240428213627_v1.cs
                     Naziv = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CenaMenija = table.Column<int>(type: "int", nullable: false),
                     Slika = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Opis = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     SastavMenija = table.Column<string>(type: "nvarchar(max)", nullable: false),
-========
-                    Naslov = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CenaMenija = table.Column<int>(type: "int", nullable: false),
-                    Slika = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Opis = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    StavkeJela = table.Column<string>(type: "nvarchar(max)", nullable: false),
->>>>>>>> 4e0abd633e2eaf10dc97262a6eb0d1c4bf6d6cb0:Aplikacija/backend/Migrations/20240428212906_v1.cs
                     KategorijaId = table.Column<int>(type: "int", nullable: true),
                     ZahtevZaKeteringId = table.Column<int>(type: "int", nullable: true)
                 },
