@@ -34,11 +34,11 @@ namespace backend.Controllers
                 }
 
                 var meni = new MeniKeteringa{
-                    Naslov = meniketeringa.Naslov,
+                    Naziv = meniketeringa.Naziv,
                     CenaMenija = meniketeringa.CenaMenija,
                     Slika = meniketeringa.Slika,
                     Opis = meniketeringa.Opis,
-                    StavkeJela = meniketeringa.StavkeJela,
+                    SastavMenija = meniketeringa.SastavMenija,
                     Kategorija = kategorija
 
                 };
@@ -150,7 +150,121 @@ namespace backend.Controllers
 
             
         }
-    }
+        // [HttpPut("AzurirajMeni")]
+        // public async Task<ActionResult> AzurirajMeni([FromBody]MeniKeteringa meni)
+        // {
+        //     try
+        //     {
+               
+
+        //         var azuriranMeni = new MeniKeteringa {
+        //             Slika = meni.Slika,
+
+        //         }
+
+             
+
+        //         Context.MeniKeteringas.Update(meni);
+
+        //         await Context.SaveChangesAsync(); 
+
+        //         return Ok(meni); 
+        //     }
+        //     catch (Exception ex)
+        //     {
+        //         return BadRequest(ex.Message); 
+        //     }
+        // }
+       [HttpPut("PromeniSliku/{MeniID}/{NovaSlika}")]
+        public async Task<ActionResult> PromeniSliku(int MeniID, string NovaSlika)
+        {
+            try
+            {
+                var meni = await Context.MeniKeteringas.FindAsync(MeniID);
+
+                if (meni == null)
+                {
+                    return BadRequest("Pogresno unet meni"); 
+                }
+
+                meni.Slika = NovaSlika; 
+
+                Context.MeniKeteringas.Update(meni); 
+
+                await Context.SaveChangesAsync(); 
+
+                return Ok(meni); 
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message); 
+            }
+        }
+
+        [HttpPut("PromeniOpis/{MeniID}/{NoviOpis}")]
+        public async Task<ActionResult> PromeniOpis(int MeniID, string NoviOpis)
+        {
+            try
+            {
+                var meni = await Context.MeniKeteringas.FindAsync(MeniID);
+
+                if (meni == null)
+                {
+                    return BadRequest("Pogresno unet meni"); 
+                }
+
+                meni.Opis = NoviOpis; 
+
+                Context.MeniKeteringas.Update(meni); 
+
+                await Context.SaveChangesAsync(); 
+
+                return Ok(meni); 
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message); 
+            }
+        }
+
+        //public required List<string> SastavMenija {get; set; }// pecivo, cevapi
+        [HttpPut("AzurirajSastav/{MeniID}/{StavkaUMeniju}")]
+        public async Task<ActionResult> AzurirajSastav(int MeniID, string StavkaUMeniju)
+        {
+            try{
+                var meni = await Context.MeniKeteringas.FindAsync(MeniID);
+
+                if (meni == null){
+                    return BadRequest("Nema taj meni");
+                }
+
+                if (meni.SastavMenija.Contains(StavkaUMeniju)){
+                    meni.SastavMenija.Remove(StavkaUMeniju);
+                }
+                else {
+                    meni.SastavMenija.Add(StavkaUMeniju);
+                }
+
+                Context.MeniKeteringas.Update(meni);
+                await Context.SaveChangesAsync();
+                return Ok(meni);
+            }
+            catch(Exception e){
+                return BadRequest(e.Message);
+            }
+        
+
+        
+        
+        }
+                        
+                    
+                
+
+                
+
+                
+   
         
 
 
@@ -160,16 +274,7 @@ namespace backend.Controllers
 
        
 
-        //delete
-
-        
-
-
-        //izmena kategorija
-
-        //paziti da od nazad brisem sve prvo menije pa kategoriju
-
-        //
+       
 
         
 

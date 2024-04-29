@@ -51,7 +51,7 @@ namespace backend.Controllers
 
         }
         
-
+        #region GET
         [HttpGet("VratiKategorije/{idAgencije}")]
         public async Task<IActionResult> VratiKategorije(int idAgencije){
             try{
@@ -72,6 +72,7 @@ namespace backend.Controllers
 
 
         }
+       #endregion
 
         
         [HttpGet("PrikaziSveMenije/{idKategorije}")]

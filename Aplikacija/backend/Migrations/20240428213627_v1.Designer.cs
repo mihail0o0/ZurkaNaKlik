@@ -12,8 +12,13 @@ using WebTemplate.Models;
 namespace WebTemplate.Migrations
 {
     [DbContext(typeof(ZurkaNaKlikDbContext))]
-    [Migration("20240428203720_v4")]
-    partial class v4
+<<<<<<<< HEAD:Aplikacija/backend/Migrations/20240428213627_v1.Designer.cs
+    [Migration("20240428213627_v1")]
+    partial class v1
+========
+    [Migration("20240428214005_v2")]
+    partial class v2
+>>>>>>>> 4e0abd633e2eaf10dc97262a6eb0d1c4bf6d6cb0:Aplikacija/backend/Migrations/20240428214005_v2.Designer.cs
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -139,6 +144,9 @@ namespace WebTemplate.Migrations
 
                     b.Property<string>("Slika")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("StavkeJela")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("ZahtevZaKeteringId")

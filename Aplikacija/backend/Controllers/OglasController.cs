@@ -48,11 +48,16 @@ namespace backend.Controllers
                     Opis = dodatOglas.Opis,
                     Slike = dodatOglas.Slike,
                     BrojOcena = dodatOglas.BrojOcena,
-                    VlasnikOglasa = korisnik
-
                 };
 
-                await Context.OglasObjektas.AddAsync(oglas);
+                /*korisnik.ListaObjavljenihOglasaObjekta?.Add(oglas);*/
+                
+                oglas.VlasnikOglasa = korisnik; // Postavljanje vlasnika oglasa
+
+                // Dodavanje oglasa u DbSet
+                Context.OglasObjektas.Add(oglas);
+
+                // Čuvanje promena u bazi podataka
                 await Context.SaveChangesAsync();
 
                 return Ok(new {Context.OglasObjektas});
@@ -80,9 +85,8 @@ namespace backend.Controllers
                     return BadRequest("Oglas ne postoji");
                 }
                 
-                
 
-                await Context.OglasObjektas.AddAsync(oglas);
+                Context.OglasObjektas.Remove(oglas);
                 await Context.SaveChangesAsync();
 
                 return Ok(new {Context.OglasObjektas});
@@ -93,6 +97,49 @@ namespace backend.Controllers
             }
         }
 
+        [HttpGet("PrikaziOglas/{idOglasa}")]
+        public async Task<ActionResult> PrikaziOglas(int idOglasa){
+
+            try{
+                OglasObjekta? oglas = await Context.OglasObjektas
+                                    .Include(o => o.VlasnikOglasa)
+                                    .FirstOrDefaultAsync(o => o.Id == idOglasa);
+                
+                if (oglas == null){
+                    return BadRequest("Oglas ne postoji");
+                }
+                
+
+                return Ok(new {oglas});
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+
+        [HttpPut("IzmeniOglas/{idOglasa}")]
+        public async Task<ActionResult> IzmeniOglas(int idOglasa){
+
+            try{
+                OglasObjekta? oglas = await Context.OglasObjektas.FindAsync(idOglasa);
+                
+                if (oglas == null){
+                    return BadRequest("Oglas ne postoji");
+                }
+                
+
+                Context.OglasObjektas.Remove(oglas);
+                await Context.SaveChangesAsync();
+
+                return Ok(new {Context.OglasObjektas});
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
 
     }
 }
