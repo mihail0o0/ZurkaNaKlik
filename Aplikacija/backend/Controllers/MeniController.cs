@@ -34,11 +34,11 @@ namespace backend.Controllers
                 }
 
                 var meni = new MeniKeteringa{
-                    Naslov = meniketeringa.Naslov,
+                    Naziv = meniketeringa.Naziv,
                     CenaMenija = meniketeringa.CenaMenija,
                     Slika = meniketeringa.Slika,
                     Opis = meniketeringa.Opis,
-                    StavkeJela = meniketeringa.StavkeJela,
+                    SastavMenija = meniketeringa.SastavMenija,
                     Kategorija = kategorija
 
                 };
@@ -82,7 +82,7 @@ namespace backend.Controllers
             try{
                 
                 //var svimeniji = await Context.MeniKeteringas.Include(x=> x.Kategorija).Where(x => x.Kategorija).ToListAsync();
-                var svimeniji = await Context.Kategorijas.Include(x=> x.ListaMenija).Include(x => x.Agencija).Where(x =>x.Agencija.Id == idAgencije).Select(x => new {
+                var svimeniji = await Context.Kategorijas.Include(x=> x.ListaMenija).Include(x => x.Agencija).Where(x =>x.Agencija!.Id == idAgencije).Select(x => new {
                     x.ListaMenija
                 })
                 .ToListAsync();

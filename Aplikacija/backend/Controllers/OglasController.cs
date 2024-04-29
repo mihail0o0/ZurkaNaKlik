@@ -148,7 +148,7 @@ namespace backend.Controllers
                 oglas.Slike = o.Slike;
                 
 
-                Context.OglasObjektas.Remove(oglas);
+                
                 await Context.SaveChangesAsync();
 
                 return Ok(new {Context.OglasObjektas});
