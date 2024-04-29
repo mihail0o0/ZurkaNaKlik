@@ -112,7 +112,7 @@ namespace backend.Controllers
 
                 if (meni == null)
                 {
-                    return BadRequest("Pogresno unet meni"); // Vraćamo 404 NotFound ako meni nije pronađen
+                    return BadRequest("Pogresno unet meni"); 
                 }
 
                 meni.CenaMenija = NovaCena; // Ažuriramo cenu menija
