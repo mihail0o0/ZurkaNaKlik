@@ -108,6 +108,8 @@ namespace backend.Controllers
                 if (oglas == null){
                     return BadRequest("Oglas ne postoji");
                 }
+
+                
                 
 
                 return Ok(new {oglas});
@@ -120,7 +122,7 @@ namespace backend.Controllers
 
 
         [HttpPut("IzmeniOglas/{idOglasa}")]
-        public async Task<ActionResult> IzmeniOglas(int idOglasa){
+        public async Task<ActionResult> IzmeniOglas([FromBody]OglasObjekta o,int idOglasa){
 
             try{
                 OglasObjekta? oglas = await Context.OglasObjektas.FindAsync(idOglasa);
@@ -128,6 +130,22 @@ namespace backend.Controllers
                 if (oglas == null){
                     return BadRequest("Oglas ne postoji");
                 }
+                
+                oglas.ListaTipProslava = o.ListaTipProslava;
+                oglas.ListaTipProstora = o.ListaTipProstora;
+                oglas.Naziv = o.Naziv;
+                oglas.Grad = o.Grad;
+                oglas.Lokacija = o.Lokacija;
+                oglas.CenaPoDanu = o.CenaPoDanu;
+                oglas.BrojSoba = o.BrojSoba;
+                oglas.Kvadratura = o.Kvadratura;
+                oglas.BrojKreveta = o.BrojKreveta;
+                oglas.BrojKupatila = o.BrojKupatila;
+                oglas.Grejanje = o.Grejanje;
+                oglas.ListDodatneOpreme = o.ListDodatneOpreme;
+                oglas.BrTel = o.BrTel;
+                oglas.Opis = o.Opis;
+                oglas.Slike = o.Slike;
                 
 
                 Context.OglasObjektas.Remove(oglas);
