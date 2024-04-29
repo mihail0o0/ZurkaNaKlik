@@ -56,6 +56,12 @@ namespace backend.Controllers
             }
         }
 
+        //Korisnik treba da oceni oglas pa da se updateuje i broj ocena u oglas objekta
+
+        //Korisnik treba da oceni agenciju za ketering pa da se updateuje i broj ocena u agenciji
+
+       // [HttpPut("OcenAgenciju/{idKorisnika}")]
+
 
     }
 }

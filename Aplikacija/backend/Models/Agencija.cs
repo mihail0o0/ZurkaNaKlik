@@ -21,6 +21,7 @@ namespace backend.Models
         
         public int CenaDostave { get; set; } //fiksna cena dostave ako je ovo gore true
         public int BrojOcena { get; set; } = 0;
+        
         [JsonIgnore]
         public List<Kategorija>? KategorijeMenija { get; set; } //slatko/slano/posno
 

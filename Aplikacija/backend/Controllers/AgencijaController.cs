@@ -129,7 +129,38 @@ namespace backend.Controllers
        }
        #endregion
 
+        //OceniAgencijuZaKetering
+
+        [HttpPut("OceniAgenciju/{idAgencije}/{novaOcena}")]
+        public async Task<ActionResult> OceniAgenciju(int idAgencije, int novaOcena){
+            try{
+                var agencija = await Context.Agencije.FindAsync(idAgencije);
+
+                if (agencija== null){
+                    return BadRequest("Ne postoji takva agencija");
+                }
+
+                agencija.BrojOcena ++;
+
+                agencija.Ocena = (agencija.Ocena + novaOcena)/agencija.BrojOcena;
+
+                Context.Agencije.Update(agencija);
+
+                await Context.SaveChangesAsync();
+
+                return Ok(agencija);
+
+                
+
+            }
+            catch(Exception ex){
+                return BadRequest(ex.Message);
+            }
+        }
+
         
+
+
 
         
 
