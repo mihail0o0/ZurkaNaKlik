@@ -22,7 +22,7 @@ namespace backend.Controllers
             _configuration = configuration;
         }
 
-        
+        #region DodavanjeMenija
         //radi
         [HttpPost("DodajMeni/{idKategorije}")]
         public async Task<ActionResult> DodajMeni([FromBody]MeniKeteringa meniketeringa, int idKategorije){
@@ -56,7 +56,9 @@ namespace backend.Controllers
 
         }
 
-        
+        #endregion
+
+        #region  PrikaziSveMenije
         [HttpGet("PrikaziSveMenije/{idKategorije}")]
         public async Task<IActionResult> PrikaziSveMenije(int idKategorije){
             try{
@@ -77,6 +79,9 @@ namespace backend.Controllers
 
         }
 
+        #endregion
+
+        #region PrikaziSveMenijeAgencije
         [HttpGet("PrikaziSveMenijeAgencije/{idAgencije}")]
         public async Task<IActionResult> PrikaziSveMenijeAgencije(int idAgencije){
             try{
@@ -102,6 +107,9 @@ namespace backend.Controllers
 
         }
 
+        #endregion
+
+        #region PromeniCenu
         //Radi
         [HttpPut("PromeniCenu/{MeniID}/{NovaCena}")]
         public async Task<ActionResult> PromeniCenu(int MeniID, int NovaCena)
@@ -129,6 +137,8 @@ namespace backend.Controllers
             }
         }
 
+        #endregion
+        #region ObrisiMeni
         [HttpDelete("ObrisiMeni/{MeniID}")]
         public async Task<ActionResult> ObrisiMeni (int MeniID){
             try{
@@ -150,7 +160,10 @@ namespace backend.Controllers
 
             
         }
+
+        #endregion
       
+        #region PromeniSliku
        [HttpPut("PromeniSliku/{MeniID}/{NovaSlika}")]
         public async Task<ActionResult> PromeniSliku(int MeniID, string NovaSlika)
         {
@@ -177,6 +190,8 @@ namespace backend.Controllers
             }
         }
 
+        #endregion
+        #region PrommeniOpis
         [HttpPut("PromeniOpis/{MeniID}/{NoviOpis}")]
         public async Task<ActionResult> PromeniOpis(int MeniID, string NoviOpis)
         {
@@ -202,7 +217,10 @@ namespace backend.Controllers
                 return BadRequest(ex.Message); 
             }
         }
+        #endregion
 
+
+        #region AzurirajSastavMenija
         //public required List<string> SastavMenija {get; set; }// pecivo, cevapi
         [HttpPut("AzurirajSastav/{MeniID}/{StavkaUMeniju}")]
         public async Task<ActionResult> AzurirajSastav(int MeniID, string StavkaUMeniju)
@@ -230,10 +248,10 @@ namespace backend.Controllers
                 return BadRequest(e.Message);
             }
         
-
-        
         
         }
+
+        #endregion
                         
                     
                 
