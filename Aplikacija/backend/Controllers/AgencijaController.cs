@@ -20,7 +20,7 @@ namespace backend.Controllers
             Context = context;
             _configuration = configuration;
         }
-
+        #region  DodajKategoriju
         //dodavanje kategorije preko rute id agencije = radi
         [HttpPost("DodajKategoriju/{idAgencije}")]
         public async Task<ActionResult> DodajKategoriju([FromBody]Kategorija kategorija, int idAgencije){
@@ -50,8 +50,9 @@ namespace backend.Controllers
 
 
         }
+        #endregion
         
-
+        #region VratiKategorije
         [HttpGet("VratiKategorije/{idAgencije}")]
         public async Task<IActionResult> VratiKategorije(int idAgencije){
             try{
@@ -73,7 +74,10 @@ namespace backend.Controllers
 
         }
 
-        
+        #endregion
+      
+
+        #region PrikaziSveMenijeJedneAgencije
         [HttpGet("PrikaziSveMenije/{idKategorije}")]
         public async Task<IActionResult> PrikaziSveMenije(int idKategorije){
             try{
@@ -94,8 +98,10 @@ namespace backend.Controllers
 
         }
 
-       //put i delete
+        #endregion
 
+       //put i delete
+        #region ObrisiKategoriju
        [HttpDelete("ObrisiKategoriju/{KategorijaID}")]
        public async Task<ActionResult> ObrisiKategoriju (int KategorijaID){
         try{
@@ -121,8 +127,40 @@ namespace backend.Controllers
         }
 
        }
+       #endregion
+
+        //OceniAgencijuZaKetering
+
+        [HttpPut("OceniAgenciju/{idAgencije}/{novaOcena}")]
+        public async Task<ActionResult> OceniAgenciju(int idAgencije, int novaOcena){
+            try{
+                var agencija = await Context.Agencije.FindAsync(idAgencije);
+
+                if (agencija== null){
+                    return BadRequest("Ne postoji takva agencija");
+                }
+
+                agencija.BrojOcena ++;
+
+                agencija.Ocena = (agencija.Ocena + novaOcena)/agencija.BrojOcena;
+
+                Context.Agencije.Update(agencija);
+
+                await Context.SaveChangesAsync();
+
+                return Ok(agencija);
+
+                
+
+            }
+            catch(Exception ex){
+                return BadRequest(ex.Message);
+            }
+        }
 
         
+
+
 
         
 

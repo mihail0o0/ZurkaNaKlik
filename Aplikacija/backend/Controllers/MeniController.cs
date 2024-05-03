@@ -22,7 +22,7 @@ namespace backend.Controllers
             _configuration = configuration;
         }
 
-        
+        #region DodavanjeMenija
         //radi
         [HttpPost("DodajMeni/{idKategorije}")]
         public async Task<ActionResult> DodajMeni([FromBody]MeniKeteringa meniketeringa, int idKategorije){
@@ -34,11 +34,11 @@ namespace backend.Controllers
                 }
 
                 var meni = new MeniKeteringa{
-                    Naslov = meniketeringa.Naslov,
+                    Naziv = meniketeringa.Naziv,
                     CenaMenija = meniketeringa.CenaMenija,
                     Slika = meniketeringa.Slika,
                     Opis = meniketeringa.Opis,
-                    StavkeJela = meniketeringa.StavkeJela,
+                    SastavMenija = meniketeringa.SastavMenija,
                     Kategorija = kategorija
 
                 };
@@ -56,7 +56,9 @@ namespace backend.Controllers
 
         }
 
-        
+        #endregion
+
+        #region  PrikaziSveMenije
         [HttpGet("PrikaziSveMenije/{idKategorije}")]
         public async Task<IActionResult> PrikaziSveMenije(int idKategorije){
             try{
@@ -77,12 +79,15 @@ namespace backend.Controllers
 
         }
 
+        #endregion
+
+        #region PrikaziSveMenijeAgencije
         [HttpGet("PrikaziSveMenijeAgencije/{idAgencije}")]
         public async Task<IActionResult> PrikaziSveMenijeAgencije(int idAgencije){
             try{
                 
                 //var svimeniji = await Context.MeniKeteringas.Include(x=> x.Kategorija).Where(x => x.Kategorija).ToListAsync();
-                var svimeniji = await Context.Kategorijas.Include(x=> x.ListaMenija).Include(x => x.Agencija).Where(x =>x.Agencija.Id == idAgencije).Select(x => new {
+                var svimeniji = await Context.Kategorijas.Include(x=> x.ListaMenija).Include(x => x.Agencija).Where(x =>x.Agencija!.Id == idAgencije).Select(x => new {
                     x.ListaMenija
                 })
                 .ToListAsync();
@@ -102,6 +107,9 @@ namespace backend.Controllers
 
         }
 
+        #endregion
+
+        #region PromeniCenu
         //Radi
         [HttpPut("PromeniCenu/{MeniID}/{NovaCena}")]
         public async Task<ActionResult> PromeniCenu(int MeniID, int NovaCena)
@@ -112,7 +120,7 @@ namespace backend.Controllers
 
                 if (meni == null)
                 {
-                    return BadRequest("Pogresno unet meni"); // Vraćamo 404 NotFound ako meni nije pronađen
+                    return BadRequest("Pogresno unet meni"); 
                 }
 
                 meni.CenaMenija = NovaCena; // Ažuriramo cenu menija
@@ -129,6 +137,8 @@ namespace backend.Controllers
             }
         }
 
+        #endregion
+        #region ObrisiMeni
         [HttpDelete("ObrisiMeni/{MeniID}")]
         public async Task<ActionResult> ObrisiMeni (int MeniID){
             try{
@@ -150,33 +160,103 @@ namespace backend.Controllers
 
             
         }
-    }
+
+        #endregion
+      
+        #region PromeniSliku
+       [HttpPut("PromeniSliku/{MeniID}/{NovaSlika}")]
+        public async Task<ActionResult> PromeniSliku(int MeniID, string NovaSlika)
+        {
+            try
+            {
+                var meni = await Context.MeniKeteringas.FindAsync(MeniID);
+
+                if (meni == null)
+                {
+                    return BadRequest("Pogresno unet meni"); 
+                }
+
+                meni.Slika = NovaSlika; 
+
+                //Context.MeniKeteringas.Update(meni); 
+
+                await Context.SaveChangesAsync(); 
+
+                return Ok(meni); 
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message); 
+            }
+        }
+
+        #endregion
+        #region PrommeniOpis
+        [HttpPut("PromeniOpis/{MeniID}/{NoviOpis}")]
+        public async Task<ActionResult> PromeniOpis(int MeniID, string NoviOpis)
+        {
+            try
+            {
+                var meni = await Context.MeniKeteringas.FindAsync(MeniID);
+
+                if (meni == null)
+                {
+                    return BadRequest("Pogresno unet meni"); 
+                }
+
+                meni.Opis = NoviOpis; 
+
+                //Context.MeniKeteringas.Update(meni); 
+
+                await Context.SaveChangesAsync(); 
+
+                return Ok(meni); 
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message); 
+            }
+        }
+        #endregion
+
+
+        #region AzurirajSastavMenija
+        //public required List<string> SastavMenija {get; set; }// pecivo, cevapi
+        [HttpPut("AzurirajSastav/{MeniID}/{StavkaUMeniju}")]
+        public async Task<ActionResult> AzurirajSastav(int MeniID, string StavkaUMeniju)
+        {
+            try{
+                var meni = await Context.MeniKeteringas.FindAsync(MeniID);
+
+                if (meni == null){
+                    return BadRequest("Nema taj meni");
+                }
+
+                if (meni.SastavMenija.Contains(StavkaUMeniju)){
+                    meni.SastavMenija.Remove(StavkaUMeniju);
+                }
+                else {
+                    meni.SastavMenija.Add(StavkaUMeniju);
+                   // Context.MeniKeteringas.Update(meni);
+                }
+
+                
+                await Context.SaveChangesAsync();
+                return Ok(meni);
+            }
+            catch(Exception e){
+                return BadRequest(e.Message);
+            }
         
-
-
-
-
-
-
-       
-
-        //delete
-
         
+        }
 
+        #endregion
+                        
+                    
+                
 
-        //izmena kategorija
-
-        //paziti da od nazad brisem sve prvo menije pa kategoriju
-
-        //
-
-        
-
-        
-
-       
-       
+    }     
 
 
     }

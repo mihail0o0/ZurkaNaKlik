@@ -138,9 +138,6 @@ namespace WebTemplate.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("StavkeJela")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int?>("ZahtevZaKeteringId")
                         .HasColumnType("int");
 
