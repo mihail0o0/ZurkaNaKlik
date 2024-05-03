@@ -69,7 +69,7 @@ namespace backend.Controllers
         }
 
         [HttpDelete("ObrisiOglas/{idOglasa}/{idKorisnik}")]
-        public async Task<ActionResult> RegistrationKorisnik(int idOglasa, int idKorisnik){
+        public async Task<ActionResult> ObrisiOglas(int idOglasa, int idKorisnik){
 
             try{
 
