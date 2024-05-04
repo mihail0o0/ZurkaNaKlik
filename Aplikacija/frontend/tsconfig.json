@@ -19,17 +19,18 @@
     "allowJs": true,
     "forceConsistentCasingInFileNames": true,
     "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
 
     /* Linting */
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    "baseUrl": "./src/",
+    "baseUrl": "./src",
     "paths": {
-      "@/*": ["*"]
+      "@/*": ["*"],
     }
   },
-  "include": ["src/pages"],
+  "include": ["src/**/*", "typings"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

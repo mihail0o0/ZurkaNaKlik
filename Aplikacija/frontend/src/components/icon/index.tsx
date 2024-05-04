@@ -1,20 +1,42 @@
 import React from "react";
 
 type Props = {
-  icon: string;
+  icon?: string;
   iconMargin?: string;
+  fontSize?: string;
+  onClick?: () => void;
+  disabled?: boolean;
+  classes?: string;
 };
 
-const Icon = ({ icon, iconMargin }: Props) => {
+const Icon = ({
+  icon,
+  onClick,
+  fontSize,
+  iconMargin,
+  classes,
+  disabled,
+}: Props) => {
   const iconStyle = {
-    fontSize: "28px",
+    display: "block",
+    fontSize: fontSize ?? "28px",
     marginRight: iconMargin ?? "8px",
   };
 
+  if (!icon) return <></>;
+
   return (
-    <i style={iconStyle} className="material-icons">
-      {icon}
-    </i>
+    <>
+      {!disabled && (
+        <i
+          onClick={onClick}
+          style={iconStyle}
+          className={`material-icons ${classes ?? ""}}`}
+        >
+          {icon}
+        </i>
+      )}
+    </>
   );
 };
 

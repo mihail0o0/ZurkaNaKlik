@@ -5,24 +5,22 @@ import {
   RouterProvider,
 } from "react-router-dom";
 
-import "./App.css";
-
 // layouts
-import RootHeader from "./layouts/RootHeader";
+import RootHeader from "./layouts/root-header";
 
 // pages
-import HomePage from "./pages/HomePage";
-import PageNotFound from "./pages/PageNotFound";
-import UserLoginPage from "./pages/UserLoginPage";
-import TestingPage from "./pages/TestingPage";
+import HomePage from "./home-page";
+import PageNotFound from "./page-not-found";
+import UserLoginPage from "./login/userLogin";
+import TestingPage from "./testing";
+// import TestingPage from "./pages/TestingPage";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<RootHeader />}>
       <Route index element={<HomePage />} />
-      <Route path="login" element={<UserLoginPage />} />
-
       <Route path="testing" element={<TestingPage />} />
+      <Route path="login" element={<UserLoginPage />} />
 
       <Route path="*" element={<PageNotFound />} />
     </Route>
