@@ -20,16 +20,16 @@ namespace backend.Controllers
         }
 
         [HttpPost("RegistrationKorisnik")]
-        public async Task<ActionResult> RegistrationKorisnik([FromBody]RegistrationKorisnik request){
+        public async Task<ActionResult> RegistrationKorisnik([FromBody] RegistrationKorisnik request)
+        {
 
-            try{
+            try
+            {
 
                 if (!ModelState.IsValid)
                 {
                     return BadRequest(ModelState);
                 }
-                 
-                string lozinkaHash = BCrypt.Net.BCrypt.HashPassword(request.Lozinka);
 
                 var postojiEmail = await Context.Korisniks.AnyAsync(k => k.Email == request.Email);
                 if (postojiEmail)
@@ -37,6 +37,7 @@ namespace backend.Controllers
                     return BadRequest("Korisnik sa ovim email-om već postoji.");
                 }
 
+                string lozinkaHash = BCrypt.Net.BCrypt.HashPassword(request.Lozinka);
                 var korisnik = new Korisnik
                 {
                     Ime = request.Ime,
@@ -48,11 +49,10 @@ namespace backend.Controllers
                     Lokacija = request.Lokacija
                 };
 
-
                 await Context.Korisniks.AddAsync(korisnik);
                 await Context.SaveChangesAsync();
 
-                return Ok(new {Context.Korisniks});
+                return Ok(new { Context.Korisniks });
             }
             catch (Exception e)
             {
@@ -61,15 +61,16 @@ namespace backend.Controllers
         }
 
         [HttpPost("RegistrationAgencija")]
-        public async Task<ActionResult> RegistrationAgencija([FromBody]RegistrationAgencija request){
+        public async Task<ActionResult> RegistrationAgencija([FromBody] RegistrationAgencija request)
+        {
 
-            try{
-                
+            try
+            {
+
                 if (!ModelState.IsValid)
                 {
                     return BadRequest(ModelState);
                 }
-                string lozinkaHash = BCrypt.Net.BCrypt.HashPassword(request.Lozinka);
 
                 var postojiEmail = await Context.Korisniks.AnyAsync(k => k.Email == request.Email);
                 if (postojiEmail)
@@ -77,6 +78,7 @@ namespace backend.Controllers
                     return BadRequest("Korisnik sa ovim email-om već postoji.");
                 }
 
+                string lozinkaHash = BCrypt.Net.BCrypt.HashPassword(request.Lozinka);
                 var agencija = new Agencija
                 {
                     Ime = request.Ime,
@@ -87,11 +89,10 @@ namespace backend.Controllers
                     Lokacija = request.Lokacija,
                 };
 
-
                 await Context.Agencije.AddAsync(agencija);
                 await Context.SaveChangesAsync();
 
-                return Ok(new {agencija});
+                return Ok(new { agencija });
             }
             catch (Exception e)
             {
@@ -100,50 +101,53 @@ namespace backend.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult> Login([FromBody]Login request){
+        public async Task<ActionResult> Login([FromBody] Login request)
+        {
 
-            try{
+            try
+            {
                 var loginObject = await Context.KorisnikAgencijas.FirstOrDefaultAsync(p => p.Email == request.Email);
-
-                if (loginObject == null){
+                if (loginObject == null)
+                {
                     return BadRequest("Korisnik ne postoji, ili ste uneli pogresan email");
                 }
 
-                if(!BCrypt.Net.BCrypt.Verify(request.Lozinka, loginObject?.LozinkaHash)){
+                if (!BCrypt.Net.BCrypt.Verify(request.Lozinka, loginObject?.LozinkaHash))
+                {
                     return BadRequest("Pogresna sifra");
                 }
 
-                var login = new LoginObject{
+                var login = new LoginObject
+                {
                     Email = loginObject!.Email,
                     Role = loginObject.Role
                 };
 
                 string token = CreateToken(login!);
 
-                return Ok(new {token});
+                return Ok(new { token });
             }
             catch (Exception e)
             {
                 return BadRequest(e.Message);
             }
         }
-        
-        private string CreateToken(LoginObject loginObject){
+
+        private string CreateToken(LoginObject loginObject)
+        {
 
             List<Claim> claims = new List<Claim>{
                 new Claim(ClaimTypes.Email, loginObject.Email),
                 new Claim(ClaimTypes.Role, loginObject.Role.ToString())
             };
 
-            
+
             DotNetEnv.Env.Load();
             string envTokenKey = Environment.GetEnvironmentVariable("TOKEN")!;
             // Izvlaci podatke iz appsettings.json
             //var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetSection("AppSettings:Token").Value!));
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(envTokenKey));
-             
-
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
 
             var token = new JwtSecurityToken(
