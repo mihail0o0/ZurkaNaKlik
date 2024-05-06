@@ -3,6 +3,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using backend.DTOs;
+using backend.Utilities;
+using Microsoft.AspNetCore.Http;
 
 namespace backend.Controllers
 
@@ -106,10 +108,23 @@ namespace backend.Controllers
 
             try
             {
-                var loginObject = await Context.KorisnikAgencijas.FirstOrDefaultAsync(p => p.Email == request.Email);
+                KorisnikAgencija? loginObject = await Context.KorisnikAgencijas.FirstOrDefaultAsync(p => p.Email == request.Email);
                 if (loginObject == null)
                 {
                     return BadRequest("Korisnik ne postoji, ili ste uneli pogresan email");
+                }
+
+                LoginResult loginResult;
+                if (loginObject.Role == Roles.Korisnik)
+                {
+                    Korisnik? korisnikObject = await Context.Korisniks.FindAsync(loginObject.Id);
+                    loginResult = ObjectCreatorSingleton.Instance.CreateLoginResult(loginObject, korisnikObject, null);
+                }
+                // TODO handle Admin auth
+                else
+                {
+                    Agencija? agencijaObject = await Context.Agencije.FindAsync(loginObject.Id);
+                    loginResult = ObjectCreatorSingleton.Instance.CreateLoginResult(loginObject, null, agencijaObject);
                 }
 
                 if (!BCrypt.Net.BCrypt.Verify(request.Lozinka, loginObject?.LozinkaHash))
@@ -117,15 +132,29 @@ namespace backend.Controllers
                     return BadRequest("Pogresna sifra");
                 }
 
-                var login = new LoginObject
+                LoginObject login = new LoginObject
                 {
-                    Email = loginObject!.Email,
+                    Id = loginObject!.Id,
                     Role = loginObject.Role
                 };
 
-                string token = CreateToken(login!);
+                string accessToken = CreateToken(login!);
 
-                return Ok(new { token });
+                login.CurrentTime = DateTime.Now.AddMinutes(15);
+                string refreshToken = CreateToken(login!);
+
+                // skladisti refresh u bazu
+                // vrati usera i auth token, ref u cookie
+                // Create a new cookie
+
+
+                var cookieOptions = new CookieOptions
+                {
+                    HttpOnly = true
+                };
+
+                Response.Cookies.Append("RefreshToken", refreshToken, cookieOptions);
+                return Ok(new { accessToken, loginResult });
             }
             catch (Exception e)
             {
@@ -137,7 +166,7 @@ namespace backend.Controllers
         {
 
             List<Claim> claims = new List<Claim>{
-                new Claim(ClaimTypes.Email, loginObject.Email),
+                new Claim(ClaimTypes.Sid, loginObject.Id.ToString()),
                 new Claim(ClaimTypes.Role, loginObject.Role.ToString())
             };
 
