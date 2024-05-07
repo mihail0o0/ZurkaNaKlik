@@ -7,18 +7,18 @@ namespace backend.DTOs
 {
     public class LoginResult
     {
-        public int id { get; set; }
-        public required string name { get; set; }
-        public required string email { get; set; }
-        public required string phoneNumber { get; set; }
-        public required Roles role { get; set; }
-        public string? profilePhoto { get; set; }
-        public string? location { get; set; }
-        public string? lastName { get; set; }
-        public string? description { get; set; }
-        public int? grade { get; set; }
-        public int? numberOfGrades { get; set; } = 0;
-        public bool? doesDelivery { get; set; }
-        public int? deliveryPrice { get; set; }
+        public int Id { get; set; }
+        public required string Ime { get; set; }
+        public required string Email { get; set; }
+        public required string BrTel { get; set; }
+        public required Roles Role { get; set; }
+        public string? SlikaProfila { get; set; }
+        public string? Lokacija { get; set; }
+        public string? Prezime { get; set; }
+        public string? Opis { get; set; }
+        public int? Ocena { get; set; }
+        public int? BrojOcena { get; set; } = 0;
+        public bool? MogucnostDostave { get; set; }
+        public int? CenaDostave { get; set; }
     }
 }
