@@ -25,10 +25,8 @@ namespace backend.Controllers
         [HttpPost("RegistrationKorisnik")]
         public async Task<ActionResult> RegistrationKorisnik([FromBody] RegistrationKorisnik request)
         {
-
             try
             {
-
                 if (!ModelState.IsValid)
                 {
                     return BadRequest(ModelState);
@@ -142,7 +140,20 @@ namespace backend.Controllers
                 string accessToken = CreateToken(login!);
 
                 var refreshToken = GenerateRefreshToken();
-                SetRefreshToken(refreshToken); //postavlja cookie
+                var cookieOptions = new CookieOptions
+                {
+                    HttpOnly = true,
+                    Expires = refreshToken.Expires,
+                };
+
+                Response.Cookies.Append("refreshToken", refreshToken.Token, cookieOptions); //postavlja cookie
+
+                loginResult.RefreshToken = refreshToken.Token;
+                loginResult.TokenCreated = refreshToken.Created;
+                loginResult.TokenExpires = refreshToken.Expires;
+
+
+                
 
                 // skladisti refresh u bazu
                 loginObject.RefreshToken = refreshToken.Token;
@@ -155,13 +166,20 @@ namespace backend.Controllers
             }
         }
 
-        private RefreshToken GenerateRefreshToken()
-        {
+        // [HttpPost("RefreshToken")]
+        // public async Task<ActionResult<string>> RefreshToken(){
 
+        //     var refreshToken = Request.Cookies["refreshToken"];
+
+            
+        // }
+
+        private RefreshToken GenerateRefreshToken(){
+            
             var refreshToken = new RefreshToken
             {
                 Token = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64)),
-                Expires = DateTime.Now.AddMonths(1)
+                Expires = DateTime.Now.AddDays(2)
             };
 
             return refreshToken;
@@ -170,13 +188,7 @@ namespace backend.Controllers
         private void SetRefreshToken(RefreshToken newRefreshToken)
         {
 
-            var cookieOptions = new CookieOptions
-            {
-                HttpOnly = true,
-                Expires = newRefreshToken.Expires,
-            };
-
-            Response.Cookies.Append("refreshToken", newRefreshToken.Token, cookieOptions);
+            
         }
 
         private string CreateToken(LoginObject loginObject)
