@@ -6,8 +6,6 @@ namespace backend.Models
     public class Korisnik : KorisnikAgencija
     {
         public required string Prezime { get; set; }
-        [Column("Role")]
-        public override Roles Role { get; set; }
 
         [InverseProperty("VlasnikOglasa")]
 

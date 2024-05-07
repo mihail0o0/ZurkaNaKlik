@@ -10,8 +10,6 @@ namespace backend.Models
     public class Agencija : KorisnikAgencija
     {
         public string? Opis { get; set; }
-        [Column("Role")]
-        public override Roles Role { get; set; }
         [Range(0, 5)]
         public int? Ocena { get; set; }
         public bool MogucnostDostave { get; set; } //true = hoce dostavu ili false nece

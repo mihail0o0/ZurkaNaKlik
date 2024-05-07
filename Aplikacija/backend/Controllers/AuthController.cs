@@ -10,7 +10,7 @@ using System.Security.Cryptography;
 namespace backend.Controllers
 
 {
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class AuthController : ControllerBase
     {
         public ZurkaNaKlikDbContext Context { get; set; }
@@ -151,7 +151,9 @@ namespace backend.Controllers
 
                 await Context.SaveChangesAsync();
 
-                return Ok(new { accessToken, loginResult });
+                
+
+                return Ok(new { accessToken, loginResult, User, loginObject });
             }
             catch (Exception e)
             {
@@ -160,34 +162,34 @@ namespace backend.Controllers
         }
 
         [HttpGet("refreshToken")]
-        public async Task<ActionResult> RefreshToken()
-        {
-            try
-            {
-                string? refreshTokenValue = Request.Cookies["refreshToken"];
+        // public async Task<ActionResult> RefreshToken()
+        // {
+        //     try
+        //     {
+        //         string? refreshTokenValue = Request.Cookies["refreshToken"];
 
-                if (refreshTokenValue == null)
-                {
-                    return BadRequest("Nema refresh tokena");
-                }
+        //         if (refreshTokenValue == null)
+        //         {
+        //             return BadRequest("Nema refresh tokena");
+        //         }
 
-                JwtSecurityTokenHandler jwtHandler = new();
-                JwtSecurityToken decodedRefreshToken = jwtHandler.ReadJwtToken(refreshTokenValue);
+        //         JwtSecurityTokenHandler jwtHandler = new();
+        //         JwtSecurityToken decodedRefreshToken = jwtHandler.ReadJwtToken(refreshTokenValue);
 
-                string str = "";
+        //         string str = "";
 
-                foreach (Claim claim in decodedRefreshToken.Claims)
-                {
-                    str += $"{claim.Type} {claim.Value}";
-                }
+        //         foreach (Claim claim in decodedRefreshToken.Claims)
+        //         {
+        //             str += $"{claim.Type} {claim.Value}";
+        //         }
 
-                return Ok(str);
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
-        }
+        //         return Ok(str);
+        //     }
+        //     catch (Exception e)
+        //     {
+        //         return BadRequest(e.Message);
+        //     }
+        // }
 
         private RefreshToken GenerateRefreshToken()
         {

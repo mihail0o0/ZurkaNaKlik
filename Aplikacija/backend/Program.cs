@@ -5,6 +5,8 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
 using Microsoft.EntityFrameworkCore;
+using backend.Services;
+using backend.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,9 +32,9 @@ builder.Services.AddCors(options =>
 });
 
 builder.Services.AddControllers();
-
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddSwaggerGen(options => {
     options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme {
         In = ParameterLocation.Header,
@@ -54,10 +56,14 @@ builder.Services.AddAuthentication()
     };
 });
 
-// builder.Services.AddIdentityApiEndpoints<IdentityUser>()
-//     .AddEntityFrameworkStores<DbContext>();
+
+
+
+
 
 var app = builder.Build();
+
+//app.UseWhen(context => context.Request.Path.StartsWithSegments("/api"), appBuilder => { app.UseMiddleware<ValidateUserIdMiddleware>(); });
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

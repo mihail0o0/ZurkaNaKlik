@@ -1,17 +1,23 @@
+using System.Security.Claims;
+using backend.Services;
+
 namespace backend.Controllers
 
 {
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     [Authorize(Roles = "Admin")]
     public class AdminController : Controller
     {
         public ZurkaNaKlikDbContext Context { get; set; }
+        private readonly IUserService _userService;
         private readonly IConfiguration _configuration;
 
-        public AdminController(ZurkaNaKlikDbContext context, IConfiguration configuration)
+        public AdminController(ZurkaNaKlikDbContext context, IConfiguration configuration, IUserService userService)
         {
             Context = context;
             _configuration = configuration;
+            
+            _userService = userService;
         }
 
         [HttpGet("Svi korisnici")]
@@ -21,6 +27,8 @@ namespace backend.Controllers
                  
                 var listaKorisnika = await Context.Korisnici.ToListAsync<Korisnik>();
 
+                
+                
                 return Ok(new {listaKorisnika});
             }
             catch (Exception e)
@@ -36,7 +44,16 @@ namespace backend.Controllers
                  
                 var listaAgencija = await Context.Agencije.ToListAsync<Agencija>();
 
-                return Ok(new {listaAgencija});
+                
+                
+
+                
+
+                
+                
+
+
+                return Ok(new { listaAgencija });
             }
             catch (Exception e)
             {

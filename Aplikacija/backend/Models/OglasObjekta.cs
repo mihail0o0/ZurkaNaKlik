@@ -32,6 +32,7 @@ namespace backend.Models
         public List<Korisnik>? ListaKorisnikaOmiljeniOglas { get; set; }
         
         public List<DateTime>? ZauzetiDani { get; set; }
+        [JsonIgnore]
         public Korisnik? VlasnikOglasa { get; set; }
     }
 }
