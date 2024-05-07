@@ -5,6 +5,7 @@ using System.Text;
 using backend.DTOs;
 using backend.Utilities;
 using Microsoft.AspNetCore.Http;
+using System.Security.Cryptography;
 
 namespace backend.Controllers
 
@@ -140,26 +141,47 @@ namespace backend.Controllers
 
                 string accessToken = CreateToken(login!);
 
-                login.CurrentTime = DateTime.Now.AddMinutes(15);
-                string refreshToken = CreateToken(login!);
+                var refreshToken = GenerateRefreshToken();
+                SetRefreshToken(refreshToken); //postavlja cookie
+
+                
+                // login.CurrentTime = DateTime.Now.AddMinutes(15);
+                // string refreshToken = CreateToken(login!);
 
                 // skladisti refresh u bazu
                 // vrati usera i auth token, ref u cookie
                 // Create a new cookie
 
 
-                var cookieOptions = new CookieOptions
-                {
-                    HttpOnly = true
-                };
-
-                Response.Cookies.Append("RefreshToken", refreshToken, cookieOptions);
+                
                 return Ok(new { accessToken, loginResult });
             }
             catch (Exception e)
             {
                 return BadRequest(e.Message);
             }
+        }
+
+        private RefreshToken GenerateRefreshToken(){
+            
+            var refreshToken = new RefreshToken
+            {
+                Token = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64)),
+                Expires = DateTime.Now.AddDays(1)
+            };
+
+            return refreshToken;
+        }
+
+        private void SetRefreshToken(RefreshToken newRefreshToken){
+
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                Expires = newRefreshToken.Expires,
+            };
+
+            Response.Cookies.Append("refreshToken", newRefreshToken.Token, cookieOptions);
         }
 
         private string CreateToken(LoginObject loginObject)

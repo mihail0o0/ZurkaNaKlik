@@ -21,5 +21,10 @@ namespace backend.Models
         public virtual Roles Role { get; set; }
         public string? SlikaProfila { get; set; }
         public required string Lokacija { get; set; }
+
+        public string RefreshToken { get; set; } = string.Empty;
+
+        public DateTime TokenCreated { get; set; }
+        public DateTime TokenExpires { get; set; }
     }
 }
