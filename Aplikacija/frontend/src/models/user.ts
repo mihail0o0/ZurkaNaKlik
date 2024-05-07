@@ -1,12 +1,16 @@
 import { Role } from "./role";
 
-// TODO mozda mi trebaju i ostali property
-export interface User {
+export type User = {
   id: number;
   name: string;
-  surname: string;
   email: string;
   phoneNumber: string;
   role: Role;
-  location: string;
+  location?: string;
+  lastName?: string;
+  description?: string;
+  grade?: number;
+  numberOfGrades?: number;
+  deosDelivery?: boolean;
+  deliveryPrice?: number;
 }

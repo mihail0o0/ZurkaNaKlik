@@ -152,11 +152,7 @@ namespace backend.Controllers
                 loginResult.TokenCreated = refreshToken.Created;
                 loginResult.TokenExpires = refreshToken.Expires;
 
-
-                
-
-                // skladisti refresh u bazu
-                loginObject.RefreshToken = refreshToken.Token;
+                await Context.SaveChangesAsync();
 
                 return Ok(new { accessToken, loginResult });
             }
@@ -166,16 +162,9 @@ namespace backend.Controllers
             }
         }
 
-        // [HttpPost("RefreshToken")]
-        // public async Task<ActionResult<string>> RefreshToken(){
+        private RefreshToken GenerateRefreshToken()
+        {
 
-        //     var refreshToken = Request.Cookies["refreshToken"];
-
-            
-        // }
-
-        private RefreshToken GenerateRefreshToken(){
-            
             var refreshToken = new RefreshToken
             {
                 Token = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64)),
@@ -183,12 +172,6 @@ namespace backend.Controllers
             };
 
             return refreshToken;
-        }
-
-        private void SetRefreshToken(RefreshToken newRefreshToken)
-        {
-
-            
         }
 
         private string CreateToken(LoginObject loginObject)

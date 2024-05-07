@@ -7,6 +7,8 @@ import {
 } from "@reduxjs/toolkit/query/react";
 import { RootState } from "..";
 import * as config from "../../../config.json";
+import { logOut, setToken, setUser } from "../auth";
+import { LoginResponse } from "./endpoints/auth/types";
 // import { setToken } from "../auth";
 // import { logoutThunk, setUser } from "../user";
 // import { LoginResponse } from "./endpoints/auth/types";
@@ -16,7 +18,7 @@ const baseQuery = fetchBaseQuery({
   credentials: "include",
   mode: "cors",
   prepareHeaders: (headers, { getState }) => {
-    const token = (getState() as RootState).authSlice.token;
+    const token = (getState() as RootState).authSlice.accessToken;
     headers.set("authorization", `Bearer ${token}`);
     headers.set("Content-Type", "application/json");
     return headers;
@@ -35,8 +37,19 @@ const baseQueryWithAuth: BaseQueryFn<
     (result.error?.status === 401 || result.error?.status === 403) &&
     !result.meta?.request.url.includes("/login")
   ) {
-    // api.dispatch(logoutThunk());
+    const refreshResult = await baseQuery("/refresh", api, extraOptions);
+    if (refreshResult.data) {
+      const refreshResultData = refreshResult.data as LoginResponse;
+
+      api.dispatch(setToken(refreshResultData.accessToken));
+      api.dispatch(setUser(refreshResultData.user));
+
+      result = await baseQuery(args, api, extraOptions);
+    } else {
+      api.dispatch(logOut());
+    }
   }
+
   return result;
 };
 
