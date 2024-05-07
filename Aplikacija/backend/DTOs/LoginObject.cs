@@ -7,7 +7,8 @@ namespace backend.DTOs
 {
     public class LoginObject
     {
-        public required string Email { get; set; }
-        public virtual Roles Role { get; set; }
+        public required int Id { get; set; }
+        public Roles Role { get; set; }
+        public DateTime? CurrentTime { get; set; }
     }
 }
