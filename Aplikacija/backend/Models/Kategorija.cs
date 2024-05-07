@@ -9,7 +9,7 @@ namespace backend.Models
         public required string Naziv { get; set;} //Slatko/slano/posno
 
     
-
+        [JsonIgnore]
         public List<MeniKeteringa>? ListaMenija { get; set; }  
 
         public Agencija? Agencija  {get; set;}  

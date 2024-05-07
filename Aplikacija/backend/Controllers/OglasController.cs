@@ -19,6 +19,7 @@ namespace backend.Controllers
             _configuration = configuration;
         }
 
+        #region DodajOglas
         [HttpPost("DodajOglas/{idKorisnik}")]
         public async Task<ActionResult> DodajOglas([FromBody]OglasObjekta dodatOglas, int idKorisnik){
 
@@ -67,9 +68,11 @@ namespace backend.Controllers
                 return BadRequest(e.Message);
             }
         }
+        #endregion 
 
+        #region ObrisiOglas
         [HttpDelete("ObrisiOglas/{idOglasa}/{idKorisnik}")]
-        public async Task<ActionResult> RegistrationKorisnik(int idOglasa, int idKorisnik){
+        public async Task<ActionResult> ObrisiOglas(int idOglasa, int idKorisnik){
 
             try{
 
@@ -97,6 +100,9 @@ namespace backend.Controllers
             }
         }
 
+        #endregion
+
+        #region PrikaziOglas
         [HttpGet("PrikaziOglas/{idOglasa}")]
         public async Task<ActionResult> PrikaziOglas(int idOglasa){
 
@@ -119,8 +125,10 @@ namespace backend.Controllers
                 return BadRequest(e.Message);
             }
         }
+        #endregion
 
-
+        //ovde je sve odjednom ne mora svaki properti da ima posebno azuriranje
+        #region IzmeniOglas
         [HttpPut("IzmeniOglas/{idOglasa}")]
         public async Task<ActionResult> IzmeniOglas([FromBody]OglasObjekta o,int idOglasa){
 
@@ -158,6 +166,10 @@ namespace backend.Controllers
                 return BadRequest(e.Message);
             }
         }
+
+        #endregion 
+
+
 
     }
 }

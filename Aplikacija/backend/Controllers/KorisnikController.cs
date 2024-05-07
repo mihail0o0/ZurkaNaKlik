@@ -54,8 +54,77 @@ namespace backend.Controllers
             {
                 return BadRequest(e.Message);
             }
+        } 
+
+        //admin valjda treba da moze da vidi sve korisnike
+
+        [HttpGet("PrikaziSveKorisnike")]
+        public async Task<IActionResult> PrikaziSveKorisnike(){
+            try{
+                var korisnici = await Context.Korisniks.ToListAsync();
+
+                if (korisnici == null){
+                    return BadRequest("Nema korisnika za prikaz");
+                }
+
+                return  Ok(korisnici);
+                
+            }
+             catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
         }
 
+        [HttpGet("GetKorisnik/{idKorisnika}")]
+        public async Task<IActionResult> GetKorisnik(int idKorisnika){
+            try{
+                var korisnik = await Context.Korisniks.Where(x =>x.Id == idKorisnika).FirstAsync();
+
+                if (korisnik == null){
+                    return BadRequest("Nema korisnika za prikaz");
+                }
+
+                return  Ok(korisnik);
+                
+            }
+             catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        //Da vrati sve zakupljene oglase jednog korisnika ako adminu to treba
+
+         [HttpGet("PrikaziSveZakupljeneOglase/{idKorisnika}")]
+        public async Task<IActionResult> PrikaziSveKorisnike(int idKorisnika){
+             try{
+                var korisnik = await Context.Korisniks.Where(x =>x.Id == idKorisnika).FirstAsync();
+
+                if (korisnik == null){
+                    return BadRequest("Nema korisnika za prikaz");
+                }
+
+                var listaoglasa = korisnik.ListaZakupljenihOglasa;
+
+                 if (listaoglasa == null){
+                    return BadRequest("Dati korisnik nema zakupljenih oglasa");
+                }
+
+                return Ok(listaoglasa);
+                
+            }
+             catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+
+
+
+
+       
 
     }
 }
