@@ -23,19 +23,19 @@ namespace backend.Utilities
         {
             LoginResult loginResult = new LoginResult
             {
-                Id = korisnikAgencija.Id,
-                Ime = korisnikAgencija.Ime,
-                Email = korisnikAgencija.Email,
-                BrTel = korisnikAgencija.BrTel,
-                Role = korisnikAgencija.Role,
-                SlikaProfila = korisnikAgencija.SlikaProfila,
-                Lokacija = korisnikAgencija.Lokacija,
-                Prezime = korisnik?.Prezime,
-                Opis = agencija?.Opis,
-                Ocena = agencija?.Ocena,
-                BrojOcena = agencija?.BrojOcena,
-                MogucnostDostave = agencija?.MogucnostDostave,
-                CenaDostave = agencija?.CenaDostave,
+                id = korisnikAgencija.Id,
+                ime = korisnikAgencija.Ime,
+                email = korisnikAgencija.Email,
+                brTel = korisnikAgencija.BrTel,
+                role = korisnikAgencija.Role,
+                slikaProfila = korisnikAgencija.SlikaProfila,
+                lokacija = korisnikAgencija.Lokacija,
+                prezime = korisnik?.Prezime,
+                opis = agencija?.Opis,
+                ocena = agencija?.Ocena,
+                brojOcena = agencija?.BrojOcena,
+                mogucnostDostave = agencija?.MogucnostDostave,
+                cenaDostave = agencija?.CenaDostave,
             };
             return loginResult;
         }

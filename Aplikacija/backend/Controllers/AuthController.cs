@@ -144,16 +144,9 @@ namespace backend.Controllers
                 var refreshToken = GenerateRefreshToken();
                 SetRefreshToken(refreshToken); //postavlja cookie
 
-                
-                // login.CurrentTime = DateTime.Now.AddMinutes(15);
-                // string refreshToken = CreateToken(login!);
-
                 // skladisti refresh u bazu
-                // vrati usera i auth token, ref u cookie
-                // Create a new cookie
+                loginObject.RefreshToken = refreshToken.Token;
 
-
-                
                 return Ok(new { accessToken, loginResult });
             }
             catch (Exception e)
@@ -162,18 +155,20 @@ namespace backend.Controllers
             }
         }
 
-        private RefreshToken GenerateRefreshToken(){
-            
+        private RefreshToken GenerateRefreshToken()
+        {
+
             var refreshToken = new RefreshToken
             {
                 Token = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64)),
-                Expires = DateTime.Now.AddDays(1)
+                Expires = DateTime.Now.AddMonths(1)
             };
 
             return refreshToken;
         }
 
-        private void SetRefreshToken(RefreshToken newRefreshToken){
+        private void SetRefreshToken(RefreshToken newRefreshToken)
+        {
 
             var cookieOptions = new CookieOptions
             {
