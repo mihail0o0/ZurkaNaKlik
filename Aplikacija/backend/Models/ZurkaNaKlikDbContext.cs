@@ -9,7 +9,6 @@ public class ZurkaNaKlikDbContext : DbContext
     public DbSet<ZahtevZaKetering> ZahteviZaKetering { get; set; }
     public DbSet<MeniKeteringa> MenijiKeteringa { get; set; }
     public DbSet<ZakupljeniOglas> ZakupljeniOglasi { get; set; }
-
     public DbSet<Kategorija> Kategorije { get; set; }
 
 

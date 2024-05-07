@@ -28,7 +28,6 @@ namespace backend.Utilities
                 email = korisnikAgencija.Email,
                 phoneNumber = korisnikAgencija.BrTel,
                 role = korisnikAgencija.Role,
-                profilePhoto = korisnikAgencija.SlikaProfila,
                 location = korisnikAgencija.Lokacija,
                 lastName = korisnik?.Prezime,
                 description = agencija?.Opis,

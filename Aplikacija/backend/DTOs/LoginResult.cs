@@ -12,7 +12,6 @@ namespace backend.DTOs
         public required string email { get; set; }
         public required string phoneNumber { get; set; }
         public required Roles role { get; set; }
-        public string? profilePhoto { get; set; }
         public string? location { get; set; }
         public string? lastName { get; set; }
         public string? description { get; set; }
@@ -20,9 +19,5 @@ namespace backend.DTOs
         public int? numberOfGrades { get; set; } = 0;
         public bool? doesDelivery { get; set; }
         public int? deliveryPrice { get; set; }
-        public string RefreshToken { get; set; } = string.Empty;
-
-        public DateTime TokenCreated { get; set; }
-        public DateTime TokenExpires { get; set; }
     }
 }

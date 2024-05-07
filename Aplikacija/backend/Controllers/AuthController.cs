@@ -64,10 +64,8 @@ namespace backend.Controllers
         [HttpPost("RegistrationAgencija")]
         public async Task<ActionResult> RegistrationAgencija([FromBody] RegistrationAgencija request)
         {
-
             try
             {
-
                 if (!ModelState.IsValid)
                 {
                     return BadRequest(ModelState);
@@ -104,7 +102,6 @@ namespace backend.Controllers
         [HttpPost("login")]
         public async Task<ActionResult> Login([FromBody] Login request)
         {
-
             try
             {
                 KorisnikAgencija? loginObject = await Context.KorisniciAgencije.FirstOrDefaultAsync(p => p.Email == request.Email);
@@ -148,13 +145,43 @@ namespace backend.Controllers
 
                 Response.Cookies.Append("refreshToken", refreshToken.Token, cookieOptions); //postavlja cookie
 
-                loginResult.RefreshToken = refreshToken.Token;
-                loginResult.TokenCreated = refreshToken.Created;
-                loginResult.TokenExpires = refreshToken.Expires;
+                loginObject.RefreshToken = refreshToken.Token;
+                loginObject.TokenCreated = refreshToken.Created;
+                loginObject.TokenExpires = refreshToken.Expires;
 
                 await Context.SaveChangesAsync();
 
                 return Ok(new { accessToken, loginResult });
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        [HttpGet("refreshToken")]
+        public async Task<ActionResult> RefreshToken()
+        {
+            try
+            {
+                string? refreshTokenValue = Request.Cookies["refreshToken"];
+
+                if (refreshTokenValue == null)
+                {
+                    return BadRequest("Nema refresh tokena");
+                }
+
+                JwtSecurityTokenHandler jwtHandler = new();
+                JwtSecurityToken decodedRefreshToken = jwtHandler.ReadJwtToken(refreshTokenValue);
+
+                string str = "";
+
+                foreach (Claim claim in decodedRefreshToken.Claims)
+                {
+                    str += $"{claim.Type} {claim.Value}";
+                }
+
+                return Ok(str);
             }
             catch (Exception e)
             {

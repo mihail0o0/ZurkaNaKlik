@@ -21,6 +21,7 @@ namespace backend.Controllers
             _configuration = configuration;
         }
 
+        [Authorize(Roles = "Korisnik")]
         [HttpPut("DodajOmiljeniOglas/{idKorisnika}/{idOglasa}")]
         public async Task<ActionResult> DodajOmiljeniOglas(int idKorisnika, int idOglasa)
         {
