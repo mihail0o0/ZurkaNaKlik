@@ -19,7 +19,7 @@ namespace backend.Controllers
 
             try{
                  
-                var listaKorisnika = await Context.Korisniks.ToListAsync<Korisnik>();
+                var listaKorisnika = await Context.Korisnici.ToListAsync<Korisnik>();
 
                 return Ok(new {listaKorisnika});
             }

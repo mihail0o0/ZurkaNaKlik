@@ -38,7 +38,7 @@ namespace backend.Controllers
         
                 };
 
-                await Context.Kategorijas.AddAsync(k);
+                await Context.Kategorije.AddAsync(k);
                 await Context.SaveChangesAsync();
                 return Ok(k);
                 
@@ -57,7 +57,7 @@ namespace backend.Controllers
         public async Task<IActionResult> VratiKategorije(int idAgencije){
             try{
                 //Agencija? agencija = await Context.Agencije.FindAsync(idAgencije);
-                var kategorije = await Context.Kategorijas.Where(k=>k.Agencija!.Id== idAgencije).ToListAsync();
+                var kategorije = await Context.Kategorije.Where(k=>k.Agencija!.Id== idAgencije).ToListAsync();
 
             if (kategorije == null){
                 return BadRequest("Nema takvih kategorija i agencija zajedno");
@@ -82,7 +82,7 @@ namespace backend.Controllers
         public async Task<IActionResult> PrikaziSveMenije(int idKategorije){
             try{
              
-                var meniji = await Context.MeniKeteringas.Where(k=>k.Kategorija!.Id== idKategorije).ToListAsync();
+                var meniji = await Context.MenijiKeteringa.Where(k=>k.Kategorija!.Id== idKategorije).ToListAsync();
 
             if (meniji == null){
                 return BadRequest("Nema takvih kategorija i agencija zajedno");
@@ -105,7 +105,7 @@ namespace backend.Controllers
        [HttpDelete("ObrisiKategoriju/{KategorijaID}")]
        public async Task<ActionResult> ObrisiKategoriju (int KategorijaID){
         try{
-            var kategorija = await Context.Kategorijas.Include(x => x.ListaMenija).FirstOrDefaultAsync(x =>x.Id==KategorijaID);
+            var kategorija = await Context.Kategorije.Include(x => x.ListaMenija).FirstOrDefaultAsync(x =>x.Id==KategorijaID);
 
 
 
@@ -114,10 +114,10 @@ namespace backend.Controllers
             }
 
             kategorija.ListaMenija!.ForEach(meniji => {
-                Context.MeniKeteringas.Remove(meniji);
+                Context.MenijiKeteringa.Remove(meniji);
             });
 
-            Context.Kategorijas.Remove(kategorija);
+            Context.Kategorije.Remove(kategorija);
             await Context.SaveChangesAsync();
             return  Ok(kategorija);
 

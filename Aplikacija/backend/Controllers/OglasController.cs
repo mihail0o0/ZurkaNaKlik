@@ -25,7 +25,7 @@ namespace backend.Controllers
 
             try{
 
-                Korisnik? korisnik = await Context.Korisniks.FindAsync(idKorisnik);
+                Korisnik? korisnik = await Context.Korisnici.FindAsync(idKorisnik);
                 
                 if (korisnik == null){
                     return BadRequest("Korisnik ne postoji");
@@ -56,12 +56,12 @@ namespace backend.Controllers
                 oglas.VlasnikOglasa = korisnik; // Postavljanje vlasnika oglasa
 
                 // Dodavanje oglasa u DbSet
-                Context.OglasObjektas.Add(oglas);
+                Context.OglasiObjekta.Add(oglas);
 
                 // Čuvanje promena u bazi podataka
                 await Context.SaveChangesAsync();
 
-                return Ok(new {Context.OglasObjektas});
+                return Ok(new {Context.OglasiObjekta});
             }
             catch (Exception e)
             {
@@ -76,23 +76,23 @@ namespace backend.Controllers
 
             try{
 
-                Korisnik? korisnik = await Context.Korisniks.FindAsync(idKorisnik);
+                Korisnik? korisnik = await Context.Korisnici.FindAsync(idKorisnik);
                 
                 if (korisnik == null){
                     return BadRequest("Korisnik ne postoji");
                 }
 
-                OglasObjekta? oglas = await Context.OglasObjektas.FindAsync(idOglasa);
+                OglasObjekta? oglas = await Context.OglasiObjekta.FindAsync(idOglasa);
                 
                 if (oglas == null){
                     return BadRequest("Oglas ne postoji");
                 }
                 
 
-                Context.OglasObjektas.Remove(oglas);
+                Context.OglasiObjekta.Remove(oglas);
                 await Context.SaveChangesAsync();
 
-                return Ok(new {Context.OglasObjektas});
+                return Ok(new {Context.OglasiObjekta});
             }
             catch (Exception e)
             {
@@ -107,7 +107,7 @@ namespace backend.Controllers
         public async Task<ActionResult> PrikaziOglas(int idOglasa){
 
             try{
-                OglasObjekta? oglas = await Context.OglasObjektas
+                OglasObjekta? oglas = await Context.OglasiObjekta
                                     .Include(o => o.VlasnikOglasa)
                                     .FirstOrDefaultAsync(o => o.Id == idOglasa);
                 
@@ -133,7 +133,7 @@ namespace backend.Controllers
         public async Task<ActionResult> IzmeniOglas([FromBody]OglasObjekta o,int idOglasa){
 
             try{
-                OglasObjekta? oglas = await Context.OglasObjektas.FindAsync(idOglasa);
+                OglasObjekta? oglas = await Context.OglasiObjekta.FindAsync(idOglasa);
                 
                 if (oglas == null){
                     return BadRequest("Oglas ne postoji");
@@ -159,7 +159,7 @@ namespace backend.Controllers
                 
                 await Context.SaveChangesAsync();
 
-                return Ok(new {Context.OglasObjektas});
+                return Ok(new {Context.OglasiObjekta});
             }
             catch (Exception e)
             {

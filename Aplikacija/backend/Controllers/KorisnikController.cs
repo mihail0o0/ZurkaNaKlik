@@ -26,14 +26,14 @@ namespace backend.Controllers
         {
             try
             {
-                Korisnik? korisnik = await Context.Korisniks.Include(k => k.ListaOmiljenihOglasaObjekata).FirstOrDefaultAsync(k => k.Id == idKorisnika);
+                Korisnik? korisnik = await Context.Korisnici.Include(k => k.ListaOmiljenihOglasaObjekata).FirstOrDefaultAsync(k => k.Id == idKorisnika);
 
                 if (korisnik == null)
                 {
                     return BadRequest("Korisnik ne postoji");
                 }
 
-                OglasObjekta? oglas = await Context.OglasObjektas.FirstOrDefaultAsync(o => o.Id == idOglasa);
+                OglasObjekta? oglas = await Context.OglasiObjekta.FirstOrDefaultAsync(o => o.Id == idOglasa);
 
                 if (oglas == null)
                 {
@@ -61,7 +61,7 @@ namespace backend.Controllers
         [HttpGet("PrikaziSveKorisnike")]
         public async Task<IActionResult> PrikaziSveKorisnike(){
             try{
-                var korisnici = await Context.Korisniks.ToListAsync();
+                var korisnici = await Context.Korisnici.ToListAsync();
 
                 if (korisnici == null){
                     return BadRequest("Nema korisnika za prikaz");
@@ -79,7 +79,7 @@ namespace backend.Controllers
         [HttpGet("GetKorisnik/{idKorisnika}")]
         public async Task<IActionResult> GetKorisnik(int idKorisnika){
             try{
-                var korisnik = await Context.Korisniks.Where(x =>x.Id == idKorisnika).FirstAsync();
+                var korisnik = await Context.Korisnici.Where(x =>x.Id == idKorisnika).FirstAsync();
 
                 if (korisnik == null){
                     return BadRequest("Nema korisnika za prikaz");
@@ -99,7 +99,7 @@ namespace backend.Controllers
          [HttpGet("PrikaziSveZakupljeneOglase/{idKorisnika}")]
         public async Task<IActionResult> PrikaziSveKorisnike(int idKorisnika){
              try{
-                var korisnik = await Context.Korisniks.Where(x =>x.Id == idKorisnika).FirstAsync();
+                var korisnik = await Context.Korisnici.Where(x =>x.Id == idKorisnika).FirstAsync();
 
                 if (korisnik == null){
                     return BadRequest("Nema korisnika za prikaz");

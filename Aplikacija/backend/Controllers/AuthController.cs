@@ -33,7 +33,7 @@ namespace backend.Controllers
                     return BadRequest(ModelState);
                 }
 
-                var postojiEmail = await Context.Korisniks.AnyAsync(k => k.Email == request.Email);
+                var postojiEmail = await Context.Korisnici.AnyAsync(k => k.Email == request.Email);
                 if (postojiEmail)
                 {
                     return BadRequest("Korisnik sa ovim email-om već postoji.");
@@ -51,10 +51,10 @@ namespace backend.Controllers
                     Lokacija = request.Lokacija
                 };
 
-                await Context.Korisniks.AddAsync(korisnik);
+                await Context.Korisnici.AddAsync(korisnik);
                 await Context.SaveChangesAsync();
 
-                return Ok(new { Context.Korisniks });
+                return Ok(new { Context.Korisnici });
             }
             catch (Exception e)
             {
@@ -74,7 +74,7 @@ namespace backend.Controllers
                     return BadRequest(ModelState);
                 }
 
-                var postojiEmail = await Context.Korisniks.AnyAsync(k => k.Email == request.Email);
+                var postojiEmail = await Context.Korisnici.AnyAsync(k => k.Email == request.Email);
                 if (postojiEmail)
                 {
                     return BadRequest("Korisnik sa ovim email-om već postoji.");
@@ -108,7 +108,7 @@ namespace backend.Controllers
 
             try
             {
-                KorisnikAgencija? loginObject = await Context.KorisnikAgencijas.FirstOrDefaultAsync(p => p.Email == request.Email);
+                KorisnikAgencija? loginObject = await Context.KorisniciAgencije.FirstOrDefaultAsync(p => p.Email == request.Email);
                 if (loginObject == null)
                 {
                     return BadRequest("Korisnik ne postoji, ili ste uneli pogresan email");
@@ -117,7 +117,7 @@ namespace backend.Controllers
                 LoginResult loginResult;
                 if (loginObject.Role == Roles.Korisnik)
                 {
-                    Korisnik? korisnikObject = await Context.Korisniks.FindAsync(loginObject.Id);
+                    Korisnik? korisnikObject = await Context.Korisnici.FindAsync(loginObject.Id);
                     loginResult = ObjectCreatorSingleton.Instance.CreateLoginResult(loginObject, korisnikObject, null);
                 }
                 // TODO handle Admin auth

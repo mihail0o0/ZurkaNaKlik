@@ -28,7 +28,7 @@ namespace backend.Controllers
         public async Task<ActionResult> DodajMeni([FromBody]MeniKeteringa meniketeringa, int idKategorije){
             try{
 
-                Kategorija? kategorija = await Context.Kategorijas.Include(x => x.Agencija).Where(x =>x.Id == idKategorije).SingleOrDefaultAsync();
+                Kategorija? kategorija = await Context.Kategorije.Include(x => x.Agencija).Where(x =>x.Id == idKategorije).SingleOrDefaultAsync();
                 if (kategorija == null){
                     return BadRequest("Ne postoji kategorija sa tim id-jem");
                 }
@@ -43,7 +43,7 @@ namespace backend.Controllers
 
                 };
 
-                await Context.MeniKeteringas.AddAsync(meni);
+                await Context.MenijiKeteringa.AddAsync(meni);
                 await Context.SaveChangesAsync();
                 return Ok(meni);
                 
@@ -63,7 +63,7 @@ namespace backend.Controllers
         public async Task<IActionResult> PrikaziSveMenije(int idKategorije){
             try{
              
-                var meniji = await Context.MeniKeteringas.Where(k=>k.Kategorija!.Id== idKategorije).ToListAsync();
+                var meniji = await Context.MenijiKeteringa.Where(k=>k.Kategorija!.Id== idKategorije).ToListAsync();
 
             if (meniji == null){
                 return BadRequest("Nema takvih kategorija i agencija zajedno");
@@ -86,8 +86,8 @@ namespace backend.Controllers
         public async Task<IActionResult> PrikaziSveMenijeAgencije(int idAgencije){
             try{
                 
-                //var svimeniji = await Context.MeniKeteringas.Include(x=> x.Kategorija).Where(x => x.Kategorija).ToListAsync();
-                var svimeniji = await Context.Kategorijas.Include(x=> x.ListaMenija).Include(x => x.Agencija).Where(x =>x.Agencija!.Id == idAgencije).Select(x => new {
+                //var svimeniji = await Context.MenijiKeteringa.Include(x=> x.Kategorija).Where(x => x.Kategorija).ToListAsync();
+                var svimeniji = await Context.Kategorije.Include(x=> x.ListaMenija).Include(x => x.Agencija).Where(x =>x.Agencija!.Id == idAgencije).Select(x => new {
                     x.ListaMenija
                 })
                 .ToListAsync();
@@ -116,7 +116,7 @@ namespace backend.Controllers
         {
             try
             {
-                var meni = await Context.MeniKeteringas.FindAsync(MeniID);
+                var meni = await Context.MenijiKeteringa.FindAsync(MeniID);
 
                 if (meni == null)
                 {
@@ -125,7 +125,7 @@ namespace backend.Controllers
 
                 meni.CenaMenija = NovaCena; // Ažuriramo cenu menija
 
-                Context.MeniKeteringas.Update(meni); // Označavamo meni kao ažuriran
+                Context.MenijiKeteringa.Update(meni); // Označavamo meni kao ažuriran
 
                 await Context.SaveChangesAsync(); // Čuvamo promene u bazi podataka
 
@@ -142,12 +142,12 @@ namespace backend.Controllers
         [HttpDelete("ObrisiMeni/{MeniID}")]
         public async Task<ActionResult> ObrisiMeni (int MeniID){
             try{
-                var meni = await Context.MeniKeteringas.FindAsync(MeniID);
+                var meni = await Context.MenijiKeteringa.FindAsync(MeniID);
                 if (meni == null){
                     return BadRequest("Pogresno unet meni");
                 }
 
-                Context.MeniKeteringas.Remove(meni);
+                Context.MenijiKeteringa.Remove(meni);
                 await Context.SaveChangesAsync(); 
 
                 return Ok("Obrisan je");
@@ -169,7 +169,7 @@ namespace backend.Controllers
         {
             try
             {
-                var meni = await Context.MeniKeteringas.FindAsync(MeniID);
+                var meni = await Context.MenijiKeteringa.FindAsync(MeniID);
 
                 if (meni == null)
                 {
@@ -178,7 +178,7 @@ namespace backend.Controllers
 
                 meni.Slika = NovaSlika; 
 
-                //Context.MeniKeteringas.Update(meni); 
+                //Context.MenijiKeteringa.Update(meni); 
 
                 await Context.SaveChangesAsync(); 
 
@@ -197,7 +197,7 @@ namespace backend.Controllers
         {
             try
             {
-                var meni = await Context.MeniKeteringas.FindAsync(MeniID);
+                var meni = await Context.MenijiKeteringa.FindAsync(MeniID);
 
                 if (meni == null)
                 {
@@ -206,7 +206,7 @@ namespace backend.Controllers
 
                 meni.Opis = NoviOpis; 
 
-                //Context.MeniKeteringas.Update(meni); 
+                //Context.MenijiKeteringa.Update(meni); 
 
                 await Context.SaveChangesAsync(); 
 
@@ -226,7 +226,7 @@ namespace backend.Controllers
         public async Task<ActionResult> AzurirajSastav(int MeniID, string StavkaUMeniju)
         {
             try{
-                var meni = await Context.MeniKeteringas.FindAsync(MeniID);
+                var meni = await Context.MenijiKeteringa.FindAsync(MeniID);
 
                 if (meni == null){
                     return BadRequest("Nema taj meni");
@@ -237,7 +237,7 @@ namespace backend.Controllers
                 }
                 else {
                     meni.SastavMenija.Add(StavkaUMeniju);
-                   // Context.MeniKeteringas.Update(meni);
+                   // Context.MenijiKeteringa.Update(meni);
                 }
 
                 
