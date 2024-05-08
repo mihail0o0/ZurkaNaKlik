@@ -5,6 +5,7 @@ namespace backend.Models
 {
     public class Korisnik : KorisnikAgencija
     {
+
         public required string Prezime { get; set; }
 
         [InverseProperty("VlasnikOglasa")]

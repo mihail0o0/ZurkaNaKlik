@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using backend.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -10,23 +11,29 @@ namespace backend.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize(Roles = "Korisnik")]
     public class KorisnikController : Controller
     {
+        private readonly IUserService _userService;
         public ZurkaNaKlikDbContext Context { get; set; }
         private readonly IConfiguration _configuration;
 
-        public KorisnikController(ZurkaNaKlikDbContext context, IConfiguration configuration)
+        public KorisnikController(ZurkaNaKlikDbContext context, IConfiguration configuration, IUserService userService)
         {
             Context = context;
             _configuration = configuration;
+            _userService = userService;
         }
 
-        [Authorize(Roles = "Korisnik")]
         [HttpPut("DodajOmiljeniOglas/{idKorisnika}/{idOglasa}")]
         public async Task<ActionResult> DodajOmiljeniOglas(int idKorisnika, int idOglasa)
         {
             try
             {
+                var currId = _userService.GetMyId();
+                if(currId != idKorisnika.ToString()){
+                    return BadRequest("Nisi ti taj bebo");
+                }
                 Korisnik? korisnik = await Context.Korisnici.Include(k => k.ListaOmiljenihOglasaObjekata).FirstOrDefaultAsync(k => k.Id == idKorisnika);
 
                 if (korisnik == null)
@@ -48,8 +55,9 @@ namespace backend.Controllers
 
                 korisnik.ListaOmiljenihOglasaObjekata?.Add(oglas);
                 await Context.SaveChangesAsync();
+                
 
-                return Ok(korisnik.ListaOmiljenihOglasaObjekata);
+                return Ok(new { korisnik.ListaOmiljenihOglasaObjekata, currId });
             }
             catch (Exception e)
             {

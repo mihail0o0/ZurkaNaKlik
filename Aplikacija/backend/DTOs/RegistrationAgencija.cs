@@ -10,7 +10,6 @@ namespace backend.Models
         public required string Email { get; set; }
         public required string BrTel { get; set; }
         public required string Lozinka { get; set; }
-        [Column("Role")]
         public Roles Role { get; set; } = Roles.Agencija;
         public required string Lokacija { get; set; }
         

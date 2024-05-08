@@ -12,8 +12,8 @@ using WebTemplate.Models;
 namespace WebTemplate.Migrations
 {
     [DbContext(typeof(ZurkaNaKlikDbContext))]
-    [Migration("20240429163026_v2")]
-    partial class v2
+    [Migration("20240508114604_v1")]
+    partial class v1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -59,7 +59,7 @@ namespace WebTemplate.Migrations
 
                     b.HasIndex("AgencijaId");
 
-                    b.ToTable("Kategorijas");
+                    b.ToTable("Kategorije");
                 });
 
             modelBuilder.Entity("backend.Models.KorisnikAgencija", b =>
@@ -95,6 +95,10 @@ namespace WebTemplate.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("RefreshToken")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("Role")
                         .HasColumnType("int")
                         .HasColumnName("Role");
@@ -102,9 +106,15 @@ namespace WebTemplate.Migrations
                     b.Property<string>("SlikaProfila")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime>("TokenCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("TokenExpires")
+                        .HasColumnType("datetime2");
+
                     b.HasKey("Id");
 
-                    b.ToTable("KorisnikAgencijas");
+                    b.ToTable("KorisniciAgencije");
 
                     b.HasDiscriminator<string>("Discriminator").HasValue("KorisnikAgencija");
 
@@ -150,7 +160,7 @@ namespace WebTemplate.Migrations
 
                     b.HasIndex("ZahtevZaKeteringId");
 
-                    b.ToTable("MeniKeteringas");
+                    b.ToTable("MenijiKeteringa");
                 });
 
             modelBuilder.Entity("backend.Models.OglasObjekta", b =>
@@ -231,7 +241,7 @@ namespace WebTemplate.Migrations
 
                     b.HasIndex("VlasnikOglasaId");
 
-                    b.ToTable("OglasObjektas");
+                    b.ToTable("OglasiObjekta");
                 });
 
             modelBuilder.Entity("backend.Models.ZahtevZaKetering", b =>
@@ -253,7 +263,7 @@ namespace WebTemplate.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ZahtevZaKeterings");
+                    b.ToTable("ZahteviZaKetering");
                 });
 
             modelBuilder.Entity("backend.Models.ZakupljeniOglas", b =>

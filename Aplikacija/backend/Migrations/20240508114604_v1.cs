@@ -6,13 +6,13 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace WebTemplate.Migrations
 {
     /// <inheritdoc />
-    public partial class V1 : Migration
+    public partial class v1 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "KorisnikAgencijas",
+                name: "KorisniciAgencije",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -24,6 +24,9 @@ namespace WebTemplate.Migrations
                     Role = table.Column<int>(type: "int", nullable: false),
                     SlikaProfila = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Lokacija = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    RefreshToken = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    TokenCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    TokenExpires = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Discriminator = table.Column<string>(type: "nvarchar(21)", maxLength: 21, nullable: false),
                     Opis = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Ocena = table.Column<int>(type: "int", nullable: true),
@@ -34,11 +37,11 @@ namespace WebTemplate.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_KorisnikAgencijas", x => x.Id);
+                    table.PrimaryKey("PK_KorisniciAgencije", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "ZahtevZaKeterings",
+                name: "ZahteviZaKetering",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -49,11 +52,11 @@ namespace WebTemplate.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ZahtevZaKeterings", x => x.Id);
+                    table.PrimaryKey("PK_ZahteviZaKetering", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Kategorijas",
+                name: "Kategorije",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -63,16 +66,16 @@ namespace WebTemplate.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Kategorijas", x => x.Id);
+                    table.PrimaryKey("PK_Kategorije", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Kategorijas_KorisnikAgencijas_AgencijaId",
+                        name: "FK_Kategorije_KorisniciAgencije_AgencijaId",
                         column: x => x.AgencijaId,
-                        principalTable: "KorisnikAgencijas",
+                        principalTable: "KorisniciAgencije",
                         principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
-                name: "OglasObjektas",
+                name: "OglasiObjekta",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -99,16 +102,16 @@ namespace WebTemplate.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_OglasObjektas", x => x.Id);
+                    table.PrimaryKey("PK_OglasiObjekta", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_OglasObjektas_KorisnikAgencijas_VlasnikOglasaId",
+                        name: "FK_OglasiObjekta_KorisniciAgencije_VlasnikOglasaId",
                         column: x => x.VlasnikOglasaId,
-                        principalTable: "KorisnikAgencijas",
+                        principalTable: "KorisniciAgencije",
                         principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
-                name: "MeniKeteringas",
+                name: "MenijiKeteringa",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -123,16 +126,16 @@ namespace WebTemplate.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_MeniKeteringas", x => x.Id);
+                    table.PrimaryKey("PK_MenijiKeteringa", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_MeniKeteringas_Kategorijas_KategorijaId",
+                        name: "FK_MenijiKeteringa_Kategorije_KategorijaId",
                         column: x => x.KategorijaId,
-                        principalTable: "Kategorijas",
+                        principalTable: "Kategorije",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_MeniKeteringas_ZahtevZaKeterings_ZahtevZaKeteringId",
+                        name: "FK_MenijiKeteringa_ZahteviZaKetering_ZahtevZaKeteringId",
                         column: x => x.ZahtevZaKeteringId,
-                        principalTable: "ZahtevZaKeterings",
+                        principalTable: "ZahteviZaKetering",
                         principalColumn: "Id");
                 });
 
@@ -147,15 +150,15 @@ namespace WebTemplate.Migrations
                 {
                     table.PrimaryKey("PK_KorisnikOglasObjekta", x => new { x.ListaKorisnikaOmiljeniOglasId, x.ListaOmiljenihOglasaObjekataId });
                     table.ForeignKey(
-                        name: "FK_KorisnikOglasObjekta_KorisnikAgencijas_ListaKorisnikaOmiljeniOglasId",
+                        name: "FK_KorisnikOglasObjekta_KorisniciAgencije_ListaKorisnikaOmiljeniOglasId",
                         column: x => x.ListaKorisnikaOmiljeniOglasId,
-                        principalTable: "KorisnikAgencijas",
+                        principalTable: "KorisniciAgencije",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_KorisnikOglasObjekta_OglasObjektas_ListaOmiljenihOglasaObjekataId",
+                        name: "FK_KorisnikOglasObjekta_OglasiObjekta_ListaOmiljenihOglasaObjekataId",
                         column: x => x.ListaOmiljenihOglasaObjekataId,
-                        principalTable: "OglasObjektas",
+                        principalTable: "OglasiObjekta",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -177,27 +180,27 @@ namespace WebTemplate.Migrations
                 {
                     table.PrimaryKey("PK_ZakupljeniOglasi", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ZakupljeniOglasi_KorisnikAgencijas_KorisnikId",
+                        name: "FK_ZakupljeniOglasi_KorisniciAgencije_KorisnikId",
                         column: x => x.KorisnikId,
-                        principalTable: "KorisnikAgencijas",
+                        principalTable: "KorisniciAgencije",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ZakupljeniOglasi_OglasObjektas_OglasId",
+                        name: "FK_ZakupljeniOglasi_OglasiObjekta_OglasId",
                         column: x => x.OglasId,
-                        principalTable: "OglasObjektas",
+                        principalTable: "OglasiObjekta",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ZakupljeniOglasi_ZahtevZaKeterings_ZakupljeniOglas",
+                        name: "FK_ZakupljeniOglasi_ZahteviZaKetering_ZakupljeniOglas",
                         column: x => x.ZakupljeniOglas,
-                        principalTable: "ZahtevZaKeterings",
+                        principalTable: "ZahteviZaKetering",
                         principalColumn: "Id");
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Kategorijas_AgencijaId",
-                table: "Kategorijas",
+                name: "IX_Kategorije_AgencijaId",
+                table: "Kategorije",
                 column: "AgencijaId");
 
             migrationBuilder.CreateIndex(
@@ -206,18 +209,18 @@ namespace WebTemplate.Migrations
                 column: "ListaOmiljenihOglasaObjekataId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_MeniKeteringas_KategorijaId",
-                table: "MeniKeteringas",
+                name: "IX_MenijiKeteringa_KategorijaId",
+                table: "MenijiKeteringa",
                 column: "KategorijaId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_MeniKeteringas_ZahtevZaKeteringId",
-                table: "MeniKeteringas",
+                name: "IX_MenijiKeteringa_ZahtevZaKeteringId",
+                table: "MenijiKeteringa",
                 column: "ZahtevZaKeteringId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_OglasObjektas_VlasnikOglasaId",
-                table: "OglasObjektas",
+                name: "IX_OglasiObjekta_VlasnikOglasaId",
+                table: "OglasiObjekta",
                 column: "VlasnikOglasaId");
 
             migrationBuilder.CreateIndex(
@@ -245,22 +248,22 @@ namespace WebTemplate.Migrations
                 name: "KorisnikOglasObjekta");
 
             migrationBuilder.DropTable(
-                name: "MeniKeteringas");
+                name: "MenijiKeteringa");
 
             migrationBuilder.DropTable(
                 name: "ZakupljeniOglasi");
 
             migrationBuilder.DropTable(
-                name: "Kategorijas");
+                name: "Kategorije");
 
             migrationBuilder.DropTable(
-                name: "OglasObjektas");
+                name: "OglasiObjekta");
 
             migrationBuilder.DropTable(
-                name: "ZahtevZaKeterings");
+                name: "ZahteviZaKetering");
 
             migrationBuilder.DropTable(
-                name: "KorisnikAgencijas");
+                name: "KorisniciAgencije");
         }
     }
 }

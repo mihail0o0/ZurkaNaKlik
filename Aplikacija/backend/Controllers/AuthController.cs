@@ -6,20 +6,24 @@ using backend.DTOs;
 using backend.Utilities;
 using Microsoft.AspNetCore.Http;
 using System.Security.Cryptography;
+using backend.Services;
+using Sprache;
 
 namespace backend.Controllers
 
 {
+    
     [Route("api/[controller]")]
     public class AuthController : ControllerBase
     {
         public ZurkaNaKlikDbContext Context { get; set; }
+        private readonly IUserService _userService;
         private readonly IConfiguration _configuration;
-
-        public AuthController(ZurkaNaKlikDbContext context, IConfiguration configuration)
+        public AuthController(ZurkaNaKlikDbContext context, IConfiguration configuration, IUserService userService)
         {
             Context = context;
             _configuration = configuration;
+            _userService = userService;
         }
 
         [HttpPost("RegistrationKorisnik")]
@@ -39,6 +43,9 @@ namespace backend.Controllers
                 }
 
                 string lozinkaHash = BCrypt.Net.BCrypt.HashPassword(request.Lozinka);
+
+                Roles rolic = request.Role;
+
                 var korisnik = new Korisnik
                 {
                     Ime = request.Ime,
@@ -46,7 +53,7 @@ namespace backend.Controllers
                     Email = request.Email,
                     BrTel = request.BrTel,
                     LozinkaHash = lozinkaHash,
-                    Role = request.Role,
+                    Role = Roles.Korisnik,
                     Lokacija = request.Lokacija
                 };
 
@@ -128,13 +135,13 @@ namespace backend.Controllers
                     return BadRequest("Pogresna sifra");
                 }
 
-                LoginObject login = new LoginObject
-                {
-                    Id = loginObject!.Id,
-                    Role = loginObject.Role
-                };
+                // LoginObject login = new LoginObject
+                // {
+                //     Id = loginObject!.Id,
+                //     Role = loginObject.Role
+                // };
 
-                string accessToken = CreateToken(login!);
+                string accessToken = CreateToken(loginObject!);
 
                 var refreshToken = GenerateRefreshToken();
                 var cookieOptions = new CookieOptions
@@ -145,9 +152,9 @@ namespace backend.Controllers
 
                 Response.Cookies.Append("refreshToken", refreshToken.Token, cookieOptions); //postavlja cookie
 
-                loginObject.RefreshToken = refreshToken.Token;
-                loginObject.TokenCreated = refreshToken.Created;
-                loginObject.TokenExpires = refreshToken.Expires;
+                loginObject!.RefreshToken = refreshToken.Token;
+                loginObject!.TokenCreated = refreshToken.Created;
+                loginObject!.TokenExpires = refreshToken.Expires;
 
                 await Context.SaveChangesAsync();
 
@@ -161,35 +168,62 @@ namespace backend.Controllers
             }
         }
 
-        [HttpGet("refreshToken")]
-        // public async Task<ActionResult> RefreshToken()
-        // {
-        //     try
-        //     {
-        //         string? refreshTokenValue = Request.Cookies["refreshToken"];
 
-        //         if (refreshTokenValue == null)
-        //         {
-        //             return BadRequest("Nema refresh tokena");
-        //         }
 
-        //         JwtSecurityTokenHandler jwtHandler = new();
-        //         JwtSecurityToken decodedRefreshToken = jwtHandler.ReadJwtToken(refreshTokenValue);
+        //usera vec imas u cookie samo g auzmi odatle
 
-        //         string str = "";
 
-        //         foreach (Claim claim in decodedRefreshToken.Claims)
-        //         {
-        //             str += $"{claim.Type} {claim.Value}";
-        //         }
+        [Authorize]
+        [HttpGet("RefreshToken")]
+        public async Task<ActionResult> RefreshToken()
+        {
+            try
+            {
+                string? refreshTokenValue = Request.Cookies["refreshToken"];
 
-        //         return Ok(str);
-        //     }
-        //     catch (Exception e)
-        //     {
-        //         return BadRequest(e.Message);
-        //     }
-        // }
+                if (refreshTokenValue == null)
+                {
+                    return BadRequest("Nema refresh tokena");
+                }
+
+                int userId = int.Parse(_userService.GetMyId());
+                KorisnikAgencija? user = await Context.KorisniciAgencije.FirstOrDefaultAsync(k => k.Id == userId);
+
+                if(!user.RefreshToken.Equals(refreshTokenValue)){
+                    return Unauthorized("Invalid Refresh Token");
+                }
+                else if(user.TokenExpires < DateTime.Now){
+                    return Unauthorized("Token expired.");
+                }
+
+                string token = CreateToken(user);
+                var newRefreshToken = GenerateRefreshToken();
+
+                var cookieOptions = new CookieOptions
+                {
+                    HttpOnly = true,
+                    Expires = newRefreshToken.Expires,
+                };
+
+                Response.Cookies.Append("refreshToken", newRefreshToken.Token, cookieOptions); //postavlja cookie
+
+                user!.RefreshToken = newRefreshToken.Token;
+                user!.TokenCreated = newRefreshToken.Created;
+                user!.TokenExpires = newRefreshToken.Expires;
+
+                
+                await Context.SaveChangesAsync();
+                
+
+                
+
+                return Ok(new { token });
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
 
         private RefreshToken GenerateRefreshToken()
         {
@@ -203,7 +237,7 @@ namespace backend.Controllers
             return refreshToken;
         }
 
-        private string CreateToken(LoginObject loginObject)
+        private string CreateToken(KorisnikAgencija loginObject)
         {
 
             List<Claim> claims = new List<Claim>{

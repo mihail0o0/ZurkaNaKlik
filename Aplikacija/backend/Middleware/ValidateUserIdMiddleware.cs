@@ -25,7 +25,7 @@ namespace backend.Middleware
             if (userIdFromToken != idKorisnika)
             {
                 context.Response.StatusCode = 403; // Forbidden
-                await context.Response.WriteAsync("You do not have permission to access this resource.");
+                await context.Response.WriteAsync("Nisi ti taj pravi");
                 return;
             }
 

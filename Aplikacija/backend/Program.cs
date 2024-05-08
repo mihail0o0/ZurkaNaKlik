@@ -34,7 +34,9 @@ builder.Services.AddCors(options =>
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddHttpContextAccessor();
+
 builder.Services.AddScoped<IUserService, UserService>();
+
 builder.Services.AddSwaggerGen(options => {
     options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme {
         In = ParameterLocation.Header,
@@ -63,6 +65,7 @@ builder.Services.AddAuthentication()
 
 var app = builder.Build();
 
+//app.UseMiddleware<ValidateUserIdMiddleware>();
 //app.UseWhen(context => context.Request.Path.StartsWithSegments("/api"), appBuilder => { app.UseMiddleware<ValidateUserIdMiddleware>(); });
 
 // Configure the HTTP request pipeline.
