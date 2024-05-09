@@ -66,8 +66,6 @@ builder.Services.AddAuthentication()
 
 var app = builder.Build();
 
-//app.UseMiddleware<ValidateUserIdMiddleware>();
-//app.UseWhen(context => context.Request.Path.StartsWithSegments("/api"), appBuilder => { app.UseMiddleware<ValidateUserIdMiddleware>(); });
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -83,5 +81,12 @@ if (app.Environment.IsDevelopment())
 app.UseCors("CORS");
 app.UseHttpsRedirection();
 app.UseAuthorization();
+
+//app.UseMiddleware<ValidateUserIdMiddleware>();
+app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/Korisnik"), appBuilder =>
+{
+    appBuilder.UseMiddleware<ValidateUserIdMiddleware>();
+});
+
 app.MapControllers();
 app.Run();

@@ -189,7 +189,7 @@ namespace backend.Controllers
 
                 if (user == null)
                 {
-                    return BadRequest("Ne postoji korisnik sa tim tokenom u bazi");
+                    return Unauthorized("Ne postoji korisnik sa tim tokenom u bazi");
                 }
 
                 if (!user.RefreshToken.Equals(refreshTokenValue))
