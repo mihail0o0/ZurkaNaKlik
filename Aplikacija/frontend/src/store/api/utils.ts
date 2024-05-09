@@ -6,12 +6,13 @@ export const providesList = <
   resultsWithIds: R | undefined,
   customTagId?: string
 ) => {
+  const tagId = customTagId ?? `LIST${tagType.toUpperCase()}`;
   return resultsWithIds
     ? [
         ...resultsWithIds.map(({ id }) => ({ type: tagType, id })),
-        { type: tagType, id: customTagId ?? `LIST${tagType.toUpperCase()}` },
+        { type: tagType, id: tagId },
       ]
-    : [{ type: tagType, id: customTagId ?? `LIST${tagType.toUpperCase()}` }];
+    : [{ type: tagType, id: tagId }];
 };
 
 export const providesSingle = <R extends string | number, T extends string>(
@@ -19,10 +20,11 @@ export const providesSingle = <R extends string | number, T extends string>(
   resultId?: R | undefined,
   customTagId?: string
 ) => {
+  const tagId = customTagId ?? `LIST${tagType.toUpperCase()}`;
   return resultId
     ? [
         { type: tagType, id: resultId },
-        { type: tagType, id: customTagId ?? `LIST${tagType.toUpperCase()}` },
+        { type: tagType, id: tagId },
       ]
-    : [{ type: tagType, id: customTagId ?? `LIST${tagType.toUpperCase()}` }];
+    : [{ type: tagType, id: tagId }];
 };

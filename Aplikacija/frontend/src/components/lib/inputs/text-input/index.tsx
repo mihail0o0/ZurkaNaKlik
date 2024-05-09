@@ -1,4 +1,4 @@
-import Icon from "@/components/icon";
+import Icon from "@/components/lib/icon";
 import { useRef, useState } from "react";
 
 type Props = {

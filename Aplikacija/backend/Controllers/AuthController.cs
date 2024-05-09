@@ -12,7 +12,7 @@ using Sprache;
 namespace backend.Controllers
 
 {
-    
+
     [Route("api/[controller]")]
     public class AuthController : ControllerBase
     {
@@ -111,7 +111,7 @@ namespace backend.Controllers
         {
             try
             {
-                KorisnikAgencija? loginObject = await Context.KorisniciAgencije.FirstOrDefaultAsync(p => p.Email == request.Email);
+                KorisnikAgencija? loginObject = await Context.KorisniciAgencije.FirstOrDefaultAsync(p => p.Email == request.email);
                 if (loginObject == null)
                 {
                     return BadRequest("Korisnik ne postoji, ili ste uneli pogresan email");
@@ -130,7 +130,7 @@ namespace backend.Controllers
                     loginResult = ObjectCreatorSingleton.Instance.CreateLoginResult(loginObject, null, agencijaObject);
                 }
 
-                if (!BCrypt.Net.BCrypt.Verify(request.Lozinka, loginObject?.LozinkaHash))
+                if (!BCrypt.Net.BCrypt.Verify(request.password, loginObject?.LozinkaHash))
                 {
                     return BadRequest("Pogresna sifra");
                 }
@@ -157,8 +157,6 @@ namespace backend.Controllers
                 loginObject!.TokenExpires = refreshToken.Expires;
 
                 await Context.SaveChangesAsync();
-
-                
 
                 return Ok(new { accessToken, loginResult, User, loginObject });
             }
@@ -189,10 +187,17 @@ namespace backend.Controllers
                 int userId = int.Parse(_userService.GetMyId());
                 KorisnikAgencija? user = await Context.KorisniciAgencije.FirstOrDefaultAsync(k => k.Id == userId);
 
-                if(!user.RefreshToken.Equals(refreshTokenValue)){
+                if (user == null)
+                {
+                    return BadRequest("Ne postoji korisnik sa tim tokenom u bazi");
+                }
+
+                if (!user.RefreshToken.Equals(refreshTokenValue))
+                {
                     return Unauthorized("Invalid Refresh Token");
                 }
-                else if(user.TokenExpires < DateTime.Now){
+                else if (user.TokenExpires < DateTime.Now)
+                {
                     return Unauthorized("Token expired.");
                 }
 
@@ -207,15 +212,11 @@ namespace backend.Controllers
 
                 Response.Cookies.Append("refreshToken", newRefreshToken.Token, cookieOptions); //postavlja cookie
 
-                user!.RefreshToken = newRefreshToken.Token;
-                user!.TokenCreated = newRefreshToken.Created;
-                user!.TokenExpires = newRefreshToken.Expires;
+                user.RefreshToken = newRefreshToken.Token;
+                user.TokenCreated = newRefreshToken.Created;
+                user.TokenExpires = newRefreshToken.Expires;
 
-                
                 await Context.SaveChangesAsync();
-                
-
-                
 
                 return Ok(new { token });
             }

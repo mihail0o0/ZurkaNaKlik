@@ -1,6 +1,6 @@
-import Button from "@/components/button";
-import Input from "@/components/inputs/text-input";
-import PageSpacer from "@/components/page-spacer";
+import Button from "@/components/lib/button";
+import Input from "@/components/lib/inputs/text-input";
+import PageSpacer from "@/components/lib/page-spacer";
 import { useState } from "react";
 
 const TestingPage = () => {
