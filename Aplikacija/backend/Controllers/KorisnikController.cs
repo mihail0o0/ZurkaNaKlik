@@ -30,10 +30,10 @@ namespace backend.Controllers
         {
             try
             {
-                var currId = _userService.GetMyId();
-                if(currId != idKorisnika.ToString()){
-                    return BadRequest("Nisi ti taj bebo");
-                }
+                // var currId = _userService.GetMyId();
+                // if(currId != idKorisnika.ToString()){
+                //     return BadRequest("Nisi ti taj bebo");
+                // }
                 Korisnik? korisnik = await Context.Korisnici.Include(k => k.ListaOmiljenihOglasaObjekata).FirstOrDefaultAsync(k => k.Id == idKorisnika);
 
                 if (korisnik == null)
@@ -57,7 +57,7 @@ namespace backend.Controllers
                 await Context.SaveChangesAsync();
                 
 
-                return Ok(new { korisnik.ListaOmiljenihOglasaObjekata, currId });
+                return Ok(new { korisnik.ListaOmiljenihOglasaObjekata });
             }
             catch (Exception e)
             {

@@ -189,7 +189,7 @@ namespace backend.Controllers
                 int userId = int.Parse(_userService.GetMyId());
                 KorisnikAgencija? user = await Context.KorisniciAgencije.FirstOrDefaultAsync(k => k.Id == userId);
 
-                if(!user.RefreshToken.Equals(refreshTokenValue)){
+                if(!user!.RefreshToken.Equals(refreshTokenValue)){
                     return Unauthorized("Invalid Refresh Token");
                 }
                 else if(user.TokenExpires < DateTime.Now){
