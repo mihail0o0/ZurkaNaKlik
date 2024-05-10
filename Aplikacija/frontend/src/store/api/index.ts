@@ -47,7 +47,11 @@ const baseQueryWithAuth: BaseQueryFn<
       const release = await mutex.acquire();
 
       try {
-        const refreshResult = await baseQuery("/refresh", api, extraOptions);
+        const refreshResult = await baseQuery(
+          "/auth/refresh",
+          api,
+          extraOptions
+        );
         if (refreshResult.data) {
           const refreshResultData = refreshResult.data as LoginResponse;
 
