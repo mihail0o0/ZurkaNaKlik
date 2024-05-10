@@ -1,4 +1,4 @@
 {
     "localPort": "",
-    "publicApi": "http://localhost:7080"
+    "publicApi": "https://localhost:7080/api"
 }

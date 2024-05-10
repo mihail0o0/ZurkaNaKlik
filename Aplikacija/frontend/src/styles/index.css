@@ -5,11 +5,11 @@
 }
 
 :root {
-  --mainColor: #D45A6B;
+  --mainColor: #d45a6b;
   --lightText: #a9a9a9;
-  --lightGrey: #EEEEEE;
-  --mediumGrey: #D2D2D2;
-  --golden: #FFC700;
+  --lightGrey: #eeeeee;
+  --mediumGrey: #d2d2d2;
+  --golden: #ffc700;
   --blur: 8px;
   --borderRadiusBig: 35px;
   --borderRadiusMedium: 20px;
@@ -17,10 +17,10 @@
 
 body {
   margin: 0;
-  font-family: 'Nunito';
+  font-family: "Nunito";
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #EFEFEF;
+  background-color: #efefef;
 }
 
 h1,
@@ -29,16 +29,30 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: 'Poppins';
+  font-family: "Poppins";
 }
 
 p {
   font-size: 20px;
 }
 
-
 /* OTHER */
-.page-spacer {
+.page-spacer-xs {
+  width: 100%;
+  height: 75px;
+}
+
+.page-spacer-small {
+  width: 100%;
+  height: 150px;
+}
+
+.page-spacer-medium {
+  width: 100%;
+  height: 250px;
+}
+
+.page-spacer-large {
   width: 100%;
   height: 400px;
 }
@@ -75,7 +89,7 @@ p {
   position: absolute;
   bottom: -2px;
   left: 0;
-  content: '';
+  content: "";
   background-color: var(--mainColor);
   border-radius: 5px;
   width: 100%;
@@ -126,7 +140,6 @@ p {
   align-items: center;
   width: 100%;
 }
-
 
 .inputWrapper i {
   color: var(--lightText);

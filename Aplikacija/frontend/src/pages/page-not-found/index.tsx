@@ -2,8 +2,8 @@ import { useNavigate } from "react-router-dom";
 import style from "./style.module.css";
 
 // components
-import Button from "@/components/button";
-import PageSpacer from "@/components/page-spacer";
+import Button from "@/components/lib/button";
+import PageSpacer from "@/components/lib/page-spacer";
 
 // other
 import { SVG as PNF } from "@/assets/images/pageNotFound.svg";
