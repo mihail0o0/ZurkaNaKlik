@@ -21,6 +21,7 @@ git fetch               | preuzima promene ali ih ne spaja sa tvojom granom, ako
 git merge               | spaja grane
 git branch              | pravi novu granu
 git checkout            | prelazi na novu granu
+git rm --cached		| brise fajl iz repo
 
 
 ### DOTNET
