@@ -8,7 +8,7 @@ import { userLoginSchema } from "@/utils/validators";
 import { useUserLoginMutation } from "@/store/api/endpoints/auth";
 import { LoginPayload } from "@/store/api/endpoints/auth/types";
 
-function UserLoginPage() {
+const UserLoginForm = () => {
   const [emailText, setMailText] = useState("");
   const [passwordText, setPasswordText] = useState("");
 
@@ -18,6 +18,8 @@ function UserLoginPage() {
   const [handleLogin] = useUserLoginMutation();
 
   const isValid = (loginData: LoginPayload): boolean => {
+    setEmailError("");
+    setPasswordError("");
     const valResult = userLoginSchema.validate(loginData);
     if (valResult.error) {
       setEmailError(null);
@@ -47,13 +49,7 @@ function UserLoginPage() {
     const valid = isValid(loginData);
     if (valid == false) return;
 
-    const loginRes = await handleLogin(loginData);
-    if('data' in loginRes){
-      console.log(loginRes.data);
-    }
-    else{
-      console.log(loginRes.error);
-    }
+    await handleLogin(loginData);
   };
 
   return (
@@ -82,6 +78,6 @@ function UserLoginPage() {
       />
     </Form>
   );
-}
+};
 
-export default UserLoginPage;
+export default UserLoginForm;

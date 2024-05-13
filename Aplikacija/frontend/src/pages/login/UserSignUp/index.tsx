@@ -1,20 +1,22 @@
 import style from "../style.module.css";
-
 import LoginLabel from "@/components/lib/labels/login";
-import UserLoginForm from "./userLoginForm";
+import UserSignUpForm from "../../../components/UserSignUpForm";
 import PageSpacer from "@/components/lib/page-spacer";
 
-function UserLoginPage() {
+const UserSignUpPage = () => {
   return (
     <>
       <PageSpacer variant="xs" />
       <div className={`containerWrapper ${style.container}`}>
         <div className={style.textContent}>
           <div className={style.textWrapper}>
-            <h1>Prijavite se</h1>
+            <h1>Napravite Nalog</h1>
             <p>
-              Prijavite se na svoj nalog putem emaila i sifre. Ukoliko nemate
-              nalog mozete ga otvoriti u par klika.
+              Samo korisnici sa nalogom mogu iznajmljivati ili oglašavati
+              prostore. Kreirajte svoj nalog u svega par trenutaka.
+            </p>
+            <p>
+              Ukoliko želite da nudite usluge keteringa, pratite link ispod.
             </p>
             <div className="smallSpace" />
           </div>
@@ -27,16 +29,16 @@ function UserLoginPage() {
             <LoginLabel
               text={"Nemate nalog?"}
               linkText={"Registrujte se"}
-              link={"/user/register"}
+              link={"/login"}
             />
           </div>
         </div>
         <div className={style.loginElements}>
-          <UserLoginForm />
+          <UserSignUpForm />
         </div>
       </div>
     </>
   );
-}
+};
 
-export default UserLoginPage;
+export default UserSignUpPage;

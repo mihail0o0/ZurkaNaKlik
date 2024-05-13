@@ -79,7 +79,7 @@ namespace backend.Controllers
 
                 await Context.SaveChangesAsync();
 
-                return Ok(new { accessToken, loginResult, User, korisnik });
+                return Ok(new { accessToken, loginResult });
             }
             catch (Exception e)
             {
