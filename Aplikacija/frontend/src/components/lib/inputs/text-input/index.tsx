@@ -9,7 +9,7 @@ type Props = {
   error?: string | null;
 };
 
-const Input = ({ icon, text, suffixIcon, onChange, error }: Props) => {
+const Input = ({ icon, text, suffixIcon = false, onChange, error }: Props) => {
   const divRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const [visibilityIcon, setVisibilityIcon] = useState("visibility_off");
@@ -58,8 +58,8 @@ const Input = ({ icon, text, suffixIcon, onChange, error }: Props) => {
         <Icon
           icon={visibilityIcon}
           onClick={changeVisibilityIcon}
-          classes="hoverPointer"
-          disabled={suffixIcon ? true : false}
+          classes="cursorPointer"
+          enabled={suffixIcon}
         />
       </div>
 

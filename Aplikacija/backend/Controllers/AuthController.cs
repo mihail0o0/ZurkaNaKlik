@@ -58,9 +58,28 @@ namespace backend.Controllers
                 };
 
                 await Context.Korisnici.AddAsync(korisnik);
+                LoginResult loginResult;
+                Korisnik? korisnikObject = await Context.Korisnici.FindAsync(korisnik.Id);
+                loginResult = ObjectCreatorSingleton.Instance.CreateLoginResult(korisnik, korisnikObject, null);
+
+                string accessToken = CreateToken(korisnik!);
+
+                var refreshToken = GenerateRefreshToken();
+                var cookieOptions = new CookieOptions
+                {
+                    HttpOnly = true,
+                    Expires = refreshToken.Expires,
+                };
+
+                Response.Cookies.Append("refreshToken", refreshToken.Token, cookieOptions); //postavlja cookie
+
+                korisnik!.RefreshToken = refreshToken.Token;
+                korisnik!.TokenCreated = refreshToken.Created;
+                korisnik!.TokenExpires = refreshToken.Expires;
+
                 await Context.SaveChangesAsync();
 
-                return Ok(new { Context.Korisnici });
+                return Ok(new { accessToken, loginResult });
             }
             catch (Exception e)
             {
@@ -96,9 +115,29 @@ namespace backend.Controllers
                 };
 
                 await Context.Agencije.AddAsync(agencija);
+                
+                LoginResult loginResult;
+                Agencija? agencijaObject = await Context.Agencije.FindAsync(agencija.Id);
+                loginResult = ObjectCreatorSingleton.Instance.CreateLoginResult(agencija, null, agencijaObject);
+
+                string accessToken = CreateToken(agencija!);
+
+                var refreshToken = GenerateRefreshToken();
+                var cookieOptions = new CookieOptions
+                {
+                    HttpOnly = true,
+                    Expires = refreshToken.Expires,
+                };
+
+                Response.Cookies.Append("refreshToken", refreshToken.Token, cookieOptions); //postavlja cookie
+
+                agencija!.RefreshToken = refreshToken.Token;
+                agencija!.TokenCreated = refreshToken.Created;
+                agencija!.TokenExpires = refreshToken.Expires;
+
                 await Context.SaveChangesAsync();
 
-                return Ok(new { agencija });
+                return Ok(new { accessToken, loginResult, User, agencija });
             }
             catch (Exception e)
             {
@@ -111,26 +150,26 @@ namespace backend.Controllers
         {
             try
             {
-                KorisnikAgencija? loginObject = await Context.KorisniciAgencije.FirstOrDefaultAsync(p => p.Email == request.email);
-                if (loginObject == null)
+                KorisnikAgencija? korisnikagencija = await Context.KorisniciAgencije.FirstOrDefaultAsync(p => p.Email == request.email);
+                if (korisnikagencija == null)
                 {
                     return BadRequest("Korisnik ne postoji, ili ste uneli pogresan email");
                 }
 
                 LoginResult loginResult;
-                if (loginObject.Role == Roles.Korisnik)
+                if (korisnikagencija.Role == Roles.Korisnik)
                 {
-                    Korisnik? korisnikObject = await Context.Korisnici.FindAsync(loginObject.Id);
-                    loginResult = ObjectCreatorSingleton.Instance.CreateLoginResult(loginObject, korisnikObject, null);
+                    Korisnik? korisnikObject = await Context.Korisnici.FindAsync(korisnikagencija.Id);
+                    loginResult = ObjectCreatorSingleton.Instance.CreateLoginResult(korisnikagencija, korisnikObject, null);
                 }
                 // TODO handle Admin auth
                 else
                 {
-                    Agencija? agencijaObject = await Context.Agencije.FindAsync(loginObject.Id);
-                    loginResult = ObjectCreatorSingleton.Instance.CreateLoginResult(loginObject, null, agencijaObject);
+                    Agencija? agencijaObject = await Context.Agencije.FindAsync(korisnikagencija.Id);
+                    loginResult = ObjectCreatorSingleton.Instance.CreateLoginResult(korisnikagencija, null, agencijaObject);
                 }
 
-                if (!BCrypt.Net.BCrypt.Verify(request.password, loginObject?.LozinkaHash))
+                if (!BCrypt.Net.BCrypt.Verify(request.password, korisnikagencija?.LozinkaHash))
                 {
                     return BadRequest("Pogresna sifra");
                 }
@@ -141,7 +180,7 @@ namespace backend.Controllers
                 //     Role = loginObject.Role
                 // };
 
-                string accessToken = CreateToken(loginObject!);
+                string accessToken = CreateToken(korisnikagencija!);
 
                 var refreshToken = GenerateRefreshToken();
                 var cookieOptions = new CookieOptions
@@ -152,13 +191,13 @@ namespace backend.Controllers
 
                 Response.Cookies.Append("refreshToken", refreshToken.Token, cookieOptions); //postavlja cookie
 
-                loginObject!.RefreshToken = refreshToken.Token;
-                loginObject!.TokenCreated = refreshToken.Created;
-                loginObject!.TokenExpires = refreshToken.Expires;
+                korisnikagencija!.RefreshToken = refreshToken.Token;
+                korisnikagencija!.TokenCreated = refreshToken.Created;
+                korisnikagencija!.TokenExpires = refreshToken.Expires;
 
                 await Context.SaveChangesAsync();
 
-                return Ok(new { accessToken, loginResult, User, loginObject });
+                return Ok(new { accessToken, loginResult, User, korisnikagencija });
             }
             catch (Exception e)
             {

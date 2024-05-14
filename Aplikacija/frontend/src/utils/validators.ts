@@ -1,3 +1,4 @@
+import { CreateUserDTO, LoginPayload } from "@/store/api/endpoints/auth/types";
 import Joi from "joi";
 
 const customTlds = ["com", "net", "org"];
@@ -26,7 +27,7 @@ const passwordVal = Joi.string()
 
 const nameVal = Joi.string()
   .required()
-  .min(10)
+  .min(4)
   .max(40)
   .alphanum()
   .label("Ime")
@@ -40,7 +41,7 @@ const nameVal = Joi.string()
 
 const lastNameVal = Joi.string()
   .required()
-  .min(10)
+  .min(4)
   .max(40)
   .alphanum()
   .label("Prezime")
@@ -55,19 +56,19 @@ const lastNameVal = Joi.string()
 const phoneNumberVal = Joi.string()
   .required()
   .alphanum()
-  .pattern(new RegExp("^(\\+381)[0-9]{9}$"))
+  .pattern(new RegExp("^(06)[0-9]{8}$"))
   .label("Broj telefona")
   .messages({
     "string.base": "{{#label}} mora biti niz karaktera",
     "string.empty": "{{#label}} ne može biti prazno.",
-    "string.pattern.base": "{{#label}} mora biti u formatu +381xxxxxxxxx",
+    "string.pattern.base": "{{#label}} mora biti u formatu 06xxxxxxxx",
     "string.alphanum": "{{#label}} može sadržati samo alfanumeričke znakove.",
   });
 
 const agencyNameVal = Joi.string()
   .required()
   .alphanum()
-  .min(10)
+  .min(4)
   .max(40)
   .label("Ime agencije")
   .messages({
@@ -108,7 +109,7 @@ const cityValReq = Joi.string()
   .required()
   .min(2)
   .max(40)
-  .label("Grad")
+  .label("Ime Grada")
   .messages({
     "string.base": "{{#label}} mora biti niz karaktera",
     "string.empty": "{{#label}} ne može biti prazno.",
@@ -116,19 +117,29 @@ const cityValReq = Joi.string()
     "string.max": "{{#label}} mora imati najmanje {{#limit}} karaktera.",
   });
 
-const cityVal = Joi.string().required().min(2).max(40).label("Grad");
+const cityVal = Joi.string().min(2).max(40).label("Ime Grada").messages({
+  "string.base": "{{#label}} mora biti niz karaktera",
+  "string.empty": "{{#label}} ne može biti prazno.",
+  "string.min": "{{#label}} mora imati najmanje {{#limit}} karaktera.",
+  "string.max": "{{#label}} mora imati najmanje {{#limit}} karaktera.",
+});
 
-export const userLoginSchema = Joi.object({
+const roleVal = Joi.any();
+
+export const userLoginSchema = Joi.object<LoginPayload>({
   email: emailVal,
   password: passwordVal,
 });
 
-export const userRegisterSchema = Joi.object({
+export const userSignUpSchema = Joi.object<CreateUserDTO>({
   name: nameVal,
   lastName: lastNameVal,
-  email: emailVal,
   phoneNumber: phoneNumberVal,
+  email: emailVal,
+  location: cityValReq,
   password: passwordVal,
+  repeatPassword: passwordVal,
+  role: roleVal,
 });
 
 export const agencyRegisterSchema = Joi.object({

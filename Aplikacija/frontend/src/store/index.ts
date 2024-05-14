@@ -1,7 +1,7 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import storage from "redux-persist/lib/storage";
 import { useDispatch } from "react-redux";
-import api from "./api";
+import api, { rtkErrorLogger } from "./api";
 import {
     FLUSH,
     PAUSE,
@@ -36,7 +36,7 @@ export const store = configureStore({
             serializableCheck: {
                 ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
             },
-        }).concat(api.middleware),
+        }).concat(api.middleware).concat(rtkErrorLogger),
 });
 
 export const persistor = persistStore(store);

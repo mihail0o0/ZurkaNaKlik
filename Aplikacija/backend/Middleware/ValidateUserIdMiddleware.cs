@@ -28,6 +28,7 @@ namespace backend.Middleware
                 userIdFromToken = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Sid) ?? string.Empty;
             }
 
+            //var userIdFromToken = _userService.GetMyId();
             var idKorisnika = context.Request.RouteValues["idKorisnika"]?.ToString();
 
             if (userIdFromToken != idKorisnika)
