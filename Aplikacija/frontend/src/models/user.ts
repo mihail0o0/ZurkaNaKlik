@@ -6,11 +6,4 @@ export type User = {
   email: string;
   phoneNumber: string;
   role: Role;
-  location?: string;
-  lastName?: string;
-  description?: string;
-  grade?: number;
-  numberOfGrades?: number;
-  doesDelivery?: boolean;
-  deliveryPrice?: number;
-}
+};

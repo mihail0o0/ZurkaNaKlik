@@ -1,15 +1,24 @@
 import { SyntheticEvent, useState } from "react";
-import { Form } from "react-router-dom";
+import { Form, useLocation, useNavigate } from "react-router-dom";
 import Button from "@/components/lib/button";
 import Input from "@/components/lib/inputs/text-input";
 
 // import authAction from "../../actions/authAction";
 import { userLoginSchema, userSignUpSchema } from "@/utils/validators";
-import { useUserLoginMutation } from "@/store/api/endpoints/auth";
+import {
+  useUserLoginMutation,
+  useUserSignUpMutation,
+} from "@/store/api/endpoints/auth";
 import { CreateUserDTO, LoginPayload } from "@/store/api/endpoints/auth/types";
 import { Role } from "@/models/role";
+import { setToken, setUser } from "@/store/auth";
+import { useAppDispatch } from "@/store";
 
 const UserSignUpForm = () => {
+  const dispatch = useAppDispatch();
+  const location = useLocation();
+  const navigate = useNavigate();
+
   const [nameText, setNameText] = useState("");
   const [lastNameText, setLastNameText] = useState("");
   const [emailText, setMailText] = useState("");
@@ -28,7 +37,7 @@ const UserSignUpForm = () => {
     null
   );
 
-  const [handleLogin] = useUserLoginMutation();
+  const [handleSignUp] = useUserSignUpMutation();
 
   const isValid = (loginData: CreateUserDTO): boolean => {
     setNameError("");
@@ -50,23 +59,21 @@ const UserSignUpForm = () => {
       if (errType === "email") setEmailError(errText);
       if (errType === "location") setLocationError(errText);
       if (errType === "password") setPasswordError(errText);
-      if(errType === "repeatPassword") setRepeatPasswordError(errText);
-
+      if (errType === "repeatPassword") setRepeatPasswordError(errText);
       return false;
     }
-    
     if (loginData.password.localeCompare(loginData.repeatPassword)) {
       setRepeatPasswordError("Lozinke se ne poklapaju.");
       return false;
     }
-    
+
     return true;
   };
 
   const handleSubmit = async (event: SyntheticEvent) => {
     event.preventDefault();
 
-    const signInData: CreateUserDTO = {
+    const signUpData: CreateUserDTO = {
       name: nameText,
       lastName: lastNameText,
       phoneNumber: phoneNumberText,
@@ -77,12 +84,20 @@ const UserSignUpForm = () => {
       role: Role.USER,
     };
 
-    const valid = isValid(signInData);
+    const valid = isValid(signUpData);
     if (valid == false) return;
 
     // TODO izmeni handleLogin u handleSignUp
-    return;
-    await handleLogin(signInData);
+    const signUpResult = await handleSignUp(signUpData);
+    if ("error" in signUpResult) return;
+    dispatch(setToken(signUpResult.data.accessToken));
+    dispatch(setUser(signUpResult.data.loginResult));
+
+    if (location.state?.from) {
+      navigate(location.state.from, { replace: true });
+      return;
+    }
+    navigate("/home");
   };
 
   return (

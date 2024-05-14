@@ -1,11 +1,16 @@
-import { User } from "@/models/user";
 import api from "../..";
-import { LoginPayload } from "./types";
-import { providesSingle } from "../../utils";
+import { CreateUserDTO, LoginPayload, LoginResponse } from "./types";
 
 const authApiSlice = api.injectEndpoints({
   endpoints: (builder) => ({
-    userLogin: builder.mutation<User, LoginPayload>({
+    userSignUp: builder.mutation<LoginResponse, CreateUserDTO>({
+      query: (body) => ({
+        url: "Auth/RegistrationKorisnik",
+        method: "Post",
+        body,
+      }),
+    }),
+    userLogin: builder.mutation<LoginResponse, LoginPayload>({
       query: (body) => ({ url: "Auth/login", method: "POST", body }),
     }),
     logout: builder.mutation<void, void>({
@@ -17,4 +22,8 @@ const authApiSlice = api.injectEndpoints({
   }),
 });
 
-export const { useUserLoginMutation, useLogoutMutation } = authApiSlice;
+export const {
+  useUserSignUpMutation,
+  useUserLoginMutation,
+  useLogoutMutation,
+} = authApiSlice;
