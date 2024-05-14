@@ -33,7 +33,10 @@ builder.Services.AddCors(options =>
 });
 
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(options =>
+        {
+            options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+        });
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddHttpContextAccessor();
 
@@ -88,11 +91,14 @@ app.UseCors("CORS");
 app.UseHttpsRedirection();
 app.UseAuthorization();
 
+
 //app.UseMiddleware<ValidateUserIdMiddleware>();
-app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/Korisnik"), appBuilder =>
-{
-    appBuilder.UseMiddleware<ValidateUserIdMiddleware>();
-});
+// app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/Korisnik"), appBuilder =>
+// {
+//     appBuilder.UseMiddleware<ValidateKorisnikIdMiddleware>();
+// });
+app.UseMiddleware<ValidateAgencijaIdMiddleware>();
+app.UseMiddleware<ValidateKorisnikIdMiddleware>();
 
 app.MapControllers();
 app.Run();

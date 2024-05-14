@@ -12,6 +12,7 @@ namespace backend.Models
         [JsonIgnore]
         public List<MeniKeteringa>? ListaMenija { get; set; }  
 
+        
         public Agencija? Agencija  {get; set;}  
     }
 }

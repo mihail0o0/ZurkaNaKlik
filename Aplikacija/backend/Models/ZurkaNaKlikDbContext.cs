@@ -15,7 +15,15 @@ public class ZurkaNaKlikDbContext : DbContext
 
     public ZurkaNaKlikDbContext(DbContextOptions options) : base(options)
     {
-        
+        // var discriminatorForKorisnik = .Set<KorisnikAgencija>()
+        // .Where(ka => ka.GetType() == typeof(Korisnik))
+        // .Select(ka => EF.Property<string>(ka, "Discriminator"))
+        // .FirstOrDefault();
+
+        // var discriminatorForAgencija = context.Set<KorisnikAgencija>()
+        //     .Where(ka => ka.GetType() == typeof(Agencija))
+        //     .Select(ka => EF.Property<string>(ka, "Discriminator"))
+        //     .FirstOrDefault();
     }
 
      
