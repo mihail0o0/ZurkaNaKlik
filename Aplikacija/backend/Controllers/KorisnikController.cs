@@ -25,8 +25,9 @@ namespace backend.Controllers
             _userService = userService;
         }
 
-        [HttpPut("DodajOmiljeniOglas/{idKorisnika}/{idOglasa}")]
-        public async Task<ActionResult> DodajOmiljeniOglas(int idKorisnika, int idOglasa)
+        #region DodajOmiljeniOglas
+        [HttpPut("DodajOmiljeniOglas/{idOglasa}")]
+        public async Task<ActionResult> DodajOmiljeniOglas(int idOglasa)
         {
             try
             {
@@ -34,6 +35,7 @@ namespace backend.Controllers
                 // if(currId != idKorisnika.ToString()){
                 //     return BadRequest("Nisi ti taj bebo");
                 // }
+                int idKorisnika = int.Parse((HttpContext.Items["idKorisnika"] as string)!);
                 Korisnik? korisnik = await Context.Korisnici.Include(k => k.ListaOmiljenihOglasaObjekata).FirstOrDefaultAsync(k => k.Id == idKorisnika);
 
                 if (korisnik == null)
@@ -64,50 +66,35 @@ namespace backend.Controllers
                 return BadRequest(e.Message);
             }
         } 
+        #endregion
+        
 
-        //admin valjda treba da moze da vidi sve korisnike
-
-        [HttpGet("PrikaziSveKorisnike")]
-        public async Task<IActionResult> PrikaziSveKorisnike(){
+        #region GetKorisnik
+        [HttpGet("GetKorisnik/{idK}")]
+        public async Task<IActionResult> GetKorisnik(int idK){
             try{
-                var korisnici = await Context.Korisnici.ToListAsync();
-
-                if (korisnici == null){
-                    return BadRequest("Nema korisnika za prikaz");
-                }
-
-                return  Ok(korisnici);
-                
-            }
-             catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
-        }
-
-        [HttpGet("GetKorisnik/{idKorisnika}")]
-        public async Task<IActionResult> GetKorisnik(int idKorisnika){
-            try{
-                var korisnik = await Context.Korisnici.Where(x =>x.Id == idKorisnika).FirstAsync();
+                var korisnik = await Context.Korisnici.Where(x =>x.Id == idK).FirstAsync();
 
                 if (korisnik == null){
                     return BadRequest("Nema korisnika za prikaz");
                 }
 
-                return  Ok(korisnik);
+                return  Ok(new { korisnik });
                 
             }
-             catch (Exception e)
+            catch (Exception e)
             {
                 return BadRequest(e.Message);
             }
         }
-
+        #endregion
         //Da vrati sve zakupljene oglase jednog korisnika ako adminu to treba
 
-         [HttpGet("PrikaziSveZakupljeneOglase/{idKorisnika}")]
-        public async Task<IActionResult> PrikaziSveKorisnike(int idKorisnika){
+        #region PrikaziSveZakupljeneOglase
+        [HttpGet("PrikaziSveZakupljeneOglase")]
+        public async Task<IActionResult> PrikaziSveKorisnike(){
              try{
+                int idKorisnika = int.Parse((HttpContext.Items["idKorisnika"] as string)!);
                 var korisnik = await Context.Korisnici.Where(x =>x.Id == idKorisnika).FirstAsync();
 
                 if (korisnik == null){
@@ -116,24 +103,150 @@ namespace backend.Controllers
 
                 var listaoglasa = korisnik.ListaZakupljenihOglasa;
 
-                 if (listaoglasa == null){
+                if (listaoglasa == null){
                     return BadRequest("Dati korisnik nema zakupljenih oglasa");
                 }
 
-                return Ok(listaoglasa);
+                return Ok(new { listaoglasa });
                 
             }
-             catch (Exception e)
+            catch (Exception e)
             {
                 return BadRequest(e.Message);
             }
         }
+        #endregion
 
+        #region DodajOglas
+        [HttpPost("DodajOglas")]
+        public async Task<ActionResult> DodajOglas([FromBody]OglasObjekta dodatOglas){
 
+            try{
+                int idKorisnika = int.Parse((HttpContext.Items["idKorisnika"] as string)!);
+                Korisnik? korisnik = await Context.Korisnici.FindAsync(idKorisnika);
+                
+                if (korisnik == null){
+                    return BadRequest("Korisnik ne postoji");
+                }
+                
+                var oglas = new OglasObjekta
+                {
+                    ListaTipProslava = dodatOglas.ListaTipProslava,
+                    ListaTipProstora = dodatOglas.ListaTipProstora,
+                    Naziv = dodatOglas.Naziv,
+                    Grad = dodatOglas.Grad,
+                    Lokacija = dodatOglas.Lokacija,
+                    CenaPoDanu = dodatOglas.CenaPoDanu,
+                    BrojSoba = dodatOglas.BrojSoba,
+                    Kvadratura = dodatOglas.Kvadratura,
+                    BrojKreveta = dodatOglas.Kvadratura,
+                    BrojKupatila = dodatOglas.BrojKupatila,
+                    Grejanje = dodatOglas.Grejanje,
+                    ListDodatneOpreme = dodatOglas.ListDodatneOpreme,
+                    BrTel = dodatOglas.BrTel,
+                    Opis = dodatOglas.Opis,
+                    Slike = dodatOglas.Slike,
+                    BrojOcena = dodatOglas.BrojOcena,
+                };
 
+                /*korisnik.ListaObjavljenihOglasaObjekta?.Add(oglas);*/
+                
+                oglas.VlasnikOglasa = korisnik; // Postavljanje vlasnika oglasa
 
+                // Dodavanje oglasa u DbSet
+                Context.OglasiObjekta.Add(oglas);
 
-       
+                // Čuvanje promena u bazi podataka
+                await Context.SaveChangesAsync();
+
+                return Ok(new {Context.OglasiObjekta});
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+        #endregion
+
+        #region ObrisiOglas
+        [HttpDelete("ObrisiOglas/{idOglasa}")]
+        public async Task<ActionResult> ObrisiOglas(int idOglasa){
+
+            try{
+                int idKorisnika = int.Parse((HttpContext.Items["idKorisnika"] as string)!);
+                Korisnik? korisnik = await Context.Korisnici.FindAsync(idKorisnika);
+                
+                if (korisnik == null){
+                    return BadRequest("Korisnik ne postoji");
+                }
+
+                OglasObjekta? oglas = await Context.OglasiObjekta.FindAsync(idOglasa);
+                
+                if (oglas == null){
+                    return BadRequest("Oglas ne postoji");
+                }
+
+                if(oglas.VlasnikOglasa!.Id != korisnik.Id){
+                    return BadRequest("Ti nisi vlasnik oglasa bato");
+                }
+                
+
+                Context.OglasiObjekta.Remove(oglas);
+                await Context.SaveChangesAsync();
+
+                return Ok(new {Context.OglasiObjekta});
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+        #endregion
+
+        //ovde je sve odjednom ne mora svaki properti da ima posebno azuriranje
+        #region IzmeniOglas
+        [HttpPut("IzmeniOglas/{idOglasa}")]
+        public async Task<ActionResult> IzmeniOglas([FromBody]OglasObjekta o, int idOglasa){
+
+            try{
+                int idKorisnika = int.Parse((HttpContext.Items["idKorisnika"] as string)!);
+                OglasObjekta? oglas = await Context.OglasiObjekta.Where(k => k.Id == idOglasa)
+                                                            .IgnoreQueryFilters()
+                                                            .FirstOrDefaultAsync(o => o.VlasnikOglasa!.Id == idKorisnika);
+                
+                
+                if (oglas == null){
+                    return BadRequest("Oglas ne postoji");
+                }
+                
+                oglas.ListaTipProslava = o.ListaTipProslava;
+                oglas.ListaTipProstora = o.ListaTipProstora;
+                oglas.Naziv = o.Naziv;
+                oglas.Grad = o.Grad;
+                oglas.Lokacija = o.Lokacija;
+                oglas.CenaPoDanu = o.CenaPoDanu;
+                oglas.BrojSoba = o.BrojSoba;
+                oglas.Kvadratura = o.Kvadratura;
+                oglas.BrojKreveta = o.BrojKreveta;
+                oglas.BrojKupatila = o.BrojKupatila;
+                oglas.Grejanje = o.Grejanje;
+                oglas.ListDodatneOpreme = o.ListDodatneOpreme;
+                oglas.BrTel = o.BrTel;
+                oglas.Opis = o.Opis;
+                oglas.Slike = o.Slike;
+                
+
+                
+                await Context.SaveChangesAsync();
+
+                return Ok(new { oglas });
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+        #endregion 
 
     }
 }
