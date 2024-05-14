@@ -56,7 +56,7 @@ namespace backend.Controllers
                 await Context.Korisnici.AddAsync(korisnik);
                 await Context.SaveChangesAsync();
 
-                LoginResult loginResult = ObjectCreatorSingleton.Instance.CreateLoginResult(korisnik, korisnik);
+                LoginResult loginResult = ObjectCreatorSingleton.Instance.ToLoginResult(korisnik);
 
                 return Ok(new { accessToken, loginResult });
             }
@@ -93,11 +93,8 @@ namespace backend.Controllers
                     Lokacija = request.Lokacija,
                 };
 
+                string accessToken = prijava(agencija);
                 await Context.Agencije.AddAsync(agencija);
-                
-
-                string accessToken = prijava(agencija!);
-
                 await Context.SaveChangesAsync();
 
                 return Ok(new { accessToken, agencija });
@@ -119,35 +116,24 @@ namespace backend.Controllers
                     return BadRequest("Korisnik ne postoji, ili ste uneli pogresan email");
                 }
 
-                // LoginResult loginResult;
-                // if (korisnikagencija.Role == Roles.Korisnik)
-                // {
-                //     Korisnik? korisnikObject = await Context.Korisnici.FindAsync(korisnikagencija.Id);
-                //     loginResult = ObjectCreatorSingleton.Instance.CreateLoginResult(korisnikagencija, korisnikObject, null);
-                // }
-                // // TODO handle Admin auth
-                // else
-                // {
-                //     Agencija? agencijaObject = await Context.Agencije.FindAsync(korisnikagencija.Id);
-                //     loginResult = ObjectCreatorSingleton.Instance.CreateLoginResult(korisnikagencija, null, agencijaObject);
-                // }
+                LoginResult loginResult = ObjectCreatorSingleton.Instance.ToLoginResult(korisnikagencija);
 
-                if (!BCrypt.Net.BCrypt.Verify(request.password, korisnikagencija?.LozinkaHash))
+                if (!BCrypt.Net.BCrypt.Verify(request.password, korisnikagencija.LozinkaHash))
                 {
                     return BadRequest("Pogresna sifra");
                 }
 
+                // TODO izbrisi ovo ako se ne koristi
                 // LoginObject login = new LoginObject
                 // {
                 //     Id = loginObject!.Id,
                 //     Role = loginObject.Role
                 // };
 
-                string accessToken = prijava(korisnikagencija!);
-
+                string accessToken = prijava(korisnikagencija);
                 await Context.SaveChangesAsync();
 
-                return Ok(new { accessToken, korisnikagencija });
+                return Ok(new { accessToken, loginResult });
             }
             catch (Exception e)
             {

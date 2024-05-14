@@ -12,12 +12,5 @@ namespace backend.DTOs
         public required string email { get; set; }
         public required string phoneNumber { get; set; }
         public required Roles role { get; set; }
-        public string? location { get; set; }
-        public string? lastName { get; set; }
-        public string? description { get; set; }
-        public int? grade { get; set; }
-        public int? numberOfGrades { get; set; } = 0;
-        public bool? doesDelivery { get; set; }
-        public int? deliveryPrice { get; set; }
     }
 }
