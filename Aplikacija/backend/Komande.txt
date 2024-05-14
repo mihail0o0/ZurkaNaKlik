@@ -11,6 +11,7 @@ git pull                | preuzima poslednje promene sa repo-a
 git push                | postavlja poslednje promene na repo
 git diff                | ispisuje promene na jednom ili vise fajlova, vidis linije koje su dodate/izbrisane/izmenjene
 
+
 # git advanced
 git stash               | stavlja tvoje promene na stash, korisno ako zelis da odes na stariji neki komit
 git pop                 | preuzima tvoje promene sa stash-a, ako se vracas sa komita
@@ -21,6 +22,7 @@ git fetch               | preuzima promene ali ih ne spaja sa tvojom granom, ako
 git merge               | spaja grane
 git branch              | pravi novu granu
 git checkout            | prelazi na novu granu
+git rm --cached		| brise fajl iz repo
 
 
 ### DOTNET

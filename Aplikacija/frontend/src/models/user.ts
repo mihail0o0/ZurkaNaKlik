@@ -11,6 +11,6 @@ export type User = {
   description?: string;
   grade?: number;
   numberOfGrades?: number;
-  deosDelivery?: boolean;
+  doesDelivery?: boolean;
   deliveryPrice?: number;
 }

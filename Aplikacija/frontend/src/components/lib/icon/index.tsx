@@ -5,7 +5,7 @@ type Props = {
   iconMargin?: string;
   fontSize?: string;
   onClick?: () => void;
-  disabled?: boolean;
+  enabled?: boolean;
   classes?: string;
 };
 
@@ -14,8 +14,8 @@ const Icon = ({
   onClick,
   fontSize,
   iconMargin,
-  classes,
-  disabled,
+  classes = "cursorDefault",
+  enabled = true,
 }: Props) => {
   const iconStyle = {
     display: "block",
@@ -27,11 +27,11 @@ const Icon = ({
 
   return (
     <>
-      {!disabled && (
+      {enabled && (
         <i
           onClick={onClick}
           style={iconStyle}
-          className={`material-icons ${classes ?? ""}}`}
+          className={`material-icons ${classes ?? ""}`}
         >
           {icon}
         </i>

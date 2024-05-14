@@ -10,6 +10,13 @@ import * as config from "../../../config.json";
 import { logOut, setToken, setUser } from "../auth";
 import { LoginResponse } from "./endpoints/auth/types";
 import { Mutex } from "async-mutex";
+import {
+  Middleware,
+  MiddlewareAPI,
+  isRejectedWithValue,
+} from "@reduxjs/toolkit";
+import { toast } from "react-toastify";
+import { ErrorObject } from "./types";
 // import { setToken } from "../auth";
 // import { logoutThunk, setUser } from "../user";
 // import { LoginResponse } from "./endpoints/auth/types";
@@ -47,7 +54,11 @@ const baseQueryWithAuth: BaseQueryFn<
       const release = await mutex.acquire();
 
       try {
-        const refreshResult = await baseQuery("/refresh", api, extraOptions);
+        const refreshResult = await baseQuery(
+          "/auth/refresh",
+          api,
+          extraOptions
+        );
         if (refreshResult.data) {
           const refreshResultData = refreshResult.data as LoginResponse;
 
@@ -70,7 +81,24 @@ const baseQueryWithAuth: BaseQueryFn<
   return result;
 };
 
-// TODO default reducerPath
+export const rtkErrorLogger: Middleware =
+  (api: MiddlewareAPI) => (next) => (action) => {
+    if (isRejectedWithValue(action)) {
+      const errorObject = action.payload as ErrorObject;
+
+      if (
+        !errorObject ||
+        (errorObject.originalStatus == 401 || errorObject.originalStatus == 403)
+      ) {
+        return next(action);
+      }
+
+      toast.error(errorObject.data);
+      console.error("Error occured: ", errorObject);
+    }
+    return next(action);
+  };
+
 export const api = createApi({
   reducerPath: "api",
   tagTypes: ["User"],

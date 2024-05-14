@@ -105,8 +105,12 @@ p {
   transition: 150ms transform;
 }
 
-.hoverPointer {
+.cursorPointer {
   cursor: pointer;
+}
+
+.cursorDefault {
+  cursor: default;
 }
 
 /* TESTING */
