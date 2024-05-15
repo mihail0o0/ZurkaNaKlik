@@ -1,7 +1,12 @@
 import { NavLink, Outlet } from "react-router-dom";
 import style from "./style.module.css";
+import { useSelector } from "react-redux";
+import { selectAuthToken, selectUser } from "@/store/auth";
+import LabeledAvatar from "@/components/LabeledAvatar";
 
-function RootHeader() {
+const RootHeader = () => {
+  const user = useSelector(selectUser);
+
   return (
     <>
       <header className={style.AppHeader}>
@@ -9,9 +14,15 @@ function RootHeader() {
           <NavLink to="/" className={style.ZurkaNaKlik}>
             ZurkaNaKlik
           </NavLink>
-          <NavLink to="/Login" className={style.LoginButtonHeader}>
-            Prijava
-          </NavLink>
+
+          {user && 
+            <LabeledAvatar heading text={user.name}/>
+          }
+          {!user && (
+            <NavLink to="/Login" className={style.LoginButtonHeader}>
+              Prijava
+            </NavLink>
+          )}
         </nav>
       </header>
 
@@ -20,6 +31,6 @@ function RootHeader() {
       </main>
     </>
   );
-}
+};
 
 export default RootHeader;

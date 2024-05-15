@@ -1,22 +1,20 @@
 import { SyntheticEvent, useState } from "react";
-import { Form, useLocation, useNavigate } from "react-router-dom";
+import { Form, useNavigate } from "react-router-dom";
 import Button from "@/components/lib/button";
 import Input from "@/components/lib/inputs/text-input";
 
 // import authAction from "../../actions/authAction";
-import { userLoginSchema, userSignUpSchema } from "@/utils/validators";
+import { userSignUpSchema } from "@/utils/validators";
 import {
-  useUserLoginMutation,
   useUserSignUpMutation,
 } from "@/store/api/endpoints/auth";
-import { CreateUserDTO, LoginPayload } from "@/store/api/endpoints/auth/types";
+import { CreateUserDTO } from "@/store/api/endpoints/auth/types";
 import { Role } from "@/models/role";
 import { setToken, setUser } from "@/store/auth";
 import { useAppDispatch } from "@/store";
 
 const UserSignUpForm = () => {
   const dispatch = useAppDispatch();
-  const location = useLocation();
   const navigate = useNavigate();
 
   const [nameText, setNameText] = useState("");
@@ -87,16 +85,11 @@ const UserSignUpForm = () => {
     const valid = isValid(signUpData);
     if (valid == false) return;
 
-    // TODO izmeni handleLogin u handleSignUp
     const signUpResult = await handleSignUp(signUpData);
     if ("error" in signUpResult) return;
     dispatch(setToken(signUpResult.data.accessToken));
     dispatch(setUser(signUpResult.data.loginResult));
 
-    if (location.state?.from) {
-      navigate(location.state.from, { replace: true });
-      return;
-    }
     navigate("/home");
   };
 
