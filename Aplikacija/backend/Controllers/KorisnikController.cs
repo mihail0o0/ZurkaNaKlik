@@ -147,11 +147,11 @@ namespace backend.Controllers
                     Opis = dodatOglas.Opis,
                     Slike = dodatOglas.Slike,
                     BrojOcena = dodatOglas.BrojOcena,
+                    VlasnikOglasa = korisnik
                 };
 
                 /*korisnik.ListaObjavljenihOglasaObjekta?.Add(oglas);*/
-                
-                oglas.VlasnikOglasa = korisnik; // Postavljanje vlasnika oglasa
+                // Postavljanje vlasnika oglasa
 
                 // Dodavanje oglasa u DbSet
                 Context.OglasiObjekta.Add(oglas);
@@ -205,16 +205,17 @@ namespace backend.Controllers
 
         //ovde je sve odjednom ne mora svaki properti da ima posebno azuriranje
         #region IzmeniOglas
-        [HttpPut("IzmeniOglas/{idOglasa}")]
-        public async Task<ActionResult> IzmeniOglas([FromBody]OglasObjekta o, int idOglasa){
+        [HttpPut("IzmeniOglas")]
+        public async Task<ActionResult> IzmeniOglas([FromBody]OglasObjekta o){
 
             try{
                 int idKorisnika = int.Parse((HttpContext.Items["idKorisnika"] as string)!);
-                OglasObjekta? oglas = await Context.OglasiObjekta.Where(k => k.Id == idOglasa)
+
+                OglasObjekta? oglas = await Context.OglasiObjekta.Where(k => k.Id == o.Id)
                                                             .IgnoreQueryFilters()
                                                             .FirstOrDefaultAsync(o => o.VlasnikOglasa!.Id == idKorisnika);
                 
-                
+
                 if (oglas == null){
                     return BadRequest("Oglas ne postoji");
                 }

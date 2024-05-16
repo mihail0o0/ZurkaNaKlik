@@ -16,7 +16,6 @@ namespace backend.Controllers
         {
             Context = context;
             _configuration = configuration;
-            
             _userService = userService;
         }
 
@@ -43,15 +42,6 @@ namespace backend.Controllers
             try{
                  
                 var listaAgencija = await Context.Agencije.ToListAsync<Agencija>();
-
-                
-                
-
-                
-
-                
-                
-
 
                 return Ok(new { listaAgencija });
             }
