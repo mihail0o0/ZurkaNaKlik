@@ -36,48 +36,27 @@ namespace backend.Controllers
                     return BadRequest(ModelState);
                 }
 
-                var postojiEmail = await Context.Korisnici.AnyAsync(k => k.Email == request.Email);
+                var postojiEmail = await Context.Korisnici.AnyAsync(k => k.Email == request.email);
                 if (postojiEmail)
                 {
                     return BadRequest("Korisnik sa ovim email-om već postoji.");
                 }
 
-                string lozinkaHash = BCrypt.Net.BCrypt.HashPassword(request.Lozinka);
-
-                Roles rolic = request.Role;
-
-                var korisnik = new Korisnik
+                if (request.password != request.repeatPassword)
                 {
-                    Ime = request.Ime,
-                    Prezime = request.Prezime,
-                    Email = request.Email,
-                    BrTel = request.BrTel,
-                    LozinkaHash = lozinkaHash,
-                    Role = Roles.Korisnik,
-                    Lokacija = request.Lokacija
-                };
+                    return BadRequest("Lozinke se ne poklapaju");
+                }
+
+                string lozinkaHash = BCrypt.Net.BCrypt.HashPassword(request.password);
+                Roles rolic = request.role;
+                Korisnik korisnik = ObjectCreatorSingleton.Instance.FromRegistrationKorisnik(request, lozinkaHash);
+
+                string accessToken = prijava(korisnik);
 
                 await Context.Korisnici.AddAsync(korisnik);
-                LoginResult loginResult;
-                Korisnik? korisnikObject = await Context.Korisnici.FindAsync(korisnik.Id);
-                loginResult = ObjectCreatorSingleton.Instance.CreateLoginResult(korisnik, korisnikObject, null);
-
-                string accessToken = CreateToken(korisnik!);
-
-                var refreshToken = GenerateRefreshToken();
-                var cookieOptions = new CookieOptions
-                {
-                    HttpOnly = true,
-                    Expires = refreshToken.Expires,
-                };
-
-                Response.Cookies.Append("refreshToken", refreshToken.Token, cookieOptions); //postavlja cookie
-
-                korisnik!.RefreshToken = refreshToken.Token;
-                korisnik!.TokenCreated = refreshToken.Created;
-                korisnik!.TokenExpires = refreshToken.Expires;
-
                 await Context.SaveChangesAsync();
+
+                LoginResult loginResult = ObjectCreatorSingleton.Instance.ToLoginResult(korisnik);
 
                 return Ok(new { accessToken, loginResult });
             }
@@ -114,30 +93,11 @@ namespace backend.Controllers
                     Lokacija = request.Lokacija,
                 };
 
+                string accessToken = prijava(agencija);
                 await Context.Agencije.AddAsync(agencija);
-                
-                LoginResult loginResult;
-                Agencija? agencijaObject = await Context.Agencije.FindAsync(agencija.Id);
-                loginResult = ObjectCreatorSingleton.Instance.CreateLoginResult(agencija, null, agencijaObject);
-
-                string accessToken = CreateToken(agencija!);
-
-                var refreshToken = GenerateRefreshToken();
-                var cookieOptions = new CookieOptions
-                {
-                    HttpOnly = true,
-                    Expires = refreshToken.Expires,
-                };
-
-                Response.Cookies.Append("refreshToken", refreshToken.Token, cookieOptions); //postavlja cookie
-
-                agencija!.RefreshToken = refreshToken.Token;
-                agencija!.TokenCreated = refreshToken.Created;
-                agencija!.TokenExpires = refreshToken.Expires;
-
                 await Context.SaveChangesAsync();
 
-                return Ok(new { accessToken, loginResult, User, agencija });
+                return Ok(new { accessToken, agencija });
             }
             catch (Exception e)
             {
@@ -156,48 +116,24 @@ namespace backend.Controllers
                     return BadRequest("Korisnik ne postoji, ili ste uneli pogresan email");
                 }
 
-                LoginResult loginResult;
-                if (korisnikagencija.Role == Roles.Korisnik)
-                {
-                    Korisnik? korisnikObject = await Context.Korisnici.FindAsync(korisnikagencija.Id);
-                    loginResult = ObjectCreatorSingleton.Instance.CreateLoginResult(korisnikagencija, korisnikObject, null);
-                }
-                // TODO handle Admin auth
-                else
-                {
-                    Agencija? agencijaObject = await Context.Agencije.FindAsync(korisnikagencija.Id);
-                    loginResult = ObjectCreatorSingleton.Instance.CreateLoginResult(korisnikagencija, null, agencijaObject);
-                }
+                LoginResult loginResult = ObjectCreatorSingleton.Instance.ToLoginResult(korisnikagencija);
 
-                if (!BCrypt.Net.BCrypt.Verify(request.password, korisnikagencija?.LozinkaHash))
+                if (!BCrypt.Net.BCrypt.Verify(request.password, korisnikagencija.LozinkaHash))
                 {
                     return BadRequest("Pogresna sifra");
                 }
 
+                // TODO izbrisi ovo ako se ne koristi
                 // LoginObject login = new LoginObject
                 // {
                 //     Id = loginObject!.Id,
                 //     Role = loginObject.Role
                 // };
 
-                string accessToken = CreateToken(korisnikagencija!);
-
-                var refreshToken = GenerateRefreshToken();
-                var cookieOptions = new CookieOptions
-                {
-                    HttpOnly = true,
-                    Expires = refreshToken.Expires,
-                };
-
-                Response.Cookies.Append("refreshToken", refreshToken.Token, cookieOptions); //postavlja cookie
-
-                korisnikagencija!.RefreshToken = refreshToken.Token;
-                korisnikagencija!.TokenCreated = refreshToken.Created;
-                korisnikagencija!.TokenExpires = refreshToken.Expires;
-
+                string accessToken = prijava(korisnikagencija);
                 await Context.SaveChangesAsync();
 
-                return Ok(new { accessToken, loginResult, User, korisnikagencija });
+                return Ok(new { accessToken, loginResult });
             }
             catch (Exception e)
             {
@@ -205,7 +141,24 @@ namespace backend.Controllers
             }
         }
 
+        private string prijava(KorisnikAgencija korisnikagencija){
+            string accessToken = CreateToken(korisnikagencija!);
 
+            var refreshToken = GenerateRefreshToken();
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                Expires = refreshToken.Expires,
+            };
+
+            Response.Cookies.Append("refreshToken", refreshToken.Token, cookieOptions); //postavlja cookie
+
+            korisnikagencija!.RefreshToken = refreshToken.Token;
+            korisnikagencija!.TokenCreated = refreshToken.Created;
+            korisnikagencija!.TokenExpires = refreshToken.Expires;
+
+            return accessToken;
+        }
 
         //usera vec imas u cookie samo g auzmi odatle
 

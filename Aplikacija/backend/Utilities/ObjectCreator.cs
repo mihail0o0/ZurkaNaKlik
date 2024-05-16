@@ -19,7 +19,7 @@ namespace backend.Utilities
             }
         }
 
-        public LoginResult CreateLoginResult(KorisnikAgencija korisnikAgencija, Korisnik? korisnik = null, Agencija? agencija = null)
+        public LoginResult ToLoginResult(KorisnikAgencija korisnikAgencija)
         {
             LoginResult loginResult = new LoginResult
             {
@@ -28,16 +28,26 @@ namespace backend.Utilities
                 email = korisnikAgencija.Email,
                 phoneNumber = korisnikAgencija.BrTel,
                 role = korisnikAgencija.Role,
-                location = korisnikAgencija.Lokacija,
-                lastName = korisnik?.Prezime,
-                description = agencija?.Opis,
-                grade = agencija?.Ocena,
-                numberOfGrades = agencija?.BrojOcena,
-                doesDelivery = agencija?.MogucnostDostave,
-                deliveryPrice = agencija?.CenaDostave,
             };
             return loginResult;
         }
+
+        public Korisnik FromRegistrationKorisnik(RegistrationKorisnik registrationKorisnik, string passwordHash)
+        {
+            var korisnik = new Korisnik
+            {
+                Ime = registrationKorisnik.name,
+                Prezime = registrationKorisnik.lastName,
+                Email = registrationKorisnik.email,
+                BrTel = registrationKorisnik.phoneNumber,
+                LozinkaHash = passwordHash,
+                Role = Roles.Korisnik,
+                Lokacija = registrationKorisnik.location
+            };
+
+            return korisnik;
+        }
+
 
     }
 }

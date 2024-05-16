@@ -43,16 +43,6 @@ namespace backend.Controllers
             try{
                  
                 var listaAgencija = await Context.Agencije.ToListAsync<Agencija>();
-
-                
-                
-
-                
-
-                
-                
-
-
                 return Ok(new { listaAgencija });
             }
             catch (Exception e)
@@ -60,5 +50,14 @@ namespace backend.Controllers
                 return BadRequest(e.Message);
             }
         }
+
+        // [HttpDelete("Obrisi korisnika/{idkorisnika}")]
+        // public async Task<ActionResult> ObrisiKorisnika(int idkorisnika){
+
+        // }
     }
+
+// Obrisi korisnika ili agenciju
+// Izmeni korisnika
+// Izmeni agenciju
 }
