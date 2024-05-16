@@ -44,7 +44,18 @@ namespace backend.Controllers
         }
         #endregion
 
-        
+    
+
+
+
+
+
+
+//         Prikazi podatke o oglasu??
+// Prikazi sve oglase za filtere([FromBody] filteri)
+// Iznajmi oglas
+// Oceni oglas
+// Prikaz ko je sve iznajmio ovaj oglas
 
 
 
