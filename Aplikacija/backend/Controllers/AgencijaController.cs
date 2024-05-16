@@ -236,9 +236,7 @@ namespace backend.Controllers
             try
             {
                  int idAgencije = int.Parse((HttpContext.Items["idAgencije"] as string)!);
-                //  MeniKeteringa? m = await Context.MenijiKeteringa.Where(x=>x.Id == meni.Id).
-                //                                              IgnoreQueryFilters()
-                //                                             .FirstOrDefaultAsync();
+                                                         
 
 
                 MeniKeteringa? m = await Context.MenijiKeteringa.Include(x=>x.Kategorija).Where(x => x.Id == meni.Id).Where(x =>x.Kategorija!
@@ -248,10 +246,16 @@ namespace backend.Controllers
                 if (m == null){
                     return BadRequest("Meni ne postoji");
                 }
-                
-         
-                
 
+
+                m.CenaMenija = meni.CenaMenija;
+                m.Kategorija = meni.Kategorija;
+                m.Naziv=meni.Naziv;
+                m.Opis=meni.Opis;
+                m.SastavMenija=meni.SastavMenija;
+                m.Slika=meni.Slika;
+                
+                
                 
                 await Context.SaveChangesAsync();
 
