@@ -366,13 +366,106 @@ namespace backend.Controllers
         //#endregion
 
 
+        //prikazi sve porudzbine
+        #region  PrikaziSvePorudzbine
+        [HttpGet("PrikaziSvePorudzbine")]
+        public async Task<IActionResult> PrikaziSvePorudzbine(){
+            try
+            {
+                int idAgencije = int.Parse((HttpContext.Items["idAgencije"] as string)!);
+
+                var zahtevizaketering = await Context.ZahteviZaKetering
+                                                                    .Where(i => i.Agencija!.Id == idAgencije)
+                                                                    .IgnoreQueryFilters()
+                                                                    .ToListAsync();
+
+
+
+                
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e);
+            }
+        }
+        #endregion
+
+        //odobri porudbinu
+        #region  OdobriPorudzbinu
+        [HttpPut("OdobriPorudzbinu/{idZahteva}")]
+        public async Task<IActionResult> OdobriPorudzbinu(int idZahteva){
+            try
+            {
+
+                var zahtevizaketering = await Context.ZahteviZaKetering.FirstOrDefaultAsync(x => x.Id == idZahteva);
+
+
+                if(zahtevizaketering != null && zahtevizaketering.StatusRezervacije == false){
+                    zahtevizaketering.StatusRezervacije = !zahtevizaketering.StatusRezervacije; 
+                }
+
+
+                
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e);
+            }
+        }
+        #endregion
+
+        #region  OdbijanjePoridzbine
+        [HttpGet("OdbijanjePoridzbine/{idZahteva}")]
+        public async Task<IActionResult> OdbijanjePoridzbine(int idZahteva){
+            try
+            {
+
+                var zahtevizaketering = await Context.ZahteviZaKetering.FirstOrDefaultAsync(x => x.Id == idZahteva);
+
+                if(zahtevizaketering == null){
+                    return BadRequest();
+                }
+
+                zahtevizaketering.ZakupljeniOglas = null;
+
+                Context.Remove(zahtevizaketering);
+
+                
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e);
+            }
+        }
+        #endregion
+
+        #region  PosaljiZahtevZaKetering
+        [HttpGet("PosaljiZahtevZaKetering/{idZakupljenOglas}")]
+        public async Task<IActionResult> PosaljiZahtevZaKetering(int idZakupljenOglas){
+            try
+            {
+                
+                //zavrsi meeeeee
+                
+                
+
+                
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e);
+            }
+        }
+        #endregion
     
     }
 
-    //prikazi sve porudzbine
 
-    //odobri porudbinu
-
+    
     //prikaz svih agencija
 
     //sortiranje i filteri
