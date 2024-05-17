@@ -33,6 +33,6 @@ namespace backend.Models
         
         public List<DateTime>? ZauzetiDani { get; set; }
         [JsonIgnore]
-        public required Korisnik VlasnikOglasa { get; set; }
+        public Korisnik? VlasnikOglasa { get; set; }
     }
 }
