@@ -1,14 +1,19 @@
 import { SyntheticEvent, useState } from "react";
-import { Form } from "react-router-dom";
+import { Form, useLocation, useNavigate } from "react-router-dom";
 import Button from "@/components/lib/button";
 import Input from "@/components/lib/inputs/text-input";
 
-// import authAction from "../../actions/authAction";
 import { userLoginSchema } from "@/utils/validators";
 import { useUserLoginMutation } from "@/store/api/endpoints/auth";
 import { LoginPayload } from "@/store/api/endpoints/auth/types";
+import { useAppDispatch } from "@/store";
+import { setToken, setUser } from "@/store/auth";
 
 const UserLoginForm = () => {
+  const dispatch = useAppDispatch();
+  const location = useLocation();
+  const navigate = useNavigate();
+
   const [emailText, setMailText] = useState("");
   const [passwordText, setPasswordText] = useState("");
 
@@ -49,7 +54,17 @@ const UserLoginForm = () => {
     const valid = isValid(loginData);
     if (valid == false) return;
 
-    await handleLogin(loginData);
+    const loginResult = await handleLogin(loginData);
+    if ("error" in loginResult) return;
+    console.log(loginResult.data);
+    dispatch(setToken(loginResult.data.accessToken));
+    dispatch(setUser(loginResult.data.loginResult));
+
+    if (location.state?.from) {
+      navigate(location.state.from, { replace: true });
+      return;
+    }
+    navigate("/home");
   };
 
   return (

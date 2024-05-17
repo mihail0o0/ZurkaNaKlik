@@ -249,5 +249,50 @@ namespace backend.Controllers
         }
         #endregion 
 
+        #region OceniAgenciju
+        [HttpPut("OceniAgenciju/{idAgencije}/{novaOcena}")]
+        public async Task<ActionResult> OceniAgenciju(int idAgencije, int novaOcena){
+            try{
+
+                int idKorisnika = int.Parse((HttpContext.Items["idKorisnika"] as string)!);
+                
+                var agencija = await Context.Agencije.FindAsync(idAgencije);
+
+                if (agencija== null){
+                    return BadRequest("Ne postoji takva agencija");
+                }
+
+                agencija.BrojOcena++;
+
+                agencija.Ocena = (agencija.Ocena + novaOcena)/agencija.BrojOcena;
+
+                Context.Agencije.Update(agencija);
+
+                await Context.SaveChangesAsync();
+
+                return Ok(agencija);
+
+                
+
+            }
+            catch(Exception ex){
+                return BadRequest(ex.Message);
+            }
+        }
+        #endregion
+
+
+
+
+        
+// Prikaz omiljenih oglasa (idKorisnika)
+// Izmena podataka (idKorisnika)
+// Obrisi svojih oglasa (idKorisnika, idOglasa)??
+// Obrisi nalog
+// Dodaj omiljeni oglas (idKorisnika, idOglasa)
+// Dodaj oglas??
+// Promeni podatke o svom oglasu??
     }
+
+
 }

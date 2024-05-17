@@ -7,10 +7,12 @@ export type LoginPayload = {
 
 export interface LoginResponse {
   accessToken: string;
-  user: User;
+  loginResult: User;
 }
 
-export type CreateUserDTO = Required<Omit<User, "id" | "numberOfGrades" | "description" | "grade" | "doesDelivery" | "deliveryPrice">> & {
+export type CreateUserDTO = Required<Omit<User, "id">> & {
+  lastName: string;
+  location: string;
   password: string;
   repeatPassword: string;
 };
