@@ -46,18 +46,23 @@ namespace backend.Controllers
         }
         #endregion
 
+        #region VratiOglase
+        [HttpGet("VratiOglase/{pageNumber}/{pageSize}")]
+        public async Task<ActionResult> VratiOglase(int pageNumber, int pageSize){
+            try{
+                List<OglasObjekta> oglasi = await Context.OglasiObjekta
+                             .Skip((pageNumber - 1) * pageSize)
+                             .Take(pageSize)
+                             .ToListAsync();
+
+                return Ok(new { oglasi });
+            }
+            catch(Exception e){
+                return BadRequest(e);
+            }
+        }
+        #endregion
         
-
-
-
-
-
-
-//         Prikazi podatke o oglasu??
-// Prikazi sve oglase za filtere([FromBody] filteri)
-// Iznajmi oglas
-// Oceni oglas
-// Prikaz ko je sve iznajmio ovaj oglas
 
 
 
