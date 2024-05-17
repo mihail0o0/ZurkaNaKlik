@@ -16,7 +16,6 @@ namespace backend.Controllers
         {
             Context = context;
             _configuration = configuration;
-            
             _userService = userService;
         }
 
