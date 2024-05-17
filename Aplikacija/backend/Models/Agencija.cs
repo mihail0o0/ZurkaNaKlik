@@ -18,5 +18,7 @@ namespace backend.Models
         [JsonIgnore]
         public List<Kategorija>? KategorijeMenija { get; set; } //slatko/slano/posno
 
+        public List<ZahtevZaKetering>? ListaZahtevZaKetering { get; set; }
+
     }
 }
