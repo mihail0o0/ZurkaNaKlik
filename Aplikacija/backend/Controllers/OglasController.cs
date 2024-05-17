@@ -48,7 +48,7 @@ namespace backend.Controllers
 
         #region VratiOglase
         [HttpGet("VratiOglase/{pageNumber}/{pageSize}")]
-        public async Task<ActionResult> VratiOglase(int pageNumber, int pageSize){
+        public async Task<ActionResult> VratiOglase(int pageNumber, int pageSize){ //dodaj sortiranje
             try{
                 List<OglasObjekta> oglasi = await Context.OglasiObjekta
                              .Skip((pageNumber - 1) * pageSize)
@@ -64,7 +64,7 @@ namespace backend.Controllers
         #endregion
         
 
-
+    //+filteri
 
     }
 }

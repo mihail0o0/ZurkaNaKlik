@@ -281,17 +281,19 @@ namespace backend.Controllers
         }
         #endregion
 
+//dodaj oglas!!!
+
+//zakupi oglas!!
+
+//zakupi ketering!!
 
 
 
         
 // Prikaz omiljenih oglasa (idKorisnika)
 // Izmena podataka (idKorisnika)
-// Obrisi svojih oglasa (idKorisnika, idOglasa)??
 // Obrisi nalog
 // Dodaj omiljeni oglas (idKorisnika, idOglasa)
-// Dodaj oglas??
-// Promeni podatke o svom oglasu??
     }
 
 
