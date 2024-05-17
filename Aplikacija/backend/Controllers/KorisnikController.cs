@@ -281,11 +281,55 @@ namespace backend.Controllers
         }
         #endregion
 
-//dodaj oglas!!!
 
-//zakupi oglas!!
+#region ZakupiOglas
+[HttpPost("ZakupiOglas/{idOglasa}/trazenidatumi")]
+public async Task<ActionResult> ZakupiOglas(int idOglasa, List<DateTime> trazenidatumi){
+    try {
+        int idKorisnika = int.Parse((HttpContext.Items["idKorisnika"] as string)!);
 
-//zakupi ketering!!
+        var korisnik = await Context.Korisnici.FindAsync(idKorisnika);
+
+
+
+        OglasObjekta? oglas = await Context.OglasiObjekta.FindAsync(idOglasa);
+
+        if (oglas == null){
+            return BadRequest("ne postoji takav objekat");
+        }
+
+        bool slobodan = !oglas.ZauzetiDani!.Any(date => trazenidatumi.Contains(date));
+
+        if (slobodan){
+            oglas.ZauzetiDani!.AddRange(trazenidatumi);
+            await Context.SaveChangesAsync();
+
+            var zakupljenoglas = new ZakupljeniOglas {
+                Oglas = oglas,
+                Korisnik = korisnik!,
+                DatumZakupa = DateTime.Now,
+                ZakupljenOd = trazenidatumi[0],
+                ZakupljenDo = trazenidatumi[trazenidatumi.Count - 1]
+            };
+
+            return Ok(new { zakupljenoglas});
+
+        }  
+        else {
+            return BadRequest("Objekat je zauzet u datom periodu");
+        }
+
+    }
+    catch(Exception ex){
+        return BadRequest(ex.Message);
+    }
+}
+
+#endregion
+
+
+
+//zakupi ketering!! samo uz objekat
 
 
 
