@@ -130,12 +130,8 @@ namespace backend.Controllers
         #endregion
 
 
-
-
-
-
-      
-       //put i delete
+        
+        //put i delete
         #region ObrisiKategoriju
         [HttpDelete("ObrisiKategoriju/{KategorijaID}")]
         public async Task<ActionResult> ObrisiKategoriju (int KategorijaID){
@@ -143,7 +139,7 @@ namespace backend.Controllers
 
                 int idAgencije = int.Parse((HttpContext.Items["idAgencije"] as string)!);
 
-                var kategorija = await Context.Kategorije.Include(x => x.ListaMenija).FirstOrDefaultAsync(x =>x.Id==KategorijaID);
+                var kategorija = await Context.Kategorije.Include(x => x.ListaMenija).Where(x =>x.Agencija!.Id==idAgencije).FirstOrDefaultAsync(x =>x.Id==KategorijaID);
 
 
 
@@ -168,7 +164,7 @@ namespace backend.Controllers
         #endregion
 
         
-         #region DodavanjeMenija
+        #region DodavanjeMenija
         //radi
         [HttpPost("DodajMeni/{idKategorije}")]
         public async Task<ActionResult> DodajMeni([FromBody]MeniKeteringa meniketeringa, int idKategorije){
@@ -210,7 +206,7 @@ namespace backend.Controllers
         #region AzurirajMeni
        
         [HttpPut("AzurirajMeni")]
-        public async Task<ActionResult> PromeniCenu([FromBody]MeniKeteringa meni)
+        public async Task<ActionResult> AzurirajMeni([FromBody]MeniKeteringa meni)
         {
             try
             {
@@ -304,7 +300,7 @@ namespace backend.Controllers
 
              Agencija? agencija  = await Context.Agencije.FindAsync(idAgencije);
 
-             Context.Agencije.Remove(agencija);
+             Context.Agencije.Remove(agencija!);
 
               await Context.SaveChangesAsync(); 
 
@@ -319,11 +315,10 @@ namespace backend.Controllers
             }  
 
 
-        }    
-    }
-}
+        }
 
- // #region  PrikaziSveMenije
+        #endregion
+        // #region  PrikaziSveMenije
         // [HttpGet("PrikaziSveMenije/{idKategorije}")]
         // public async Task<IActionResult> PrikaziSveMenije(int idKategorije){
         //     try{
@@ -347,7 +342,7 @@ namespace backend.Controllers
         // #endregion
 
 
-             // #region PrikaziSveMenijeJedneAgencije
+        // #region PrikaziSveMenijeJedneAgencije
         // [HttpGet("PrikaziSveMenije/{idKategorije}")]
         // public async Task<IActionResult> PrikaziSveMenije(int idKategorije){
         //     try{
@@ -371,18 +366,19 @@ namespace backend.Controllers
         //#endregion
 
 
+    
+    }
 
-// Obirsi kategoriju??
-// Obrisi meni??
-// Prikazi zahteve za ovaj ketering
+    //prikazi sve porudzbine
 
+    //odobri porudbinu
 
+    //prikaz svih agencija
 
-
-        
-
-       
-       
-
+    //sortiranje i filteri
 
     
+
+    
+
+}
