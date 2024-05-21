@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using backend.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace backend.Controllers
@@ -65,12 +66,17 @@ namespace backend.Controllers
 
         }
         #endregion
-        
-        #region VratiKategorije
-        [HttpGet("VratiKategorije")]
-        public async Task<IActionResult> VratiKategorije(){
+         
+         
+          //ovo vrati sve menije pa ce preko id agencije = novo
+        #region VratiSveMenije
+        [HttpGet("VratiSveMenije/{idAgencije}")]
+        public async Task<IActionResult> VratiSveMenije(int idAgencije){
             try{
-                int idAgencije = int.Parse((HttpContext.Items["idAgencije"] as string)!);
+                var kategorije = await Context.Kategorije.Include(x=>x.ListaMenija).Where(x=>x.Agencija!.Id == idAgencije).ToListAsync();
+
+
+                
                 // if (HttpContext.Items.TryGetValue("idAgencije", out var idAgencijeObj))
                 // {
                 //     idAgencije = int.Parse(idAgencijeObj as string);
@@ -81,13 +87,13 @@ namespace backend.Controllers
                 //     return BadRequest("kako si minus");
                 // }
                 //Agencija? agencija = await Context.Agencije.FindAsync(idAgencije);
-                var kategorije = await Context.Kategorije.Where(k=>k.Agencija!.Id == idAgencije).ToListAsync();
+               // var kategorije = await Context.Kategorije.Where(k=>k.Agencija!.Id == idAgencije).ToListAsync();
 
                 if (kategorije == null){
                     return BadRequest("Nema takvih kategorija i agencija zajedno");
                 }
                 else {
-                    return Ok(kategorije);
+                    return Ok(new { kategorije });
                 }   
 
                 }
@@ -99,37 +105,41 @@ namespace backend.Controllers
         }
 
         #endregion
-      
 
-        #region PrikaziSveMenijeJedneAgencije
-        [HttpGet("PrikaziSveMenije/{idKategorije}")]
-        public async Task<IActionResult> PrikaziSveMenije(int idKategorije){
+        #region PrikaziAgenciju
+        [HttpGet("PrikaziAgenciju/{idAgencije}")]
+        public async Task<ActionResult> PrikaziAgenciju(int idAgencije){
             try{
-             
-                var meniji = await Context.MenijiKeteringa.Where(k=>k.Kategorija!.Id== idKategorije).ToListAsync();
+                var agencija= await Context.Agencije.Include(x =>x.KategorijeMenija).Where(x =>x.Id == idAgencije).FirstOrDefaultAsync();
 
-            if (meniji == null){
-                return BadRequest("Nema takvih kategorija i agencija zajedno");
-            }
-            else {
-                return Ok(meniji);
-            }   
+                if (agencija == null){
+                    return Ok("Ne postoji trazena agencija");
+                }
+
+                return Ok(agencija);
+
 
             }
-            catch(Exception ex){
-                return BadRequest(ex.Message);
-            }
+            catch(Exception e)
+            {
+                return BadRequest(e.Message);
 
+            }
         }
 
         #endregion
 
-       //put i delete
+
+        
+        //put i delete
         #region ObrisiKategoriju
         [HttpDelete("ObrisiKategoriju/{KategorijaID}")]
         public async Task<ActionResult> ObrisiKategoriju (int KategorijaID){
             try{
-                var kategorija = await Context.Kategorije.Include(x => x.ListaMenija).FirstOrDefaultAsync(x =>x.Id==KategorijaID);
+
+                int idAgencije = int.Parse((HttpContext.Items["idAgencije"] as string)!);
+
+                var kategorija = await Context.Kategorije.Include(x => x.ListaMenija).Where(x =>x.Agencija!.Id==idAgencije).FirstOrDefaultAsync(x =>x.Id==KategorijaID);
 
 
 
@@ -153,45 +163,315 @@ namespace backend.Controllers
         }
         #endregion
 
-        //OceniAgencijuZaKetering
-
-        #region OceniAgenciju
-        [HttpPut("OceniAgenciju/{idAgencije}/{novaOcena}")]
-        public async Task<ActionResult> OceniAgenciju(int idAgencije, int novaOcena){
+        
+        #region DodavanjeMenija
+        //radi
+        [HttpPost("DodajMeni/{idKategorije}")]
+        public async Task<ActionResult> DodajMeni([FromBody]MeniKeteringa meniketeringa, int idKategorije){
             try{
-                var agencija = await Context.Agencije.FindAsync(idAgencije);
 
-                if (agencija== null){
-                    return BadRequest("Ne postoji takva agencija");
+                int idAgencije = int.Parse((HttpContext.Items["idAgencije"] as string)!);
+
+                Kategorija? kategorija = await Context.Kategorije.Include(x => x.Agencija).Where(x =>x.Id == idKategorije).SingleOrDefaultAsync();
+                if (kategorija == null){
+                    return BadRequest("Ne postoji kategorija sa tim id-jem");
                 }
 
-                agencija.BrojOcena ++;
+                var meni = new MeniKeteringa{
+                    Naziv = meniketeringa.Naziv,
+                    CenaMenija = meniketeringa.CenaMenija,
+                    Slika = meniketeringa.Slika,
+                    Opis = meniketeringa.Opis,
+                    SastavMenija = meniketeringa.SastavMenija,
+                    Kategorija = kategorija
 
-                agencija.Ocena = (agencija.Ocena + novaOcena)/agencija.BrojOcena;
+                };
 
-                Context.Agencije.Update(agencija);
-
+                await Context.MenijiKeteringa.AddAsync(meni);
                 await Context.SaveChangesAsync();
-
-                return Ok(agencija);
-
+                return Ok(meni);
                 
-
+            
             }
             catch(Exception ex){
                 return BadRequest(ex.Message);
             }
+
+
+        }
+
+        #endregion
+
+
+        #region AzurirajMeni
+       
+        [HttpPut("AzurirajMeni")]
+        public async Task<ActionResult> AzurirajMeni([FromBody]MeniKeteringa meni)
+        {
+            try
+            {
+                 int idAgencije = int.Parse((HttpContext.Items["idAgencije"] as string)!);
+                                                         
+
+
+                MeniKeteringa? m = await Context.MenijiKeteringa.Include(x=>x.Kategorija).Where(x => x.Id == meni.Id).Where(x =>x.Kategorija!
+                .Agencija!.Id == idAgencije).IgnoreQueryFilters().FirstOrDefaultAsync();
+                
+                
+                if (m == null){
+                    return BadRequest("Meni ne postoji");
+                }
+
+
+                m.CenaMenija = meni.CenaMenija;
+                m.Kategorija = meni.Kategorija;
+                m.Naziv=meni.Naziv;
+                m.Opis=meni.Opis;
+                m.SastavMenija=meni.SastavMenija;
+                m.Slika=meni.Slika;
+                
+                
+                
+                await Context.SaveChangesAsync();
+
+                return Ok(new { m });
+
+                // if (meni == null)
+                // {
+                //     return BadRequest("Pogresno unet meni"); 
+                // }
+
+                // meni.CenaMenija = NovaCena; // Ažuriramo cenu menija
+
+                // Context.MenijiKeteringa.Update(meni); // Označavamo meni kao ažuriran
+
+                // await Context.SaveChangesAsync(); // Čuvamo promene u bazi podataka
+
+                // return Ok(meni); // Vraćamo ažurirani meni
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message); // Vraćamo grešku ako dođe do izuzetka
+            }
+        }
+
+        #endregion
+
+        #region ObrisiMeni
+        [HttpDelete("ObrisiMeni/{MeniID}")]
+        public async Task<ActionResult> ObrisiMeni (int MeniID){
+            try{
+
+                int idAgencije = int.Parse((HttpContext.Items["idAgencije"] as string)!);
+
+                var meni = await Context.MenijiKeteringa.FindAsync(MeniID);
+                if (meni == null){
+                    return BadRequest("Pogresno unet meni");
+                }
+
+                Context.MenijiKeteringa.Remove(meni);
+                await Context.SaveChangesAsync(); 
+
+                return Ok("Obrisan je");
+
+
+            }
+            catch (Exception e){
+                return BadRequest(e.Message);
+            }
+
+            
+        }
+
+        #endregion
+
+     
+
+        #region ObrisiAgenciju
+
+        [HttpDelete("ObrisiAgenciju")]
+
+        public async Task<ActionResult> ObrisiAgenciju(){
+            try{
+
+
+             int idAgencije = int.Parse((HttpContext.Items["idAgencije"] as string)!);
+
+
+             Agencija? agencija  = await Context.Agencije.FindAsync(idAgencije);
+
+             Context.Agencije.Remove(agencija!);
+
+              await Context.SaveChangesAsync(); 
+
+              return Ok("Obrisan je");
+
+
+
+            }
+            catch(Exception e){
+                return BadRequest(e.Message);
+
+            }  
+
+
+        }
+
+        #endregion
+        // #region  PrikaziSveMenije
+        // [HttpGet("PrikaziSveMenije/{idKategorije}")]
+        // public async Task<IActionResult> PrikaziSveMenije(int idKategorije){
+        //     try{
+             
+        //         var meniji = await Context.MenijiKeteringa.Where(k=>k.Kategorija!.Id== idKategorije).ToListAsync();
+
+        //     if (meniji == null){
+        //         return BadRequest("Nema takvih kategorija i agencija zajedno");
+        //     }
+        //     else {
+        //         return Ok(meniji);
+        //     }   
+
+        //     }
+        //     catch(Exception ex){
+        //         return BadRequest(ex.Message);
+        //     }
+
+        // }
+
+        // #endregion
+
+
+        // #region PrikaziSveMenijeJedneAgencije
+        // [HttpGet("PrikaziSveMenije/{idKategorije}")]
+        // public async Task<IActionResult> PrikaziSveMenije(int idKategorije){
+        //     try{
+             
+        //         var meniji = await Context.MenijiKeteringa.Where(k=>k.Kategorija!.Id== idKategorije).ToListAsync();
+
+        //     if (meniji == null){
+        //         return BadRequest("Nema takvih kategorija i agencija zajedno");
+        //     }
+        //     else {
+        //         return Ok(meniji);
+        //     }   
+
+        //     }
+        //     catch(Exception ex){
+        //         return BadRequest(ex.Message);
+        //     }
+
+        // }
+
+        //#endregion
+
+
+        //prikazi sve porudzbine
+        #region  PrikaziSvePorudzbine
+        [HttpGet("PrikaziSvePorudzbine")]
+        public async Task<IActionResult> PrikaziSvePorudzbine(){
+            try
+            {
+                int idAgencije = int.Parse((HttpContext.Items["idAgencije"] as string)!);
+
+                var zahtevizaketering = await Context.ZahteviZaKetering
+                                                                    .Where(i => i.Agencija!.Id == idAgencije)
+                                                                    .IgnoreQueryFilters()
+                                                                    .ToListAsync();
+
+
+
+                
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e);
+            }
         }
         #endregion
-        
+
+        //odobri porudbinu
+        #region  OdobriPorudzbinu
+        [HttpPut("OdobriPorudzbinu/{idZahteva}")]
+        public async Task<IActionResult> OdobriPorudzbinu(int idZahteva){
+            try
+            {
+
+                var zahtevizaketering = await Context.ZahteviZaKetering.FirstOrDefaultAsync(x => x.Id == idZahteva);
 
 
-
-        
-
-       
-       
+                if(zahtevizaketering != null && zahtevizaketering.StatusRezervacije == false){
+                    zahtevizaketering.StatusRezervacije = !zahtevizaketering.StatusRezervacije; 
+                }
 
 
+                
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e);
+            }
+        }
+        #endregion
+
+        #region  OdbijanjePoridzbine
+        [HttpGet("OdbijanjePoridzbine/{idZahteva}")]
+        public async Task<IActionResult> OdbijanjePoridzbine(int idZahteva){
+            try
+            {
+
+                var zahtevizaketering = await Context.ZahteviZaKetering.FirstOrDefaultAsync(x => x.Id == idZahteva);
+
+                if(zahtevizaketering == null){
+                    return BadRequest();
+                }
+
+                zahtevizaketering.ZakupljeniOglas = null;
+
+                Context.Remove(zahtevizaketering);
+
+                
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e);
+            }
+        }
+        #endregion
+
+        #region  PosaljiZahtevZaKetering
+        [HttpGet("PosaljiZahtevZaKetering/{idZakupljenOglas}")]
+        public async Task<IActionResult> PosaljiZahtevZaKetering(int idZakupljenOglas){
+            try
+            {
+                
+                //zavrsi meeeeee
+                
+                
+
+                
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e);
+            }
+        }
+        #endregion
+    
     }
+
+
+    
+    //prikaz svih agencija
+
+    //sortiranje i filteri
+
+    
+
+    
+
 }

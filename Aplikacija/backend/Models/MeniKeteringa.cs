@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace backend.Models
@@ -22,6 +23,8 @@ namespace backend.Models
 
 
         public required List<string> SastavMenija {get; set; }// pecivo, cevapi
+
+        [JsonIgnore]
         public  Kategorija? Kategorija { get; set; }//Slatko/slano
 
 
