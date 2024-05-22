@@ -257,6 +257,35 @@ namespace backend.Controllers
 
             return jwt;
         }
+
+
+        //
+        [HttpPut("Logout")]
+        public async Task<IActionResult> Logout(){
+             try{
+
+            int idKorisnika = int.Parse((HttpContext.Items["idKorisnika"] as string)!);
+
+
+            Korisnik? k  = await Context.Korisnici.FindAsync(idKorisnika);
+
+            if (k==null){
+                return BadRequest("nema korisnika");
+            }
+
+            k.RefreshToken= null;
+             
+
+              await Context.SaveChangesAsync(); 
+
+            return Ok("Obrisan je korisnik");
+
+
+    }
+    catch(Exception ex){
+        return BadRequest(ex.Message);
+    }
+        }
     }
 }
 
