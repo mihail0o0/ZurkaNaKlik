@@ -12,8 +12,8 @@ using WebTemplate.Models;
 namespace WebTemplate.Migrations
 {
     [DbContext(typeof(ZurkaNaKlikDbContext))]
-    [Migration("20240508114604_v1")]
-    partial class v1
+    [Migration("20240522173850_FixTableNames")]
+    partial class FixTableNames
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -100,8 +100,7 @@ namespace WebTemplate.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Role")
-                        .HasColumnType("int")
-                        .HasColumnName("Role");
+                        .HasColumnType("int");
 
                     b.Property<string>("SlikaProfila")
                         .HasColumnType("nvarchar(max)");
@@ -252,6 +251,9 @@ namespace WebTemplate.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("AgencijaId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("DatumRezervacije")
                         .HasColumnType("datetime2");
 
@@ -262,6 +264,8 @@ namespace WebTemplate.Migrations
                         .HasColumnType("bit");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AgencijaId");
 
                     b.ToTable("ZahteviZaKetering");
                 });
@@ -384,6 +388,15 @@ namespace WebTemplate.Migrations
                     b.Navigation("VlasnikOglasa");
                 });
 
+            modelBuilder.Entity("backend.Models.ZahtevZaKetering", b =>
+                {
+                    b.HasOne("backend.Models.Agencija", "Agencija")
+                        .WithMany("ListaZahtevZaKetering")
+                        .HasForeignKey("AgencijaId");
+
+                    b.Navigation("Agencija");
+                });
+
             modelBuilder.Entity("backend.Models.ZakupljeniOglas", b =>
                 {
                     b.HasOne("backend.Models.Korisnik", "Korisnik")
@@ -425,6 +438,8 @@ namespace WebTemplate.Migrations
             modelBuilder.Entity("backend.Models.Agencija", b =>
                 {
                     b.Navigation("KategorijeMenija");
+
+                    b.Navigation("ListaZahtevZaKetering");
                 });
 
             modelBuilder.Entity("backend.Models.Korisnik", b =>
