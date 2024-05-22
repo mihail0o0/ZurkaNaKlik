@@ -1,4 +1,4 @@
-import { CreateUserDTO, LoginPayload } from "@/store/api/endpoints/auth/types";
+import { CreateAgencyDTO, CreateUserDTO, LoginPayload } from "@/store/api/endpoints/auth/types";
 import Joi from "joi";
 
 const customTlds = ["com", "net", "org"];
@@ -29,14 +29,12 @@ const nameVal = Joi.string()
   .required()
   .min(4)
   .max(40)
-  .alphanum()
   .label("Ime")
   .messages({
     "string.base": "{{#label}} mora biti niz karaktera",
     "string.empty": "{{#label}} ne može biti prazno.",
     "string.min": "{{#label}} mora imati najmanje {{#limit}} karaktera.",
     "string.max": "{{#label}} mora imati najmanje {{#limit}} karaktera.",
-    "string.alphanum": "{{#label}} može sadržati samo alfanumeričke znakove.",
   });
 
 const lastNameVal = Joi.string()
@@ -141,6 +139,17 @@ export const userSignUpSchema = Joi.object<CreateUserDTO>({
   repeatPassword: passwordVal,
   role: roleVal,
 });
+
+export const agencySignUpSchema = Joi.object<CreateAgencyDTO>({
+  name: nameVal,
+  phoneNumber: phoneNumberVal,
+  email: emailVal,
+  location: cityValReq,
+  password: passwordVal,
+  repeatPassword: passwordVal,
+  role: roleVal,
+});
+
 
 export const agencyRegisterSchema = Joi.object({
   name: nameVal,

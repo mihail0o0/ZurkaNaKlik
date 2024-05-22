@@ -17,4 +17,12 @@ export type CreateUserDTO = Required<Omit<User, "id">> & {
   repeatPassword: string;
 };
 
+
+export type CreateAgencyDTO = Required<Omit<User, "id">> & {
+  location: string;
+  password: string;
+  repeatPassword: string;
+};
+
+
 // TODO fali updateUserDTO

@@ -5,14 +5,13 @@ namespace backend.Models
 {
     public class RegistrationAgencija
     {
-        public required string Ime { get; set; }
+        public required string name { get; set; }
         [EmailAddress(ErrorMessage = "Email adresa nije u ispravnom formatu.")]
-        public required string Email { get; set; }
-        public required string BrTel { get; set; }
-        public required string Lozinka { get; set; }
+        public required string email { get; set; }
+        public required string phoneNumber { get; set; }
+        public required string location { get; set; }
+        public required string password { get; set; }
+        public required string repeatPassword { get; set; }
         public Roles Role { get; set; } = Roles.Agencija;
-        public required string Lokacija { get; set; }
-        
-        
     }
 }
