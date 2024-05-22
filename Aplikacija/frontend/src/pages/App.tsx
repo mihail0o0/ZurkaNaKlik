@@ -21,10 +21,15 @@ const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<RootHeader />}>
       <Route index element={<HomePage />} />
+
+      {/* za prijavljene korisnike */}
       <Route element={<ProtectedRoute />}>
         <Route path="testing" element={<TestingPage />} />
+        <Route path="mix" element={<TestingPage />} />
+
       </Route>
 
+      {/* za prijavu */}
       <Route element={<RedirectBack />}>
         <Route path="login" element={<UserLoginPage />} />
         <Route path="user/signup" element={<UserSignUpPage />} />
