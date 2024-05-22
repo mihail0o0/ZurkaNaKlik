@@ -32,6 +32,7 @@ namespace backend.Utilities
             return loginResult;
         }
 
+
         public Korisnik FromRegistrationKorisnik(RegistrationKorisnik registrationKorisnik, string passwordHash)
         {
             var korisnik = new Korisnik
@@ -46,6 +47,21 @@ namespace backend.Utilities
             };
 
             return korisnik;
+        }
+
+        public Agencija FromRegistrationAgencija(RegistrationAgencija registrationAgencija, string passwordHash)
+        {
+            var agencija = new Agencija
+            {
+                Ime = registrationAgencija.name,
+                Email = registrationAgencija.email,
+                BrTel = registrationAgencija.phoneNumber,
+                LozinkaHash = passwordHash,
+                Role = Roles.Korisnik,
+                Lokacija = registrationAgencija.location
+            };
+
+            return agencija;
         }
 
 
