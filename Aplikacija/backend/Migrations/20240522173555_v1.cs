@@ -41,21 +41,6 @@ namespace WebTemplate.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ZahteviZaKetering",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    KonacnaCena = table.Column<int>(type: "int", nullable: false),
-                    StatusRezervacije = table.Column<bool>(type: "bit", nullable: false),
-                    DatumRezervacije = table.Column<DateTime>(type: "datetime2", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ZahteviZaKetering", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Kategorije",
                 columns: table => new
                 {
@@ -111,6 +96,51 @@ namespace WebTemplate.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ZahteviZaKetering",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    KonacnaCena = table.Column<int>(type: "int", nullable: false),
+                    StatusRezervacije = table.Column<bool>(type: "bit", nullable: false),
+                    DatumRezervacije = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    AgencijaId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ZahteviZaKetering", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ZahteviZaKetering_KorisniciAgencije_AgencijaId",
+                        column: x => x.AgencijaId,
+                        principalTable: "KorisniciAgencije",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "KorisnikOglasObjekta",
+                columns: table => new
+                {
+                    ListaKorisnikaOmiljeniOglasId = table.Column<int>(type: "int", nullable: false),
+                    ListaOmiljenihOglasaObjekataId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_KorisnikOglasObjekta", x => new { x.ListaKorisnikaOmiljeniOglasId, x.ListaOmiljenihOglasaObjekataId });
+                    table.ForeignKey(
+                        name: "FK_KorisnikOglasObjekta_KorisniciAgencije_ListaKorisnikaOmiljeniOglasId",
+                        column: x => x.ListaKorisnikaOmiljeniOglasId,
+                        principalTable: "KorisniciAgencije",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_KorisnikOglasObjekta_OglasiObjekta_ListaOmiljenihOglasaObjekataId",
+                        column: x => x.ListaOmiljenihOglasaObjekataId,
+                        principalTable: "OglasiObjekta",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "MenijiKeteringa",
                 columns: table => new
                 {
@@ -137,30 +167,6 @@ namespace WebTemplate.Migrations
                         column: x => x.ZahtevZaKeteringId,
                         principalTable: "ZahteviZaKetering",
                         principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "KorisnikOglasObjekta",
-                columns: table => new
-                {
-                    ListaKorisnikaOmiljeniOglasId = table.Column<int>(type: "int", nullable: false),
-                    ListaOmiljenihOglasaObjekataId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_KorisnikOglasObjekta", x => new { x.ListaKorisnikaOmiljeniOglasId, x.ListaOmiljenihOglasaObjekataId });
-                    table.ForeignKey(
-                        name: "FK_KorisnikOglasObjekta_KorisniciAgencije_ListaKorisnikaOmiljeniOglasId",
-                        column: x => x.ListaKorisnikaOmiljeniOglasId,
-                        principalTable: "KorisniciAgencije",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_KorisnikOglasObjekta_OglasiObjekta_ListaOmiljenihOglasaObjekataId",
-                        column: x => x.ListaOmiljenihOglasaObjekataId,
-                        principalTable: "OglasiObjekta",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -222,6 +228,11 @@ namespace WebTemplate.Migrations
                 name: "IX_OglasiObjekta_VlasnikOglasaId",
                 table: "OglasiObjekta",
                 column: "VlasnikOglasaId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ZahteviZaKetering_AgencijaId",
+                table: "ZahteviZaKetering",
+                column: "AgencijaId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ZakupljeniOglasi_KorisnikId",
