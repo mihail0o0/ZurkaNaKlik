@@ -63,7 +63,7 @@ const baseQueryWithAuth: BaseQueryFn<
           const refreshResultData = refreshResult.data as LoginResponse;
 
           api.dispatch(setToken(refreshResultData.accessToken));
-          api.dispatch(setUser(refreshResultData.user));
+          api.dispatch(setUser(refreshResultData.loginResult));
 
           result = await baseQuery(args, api, extraOptions);
         } else {

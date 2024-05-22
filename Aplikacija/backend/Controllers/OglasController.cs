@@ -62,6 +62,23 @@ namespace backend.Controllers
             }
         }
         #endregion
+
+        
+        #region VratiSveGradove
+        [HttpGet("VratiSveGradove")]
+        public async Task<ActionResult> VratiSveGradove(){ //dodaj sortiranje
+            try{
+                var gradovi = await Context.OglasiObjekta.Select(x =>x.Grad).Distinct().OrderBy(grad =>grad).ToListAsync();
+
+               return Ok(gradovi);
+            }
+            catch(Exception e){
+                return BadRequest(e);
+            }
+        }
+        #endregion
+
+
         
 
     //+filteri

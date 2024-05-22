@@ -9,6 +9,7 @@ type Props = {
   color?: string;
   bgColor?: string;
   heading?: boolean;
+  onClick?: () => void;
 };
 
 const LabeledAvatar = ({
@@ -19,6 +20,7 @@ const LabeledAvatar = ({
   color,
   bgColor,
   heading,
+  onClick,
 }: Props) => {
   const avatarStyle = {
     fontFamily: heading ? "Poppins" : undefined,
@@ -27,7 +29,7 @@ const LabeledAvatar = ({
   };
 
   return (
-    <div className={style.container}>
+    <div onClick={onClick} className={style.container}>
       <p style={avatarStyle}>{text}</p>
       <UserAvatar
         src={src}

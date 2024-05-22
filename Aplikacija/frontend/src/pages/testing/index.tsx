@@ -1,5 +1,5 @@
 import LabeledAvatar from "@/components/LabeledAvatar";
-import Button from "@/components/lib/button";
+import MojButton from "@/components/lib/button";
 import Input from "@/components/lib/inputs/text-input";
 import PageSpacer from "@/components/lib/page-spacer";
 import { Avatar } from "@mui/material";
