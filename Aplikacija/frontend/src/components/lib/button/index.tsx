@@ -6,13 +6,15 @@ type Props = {
   onClick: React.MouseEventHandler<HTMLButtonElement> | (() => void);
   grey?: boolean;
   icon?: string;
-  wide?: boolean;
+  wide?: string;
   center?: boolean;
   paddingX?: string;
   paddingY?: string;
   iconMargin?: string;
   color?: string;
   backgroundColor?: string;
+  classes?: string;
+  fontSize?:string;
 };
 
 const MojButton = ({
@@ -27,6 +29,8 @@ const MojButton = ({
   iconMargin,
   color,
   backgroundColor,
+  classes,
+  fontSize,
 }: Props) => {
   color ??= grey ? "black" : "white";
   backgroundColor ??= grey ?"var(--lightGrey)" : "var(--mainColor)"; 
@@ -44,7 +48,7 @@ const MojButton = ({
     borderRadius: "var(--borderRadiusMedium)",
     backgroundColor: backgroundColor,
     color: color,
-    fontSize: "19px",
+    fontSize:  fontSize ?? "18px",
     fontWeight: "500",
     width: wide ? "100%" : "fit-content",
     transition: "150ms all",
@@ -56,7 +60,7 @@ const MojButton = ({
   };
 
   return icon ? (
-    <button className="mainButton" style={buttonStyle} onClick={onClick}>
+    <button  className={`mainButton ${classes}`} style={buttonStyle} onClick={onClick}>
       <Icon iconMargin={iconMargin} icon={icon} />
       <span style={textStyle}>{text}</span>
     </button>
