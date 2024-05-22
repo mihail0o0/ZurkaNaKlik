@@ -58,10 +58,31 @@ namespace backend.Controllers
                 return Ok(new { oglasi });
             }
             catch(Exception e){
-                return BadRequest(e);
+                return BadRequest(e.Message);
             }
         }
         #endregion
+
+        
+        #region VratiSveGradove
+        [HttpGet("VratiSveGradove")]
+        public async Task<ActionResult> VratiSveGradove(){ //dodaj sortiranje
+            try{
+                var gradovi = await Context.OglasiObjekta.Select(x =>x.Grad).Distinct().OrderBy(grad =>grad).ToListAsync();
+
+                if (gradovi == null){
+                    return BadRequest("nema jos oglasa za objekte");
+                }
+
+               return Ok(gradovi);
+            }
+            catch(Exception e){
+                return BadRequest(e.Message);
+            }
+        }
+        #endregion
+
+
         
 
     //+filteri
