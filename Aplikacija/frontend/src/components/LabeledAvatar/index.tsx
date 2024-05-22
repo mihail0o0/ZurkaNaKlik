@@ -29,7 +29,7 @@ const LabeledAvatar = ({
   };
 
   return (
-    <div onClick={onClick} className={style.container}>
+    <div onClick={onClick} className={`${style.container} ${onClick ? "cursorPointer" : ""}`}>
       <p style={avatarStyle}>{text}</p>
       <UserAvatar
         src={src}

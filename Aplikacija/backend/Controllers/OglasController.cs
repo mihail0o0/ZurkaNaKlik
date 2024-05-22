@@ -47,42 +47,72 @@ namespace backend.Controllers
         #endregion
 
         #region VratiOglase
-        [HttpGet("VratiOglase/{pageNumber}/{pageSize}")]
-        public async Task<ActionResult> VratiOglase(int pageNumber, int pageSize){ //dodaj sortiranje
+        [HttpPost("VratiOglase/{pageNumber}/{pageSize}")]
+        public async Task<ActionResult> VratiOglase([FromBody]Filters filteri, int pageNumber, int pageSize){ //dodaj sortiranje
             try{
+                // public class Filters
+                // {
+                //     public List<EnumTipProslava>? TipProslava { get; set; }
+                //     public List<EnumTipProstora>? TipProstora { get; set; }
+                //     public string? Grad { get; set; }
+                //     public int CenaOd { get; set; }
+                //     public int CenaDo { get; set; }
+                //     public int KvadraturaOd { get; set; }
+                //     public int KvadraturaDo { get; set; }
+                //     public List<EnumGrejanje>? Grejanje { get; set; }
+                //     public List<EnumDodatnaOprema>? DodatnaOprema { get; set; }
+                //     public DateTime DatumOd { get; set; }
+                //     public DateTime DatumDo { get; set; }
+                // }
                 List<OglasObjekta> oglasi = await Context.OglasiObjekta
                              .Skip((pageNumber - 1) * pageSize)
                              .Take(pageSize)
                              .ToListAsync();
 
+                if(filteri.TipProslava != null && filteri.TipProslava!.Count != 0){
+                    oglasi = oglasi.Where(oglas => oglas.ListaTipProslava.Any(tip => filteri.TipProslava!.Contains(tip))).ToList();
+                }
+
+                if(filteri.TipProstora != null && filteri.TipProstora!.Count != 0){
+                    oglasi = oglasi.Where(oglas => oglas.ListaTipProstora.Any(tip => filteri.TipProstora!.Contains(tip))).ToList();
+                }
+
+                if(filteri.Grad != null){
+                    oglasi = oglasi.Where(oglas => oglas.Grad.Equals(filteri.Grad)).ToList();
+                }
+
+                if(filteri.CenaOd >= 0 && filteri.CenaDo <= Int32.MaxValue && filteri.CenaOd < filteri.CenaDo){
+                    oglasi = oglasi.Where(oglas => oglas.CenaPoDanu >= filteri.CenaOd && oglas.CenaPoDanu <= filteri.CenaDo).ToList();
+                }
+
+                if(filteri.KvadraturaOd >= 0 && filteri.KvadraturaDo <= Int32.MaxValue && filteri.KvadraturaOd < filteri.KvadraturaDo){
+                    oglasi = oglasi.Where(oglas => oglas.Kvadratura >= filteri.KvadraturaOd && oglas.Kvadratura <= filteri.KvadraturaDo).ToList();
+                }
+
+                if(filteri.Grejanje != null){
+                    oglasi = oglasi.Where(oglas => filteri.Grejanje.Contains(oglas.Grejanje)).ToList();
+                }
+
+                if(filteri.DodatnaOprema != null && filteri.DodatnaOprema!.Count != 0){
+                    oglasi = oglasi.Where(oglas => oglas.ListDodatneOpreme.Any(tip => filteri.DodatnaOprema!.Contains(tip))).ToList();
+                }
+
+                
+                    // List<DateTime> sviDaniUOpsegu = Enumerable.Range(0, (filteri.DatumDo - filteri.DatumOd).Days + 1)
+                    //                             .Select(offset => filteri.DatumOd.AddDays(offset))
+                    //                             .ToList();
+
+                    //oglasi = oglasi.Where(oglas => !oglas.ZauzetiDani!.Any(zauzetDan => sviDaniUOpsegu.Contains(zauzetDan)))
+                                //.ToList();
+                
+
                 return Ok(new { oglasi });
             }
             catch(Exception e){
-                return BadRequest(e.Message);
+                return BadRequest(e);
             }
         }
         #endregion
-
-        
-        #region VratiSveGradove
-        [HttpGet("VratiSveGradove")]
-        public async Task<ActionResult> VratiSveGradove(){ //dodaj sortiranje
-            try{
-                var gradovi = await Context.OglasiObjekta.Select(x =>x.Grad).Distinct().OrderBy(grad =>grad).ToListAsync();
-
-                if (gradovi == null){
-                    return BadRequest("nema jos oglasa za objekte");
-                }
-
-               return Ok(gradovi);
-            }
-            catch(Exception e){
-                return BadRequest(e.Message);
-            }
-        }
-        #endregion
-
-
         
 
     //+filteri

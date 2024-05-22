@@ -76,28 +76,22 @@ namespace backend.Controllers
                     return BadRequest(ModelState);
                 }
 
-                var postojiEmail = await Context.Korisnici.AnyAsync(k => k.Email == request.Email);
+                var postojiEmail = await Context.Korisnici.AnyAsync(k => k.Email == request.email);
                 if (postojiEmail)
                 {
                     return BadRequest("Korisnik sa ovim email-om već postoji.");
                 }
 
-                string lozinkaHash = BCrypt.Net.BCrypt.HashPassword(request.Lozinka);
-                var agencija = new Agencija
-                {
-                    Ime = request.Ime,
-                    Email = request.Email,
-                    BrTel = request.BrTel,
-                    LozinkaHash = lozinkaHash,
-                    Role = request.Role,
-                    Lokacija = request.Lokacija,
-                };
+                string lozinkaHash = BCrypt.Net.BCrypt.HashPassword(request.password);
+                var agencija = ObjectCreatorSingleton.Instance.FromRegistrationAgencija(request, lozinkaHash);
+                
+                LoginResult loginResult = ObjectCreatorSingleton.Instance.ToLoginResult(agencija);
 
                 string accessToken = prijava(agencija);
                 await Context.Agencije.AddAsync(agencija);
                 await Context.SaveChangesAsync();
 
-                return Ok(new { accessToken, agencija });
+                return Ok(new { accessToken, loginResult });
             }
             catch (Exception e)
             {
@@ -257,9 +251,37 @@ namespace backend.Controllers
 
             return jwt;
         }
+
+
+        //
+        [HttpPut("Logout")]
+        public async Task<IActionResult> Logout(){
+             try{
+
+            int idKorisnika = int.Parse((HttpContext.Items["idKorisnika"] as string)!);
+
+
+            Korisnik? k  = await Context.Korisnici.FindAsync(idKorisnika);
+
+            if (k==null){
+                return BadRequest("nema korisnika");
+            }
+
+            k.RefreshToken= null;
+             
+
+              await Context.SaveChangesAsync(); 
+
+            return Ok("Obrisan je korisnik");
+
+
+    }
+    catch(Exception ex){
+        return BadRequest(ex.Message);
+    }
+        }
     }
 }
 
-//http only cooke na backend i tu da smestam jwt i to da seljem
-
+// logout ruta
 

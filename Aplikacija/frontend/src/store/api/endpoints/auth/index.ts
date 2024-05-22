@@ -1,11 +1,18 @@
 import api from "../..";
-import { CreateUserDTO, LoginPayload, LoginResponse } from "./types";
+import { CreateAgencyDTO, CreateUserDTO, LoginPayload, LoginResponse } from "./types";
 
 const authApiSlice = api.injectEndpoints({
   endpoints: (builder) => ({
     userSignUp: builder.mutation<LoginResponse, CreateUserDTO>({
       query: (body) => ({
         url: "Auth/RegistrationKorisnik",
+        method: "Post",
+        body,
+      }),
+    }),
+    agencySignUp: builder.mutation<LoginResponse, CreateAgencyDTO>({
+      query: (body) => ({
+        url: "Auth/RegistrationAgencija",
         method: "Post",
         body,
       }),
@@ -24,6 +31,7 @@ const authApiSlice = api.injectEndpoints({
 
 export const {
   useUserSignUpMutation,
+  useAgencySignUpMutation,
   useUserLoginMutation,
   useLogoutMutation,
 } = authApiSlice;
