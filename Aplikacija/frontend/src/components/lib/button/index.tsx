@@ -11,9 +11,11 @@ type Props = {
   paddingX?: string;
   paddingY?: string;
   iconMargin?: string;
+  color?: string;
+  backgroundColor?: string;
 };
 
-const Button = ({
+const MojButton = ({
   text,
   onClick,
   grey,
@@ -23,7 +25,12 @@ const Button = ({
   paddingX,
   paddingY,
   iconMargin,
+  color,
+  backgroundColor,
 }: Props) => {
+  color ??= grey ? "black" : "white";
+  backgroundColor ??= grey ?"var(--lightGrey)" : "var(--mainColor)"; 
+  
   const buttonStyle: CSSProperties = {
     position: "relative",
     display: "flex",
@@ -35,8 +42,8 @@ const Button = ({
     paddingRight: paddingX ?? "28px",
     border: "none",
     borderRadius: "var(--borderRadiusMedium)",
-    backgroundColor: grey ? "var(--lightGrey)" : "var(--mainColor)",
-    color: grey ? "black" : "white",
+    backgroundColor: backgroundColor,
+    color: color,
     fontSize: "19px",
     fontWeight: "500",
     width: wide ? "100%" : "fit-content",
@@ -60,4 +67,4 @@ const Button = ({
   );
 };
 
-export default Button;
+export default MojButton;

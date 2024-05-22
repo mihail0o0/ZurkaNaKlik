@@ -16,13 +16,19 @@ import TestingPage from "./testing";
 import ProtectedRoute from "@/components/AuthProvider/ProtectedRoute";
 import UserSignUpPage from "./login/UserSignUp";
 import RedirectBack from "@/components/AuthProvider/RedirectBack";
+import Search from "./search";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<RootHeader />}>
       <Route index element={<HomePage />} />
+
+      {/* za prijavljene korisnike */}
       <Route element={<ProtectedRoute />}>
+        <Route path="search" element={<Search />} />
         <Route path="testing" element={<TestingPage />} />
+        <Route path="mix" element={<TestingPage />} />
+
       </Route>
 
       <Route element={<RedirectBack />}>

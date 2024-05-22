@@ -282,7 +282,7 @@ namespace backend.Controllers
         #endregion
 
 
-#region ZakupiOglas
+        #region ZakupiOglas
 [HttpPost("ZakupiOglas/{idOglasa}/trazenidatumi")]
 public async Task<ActionResult> ZakupiOglas(int idOglasa, List<DateTime> trazenidatumi){
     try {
@@ -327,18 +327,129 @@ public async Task<ActionResult> ZakupiOglas(int idOglasa, List<DateTime> trazeni
 
 #endregion
 
+//Otkazi zakup objekta
+
+#region Otkazi zakup objekta
 
 
-//zakupi ketering!! samo uz objekat
+[HttpDelete("OtkaziRezervacijuObjekta/{idZakupljenogOglasa}")]
+public async Task<ActionResult> OtkaziRezervacijuObjekta(int idZakupljenogOglasa){
+    try{
+        int idKorisnika = int.Parse((HttpContext.Items["idKorisnika"] as string)!);
+
+
+
+
+        var korisnik = await Context.Korisnici.FindAsync(idKorisnika);
+       
+        var oglas = await Context.ZakupljeniOglasi.Include(x =>x.Korisnik).Where(x =>x.Korisnik.Id == idKorisnika)
+        .Where(x =>x.Id == idZakupljenogOglasa).FirstOrDefaultAsync();
+
+        if(oglas == null){
+            return BadRequest("Ne postoji takav zakupljen oglas");
+        }
+
+        korisnik!.ListaZakupljenihOglasa!.Remove(oglas);
+        Context.ZakupljeniOglasi.Remove(oglas);
+
+        return Ok(oglas);
+
+
+    }
+    catch(Exception ex){
+        return BadRequest(ex.Message);
+    }
+}
+
+#endregion
+
 
 
 
         
-// Prikaz omiljenih oglasa (idKorisnika)
+#region Prikaz omiljenih oglasa (idKorisnika)
+
+[HttpGet("PrikaziSveOmiljeneOglase")]
+public async Task<IActionResult> PrikaziSveOmiljeneOglase(){
+
+    try{
+    int idKorisnika = int.Parse((HttpContext.Items["idKorisnika"] as string)!);
+
+    //Korisnik? korisnik = await Context.Korisnici.FindAsync(idKorisnika);
+
+    var omiljenioglasi = await Context.Korisnici.Where(x =>x.Id ==idKorisnika).Select(x => x.ListaOmiljenihOglasaObjekata).ToArrayAsync();
+
+    return Ok(omiljenioglasi);
+
+    }
+    catch (Exception e){
+        return BadRequest(e.Message);
+    }
+
+}
+
+#endregion
 // Izmena podataka (idKorisnika)
-// Obrisi nalog
-// Dodaj omiljeni oglas (idKorisnika, idOglasa)
+
+
+#region ObrisiKorisnika
+
+[HttpDelete("ObrisiKorisnika")]
+public async Task<ActionResult> ObrisiKorisnika(){
+    try{
+
+            int idKorisnika = int.Parse((HttpContext.Items["idKorisnika"] as string)!);
+
+
+             Korisnik? k  = await Context.Korisnici.FindAsync(idKorisnika);
+
+             Context.Korisnici.Remove(k!);
+
+              await Context.SaveChangesAsync(); 
+
+            return Ok("Obrisan je korisnik");
+
+
+    }
+    catch(Exception ex){
+        return BadRequest(ex.Message);
+    }
+}
+
+#endregion
+
+// Izmena podataka (idKorisnika)
+
+#region IzmeniPodatkeOKorisniku
+[HttpPut("IzmeniPodatkeOKorisniku")]
+public async Task<ActionResult> IzmeniPodatkeOKorisniku([FromBody]Korisnik korisnik){
+    try{
+        int idKorisnika = int.Parse((HttpContext.Items["idKorisnika"] as string)!);
+
+        var k = new {
+            Ime = korisnik.Ime,
+            Email = korisnik.Email,
+            BrTel = korisnik.BrTel,
+            LozinkaHash = korisnik.LozinkaHash,
+            SlikaProfila = korisnik.SlikaProfila,
+            Lokacija = korisnik.Lokacija
+        };
+
+        await Context.SaveChangesAsync();
+        return Ok(new { k });
+
+
+    }
+    catch(Exception ex){
+        return BadRequest(ex.Message);
     }
 
 
 }
+
+#endregion
+
+    }
+}
+
+
