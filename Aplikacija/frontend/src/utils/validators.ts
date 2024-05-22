@@ -17,7 +17,7 @@ const passwordVal = Joi.string()
   .required()
   .min(8)
   .max(30)
-  .label("Sifra")
+  .label("Lozinka")
   .messages({
     "string.base": "{{#label}} mora biti niz karaktera",
     "string.empty": "{{#label}} ne može biti prazna.",

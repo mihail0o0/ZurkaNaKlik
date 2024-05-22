@@ -22,11 +22,14 @@ const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<RootHeader />}>
       <Route index element={<HomePage />} />
+
+      {/* za prijavljene korisnike */}
       <Route element={<ProtectedRoute />}>
         <Route path="search" element={<Search />} />
         <Route path="testing" element={<TestingPage />} />
-      </Route>
+        <Route path="mix" element={<TestingPage />} />
 
+      </Route>
 
       <Route element={<RedirectBack />}>
         <Route path="login" element={<UserLoginPage />} />

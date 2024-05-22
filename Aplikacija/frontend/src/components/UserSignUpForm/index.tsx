@@ -1,6 +1,6 @@
 import { SyntheticEvent, useState } from "react";
 import { Form, useNavigate } from "react-router-dom";
-import Button from "@/components/lib/button";
+import MojButton from "@/components/lib/button";
 import Input from "@/components/lib/inputs/text-input";
 
 // import authAction from "../../actions/authAction";
@@ -10,7 +10,7 @@ import {
 } from "@/store/api/endpoints/auth";
 import { CreateUserDTO } from "@/store/api/endpoints/auth/types";
 import { Role } from "@/models/role";
-import { setToken, setUser } from "@/store/auth";
+import { logOut, setToken, setUser } from "@/store/auth";
 import { useAppDispatch } from "@/store";
 
 const UserSignUpForm = () => {
@@ -141,7 +141,7 @@ const UserSignUpForm = () => {
           error={repeatPasswordError}
         />
       </div>
-      <Button
+      <MojButton
         text={"Prijavi se"}
         onClick={handleSubmit}
         wide={true}

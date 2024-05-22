@@ -40,3 +40,19 @@
   background-color: var(--lightGrey);
   transition: 150ms all;
 }
+
+.popoverContent {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  justify-content: center;
+  padding: 10px;
+}
+
+.popoverItem{
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  margin: 0 8px;
+  cursor: pointer;
+}

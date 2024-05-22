@@ -1,6 +1,6 @@
 import { SyntheticEvent, useState } from "react";
 import { Form, useLocation, useNavigate } from "react-router-dom";
-import Button from "@/components/lib/button";
+import MojButton from "@/components/lib/button";
 import Input from "@/components/lib/inputs/text-input";
 
 import { userLoginSchema } from "@/utils/validators";
@@ -84,7 +84,7 @@ const UserLoginForm = () => {
           error={passwordError}
         />
       </div>
-      <Button
+      <MojButton
         text={"Prijavi se"}
         onClick={handleSubmit}
         wide={true}
