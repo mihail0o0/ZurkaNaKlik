@@ -1,26 +1,16 @@
 import { NavLink, Outlet } from "react-router-dom";
 import style from "./style.module.css";
 import { useSelector } from "react-redux";
-import { selectAuthToken, selectUser } from "@/store/auth";
+import { selectUser } from "@/store/auth";
 import LabeledAvatar from "@/components/LabeledAvatar";
-import { Dialog, DialogTitle, Popover, Typography } from "@mui/material";
+import { Popover, Typography } from "@mui/material";
 import { useState } from "react";
-import MojButton from "@/components/lib/button";
 import Icon from "@/components/lib/icon";
-import { link } from "joi";
 
 const RootHeader = () => {
   const [anchor, setAnchor] = useState<HTMLDivElement | null>();
   const [open, setOpen] = useState(false);
   const user = useSelector(selectUser);
-
-  // const onOpen = () => {
-  //   setOpen(true);
-  // };
-
-  // const onClose = () => {
-  //   setOpen(false);
-  // }
 
   const onClick = (event: React.MouseEvent<HTMLDivElement>) => {
     setAnchor(event.currentTarget);
@@ -58,8 +48,10 @@ const RootHeader = () => {
                 <div className={style.popoverContent}>
                   {texts.map((text, index) => (
                     <NavLink
+                      key={text}
                       style={{ textDecoration: "none", color: "black" }}
                       to={links[index]}
+                      onClick={() => setOpen(false)}
                     >
                       <div className={style.popoverItem}>
                         <Icon classes="pointer" icon={icons[index]} />
@@ -69,10 +61,6 @@ const RootHeader = () => {
                   ))}
                 </div>
               </Popover>
-
-              {/* <Dialog open={open} onClose={() => setOpen(false)}>
-                <p>Radi</p>
-              </Dialog> */}
             </div>
           )}
           {!user && (
