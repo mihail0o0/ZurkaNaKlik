@@ -97,43 +97,22 @@ namespace backend.Controllers
                     oglasi = oglasi.Where(oglas => oglas.ListDodatneOpreme.Any(tip => filteri.DodatnaOprema!.Contains(tip))).ToList();
                 }
 
-                if(filteri.DatumOd != null && filteri.DatumDo != null){
-                    List<DateTime> sviDaniUOpsegu = Enumerable.Range(0, (filteri.DatumDo - filteri.DatumOd).Days + 1)
-                                                .Select(offset => filteri.DatumOd.AddDays(offset))
-                                                .ToList();
-                                                
-                    oglasi = oglasi.Where(oglas => !oglas.ZauzetiDani!.Any(zauzetDan => sviDaniUOpsegu.Contains(zauzetDan)))
-                                .ToList();
-                }
+                
+                    // List<DateTime> sviDaniUOpsegu = Enumerable.Range(0, (filteri.DatumDo - filteri.DatumOd).Days + 1)
+                    //                             .Select(offset => filteri.DatumOd.AddDays(offset))
+                    //                             .ToList();
+
+                    //oglasi = oglasi.Where(oglas => !oglas.ZauzetiDani!.Any(zauzetDan => sviDaniUOpsegu.Contains(zauzetDan)))
+                                //.ToList();
+                
 
                 return Ok(new { oglasi });
             }
             catch(Exception e){
-                return BadRequest(e.Message);
+                return BadRequest(e);
             }
         }
         #endregion
-
-        
-        #region VratiSveGradove
-        [HttpGet("VratiSveGradove")]
-        public async Task<ActionResult> VratiSveGradove(){ //dodaj sortiranje
-            try{
-                var gradovi = await Context.OglasiObjekta.Select(x =>x.Grad).Distinct().OrderBy(grad =>grad).ToListAsync();
-
-                if (gradovi == null){
-                    return BadRequest("nema jos oglasa za objekte");
-                }
-
-               return Ok(gradovi);
-            }
-            catch(Exception e){
-                return BadRequest(e.Message);
-            }
-        }
-        #endregion
-
-
         
 
     //+filteri
