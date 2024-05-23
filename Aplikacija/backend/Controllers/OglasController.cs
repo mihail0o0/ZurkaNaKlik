@@ -46,9 +46,9 @@ namespace backend.Controllers
         }
         #endregion
 
-        #region VratiOglase
-        [HttpPost("VratiOglase/{pageNumber}/{pageSize}/{sort}")]
-        public async Task<ActionResult> VratiOglase([FromBody]Filters filteri, int pageNumber, int pageSize, string sort){ //dodaj sortiranje
+        #region VratiOglaseSaFilterimaISortiranjem
+        [HttpPost("VratiOglase/{pageNumber}/{pageSize}")]
+        public async Task<ActionResult> VratiOglase([FromBody]Filters filteri, int pageNumber, int pageSize){ //dodaj sortiranje
             try{
                 // public class Filters
                 // {
@@ -66,7 +66,7 @@ namespace backend.Controllers
                 // }
                 List<OglasObjekta> oglasi = await Context.OglasiObjekta.ToListAsync();
 
-                switch(sort){
+                switch(filteri.Sort){
                     case "CenaRastuca":
                         oglasi = oglasi.OrderBy(o => o.CenaPoDanu).ToList();
                         break;
@@ -81,9 +81,7 @@ namespace backend.Controllers
                         break;
                     default:
                         return BadRequest("Ne postoji sort");
-                }
-
-                             
+                }     
 
                 if(filteri.TipProslava != null && filteri.TipProslava!.Count != 0){
                     oglasi = oglasi.Where(oglas => oglas.ListaTipProslava.Any(tip => filteri.TipProslava!.Contains(tip))).ToList();
@@ -113,8 +111,7 @@ namespace backend.Controllers
                     oglasi = oglasi.Where(oglas => oglas.ListDodatneOpreme.Any(tip => filteri.DodatnaOprema!.Contains(tip))).ToList();
                 }
 
-                
-                List<DateTime> sviDaniUOpsegu = Enumerable.Range(0, (filteri.DatumDo - filteri.DatumOd).Days + 1)
+                List<DateTime> sviDaniUOpsegu = Enumerable.Range(0, (filteri.DatumDo.Date - filteri.DatumOd.Date).Days + 1)
                                             .Select(offset => filteri.DatumOd.AddDays(offset))
                                             .ToList();
 
@@ -132,8 +129,6 @@ namespace backend.Controllers
         }
         #endregion
         
-
-    //+filteri
 
     }
 }

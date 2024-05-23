@@ -20,5 +20,7 @@ namespace backend.Models
 
         [JsonIgnore]
         public List<ZakupljeniOglas>? ListaZakupljenihOglasa { get; set; }
+
+        
     }
 }

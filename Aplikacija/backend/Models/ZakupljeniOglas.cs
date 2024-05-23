@@ -9,8 +9,8 @@ namespace backend.Models
     {
         [Key]
         public int Id { get; set; }
-        public required OglasObjekta Oglas { get; set; }
-        public required Korisnik Korisnik { get; set; }
+        public OglasObjekta? Oglas { get; set; }
+        public Korisnik? Korisnik { get; set; }
         public DateTime DatumZakupa { get; set; }
         public DateTime ZakupljenOd { get; set; }
         public DateTime ZakupljenDo { get; set; }
