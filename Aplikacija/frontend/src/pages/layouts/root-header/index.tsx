@@ -28,14 +28,18 @@ const RootHeader = () => {
           {user && (
             <div>
               <div onClick={onClick}>
-                <LabeledAvatar heading text={user.name} />
+                <LabeledAvatar classes="cursorPointer" heading text={user.name} />
               </div>
               <Popover
                 anchorEl={anchor}
                 open={open}
                 anchorOrigin={{
                   vertical: "bottom",
-                  horizontal: "left",
+                  horizontal: "center",
+                }}
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "center",
                 }}
                 // TODO stavi ovo u defaultni stilovi
                 sx={{

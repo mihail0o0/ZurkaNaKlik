@@ -6,7 +6,7 @@ type Props = {
   onClick: React.MouseEventHandler<HTMLButtonElement> | (() => void);
   grey?: boolean;
   icon?: string;
-  wide?: string;
+  wide?: boolean;
   center?: boolean;
   paddingX?: string;
   paddingY?: string;
