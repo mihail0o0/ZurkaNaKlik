@@ -27,11 +27,11 @@ namespace backend.Models
         public required List<string> Slike { get; set; }
         [Range(0, 5)]
         public double? Ocena { get; set; }
-        public int BrojOcena { get; set; }
+        public int? BrojOcena { get; set; }
         [JsonIgnore]
         public List<Korisnik>? ListaKorisnikaOmiljeniOglas { get; set; }
         
-        public List<DateTime>? ZauzetiDani { get; set; } = [];
+        public List<DateTime>? ZauzetiDani { get; set; }
         [JsonIgnore]
         public Korisnik? VlasnikOglasa { get; set; }
     }

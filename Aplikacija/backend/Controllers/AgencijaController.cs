@@ -442,25 +442,7 @@ namespace backend.Controllers
         }
         #endregion
 
-        #region  PosaljiZahtevZaKetering
-        [HttpGet("PosaljiZahtevZaKetering/{idZakupljenOglas}")]
-        public async Task<IActionResult> PosaljiZahtevZaKetering(int idZakupljenOglas){
-            try
-            {
-                
-                //zavrsi meeeeee
-                
-                
-
-                
-                return Ok();
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e);
-            }
-        }
-        #endregion
+       
     
     }
 
