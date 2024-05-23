@@ -467,18 +467,24 @@ public async Task<ActionResult> OtkaziRezervacijuObjekta(int idZakupljenogOglasa
 
 
 
-        oglas.Oglas.Zau);
 
+        var daniZaUklanjanje = oglas.Oglas.ZauzetiDani!
+                .Where(d => sviDaniUOpsegu.Contains(d))
+                .ToList();
 
-        // });
+            // Ukloni datume iz liste ZauzetiDani
+        oglas.Oglas.ZauzetiDani!.RemoveAll(d => sviDaniUOpsegu.Contains(d));
 
-        korisnik!.ListaZakupljenihOglasa!.Remove(oglas);
+            // Sačuvaj promene u bazi
+        Context.SaveChanges();
+
         Context.ZakupljeniOglasi.Remove(oglas);
 
         return Ok(oglas);
 
+           
+        }
 
-    }
     catch(Exception ex){
         return BadRequest(ex.Message);
     }
