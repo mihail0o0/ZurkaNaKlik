@@ -12,7 +12,7 @@ const UserAvatar = ({ src, letter, size, color, bgColor }: Props) => {
   return (
     <Avatar
       src={src}
-      sx={{ width: size, height: size, color: color, bgColor: bgColor }}
+      sx={{ width: size, height: size, color: color, backgroundColor: bgColor }}
     >
       {letter}
     </Avatar>

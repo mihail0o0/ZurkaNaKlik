@@ -3,8 +3,10 @@ import style from "../style.module.css";
 import LoginLabel from "@/components/lib/labels/login";
 import PageSpacer from "@/components/lib/page-spacer";
 import AgencySignUpForm from "@/components/AgencySignUpForm";
+import { useLocation } from "react-router-dom";
 
 const AgencySignUp = () => {
+
   return (
     <>
       <PageSpacer variant="xs" />
