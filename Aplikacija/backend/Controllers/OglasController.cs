@@ -47,8 +47,8 @@ namespace backend.Controllers
         #endregion
 
         #region VratiOglase
-        [HttpPost("VratiOglase/{pageNumber}/{pageSize}")]
-        public async Task<ActionResult> VratiOglase([FromBody]Filters filteri, int pageNumber, int pageSize){ //dodaj sortiranje
+        [HttpPost("VratiOglase/{pageNumber}/{pageSize}/{sort}")]
+        public async Task<ActionResult> VratiOglase([FromBody]Filters filteri, int pageNumber, int pageSize, string sort){ //dodaj sortiranje
             try{
                 // public class Filters
                 // {
@@ -64,10 +64,26 @@ namespace backend.Controllers
                 //     public DateTime DatumOd { get; set; }
                 //     public DateTime DatumDo { get; set; }
                 // }
-                List<OglasObjekta> oglasi = await Context.OglasiObjekta
-                             .Skip((pageNumber - 1) * pageSize)
-                             .Take(pageSize)
-                             .ToListAsync();
+                List<OglasObjekta> oglasi = await Context.OglasiObjekta.ToListAsync();
+
+                switch(sort){
+                    case "CenaRastuca":
+                        oglasi = oglasi.OrderBy(o => o.CenaPoDanu).ToList();
+                        break;
+                    case "CenaOpadajuce":
+                        oglasi = oglasi.OrderByDescending(o => o.CenaPoDanu).ToList();
+                        break;
+                    case "OcenaRastuce":
+                        oglasi = oglasi.OrderBy(o => ((double)(o.Ocena ?? 0))).ToList();
+                        break;
+                    case "OcenaOpadajuce":
+                        oglasi = oglasi.OrderByDescending(o => ((double)(o.Ocena ?? 0))).ToList();
+                        break;
+                    default:
+                        return BadRequest("Ne postoji sort");
+                }
+
+                             
 
                 if(filteri.TipProslava != null && filteri.TipProslava!.Count != 0){
                     oglasi = oglasi.Where(oglas => oglas.ListaTipProslava.Any(tip => filteri.TipProslava!.Contains(tip))).ToList();
@@ -98,13 +114,15 @@ namespace backend.Controllers
                 }
 
                 
-                    // List<DateTime> sviDaniUOpsegu = Enumerable.Range(0, (filteri.DatumDo - filteri.DatumOd).Days + 1)
-                    //                             .Select(offset => filteri.DatumOd.AddDays(offset))
-                    //                             .ToList();
+                List<DateTime> sviDaniUOpsegu = Enumerable.Range(0, (filteri.DatumDo - filteri.DatumOd).Days + 1)
+                                            .Select(offset => filteri.DatumOd.AddDays(offset))
+                                            .ToList();
 
-                    //oglasi = oglasi.Where(oglas => !oglas.ZauzetiDani!.Any(zauzetDan => sviDaniUOpsegu.Contains(zauzetDan)))
-                                //.ToList();
+                oglasi = oglasi.Where(oglas => !oglas.ZauzetiDani!.Any(zauzetDan => sviDaniUOpsegu.Contains(zauzetDan)))
+                            .ToList();
                 
+                oglasi = oglasi.Skip((pageNumber - 1) * pageSize)
+                             .Take(pageSize).ToList();
 
                 return Ok(new { oglasi });
             }

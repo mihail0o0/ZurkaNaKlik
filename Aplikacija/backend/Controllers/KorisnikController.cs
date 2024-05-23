@@ -147,6 +147,7 @@ namespace backend.Controllers
                     Opis = dodatOglas.Opis,
                     Slike = dodatOglas.Slike,
                     BrojOcena = dodatOglas.BrojOcena,
+                    ZauzetiDani = dodatOglas.ZauzetiDani,
                     VlasnikOglasa = korisnik
                 };
 
@@ -302,7 +303,6 @@ public async Task<ActionResult> ZakupiOglas(int idOglasa, List<DateTime> trazeni
 
         if (slobodan){
             oglas.ZauzetiDani!.AddRange(trazenidatumi);
-            await Context.SaveChangesAsync();
 
             var zakupljenoglas = new ZakupljeniOglas {
                 Oglas = oglas,
@@ -312,6 +312,8 @@ public async Task<ActionResult> ZakupiOglas(int idOglasa, List<DateTime> trazeni
                 ZakupljenDo = trazenidatumi[trazenidatumi.Count - 1]
             };
 
+            await Context.SaveChangesAsync();
+            
             return Ok(new { zakupljenoglas});
 
         }  
