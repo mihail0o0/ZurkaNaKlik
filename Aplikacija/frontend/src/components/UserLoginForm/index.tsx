@@ -14,6 +14,8 @@ const UserLoginForm = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
+  console.log(location.state?.from);
+
   const [emailText, setMailText] = useState("");
   const [passwordText, setPasswordText] = useState("");
 
