@@ -35,10 +35,12 @@
     
 }
 .TekstDivVeliki>h1{
+  display: flex;
     color:aliceblue;
     
 }
 .TekstDivMali>p{
+  display: flex;
     color:aliceblue;
     
 }
@@ -73,5 +75,14 @@
 
   .dugme{
     font-size: 4px !important;
+  }
+  .SearchKartice{
+    background-color: #d3d3d3;
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    padding: 30px;
+    word-wrap: break-word;
+    
   }
   

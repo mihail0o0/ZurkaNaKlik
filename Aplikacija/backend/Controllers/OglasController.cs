@@ -130,5 +130,26 @@ namespace backend.Controllers
         #endregion
         
 
+<<<<<<< HEAD
+=======
+    [HttpGet("VratiSveGradove")]
+    public async Task<IActionResult> VratiSveGradove(){
+        try{
+            var gradovi = await Context.OglasiObjekta.Select(x =>x.Grad).Distinct().ToListAsync();
+
+            if (gradovi == null){
+                return BadRequest("Nema jos objekata pa ni gradova");
+            }
+
+            return Ok(gradovi);
+        
+
+        }
+        catch(Exception e){
+            return BadRequest(e.Message);
+        }
+    }
+
+>>>>>>> 0eb45a0cfdd9c23fdabcc976c1bceb339152bc31
     }
 }
