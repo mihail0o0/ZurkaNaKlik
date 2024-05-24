@@ -2,32 +2,39 @@ import { CSSProperties, useState } from "react";
 import style from "./style.module.css";
 import Icon from "../lib/icon";
 import { Typography } from "@mui/material";
+import MojButton from "../lib/button";
 
 type Props = {
   nazivProstora: string;
   slika: string;
   tipProslave: string;
-  favorite: boolean;
+  isFavorite: boolean;
   prosecnaOcena: string;
   opis: string;
   cena: string;
   brojLjudi: string;
   lokacija: string;
   onClick: React.MouseEventHandler<HTMLButtonElement> | (() => void);
+
 };
 
-const OglasKartica = ({
+const OglasKartica = (
+ 
+  {
   nazivProstora,
   slika,
   tipProslave,
-  favorite,
+  isFavorite,
   prosecnaOcena,
   opis,
   cena,
   brojLjudi,
   lokacija,
   onClick,
+ 
 }: Props) => {
+  const[favorite,setFavorite]=useState(isFavorite);
+  function updateFavorite(){setFavorite(prevFavorite => !prevFavorite);}
   const OglasKarticaStyle: CSSProperties = {};
   return (
     <div className={style.GlavniDiv}>
@@ -37,11 +44,22 @@ const OglasKartica = ({
           <div>
             <p>{tipProslave}</p>
           </div>
-
+          {/* <MojButton text="" icon={
+              favorite
+                ? "favorite"
+                : "not_favorite"
+            } 
+            onClick={favoriteClick}
+            backgroundColor="transparent"
+            /> */}
           <img
+            onClick={updateFavorite}
             src={
-              favorite ? "../public/images/favorite.png" : "../public/images/not_favorite.png"
+              favorite
+                ? "../public/images/favorite.png"
+                : "../public/images/not_favorite.png"
             }
+            alt={favorite ? "Favorite" : "Not Favorite"}
           />
         </div>
       </div>
@@ -55,9 +73,7 @@ const OglasKartica = ({
               <p>{prosecnaOcena}</p>
             </div>
           </div>
-          <div className={style.Opis}>
-            {opis}
-          </div>
+          <div className={style.Opis}>{opis}</div>
         </div>
         {/* ovde cena broj lokacija */}
         <div className={style.CenaBrojLokacija}>
