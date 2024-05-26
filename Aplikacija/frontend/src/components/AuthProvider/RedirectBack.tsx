@@ -12,7 +12,7 @@ const RedirectBack = () => {
     if (token) {
       if (location.state?.from && location.state?.from.pathname !== "/logout") {
         // console.log(location.state?.from.pathname);
-        navigate(location.state.from);
+        // navigate(location.state.from);
         return;
       }
       navigate("/home");

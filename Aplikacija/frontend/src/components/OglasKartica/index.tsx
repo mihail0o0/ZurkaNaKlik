@@ -15,12 +15,9 @@ type Props = {
   brojLjudi: string;
   lokacija: string;
   onClick: React.MouseEventHandler<HTMLButtonElement> | (() => void);
-
 };
 
-const OglasKartica = (
- 
-  {
+const OglasKartica = ({
   nazivProstora,
   slika,
   tipProslave,
@@ -31,10 +28,11 @@ const OglasKartica = (
   brojLjudi,
   lokacija,
   onClick,
- 
 }: Props) => {
-  const[favorite,setFavorite]=useState(isFavorite);
-  function updateFavorite(){setFavorite(prevFavorite => !prevFavorite);}
+  const [favorite, setFavorite] = useState(isFavorite);
+  function updateFavorite() {
+    setFavorite((prevFavorite) => !prevFavorite);
+  }
   const OglasKarticaStyle: CSSProperties = {};
   return (
     <div className={style.GlavniDiv}>
@@ -73,7 +71,9 @@ const OglasKartica = (
               <p>{prosecnaOcena}</p>
             </div>
           </div>
-          <div className={style.Opis}>{opis}</div>
+          <div className={style.Opis}>
+            <Typography>{opis}</Typography>
+          </div>
         </div>
         {/* ovde cena broj lokacija */}
         <div className={style.CenaBrojLokacija}>

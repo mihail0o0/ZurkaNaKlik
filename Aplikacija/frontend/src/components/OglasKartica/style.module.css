@@ -65,10 +65,10 @@
     align-items: center;
     justify-content: center;
 }
+
 .Opis{
+    max-height: 300px;
     padding: 10px;
-    display: flex;
-    justify-content: center;
 }
 .Cena,.BrojLjudi,.Lokacija{
     display: flex;
