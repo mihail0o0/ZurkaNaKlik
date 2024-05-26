@@ -130,8 +130,6 @@ namespace backend.Controllers
         #endregion
         
 
-<<<<<<< HEAD
-=======
     [HttpGet("VratiSveGradove")]
     public async Task<IActionResult> VratiSveGradove(){
         try{
@@ -150,6 +148,5 @@ namespace backend.Controllers
         }
     }
 
->>>>>>> 0eb45a0cfdd9c23fdabcc976c1bceb339152bc31
     }
 }
