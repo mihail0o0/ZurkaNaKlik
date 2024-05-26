@@ -31,7 +31,7 @@ function UserLoginPage() {
             />
           </div>
         </div>
-        <div className={style.loginElements}>
+        <div className={style.loginElements}> 
           <UserLoginForm />
         </div>
       </div>
