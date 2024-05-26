@@ -57,7 +57,7 @@ namespace backend.Utilities
                 Email = registrationAgencija.email,
                 BrTel = registrationAgencija.phoneNumber,
                 LozinkaHash = passwordHash,
-                Role = Roles.Korisnik,
+                Role = Roles.Agencija,
                 Lokacija = registrationAgencija.location
             };
 

@@ -15,6 +15,7 @@ type Props = {
   backgroundColor?: string;
   classes?: string;
   fontSize?:string;
+  small?: boolean;
 };
 
 const MojButton = ({
@@ -31,6 +32,7 @@ const MojButton = ({
   backgroundColor,
   classes,
   fontSize,
+  small,
 }: Props) => {
   color ??= grey ? "black" : "white";
   backgroundColor ??= grey ?"var(--lightGrey)" : "var(--mainColor)"; 
@@ -40,12 +42,12 @@ const MojButton = ({
     display: "flex",
     alignItems: "center",
     justifyContent: center ? "center" : "flex-start",
-    paddingTop: paddingY ?? "20px",
-    paddingBottom: paddingY ?? "20px",
-    paddingLeft: paddingX ?? "28px",
-    paddingRight: paddingX ?? "28px",
+    paddingTop: paddingY ?? small ? "12px" : "20px",
+    paddingBottom: paddingY ?? small ? "12px" : "20px",
+    paddingLeft: paddingX ?? small ? "14px" : "28px",
+    paddingRight: paddingX ?? small ? "14px" : "28px",
     border: "none",
-    borderRadius: "var(--borderRadiusMedium)",
+    borderRadius: small ? "var(--borderRadiusSmall)" : "var(--borderRadiusMedium)",
     backgroundColor: backgroundColor,
     color: color,
     fontSize:  fontSize ?? "18px",
@@ -60,7 +62,7 @@ const MojButton = ({
   };
 
   return icon ? (
-    <button  className={`mainButton ${classes}`} style={buttonStyle} onClick={onClick}>
+    <button className={`mainButton ${classes}`} style={buttonStyle} onClick={onClick}>
       <Icon iconMargin={iconMargin} icon={icon} />
       <span style={textStyle}>{text}</span>
     </button>

@@ -76,7 +76,7 @@ namespace backend.Controllers
                     return BadRequest(ModelState);
                 }
 
-                var postojiEmail = await Context.Korisnici.AnyAsync(k => k.Email == request.email);
+                var postojiEmail = await Context.Agencije.AnyAsync(k => k.Email == request.email);
                 if (postojiEmail)
                 {
                     return BadRequest("Korisnik sa ovim email-om već postoji.");
@@ -253,33 +253,34 @@ namespace backend.Controllers
         }
 
 
-        //
+        #region Logout
         [HttpPut("Logout")]
         public async Task<IActionResult> Logout(){
-             try{
+            try{
 
-            int idKorisnika = int.Parse((HttpContext.Items["idKorisnika"] as string)!);
+                int idKorisnika = int.Parse((HttpContext.Items["idKorisnika"] as string)!);
 
 
-            Korisnik? k  = await Context.Korisnici.FindAsync(idKorisnika);
+                Korisnik? k  = await Context.Korisnici.FindAsync(idKorisnika);
 
-            if (k==null){
-                return BadRequest("nema korisnika");
+                if (k==null){
+                    return BadRequest("nema korisnika");
+                }
+
+                k.RefreshToken= null;
+                
+
+                await Context.SaveChangesAsync(); 
+
+                return Ok("Obrisan je korisnik");
+
+
             }
-
-            k.RefreshToken= null;
-             
-
-              await Context.SaveChangesAsync(); 
-
-            return Ok("Obrisan je korisnik");
-
-
-    }
-    catch(Exception ex){
-        return BadRequest(ex.Message);
-    }
+            catch(Exception ex){
+                return BadRequest(ex.Message);
+            }
         }
+        #endregion
     }
 }
 

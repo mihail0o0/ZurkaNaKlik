@@ -11,8 +11,8 @@ const RedirectBack = () => {
   useEffect(() => {
     if (token) {
       if (location.state?.from && location.state?.from.pathname !== "/logout") {
-        console.log(location.state?.from.pathname);
-        // navigate(location.state.from);
+        // console.log(location.state?.from.pathname);
+        navigate(location.state.from);
         return;
       }
       navigate("/home");
