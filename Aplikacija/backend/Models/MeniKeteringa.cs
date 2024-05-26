@@ -20,8 +20,6 @@ namespace backend.Models
 
        // public int KolicinaUKG { get; set; } //?
 
-
-
         public required List<string> SastavMenija {get; set; }// pecivo, cevapi
 
         [JsonIgnore]

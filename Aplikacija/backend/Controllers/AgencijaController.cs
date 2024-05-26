@@ -38,7 +38,7 @@ namespace backend.Controllers
                 }
 
                 List<Kategorija>? kategorija = await Context.Kategorije.Where(k => k.Agencija.Id == idAgencije).ToListAsync();
-                
+
                 return Ok(kategorija);
             }
             catch (Exception ex)
@@ -314,21 +314,21 @@ namespace backend.Controllers
         {
             try
             {
-
                 int idAgencije = int.Parse((HttpContext.Items["idAgencije"] as string)!);
 
+                // TODO ovo ne sme tako da se radi
                 var meni = await Context.MenijiKeteringa.FindAsync(MeniID);
                 if (meni == null)
                 {
                     return BadRequest("Pogresno unet meni");
                 }
 
+                // var kategorijaMenija = await Context.Kategorije.FindAsync();
+
                 Context.MenijiKeteringa.Remove(meni);
                 await Context.SaveChangesAsync();
 
-                return Ok("Obrisan je");
-
-
+                return Ok(meni);
             }
             catch (Exception e)
             {
@@ -341,6 +341,40 @@ namespace backend.Controllers
         #endregion
 
 
+        #region VratiMenije
+        [HttpGet("VratiMenije")]
+        public async Task<ActionResult> VratiMenije(int MeniID)
+        {
+            try
+            {
+                int idAgencije = int.Parse((HttpContext.Items["idAgencije"] as string)!);
+                List<Kategorija>? kategorije = await Context.Kategorije.Where(k => k.Agencija!.Id == idAgencije).ToListAsync();
+
+                List<VratiMenijeResultElement>? meniKeteringa = new();
+
+                if(kategorije == null){
+                    return Ok(meniKeteringa);
+                }
+
+                foreach(Kategorija kat in kategorije){
+                    VratiMenijeResultElement element = new(kat.Id, kat.Naziv);
+                    List<MeniKeteringa>? meniji = await Context.MenijiKeteringa.Where(m => m.Kategorija!.Id == kat.Id).ToListAsync();
+                    element.meniKeteringa = meniji;
+
+                    meniKeteringa.Add(element);
+                }
+
+                return Ok(meniKeteringa);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+
+
+        }
+
+        #endregion
 
         #region ObrisiAgenciju
 
@@ -350,29 +384,19 @@ namespace backend.Controllers
         {
             try
             {
-
-
                 int idAgencije = int.Parse((HttpContext.Items["idAgencije"] as string)!);
-
-
                 Agencija? agencija = await Context.Agencije.FindAsync(idAgencije);
 
                 Context.Agencije.Remove(agencija!);
-
                 await Context.SaveChangesAsync();
 
                 return Ok("Obrisan je");
-
-
-
             }
             catch (Exception e)
             {
                 return BadRequest(e.Message);
 
             }
-
-
         }
 
         #endregion
