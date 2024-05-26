@@ -3,7 +3,7 @@ import Icon from "../icon";
 
 type Props = {
   text?: string;
-  onClick: React.MouseEventHandler<HTMLButtonElement> | (() => void);
+  onClick?: React.MouseEventHandler<HTMLButtonElement> | (() => void);
   grey?: boolean;
   icon?: string;
   wide?: boolean;
