@@ -389,6 +389,7 @@ namespace backend.Controllers
             }
         }
         #endregion
+        
         #region ZakupiOglas
         [HttpPost("ZakupiOglas/{idOglasa}/trazenidatumi")]
         public async Task<ActionResult> ZakupiOglas(int idOglasa, List<DateTime> trazenidatumi)
@@ -415,8 +416,7 @@ namespace backend.Controllers
 
                     oglas.ZauzetiDani!.AddRange(trazenidatumi);
 
-                    ZakupljeniOglas zakupljenoglas = new ZakupljeniOglas
-                    {
+                    ZakupljeniOglas zakupljenoglas = new ZakupljeniOglas {
                         Oglas = oglas,
                         Korisnik = korisnik!,
                         DatumZakupa = DateTime.Now,
@@ -443,38 +443,7 @@ namespace backend.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
-
         #endregion
-        //         bool slobodan = !oglas.ZauzetiDani!.Any(date => trazenidatumi.Contains(date));
-
-        //         if (slobodan){
-        //             oglas.ZauzetiDani!.AddRange(trazenidatumi);
-
-        //             var zakupljenoglas = new ZakupljeniOglas {
-        //                 Oglas = oglas,
-        //                 Korisnik = korisnik!,
-        //                 DatumZakupa = DateTime.Now,
-        //                 ZakupljenOd = trazenidatumi[0],
-        //                 ZakupljenDo = trazenidatumi[trazenidatumi.Count - 1]
-        //             };
-
-        //             await Context.SaveChangesAsync();
-
-        //             return Ok(new { zakupljenoglas});
-
-        //         }  
-        //         else {
-        //             return BadRequest("Objekat je zauzet u datom periodu");
-        //         }
-
-        //     }
-        //     catch(Exception ex){
-        //         return BadRequest(ex.Message);
-        //     }
-        // }
-
-        // #endregion
 
         #region  PosaljiZahtevZaKetering
         [HttpPost("PosaljiZahtevZaKetering/{idZakupljenOglas}/{idAgencije}")]
@@ -522,21 +491,17 @@ namespace backend.Controllers
         #endregion
 
         #region OtkaziZahtevZaKetering
-
         [HttpDelete("OtkaziZahtevZaKetering/{idZakupljenogKeteringa}")]
-        public async Task<ActionResult> OtkaziZahtevZaKetering(int idZakupljenogKeteringa)
-        {
-            try
-            {
+        public async Task<ActionResult> OtkaziZahtevZaKetering(int idZakupljenogKeteringa){
+            try{
                 int idKorisnika = int.Parse((HttpContext.Items["idKorisnika"] as string)!);
 
                 var korisnik = await Context.Korisnici.FindAsync(idKorisnika);
-
+            
                 var ketering = await Context.ZahteviZaKetering
-                .Where(x => x.Id == idZakupljenogKeteringa).FirstOrDefaultAsync();
+                .Where(x =>x.Id == idZakupljenogKeteringa).FirstOrDefaultAsync();
 
-                if (ketering == null)
-                {
+                if(ketering == null){
                     return BadRequest("Ne postoji takav zakupljen oglas");
                 }
 
@@ -547,13 +512,10 @@ namespace backend.Controllers
 
 
             }
-            catch (Exception ex)
-            {
+            catch(Exception ex){
                 return BadRequest(ex.Message);
             }
         }
-
-
         #endregion
 
         #region Otkazi zakup objekta
@@ -590,25 +552,23 @@ namespace backend.Controllers
                         .Where(d => sviDaniUOpsegu.Contains(d))
                         .ToList();
 
-                // Ukloni datume iz liste ZauzetiDani
+                    // Ukloni datume iz liste ZauzetiDani
                 oglas.Oglas.ZauzetiDani!.RemoveAll(d => sviDaniUOpsegu.Contains(d));
 
-                // Sačuvaj promene u bazi
+                    // Sačuvaj promene u bazi
                 Context.SaveChanges();
 
                 Context.ZakupljeniOglasi.Remove(oglas);
 
                 return Ok(oglas);
 
+                
+                }
 
-            }
-
-            catch (Exception ex)
-            {
+            catch(Exception ex){
                 return BadRequest(ex.Message);
             }
         }
-
         #endregion
 
 
@@ -656,7 +616,6 @@ namespace backend.Controllers
 
 
         #region Prikaz omiljenih oglasa (idKorisnika)
-
         [HttpGet("PrikaziSveOmiljeneOglase")]
         public async Task<IActionResult> PrikaziSveOmiljeneOglase()
         {
@@ -749,5 +708,3 @@ namespace backend.Controllers
 
     }
 }
-
-

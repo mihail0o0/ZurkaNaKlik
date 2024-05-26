@@ -38,6 +38,7 @@ const RootHeader = () => {
             </NavLink>
 
             {user && <Navbar user={user} />}
+
             {!user && (
               <NavLink to="/Login" className={style.LoginButtonHeader}>
                 Prijava
