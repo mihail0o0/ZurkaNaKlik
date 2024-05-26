@@ -6,33 +6,34 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 import { selectUser } from "@/store/auth";
 import DivFilteri from "@/pages/search/DivFilteri";
-const HomeImage= ()=>{
-    const nizDugmad = [
-        "Sve",
-        "Rođendan",
-        "Žurka",
-        "Team building",
-        "Momačko veče",
-        "Devojačko vece",
-        "Ostalo",
-      ];
-      const user = useSelector(selectUser);
-    return(
-        <div className={style.SearchDiv}>
-           
-        <div className={style.GoreDiv}>
-          <div className={style.TekstDivVeliki}>
-            <h1>Pronađite svoj savršeni prostor!</h1>
-          </div>
-          <div className={style.TekstDivMali}>
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
-              mattis ornare tortor sed dignissim. Nunc ac ipsum placerat, cursus
-              arcu in, facilisis purus.{" "}
-            </p>
-          </div>
+const HomeImage = () => {
+  const nizDugmad = [
+    "Sve",
+    "Rođendan",
+    "Žurka",
+    "Team building",
+    "Momačko veče",
+    "Devojačko vece",
+    "Ostalo",
+  ];
+  const user = useSelector(selectUser);
+  return (
+    <div className={style.SearchDiv}>
+      <div className={style.GoreDiv}>
+        <div className={style.TekstDivVeliki}>
+          <h1>Pronađite svoj savršeni prostor!</h1>
         </div>
-        <div className={style.DoleDiv}>{user ?   <div className={style.Dugmad}>
+        <div className={style.TekstDivMali}>
+          <p>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed mattis
+            ornare tortor sed dignissim. Nunc ac ipsum placerat, cursus arcu in,
+            facilisis purus.{" "}
+          </p>
+        </div>
+      </div>
+      <div className={style.DoleDiv}>
+        {user ? (
+          <div className={style.Dugmad}>
             {nizDugmad.map((dugme, index) => {
               return (
                 <MojButton
@@ -46,14 +47,31 @@ const HomeImage= ()=>{
                 />
               );
             })}
-          </div> : <div className={style.PrijavaPretrazi}>
-                      <MojButton text="Prijava" backgroundColor="white" color="black" onClick={()=>{}} paddingX="40px" paddingY="15px" />
-                      <MojButton text="Pretrazi" backgroundColor="white" color="black"onClick={()=>{}} paddingX="40px"paddingY="15px" />
-            </div>}
-        
-        {user ? <DivFilteri /> : ""} 
-        </div>
+          </div>
+        ) : (
+          <div className={style.PrijavaPretrazi}>
+            <MojButton
+              text="Prijava"
+              backgroundColor="white"
+              color="black"
+              onClick={() => {}}
+              paddingX="40px"
+              paddingY="15px"
+            />
+            <MojButton
+              text="Pretrazi"
+              backgroundColor="white"
+              color="black"
+              onClick={() => {}}
+              paddingX="40px"
+              paddingY="15px"
+            />
+          </div>
+        )}
+
+        {user ? <DivFilteri /> : ""}
       </div>
-    )
-}
+    </div>
+  );
+};
 export default HomeImage;

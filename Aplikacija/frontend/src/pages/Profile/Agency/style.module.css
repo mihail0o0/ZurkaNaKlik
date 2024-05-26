@@ -1,0 +1,99 @@
+.Glavni{
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    border-radius: 20px;
+    width:80%;
+    padding-left:10px;
+    margin:50px;
+   
+}
+.Gore{
+    display: flex;
+    flex-direction: column;
+    padding:10px;
+}
+.Paragraf{
+    width:50%;
+}
+.DodatneInfo{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+.TxtArea{
+    width: 600px;
+    height: 300px;;
+    padding: 10px;
+    font-size: 16px;
+    border: 2px solid lightgray;
+    border-radius: 20px;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+.Inputs{
+    display: flex;
+    flex-direction: column;
+    padding-right: 20px;
+    width:100%;
+    margin-left:10px;
+}
+.Inputsredi{
+    padding: 10px;
+}
+.Dole{
+    display:flex;
+    flex-direction: column;
+}
+.DodajKategorije{
+    display: flex;
+    flex-direction: column;
+
+}
+.DodajMenije{
+    display: flex;
+    flex-direction: column;
+}
+.InputiOpisPlusic{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+.Kocka{
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    align-items: center;
+    justify-content: center;
+}
+.Red{
+    display: flex;
+    flex-direction: row;
+    padding:10px;
+}
+.Red>Input{
+    padding:5px;
+}
+.TxtAreaMeny{
+    width: 500px;
+    height: 150px;;
+    padding: 10px;
+    font-size: 16px;
+    border: 2px solid lightgray;
+    border-radius: 20px;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    padding: 20px;
+    margin-top: 20px;
+}
+.SacuvajDugme{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 30px;
+    width: 500px;
+}
+.NAJJACEDUGME{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 30px;
+}

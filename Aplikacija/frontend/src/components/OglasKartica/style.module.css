@@ -11,8 +11,6 @@
 .SlikaKartica{
     display: flex;
     flex-direction: column;
-    background-image: url("../public/images/slika-kartica-proba.jpg");
-    
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;

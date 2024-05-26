@@ -35,23 +35,21 @@ const OglasKartica = (
 }: Props) => {
   const[favorite,setFavorite]=useState(isFavorite);
   function updateFavorite(){setFavorite(prevFavorite => !prevFavorite);}
-  const OglasKarticaStyle: CSSProperties = {};
+  const OglasKarticaStyle: CSSProperties = {
+    
+  };
+  const SlikaKartica: CSSProperties={
+    backgroundImage: `url(${slika})`,
+  }
   return (
     <div className={style.GlavniDiv}>
-      <div className={style.SlikaKartica}>
+      <div className={style.SlikaKartica} style={SlikaKartica}>
         {/* ovde ide slika , pa onda tip proslave i dal je omiljeno ili ne */}
         <div className={style.TipOmiljeno}>
           <div>
             <p>{tipProslave}</p>
           </div>
-          {/* <MojButton text="" icon={
-              favorite
-                ? "favorite"
-                : "not_favorite"
-            } 
-            onClick={favoriteClick}
-            backgroundColor="transparent"
-            /> */}
+         
           <img
             onClick={updateFavorite}
             src={
