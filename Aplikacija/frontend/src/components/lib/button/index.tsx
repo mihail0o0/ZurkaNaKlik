@@ -2,7 +2,7 @@ import React, { CSSProperties } from "react";
 import Icon from "../icon";
 
 type Props = {
-  text: string;
+  text?: string;
   onClick: React.MouseEventHandler<HTMLButtonElement> | (() => void);
   grey?: boolean;
   icon?: string;
@@ -64,6 +64,7 @@ const MojButton = ({
   return icon ? (
     <button className={`mainButton ${classes}`} style={buttonStyle} onClick={onClick}>
       <Icon iconMargin={iconMargin} icon={icon} />
+      
       <span style={textStyle}>{text}</span>
     </button>
   ) : (

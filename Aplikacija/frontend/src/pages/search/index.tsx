@@ -3,13 +3,19 @@ import OglasKartica from "@/components/OglasKartica";
 import HomeImage from "@/components/HomeImage";
 
 const Search = () => {
+
+  
+
+  console.log("radi");
+  
   return (
-    <div>
+    <div className={style.SearchGlavni}>
       <HomeImage />
       <div className={style.SearchKartice}>
+        
         <OglasKartica
           nazivProstora="Vila Maria"
-          slika="slika"
+          slika="../public/images/slika-kartica-proba.jpg"
           tipProslave="zurka,proslava"
           isFavorite={false}
           prosecnaOcena="4,5"
@@ -33,7 +39,7 @@ const Search = () => {
         />
         <OglasKartica
           nazivProstora="Vila Maria"
-          slika="slika"
+          slika="../public/images/slika-kartica-proba.jpg"
           tipProslave="zurka,proslava"
           isFavorite={true}
           prosecnaOcena="4,5"

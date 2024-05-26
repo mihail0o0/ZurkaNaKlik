@@ -37,9 +37,9 @@ namespace backend.Controllers
                     return BadRequest("Ne postoji agencija sa tim id-jem");
                 }
 
-                Kategorija? kategorija = await Context.Kategorije.FirstOrDefaultAsync(k => k.Agencija.Id == idAgencije);
-
-                return Ok(new { kategorija });
+                List<Kategorija>? kategorija = await Context.Kategorije.Where(k => k.Agencija.Id == idAgencije).ToListAsync();
+                
+                return Ok(kategorija);
             }
             catch (Exception ex)
             {
