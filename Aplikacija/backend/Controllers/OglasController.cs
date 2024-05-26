@@ -149,7 +149,7 @@ namespace backend.Controllers
         {
             try
             {
-                var gradovi = await Context.OglasiObjekta.Select(x => x.Grad).Distinct().ToListAsync();
+                List<string>? gradovi = await Context.OglasiObjekta.Select(x => x.Grad).Distinct().ToListAsync();
 
                 if (gradovi == null)
                 {
@@ -157,8 +157,6 @@ namespace backend.Controllers
                 }
 
                 return Ok(gradovi);
-
-
             }
             catch (Exception e)
             {
