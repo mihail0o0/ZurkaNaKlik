@@ -16,7 +16,8 @@ namespace backend.Models
         public bool StatusRezervacije { get; set; }
         public DateTime DatumRezervacije { get; set; }
         [JsonIgnore]
-        public required List<MeniKeteringa>? ZakupljeniMeniji { get; set; }
+        [InverseProperty("ListaZahetevaZaKetering")]
+        public List<MeniKeteringa>? ZakupljeniMeniji { get; set; }
         [JsonIgnore]
         public Agencija? Agencija { get; set; }
     }

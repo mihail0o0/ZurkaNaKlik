@@ -135,7 +135,7 @@ namespace backend.Controllers
         public async Task<IActionResult> PrikaziSveKorisnike(){
              try{
                 int idKorisnika = int.Parse((HttpContext.Items["idKorisnika"] as string)!);
-                var korisnik = await Context.Korisnici.Where(x =>x.Id == idKorisnika).FirstAsync();
+                var korisnik = await Context.Korisnici.Where(x =>x.Id == idKorisnika).IgnoreQueryFilters().Include(x => x.ListaZakupljenihOglasa).FirstAsync();
 
                 if (korisnik == null){
                     return BadRequest("Nema korisnika za prikaz");
@@ -146,8 +146,11 @@ namespace backend.Controllers
                 if (listaoglasa == null){
                     return BadRequest("Dati korisnik nema zakupljenih oglasa");
                 }
+                
+                //ovo je bila proba
+                //var sviZakupi = await Context.ZakupljeniOglasi.Include(x => x.Oglas).ToListAsync();
 
-                return Ok(new { listaoglasa });
+                return Ok(new { listaoglasa});
                 
             }
             catch (Exception e)
@@ -391,8 +394,8 @@ namespace backend.Controllers
                         ZahtevZaKetering = null
                     };
 
-                    // Context.ZakupljeniOglasi.Add(zakupljenoglas);
-                    // await Context.SaveChangesAsync();
+                    Context.ZakupljeniOglasi.Add(zakupljenoglas);
+                    await Context.SaveChangesAsync();
                     
                     return Ok(new { zakupljenoglas });
 
@@ -489,7 +492,7 @@ namespace backend.Controllers
 
                 var korisnik = await Context.Korisnici.FindAsync(idKorisnika);
             
-                var oglas = await Context.ZakupljeniOglasi.Include(x =>x.Korisnik).Where(x =>x.Korisnik.Id == idKorisnika)
+                var oglas = await Context.ZakupljeniOglasi.Include(x =>x.Korisnik).Where(x =>x.Korisnik!.Id == idKorisnika)
                 .Where(x =>x.Id == idZakupljenogOglasa).FirstOrDefaultAsync();
 
                 if(oglas == null){
@@ -503,12 +506,12 @@ namespace backend.Controllers
 
 
 
-                var daniZaUklanjanje = oglas.Oglas.ZauzetiDani!
+                var daniZaUklanjanje = oglas.Oglas?.ZauzetiDani!
                         .Where(d => sviDaniUOpsegu.Contains(d))
                         .ToList();
 
                     // Ukloni datume iz liste ZauzetiDani
-                oglas.Oglas.ZauzetiDani!.RemoveAll(d => sviDaniUOpsegu.Contains(d));
+                oglas.Oglas?.ZauzetiDani!.RemoveAll(d => sviDaniUOpsegu.Contains(d));
 
                     // Sačuvaj promene u bazi
                 Context.SaveChanges();
