@@ -15,8 +15,8 @@ namespace backend.Models
         public ZakupljeniOglas? ZakupljeniOglas { get; set; }
         public bool StatusRezervacije { get; set; }
         public DateTime DatumRezervacije { get; set; }
-        [JsonIgnore]
-        public required List<MeniKeteringa>? ZakupljeniMeniji { get; set; }
+        // [JsonIgnore]
+        // public List<MeniKeteringa> ZakupljeniMeniji { get; set; }
         [JsonIgnore]
         public Agencija? Agencija { get; set; }
     }
