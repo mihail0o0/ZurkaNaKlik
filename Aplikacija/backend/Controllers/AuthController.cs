@@ -76,7 +76,7 @@ namespace backend.Controllers
                     return BadRequest(ModelState);
                 }
 
-                var postojiEmail = await Context.Korisnici.AnyAsync(k => k.Email == request.email);
+                var postojiEmail = await Context.Agencije.AnyAsync(k => k.Email == request.email);
                 if (postojiEmail)
                 {
                     return BadRequest("Korisnik sa ovim email-om već postoji.");

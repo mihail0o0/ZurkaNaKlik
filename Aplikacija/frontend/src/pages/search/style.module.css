@@ -1,12 +1,8 @@
-
-
-  .SearchKartice{
-    background-color: #d3d3d3;
-    display: flex;
-    flex-direction: row;
-    width: 100%;
-    padding: 30px;
-    word-wrap: break-word;
-    
-  }
-  
+.SearchKartice {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  width: 80%;
+  margin-inline: 10%;
+  padding: 30px;
+  word-wrap: break-word;
+}

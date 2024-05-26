@@ -13,6 +13,7 @@
   --blur: 8px;
   --borderRadiusBig: 35px;
   --borderRadiusMedium: 20px;
+  --borderRadiusSmall: 12px;
 }
 
 body {
@@ -75,6 +76,7 @@ p {
 }
 
 .mainButton:hover {
+  color: white !important;
   background-color: #cb3c4f !important;
   transition: 150ms all;
 }

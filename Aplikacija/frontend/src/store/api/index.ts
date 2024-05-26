@@ -42,6 +42,7 @@ const baseQueryWithAuth: BaseQueryFn<
 > = async (args, api, extraOptions) => {
   await mutex.waitForUnlock();
   let result = await baseQuery(args, api, extraOptions);
+  console.log(result.error);
 
   if (
     (result.error?.status === 401 || result.error?.status === 403) &&
@@ -75,7 +76,6 @@ const baseQueryWithAuth: BaseQueryFn<
     }
   } else {
     await mutex.waitForUnlock();
-    api.dispatch(logOut());
   }
 
   return result;
@@ -101,7 +101,7 @@ export const rtkErrorLogger: Middleware =
 
 export const api = createApi({
   reducerPath: "api",
-  tagTypes: ["User"],
+  tagTypes: ["User", "Agency"],
   baseQuery: baseQueryWithAuth,
   endpoints: () => ({}),
 });

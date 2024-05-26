@@ -14,8 +14,6 @@ const UserLoginForm = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  console.log(location.state?.from);
-
   const [emailText, setMailText] = useState("");
   const [passwordText, setPasswordText] = useState("");
 
@@ -58,7 +56,7 @@ const UserLoginForm = () => {
 
     const loginResult = await handleLogin(loginData);
     if ("error" in loginResult) return;
-    console.log(loginResult.data);
+
     dispatch(setToken(loginResult.data.accessToken));
     dispatch(setUser(loginResult.data.loginResult));
 
@@ -66,7 +64,8 @@ const UserLoginForm = () => {
       navigate(location.state.from, { replace: true });
       return;
     }
-    navigate("/home");
+
+    navigate("/catering/profile");
   };
 
   return (

@@ -11,8 +11,6 @@
 .SlikaKartica{
     display: flex;
     flex-direction: column;
-    background-image: url("../public/images/slika-kartica-proba.jpg");
-    
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
@@ -65,10 +63,10 @@
     align-items: center;
     justify-content: center;
 }
+
 .Opis{
+    max-height: 300px;
     padding: 10px;
-    display: flex;
-    justify-content: center;
 }
 .Cena,.BrojLjudi,.Lokacija{
     display: flex;

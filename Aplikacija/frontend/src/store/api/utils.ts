@@ -7,6 +7,8 @@ export const providesList = <
   customTagId?: string
 ) => {
   const tagId = customTagId ?? `LIST${tagType.toUpperCase()}`;
+  console.log("MRNJAO");
+  console.log(resultsWithIds ? resultsWithIds[0] : "Provides tags");
   return resultsWithIds
     ? [
         ...resultsWithIds.map(({ id }) => ({ type: tagType, id })),
