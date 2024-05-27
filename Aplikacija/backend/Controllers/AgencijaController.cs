@@ -37,7 +37,7 @@ namespace backend.Controllers
                     return BadRequest("Ne postoji agencija sa tim id-jem");
                 }
 
-                List<Kategorija>? kategorija = await Context.Kategorije.Where(k => k.Agencija.Id == idAgencije).ToListAsync();
+                List<Kategorija>? kategorija = await Context.Kategorije.Where(k => k.Agencija!.Id == idAgencije).ToListAsync();
 
                 return Ok(kategorija);
             }
@@ -275,7 +275,6 @@ namespace backend.Controllers
 
 
                 m.CenaMenija = meni.CenaMenija;
-                m.Kategorija = meni.Kategorija;
                 m.Naziv = meni.Naziv;
                 m.Opis = meni.Opis;
                 m.SastavMenija = meni.SastavMenija;
@@ -400,6 +399,7 @@ namespace backend.Controllers
         }
 
         #endregion
+        
         // #region  PrikaziSveMenije
         // [HttpGet("PrikaziSveMenije/{idKategorije}")]
         // public async Task<IActionResult> PrikaziSveMenije(int idKategorije){

@@ -267,7 +267,7 @@ namespace backend.Controllers
                     return BadRequest("nema korisnika");
                 }
 
-                k.RefreshToken= null;
+                k.RefreshToken= String.Empty;
                 
 
                 await Context.SaveChangesAsync(); 
