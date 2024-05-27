@@ -263,7 +263,7 @@ namespace backend.Controllers
 
                 Korisnik? k  = await Context.Korisnici.FindAsync(idKorisnika);
 
-                if (k==null){
+                if (k == null){
                     return BadRequest("nema korisnika");
                 }
 
