@@ -278,7 +278,7 @@ namespace backend.Controllers
 
                 await Context.SaveChangesAsync();
 
-                return Ok(m);
+                return Ok(new { m });
 
                 // if (meni == null)
                 // {
