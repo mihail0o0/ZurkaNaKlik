@@ -262,17 +262,13 @@ namespace backend.Controllers
             {
                 int idAgencije = int.Parse((HttpContext.Items["idAgencije"] as string)!);
 
-
-
                 MeniKeteringa? m = await Context.MenijiKeteringa.Include(x => x.Kategorija).Where(x => x.Id == meni.Id).Where(x => x.Kategorija!
                 .Agencija!.Id == idAgencije).IgnoreQueryFilters().FirstOrDefaultAsync();
-
 
                 if (m == null)
                 {
                     return BadRequest("Meni ne postoji");
                 }
-
 
                 m.CenaMenija = meni.CenaMenija;
                 m.Naziv = meni.Naziv;
@@ -280,11 +276,9 @@ namespace backend.Controllers
                 m.SastavMenija = meni.SastavMenija;
                 m.Slika = meni.Slika;
 
-
-
                 await Context.SaveChangesAsync();
 
-                return Ok(new { m });
+                return Ok(m);
 
                 // if (meni == null)
                 // {
@@ -342,7 +336,7 @@ namespace backend.Controllers
 
         #region VratiMenije
         [HttpGet("VratiMenije")]
-        public async Task<ActionResult> VratiMenije(int MeniID)
+        public async Task<ActionResult> VratiMenije()
         {
             try
             {
@@ -351,11 +345,13 @@ namespace backend.Controllers
 
                 List<VratiMenijeResultElement>? meniKeteringa = new();
 
-                if(kategorije == null){
+                if (kategorije == null)
+                {
                     return Ok(meniKeteringa);
                 }
 
-                foreach(Kategorija kat in kategorije){
+                foreach (Kategorija kat in kategorije)
+                {
                     VratiMenijeResultElement element = new(kat.Id, kat.Naziv);
                     List<MeniKeteringa>? meniji = await Context.MenijiKeteringa.Where(m => m.Kategorija!.Id == kat.Id).ToListAsync();
                     element.meniKeteringa = meniji;
