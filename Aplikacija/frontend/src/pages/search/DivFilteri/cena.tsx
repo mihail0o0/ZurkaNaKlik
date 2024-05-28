@@ -37,7 +37,7 @@ const Cena = () => {
         icon="euro_symbol"
         backgroundColor="#d3d3d3"
         color="black"
-        wide="20%"
+        wide={true}
       />
       <Popover
         id={id}
