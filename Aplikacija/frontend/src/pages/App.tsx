@@ -21,6 +21,7 @@ import Logout from "./login/Logout";
 import AgencySignUpForm from "@/components/AgencySignUpForm";
 import AgencySignUp from "./login/AgencySignUp";
 import AgencyProfile from "./Profile/Agency";
+import Profile from "./Profile/Agency/Korisnik";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -32,7 +33,9 @@ const router = createBrowserRouter(
         <Route path="search" element={<Search />} />
         <Route path="testing" element={<TestingPage />} />
         <Route path="mix" element={<TestingPage />} />
+        <Route path="profile" element={<Profile />} />
         <Route path="logout" element={<Logout />} />
+        
 
         {/* Agencija */}
         <Route path="catering">
