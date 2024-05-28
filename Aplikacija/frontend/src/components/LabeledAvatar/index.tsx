@@ -1,6 +1,7 @@
 import UserAvatar from "../UserAvatar";
 import style from "./styles.module.css";
 
+
 type Props = {
   text: string;
   avatarSize?: number;

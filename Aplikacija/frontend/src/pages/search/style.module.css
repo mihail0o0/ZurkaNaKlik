@@ -1,77 +1,8 @@
-
-.SearchDiv{
-    display: flex;
-    flex-direction: column;
-    width:100%;
-    height: 60vh;
-    position: relative;
-    background-image:url("../public/images/druga.jpg");
-    background-size: cover;
-    background-repeat: no-repeat;
-    justify-content: top;
-    align-items: center;
- 
-
-
-.GoreDiv{
-    display: flex;
-    padding-top: 30;
-    margin-top: 50px;
-    margin-bottom: 0px;
-    justify-content: center;
-    flex-direction: column;
-    align-items: center;
-    padding-bottom: 0;
-    
+.SearchKartice {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  width: 80%;
+  margin-inline: 10%;
+  padding: 30px;
+  word-wrap: break-word;
 }
-}
-.TekstDivVeliki{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items:end;
-    padding-bottom: 0%;
-    margin-bottom: 0;
-    
-}
-.TekstDivVeliki>h1{
-    color:aliceblue;
-    
-}
-.TekstDivMali>p{
-    color:aliceblue;
-    
-}
-.TekstDivMali{
-    display: flex;
-    justify-content: start;
-    align-items: center;
-    width:60%;
-    padding-top: 0;
-    margin-top: 0;
-
-}
-.DoleDiv{
-    display: flex;
-    flex-direction: column;
-    width:100%;
-    justify-content: center;
-    align-items: center;
-  }
-  .Dugmad{
-    position: relative;
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    padding: 10px;
-    margin: 0px;
-    justify-content: center;
-    align-items: center;
-    gap:6px;
-  
-  }
-
-  .dugme{
-    font-size: 4px !important;
-  }
-  

@@ -5,13 +5,21 @@ import Input from "@/components/lib/inputs/text-input";
 
 // import authAction from "../../actions/authAction";
 import { agencySignUpSchema, userSignUpSchema } from "@/utils/validators";
-import { useAgencySignUpMutation, useUserSignUpMutation } from "@/store/api/endpoints/auth";
+import {
+  useAgencySignUpMutation,
+  useUserSignUpMutation,
+} from "@/store/api/endpoints/auth";
 import {
   CreateAgencyDTO,
   CreateUserDTO,
 } from "@/store/api/endpoints/auth/types";
 import { Role } from "@/models/role";
-import { setToken, setUser } from "@/store/auth";
+import {
+  selectIsFirstLogin,
+  setIsFirstLogin,
+  setToken,
+  setUser,
+} from "@/store/auth";
 import { useAppDispatch } from "@/store";
 import { toast } from "react-toastify";
 
@@ -84,14 +92,15 @@ const AgencySignUpForm = () => {
 
     const valid = isValid(signUpData);
     if (valid == false) return;
-    console.log(signUpData);
 
     const signUpResult = await handleSignUp(signUpData);
     if ("error" in signUpResult) return;
     dispatch(setToken(signUpResult.data.accessToken));
     dispatch(setUser(signUpResult.data.loginResult));
+    dispatch(setIsFirstLogin(true));
 
-    navigate("/home");
+    console.log("Mrnjao");
+    navigate("/catering/profile", { replace: true });
   };
 
   return (

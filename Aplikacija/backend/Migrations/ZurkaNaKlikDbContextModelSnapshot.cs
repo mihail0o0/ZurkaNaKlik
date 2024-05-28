@@ -37,6 +37,21 @@ namespace WebTemplate.Migrations
                     b.ToTable("KorisnikOglasObjekta");
                 });
 
+            modelBuilder.Entity("MeniKeteringaZahtevZaKetering", b =>
+                {
+                    b.Property<int>("ListaZahetevaZaKeteringId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ZakupljeniMenijiId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ListaZahetevaZaKeteringId", "ZakupljeniMenijiId");
+
+                    b.HasIndex("ZakupljeniMenijiId");
+
+                    b.ToTable("MeniKeteringaZahtevZaKetering");
+                });
+
             modelBuilder.Entity("backend.Models.Kategorija", b =>
                 {
                     b.Property<int>("Id")
@@ -147,14 +162,9 @@ namespace WebTemplate.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("ZahtevZaKeteringId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.HasIndex("KategorijaId");
-
-                    b.HasIndex("ZahtevZaKeteringId");
 
                     b.ToTable("MenijiKeteringa");
                 });
@@ -278,10 +288,10 @@ namespace WebTemplate.Migrations
                     b.Property<DateTime>("DatumZakupa")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("KorisnikId")
+                    b.Property<int?>("KorisnikId")
                         .HasColumnType("int");
 
-                    b.Property<int>("OglasId")
+                    b.Property<int?>("OglasId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("ZakupljenDo")
@@ -354,6 +364,21 @@ namespace WebTemplate.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("MeniKeteringaZahtevZaKetering", b =>
+                {
+                    b.HasOne("backend.Models.ZahtevZaKetering", null)
+                        .WithMany()
+                        .HasForeignKey("ListaZahetevaZaKeteringId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("backend.Models.MeniKeteringa", null)
+                        .WithMany()
+                        .HasForeignKey("ZakupljeniMenijiId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("backend.Models.Kategorija", b =>
                 {
                     b.HasOne("backend.Models.Agencija", "Agencija")
@@ -368,10 +393,6 @@ namespace WebTemplate.Migrations
                     b.HasOne("backend.Models.Kategorija", "Kategorija")
                         .WithMany("ListaMenija")
                         .HasForeignKey("KategorijaId");
-
-                    b.HasOne("backend.Models.ZahtevZaKetering", null)
-                        .WithMany("ZakupljeniMeniji")
-                        .HasForeignKey("ZahtevZaKeteringId");
 
                     b.Navigation("Kategorija");
                 });
@@ -398,15 +419,11 @@ namespace WebTemplate.Migrations
                 {
                     b.HasOne("backend.Models.Korisnik", "Korisnik")
                         .WithMany("ListaZakupljenihOglasa")
-                        .HasForeignKey("KorisnikId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("KorisnikId");
 
                     b.HasOne("backend.Models.OglasObjekta", "Oglas")
                         .WithMany()
-                        .HasForeignKey("OglasId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("OglasId");
 
                     b.HasOne("backend.Models.ZahtevZaKetering", "ZahtevZaKetering")
                         .WithOne("ZakupljeniOglas")
@@ -426,10 +443,7 @@ namespace WebTemplate.Migrations
 
             modelBuilder.Entity("backend.Models.ZahtevZaKetering", b =>
                 {
-                    b.Navigation("ZakupljeniMeniji");
-
-                    b.Navigation("ZakupljeniOglas")
-                        .IsRequired();
+                    b.Navigation("ZakupljeniOglas");
                 });
 
             modelBuilder.Entity("backend.Models.Agencija", b =>

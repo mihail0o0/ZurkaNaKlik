@@ -42,6 +42,7 @@ const baseQueryWithAuth: BaseQueryFn<
 > = async (args, api, extraOptions) => {
   await mutex.waitForUnlock();
   let result = await baseQuery(args, api, extraOptions);
+  console.log(result);
 
   if (
     (result.error?.status === 401 || result.error?.status === 403) &&
@@ -49,16 +50,20 @@ const baseQueryWithAuth: BaseQueryFn<
   ) {
     await mutex.waitForUnlock();
     let result = await baseQuery(args, api, extraOptions);
+    console.log("second result");
+    console.log(result);
 
     if (mutex.isLocked() == false) {
       const release = await mutex.acquire();
 
       try {
         const refreshResult = await baseQuery(
-          "/auth/refresh",
+          "/auth/RefreshToken",
           api,
           extraOptions
         );
+        console.log("Result");
+        console.log(refreshResult);
         if (refreshResult.data) {
           const refreshResultData = refreshResult.data as LoginResponse;
 
@@ -75,7 +80,6 @@ const baseQueryWithAuth: BaseQueryFn<
     }
   } else {
     await mutex.waitForUnlock();
-    api.dispatch(logOut());
   }
 
   return result;
@@ -88,7 +92,8 @@ export const rtkErrorLogger: Middleware =
 
       if (
         !errorObject ||
-        (errorObject.originalStatus == 401 || errorObject.originalStatus == 403)
+        errorObject.originalStatus == 401 ||
+        errorObject.originalStatus == 403
       ) {
         return next(action);
       }
@@ -101,7 +106,7 @@ export const rtkErrorLogger: Middleware =
 
 export const api = createApi({
   reducerPath: "api",
-  tagTypes: ["User"],
+  tagTypes: ["User", "AgencyCategory", "AgencyMenu"],
   baseQuery: baseQueryWithAuth,
   endpoints: () => ({}),
 });
