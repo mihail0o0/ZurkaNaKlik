@@ -18,7 +18,7 @@ namespace backend.Models
 
         public required string Opis { get; set; }
 
-       // public int KolicinaUKG { get; set; } //?
+        // public int KolicinaUKG { get; set; } //?
 
         public required List<string> SastavMenija {get; set; }// pecivo, cevapi
 
