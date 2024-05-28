@@ -34,5 +34,8 @@ namespace backend.Models
         public List<DateTime>? ZauzetiDani { get; set; }
         [JsonIgnore]
         public Korisnik? VlasnikOglasa { get; set; }
+
+        [JsonIgnore]
+        public List<ZakupljeniOglas>? ListaZakupkjenihOglasa { get; set; }
     }
 }

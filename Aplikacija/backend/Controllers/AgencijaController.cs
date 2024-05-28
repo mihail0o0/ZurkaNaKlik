@@ -233,7 +233,7 @@ namespace backend.Controllers
                     Opis = meniketeringa.Opis,
                     SastavMenija = meniketeringa.SastavMenija,
                     Kategorija = kategorija
-
+                    
                 };
 
                 await Context.MenijiKeteringa.AddAsync(meni);

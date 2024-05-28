@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
+using backend.DTOs;
 using backend.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -446,17 +447,17 @@ namespace backend.Controllers
         #endregion
 
         #region  PosaljiZahtevZaKetering
-        [HttpPost("PosaljiZahtevZaKetering/{idZakupljenOglas}/{idAgencije}")]
-        public async Task<IActionResult> PosaljiZahtevZaKetering(int idZakupljenOglas, int idAgencije, [FromBody] List<MeniKeteringa> listamenija)
+        [HttpPost("PosaljiZahtevZaKetering/{idZakupljenOglas}/{idAgencije}/{mogucnostDostave}/listamenija")]
+        public async Task<IActionResult> PosaljiZahtevZaKetering(bool mogucnostDostave, int idZakupljenOglas, int idAgencije, [FromBody]List<PorucenMeni> listamenija)
         {
             try
             {
 
                 int idKorisnika = int.Parse((HttpContext.Items["idKorisnika"] as string)!);
 
-                var zakupljenioglas = await Context.ZakupljeniOglasi.FindAsync(idZakupljenOglas);
+                ZakupljeniOglas? zakupljenioglas = await Context.ZakupljeniOglasi.IgnoreQueryFilters().FirstOrDefaultAsync(o => o.Id == idZakupljenOglas);
 
-                var agencija = await Context.Agencije.FindAsync(idAgencije);
+                return Ok(new { zakupljenioglas.Id });
 
                 if (zakupljenioglas == null)
                 {
@@ -464,24 +465,65 @@ namespace backend.Controllers
                 }
 
 
+                if(zakupljenioglas!.Korisnik!.Id != idKorisnika){
+                    return BadRequest("nisi ti taj bebo");
+                }
+
+                var agencija = await Context.Agencije.FindAsync(idAgencije);
+
+                if(agencija == null){
+                    return BadRequest("nisi postojeca agencija");
+                }
+
+                List<int> idMenija = listamenija.Select(o => o.idMenija).ToList();
+
+                List<MeniKeteringa> sviMenijiIzabrani = await Context.MenijiKeteringa
+                             .Where(e => idMenija.Contains(e.Id))
+                             .ToListAsync();
+
+                foreach(var o in sviMenijiIzabrani){
+
+                    if(o.Kategorija!.Agencija!.Id != idAgencije){
+                        return BadRequest("nisu iz iste agencije meniji");
+                    }
+
+                }
+
+                //List<MeniKeteringa> listaZaMenije = new List<MeniKeteringa>();
+
+                Dictionary<MeniKeteringa, int> poruceniMeniji = new Dictionary<MeniKeteringa, int>();
+
+                foreach(var m in sviMenijiIzabrani){
+                    var obj = listamenija.First(o => o.idMenija == m.Id);
+                    poruceniMeniji.Add(m, obj.kg);
+                }
+
                 var novizahtev = new ZahtevZaKetering
                 {
                     ZakupljeniOglas = zakupljenioglas,
                     DatumRezervacije = zakupljenioglas.ZakupljenOd,
                     StatusRezervacije = true,
                     Agencija = agencija,
-                    // ZakupljeniMeniji = listamenija
+                    ZakupljeniMeniji = sviMenijiIzabrani
                 };
+
 
                 agencija!.ListaZahtevZaKetering!.Add(novizahtev);
 
-                listamenija.ForEach(x =>
-                {
-                    novizahtev.KonacnaCena += x.CenaMenija;
-                });
+                int ukupnaCena = 0;
+
+                foreach(var o in poruceniMeniji){
+                    ukupnaCena += o.Key.CenaMenija * o.Value;
+                }
+                
+
+                if(mogucnostDostave == true)
+                    ukupnaCena += novizahtev.Agencija!.CenaDostave;
+
+                novizahtev.KonacnaCena = ukupnaCena;
 
 
-                return Ok(new { novizahtev });
+                return Ok(new { novizahtev, listamenija});
             }
             catch (Exception e)
             {
@@ -644,6 +686,37 @@ namespace backend.Controllers
 
                 await Context.SaveChangesAsync();
                 return Ok(new { k });
+
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+
+        }
+
+        #endregion
+
+
+         #region PrikaziOglaseKorisnika
+        [HttpPut("PrikaziOglaseKorisnika")]
+        public async Task<ActionResult> PrikaziOglaseKorisnika()
+        {
+            try
+            {
+                int idKorisnika = int.Parse((HttpContext.Items["idKorisnika"] as string)!);
+
+
+
+                var listaOglasa = await Context.Korisnici.Include(o => o.ListaObjavljenihOglasaObjekta).FirstOrDefaultAsync(k => k.Id == idKorisnika);
+
+                if(listaOglasa == null){
+                    return BadRequest("Korisnik nema objavljene oglase");
+                }
+                await Context.SaveChangesAsync();
+                return Ok(new { listaOglasa!.ListaObjavljenihOglasaObjekta });
 
 
             }
