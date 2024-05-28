@@ -3,14 +3,22 @@ import style from "./style.module.css";
 import { ChangeEvent, useRef, useState } from "react";
 import MojButton from "@/components/lib/button";
 import LabeledAvatar from "@/components/LabeledAvatar";
+import { useSelector } from "react-redux";
+import { selectUser } from "@/store/auth";
 
 const Profile = () => {
-   const[prezime,setPrezime]=useState('');
-   const[ime,setIme]=useState('');
-   const[email,setEmail]=useState('');
-   const[brTel,setBrTel]=useState('');
+   const user = useSelector(selectUser);
+   
+   const[ime,setIme]=useState(user.name);
+   const[email,setEmail]=useState(user.email);
+   const[brTel,setBrTel]=useState(user.phoneNumber);
    const[slikaProfila,setSlikaProfila]=useState('');
    const[lokacija,setLokacija]=useState('');
+   const[opis,setOpis]=useState('');
+
+   function handleOpis(event: ChangeEvent<HTMLTextAreaElement>) {
+      setOpis(event.target.value);
+    }
   return (
     <div className={`containerWrapper ${style.Container}`}>
       <div className={style.PostavkeProfila}>
@@ -21,13 +29,15 @@ const Profile = () => {
           {/* odje ide slika od kad je clan broj oglasa i prosecna ocena */}
           <div className={style.KarticaSaSlikom}>
             <div className={style.SlikaImeIPrezime}>
-              <LabeledAvatar text={"Marina"} />
-              <p>Marina Ignjatovic</p>
+              
+              {ime && <LabeledAvatar text={ime} />}
+              {/* ime i prezime kad miks doda prezime */}
+              {ime &&  <p>{ime}</p>}
             </div>
             <div className={style.InfoOClanu}>
-               {/* ovde moze email */}
-              <p>Clan od: 10.3.2002.</p>
-              <p>Broj oglasa: 30</p>
+             
+              {email && <p>Email: {email}</p>}
+              {brTel && <p>Broj telefona: {brTel}</p>}
               <p>Clan od: 10.3.2002.</p>
             </div>
           </div>
@@ -38,22 +48,23 @@ const Profile = () => {
             <div className={style.Inputi}>
               <div className={style.Red}>
                 <div className={style.InputResssi}>
+                  
                   <Input
-                    text={"Marija Ignjatovic"}
+                    text={ime}
                     icon="boy"
-                    onChange={() => {}}
+                    onChange={setIme}
                   />
                 </div>
                 <div className={style.InputResssi}>
-                  <Input text={"Nis"} icon="location_on" onChange={() => {}} />
+                  <Input text={"trenutno nema"} icon="location_on" onChange={() => {}} />
                 </div>
               </div>
               <div className={style.Red}>
                 <div className={style.InputResssi}>
-                  <Input text={"Email"} icon="mail" onChange={() => {}} />
+                  <Input text={email} icon="mail" onChange={setEmail} />
                 </div>
                 <div className={style.InputResssi}>
-                  <Input text={"0677663629"} icon="call" onChange={() => {}} />
+                  <Input text={brTel} icon="call" onChange={setBrTel} />
                 </div>
               </div>
             </div>
@@ -63,8 +74,8 @@ const Profile = () => {
               <textarea
                 placeholder="Recite nesto vise o sebi"
                 className={style.TxtArea}
-                onChange={() => {}}
-                value={""}
+                onChange={handleOpis}
+                value={opis}
               />
             </div>
             <div className={style.Dugmenajjace}>
