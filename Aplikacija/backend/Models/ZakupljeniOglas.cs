@@ -15,7 +15,7 @@ namespace backend.Models
         public DateTime ZakupljenOd { get; set; }
         public DateTime ZakupljenDo { get; set; }
 
-        [ForeignKey("ZakupljeniOglas")]
+        [ForeignKey("ZakupljeniKetering")]
         public ZahtevZaKetering? ZahtevZaKetering { get; set; }
 
 

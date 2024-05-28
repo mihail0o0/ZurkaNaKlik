@@ -144,7 +144,7 @@ namespace backend.Controllers
             try
             {
                 int idKorisnika = int.Parse((HttpContext.Items["idKorisnika"] as string)!);
-                var korisnik = await Context.Korisnici.Where(x => x.Id == idKorisnika).FirstAsync();
+                var korisnik = await Context.Korisnici.Where(x =>x.Id == idKorisnika).IgnoreQueryFilters().Include(x => x.ListaZakupljenihOglasa).FirstAsync();
 
                 if (korisnik == null)
                 {
@@ -159,7 +159,7 @@ namespace backend.Controllers
                 }
 
                 return Ok(new { listaoglasa });
-
+                
             }
             catch (Exception e)
             {
@@ -425,9 +425,9 @@ namespace backend.Controllers
                         ZahtevZaKetering = null
                     };
 
-                    // Context.ZakupljeniOglasi.Add(zakupljenoglas);
-                    // await Context.SaveChangesAsync();
-
+                    Context.ZakupljeniOglasi.Add(zakupljenoglas);
+                    await Context.SaveChangesAsync();
+                    
                     return Ok(new { zakupljenoglas });
 
                 }
@@ -532,9 +532,9 @@ namespace backend.Controllers
 
 
                 var korisnik = await Context.Korisnici.FindAsync(idKorisnika);
-
-                var oglas = await Context.ZakupljeniOglasi.Include(x => x.Korisnik).Where(x => x.Korisnik.Id == idKorisnika)
-                .Where(x => x.Id == idZakupljenogOglasa).FirstOrDefaultAsync();
+            
+                var oglas = await Context.ZakupljeniOglasi.Include(x =>x.Korisnik).Where(x =>x.Korisnik!.Id == idKorisnika)
+                .Where(x =>x.Id == idZakupljenogOglasa).FirstOrDefaultAsync();
 
                 if (oglas == null)
                 {
@@ -548,14 +548,14 @@ namespace backend.Controllers
 
 
 
-                var daniZaUklanjanje = oglas.Oglas.ZauzetiDani!
+                var daniZaUklanjanje = oglas.Oglas?.ZauzetiDani!
                         .Where(d => sviDaniUOpsegu.Contains(d))
                         .ToList();
 
-                    // Ukloni datume iz liste ZauzetiDani
-                oglas.Oglas.ZauzetiDani!.RemoveAll(d => sviDaniUOpsegu.Contains(d));
+                // Ukloni datume iz liste ZauzetiDani
+                oglas.Oglas?.ZauzetiDani!.RemoveAll(d => sviDaniUOpsegu.Contains(d));
 
-                    // Sačuvaj promene u bazi
+                // Sačuvaj promene u bazi
                 Context.SaveChanges();
 
                 Context.ZakupljeniOglasi.Remove(oglas);
@@ -570,49 +570,6 @@ namespace backend.Controllers
             }
         }
         #endregion
-
-
-
-
-
-        // #region Otkazi zakup objekta
-        // [HttpDelete("OtkaziRezervacijuObjekta/{idZakupljenogOglasa}")]
-        // public async Task<ActionResult> OtkaziRezervacijuObjekta(int idZakupljenogOglasa)
-        // {
-        //     try
-        //     {
-        //         int idKorisnika = int.Parse((HttpContext.Items["idKorisnika"] as string)!);
-
-
-
-
-        //         var korisnik = await Context.Korisnici.FindAsync(idKorisnika);
-
-        //         var oglas = await Context.ZakupljeniOglasi.Include(x => x.Korisnik).Where(x => x.Korisnik.Id == idKorisnika)
-        //         .Where(x => x.Id == idZakupljenogOglasa).FirstOrDefaultAsync();
-
-        //         if (oglas == null)
-        //         {
-        //             return BadRequest("Ne postoji takav zakupljen oglas");
-        //         }
-
-        //         korisnik!.ListaZakupljenihOglasa!.Remove(oglas);
-        //         Context.ZakupljeniOglasi.Remove(oglas);
-
-        //         return Ok(oglas);
-
-
-        //     }
-        //     catch (Exception ex)
-        //     {
-        //         return BadRequest(ex.Message);
-        //     }
-        // }
-
-        // #endregion
-
-
-
 
 
         #region Prikaz omiljenih oglasa (idKorisnika)
@@ -637,21 +594,16 @@ namespace backend.Controllers
             }
 
         }
-
         #endregion
-        // Izmena podataka (idKorisnika)
 
 
         #region ObrisiKorisnika
-
         [HttpDelete("ObrisiKorisnika")]
         public async Task<ActionResult> ObrisiKorisnika()
         {
             try
             {
-
                 int idKorisnika = int.Parse((HttpContext.Items["idKorisnika"] as string)!);
-
 
                 Korisnik? k = await Context.Korisnici.FindAsync(idKorisnika);
 
@@ -672,7 +624,6 @@ namespace backend.Controllers
         #endregion
 
         // Izmena podataka (idKorisnika)
-
         #region IzmeniPodatkeOKorisniku
         [HttpPut("IzmeniPodatkeOKorisniku")]
         public async Task<ActionResult> IzmeniPodatkeOKorisniku([FromBody] Korisnik korisnik)

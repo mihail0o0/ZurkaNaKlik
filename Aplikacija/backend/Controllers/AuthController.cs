@@ -263,11 +263,11 @@ namespace backend.Controllers
 
                 Korisnik? k  = await Context.Korisnici.FindAsync(idKorisnika);
 
-                if (k==null){
+                if (k == null){
                     return BadRequest("nema korisnika");
                 }
 
-                k.RefreshToken= null;
+                k.RefreshToken= String.Empty;
                 
 
                 await Context.SaveChangesAsync(); 

@@ -56,7 +56,7 @@ const TestingPage = () => {
             console.log(allCategories);
             if (allCategories) {
               console.log("Mjau");
-              
+
               const category: AddCategoryDTO = {
                 naziv: "Test bggge1",
               };
