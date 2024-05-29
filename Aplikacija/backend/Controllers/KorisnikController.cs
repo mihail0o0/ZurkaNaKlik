@@ -451,7 +451,7 @@ namespace backend.Controllers
 
         #region  PosaljiZahtevZaKetering
         [HttpPost("PosaljiZahtevZaKetering/{idZakupljenOglas}/{idAgencije}/{mogucnostDostave}/listamenija")]
-        public async Task<IActionResult> PosaljiZahtevZaKetering(bool mogucnostDostave, int idZakupljenOglas, int idAgencije, [FromBody] List<PorucenMeni> listamenija)
+        public async Task<IActionResult> PosaljiZahtevZaKetering(bool mogucnostDostave, int idZakupljenOglas, int idAgencije, [FromBody]List<PorucenMeni> listamenija)
         {
             try
             {
@@ -524,7 +524,7 @@ namespace backend.Controllers
                     ukupnaCena += jedanMeni.CenaMenija * o.kg;
                 }
 
-                return Ok("ovde deckoo");
+                //return Ok("ovde deckoo");
 
                 agencija!.ListaZahtevZaKetering!.Add(novizahtev);
 
@@ -533,12 +533,12 @@ namespace backend.Controllers
 
                 novizahtev.KonacnaCena = ukupnaCena;
 
-                //zakupljenioglas.ZahtevZaKetering = novizahtev;
+                zakupljenioglas.ZahtevZaKetering = novizahtev;
 
                 Context.ZahteviZaKetering.Add(novizahtev);
                 await Context.SaveChangesAsync();
 
-                return Ok(new { novizahtev.ZakupljeniOglas, ukupnaCena, zakupljenioglas.ZahtevZaKetering});
+                return Ok(new { novizahtev });
 
                 
             }
@@ -764,30 +764,33 @@ namespace backend.Controllers
 
         #endregion
 
-        #region  PrikaziSveMenije
-        [HttpGet("PrikaziSveMenije/{idKategorije}")]
-        public async Task<IActionResult> PrikaziSveMenije(int idKategorije){
-            try{
 
-                var meniji = await Context.ZahteviZaKetering.Include(i => i.ZakupljeniMeniji).ToListAsync();
+        // PRovera neka nije bitnooooo
+        
+        // #region  PrikaziSveMenije
+        // [HttpGet("PrikaziSveMenije/{idKategorije}")]
+        // public async Task<IActionResult> PrikaziSveMenije(int idKategorije){
+        //     try{
+
+        //         var meniji = await Context.ZahteviZaKetering.Include(i => i.ZakupljeniMeniji).ToListAsync();
                 
 
 
-            if (meniji == null){
-                return BadRequest("Nema takvih kategorija i agencija zajedno");
-            }
-            else {
-                return Ok(meniji);
-            }   
+        //     if (meniji == null){
+        //         return BadRequest("Nema takvih kategorija i agencija zajedno");
+        //     }
+        //     else {
+        //         return Ok(meniji);
+        //     }   
 
-            }
-            catch(Exception ex){
-                return BadRequest(ex.Message);
-            }
+        //     }
+        //     catch(Exception ex){
+        //         return BadRequest(ex.Message);
+        //     }
 
-        }
+        // }
 
-        #endregion
+        // #endregion
 
     }
 }
