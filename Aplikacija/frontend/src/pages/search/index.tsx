@@ -4,9 +4,7 @@ import HomeImage from "@/components/HomeImage";
 
 const Search = () => {
 
-  
 
-  console.log("radi");
   
   return (
     <div className={style.SearchGlavni}>

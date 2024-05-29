@@ -21,5 +21,5 @@ type AddMenuDTO = {
   id: number;
   menu: Omit<Menu, "id">;
 }
-
+ 
 type AddCategoryDTO = Omit<Category, "id">;

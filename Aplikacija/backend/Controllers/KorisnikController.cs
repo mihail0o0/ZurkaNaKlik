@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using backend.DTOs;
 using backend.Services;
+using backend.Utilities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -120,14 +121,15 @@ namespace backend.Controllers
         {
             try
             {
-                var korisnik = await Context.Korisnici.Where(x => x.Id == idK).FirstAsync();
+                Korisnik korisnik = await Context.Korisnici.Where(x => x.Id == idK).FirstAsync();
 
                 if (korisnik == null)
                 {
                     return BadRequest("Nema korisnika za prikaz");
                 }
 
-                return Ok(new { korisnik });
+                GetKorisnikResult result = ObjectCreatorSingleton.Instance.ToKorisnikResult(korisnik);
+                return Ok(result);
 
             }
             catch (Exception e)
