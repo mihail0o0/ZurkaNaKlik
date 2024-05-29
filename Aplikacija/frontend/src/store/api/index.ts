@@ -106,7 +106,7 @@ export const rtkErrorLogger: Middleware =
 
 export const api = createApi({
   reducerPath: "api",
-  tagTypes: ["User", "AgencyCategory", "AgencyMenu"],
+  tagTypes: ["User", "AgencyCategory", "AgencyMenu", "Location", "Oglas"],
   baseQuery: baseQueryWithAuth,
   endpoints: () => ({}),
 });

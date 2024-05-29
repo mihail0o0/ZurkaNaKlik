@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using backend.DTOs;
+using backend.Utilities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
@@ -25,7 +26,6 @@ namespace backend.Controllers
         [HttpGet("PrikaziOglas/{idOglasa}")]
         public async Task<ActionResult> PrikaziOglas(int idOglasa)
         {
-
             try
             {
                 OglasObjekta? oglas = await Context.OglasiObjekta
@@ -37,10 +37,8 @@ namespace backend.Controllers
                     return BadRequest("Oglas ne postoji");
                 }
 
-
-
-
-                return Ok(new { oglas });
+                OglasObjektaResponse response = ObjectCreatorSingleton.Instance.ToOglasResult(oglas);
+                return Ok(response);
             }
             catch (Exception e)
             {
@@ -71,7 +69,7 @@ namespace backend.Controllers
                 // }
                 List<OglasObjekta> oglasi = await Context.OglasiObjekta.ToListAsync();
 
-                switch (filteri.Sort)
+                switch (filteri.sort)
                 {
                     case "CenaRastuca":
                         oglasi = oglasi.OrderBy(o => o.CenaPoDanu).ToList();
@@ -89,43 +87,43 @@ namespace backend.Controllers
                         return BadRequest("Ne postoji sort");
                 }
 
-                if (filteri.TipProslava != null && filteri.TipProslava!.Count != 0)
+                if (filteri.tipProslava != null && filteri.tipProslava!.Count != 0)
                 {
-                    oglasi = oglasi.Where(oglas => oglas.ListaTipProslava.Any(tip => filteri.TipProslava!.Contains(tip))).ToList();
+                    oglasi = oglasi.Where(oglas => oglas.ListaTipProslava.Any(tip => filteri.tipProslava!.Contains(tip))).ToList();
                 }
 
-                if (filteri.TipProstora != null && filteri.TipProstora!.Count != 0)
+                if (filteri.tipProstora != null && filteri.tipProstora!.Count != 0)
                 {
-                    oglasi = oglasi.Where(oglas => oglas.ListaTipProstora.Any(tip => filteri.TipProstora!.Contains(tip))).ToList();
+                    oglasi = oglasi.Where(oglas => oglas.ListaTipProstora.Any(tip => filteri.tipProstora!.Contains(tip))).ToList();
                 }
 
-                if (filteri.Grad != null)
+                if (filteri.grad != null)
                 {
-                    oglasi = oglasi.Where(oglas => oglas.Grad.Equals(filteri.Grad)).ToList();
+                    oglasi = oglasi.Where(oglas => oglas.Grad.Equals(filteri.grad)).ToList();
                 }
 
-                if (filteri.CenaOd >= 0 && filteri.CenaDo <= Int32.MaxValue && filteri.CenaOd < filteri.CenaDo)
+                if (filteri.cenaOd >= 0 && filteri.cenaDo <= Int32.MaxValue && filteri.cenaOd < filteri.cenaDo)
                 {
-                    oglasi = oglasi.Where(oglas => oglas.CenaPoDanu >= filteri.CenaOd && oglas.CenaPoDanu <= filteri.CenaDo).ToList();
+                    oglasi = oglasi.Where(oglas => oglas.CenaPoDanu >= filteri.cenaOd && oglas.CenaPoDanu <= filteri.cenaDo).ToList();
                 }
 
-                if (filteri.KvadraturaOd >= 0 && filteri.KvadraturaDo <= Int32.MaxValue && filteri.KvadraturaOd < filteri.KvadraturaDo)
+                if (filteri.kvadraturaOd >= 0 && filteri.kvadraturaDo <= Int32.MaxValue && filteri.kvadraturaOd < filteri.kvadraturaDo)
                 {
-                    oglasi = oglasi.Where(oglas => oglas.Kvadratura >= filteri.KvadraturaOd && oglas.Kvadratura <= filteri.KvadraturaDo).ToList();
+                    oglasi = oglasi.Where(oglas => oglas.Kvadratura >= filteri.kvadraturaOd && oglas.Kvadratura <= filteri.kvadraturaDo).ToList();
                 }
 
-                if (filteri.Grejanje != null)
+                if (filteri.grejanje != null)
                 {
-                    oglasi = oglasi.Where(oglas => filteri.Grejanje.Contains(oglas.Grejanje)).ToList();
+                    oglasi = oglasi.Where(oglas => filteri.grejanje.Contains(oglas.Grejanje)).ToList();
                 }
 
-                if (filteri.DodatnaOprema != null && filteri.DodatnaOprema!.Count != 0)
+                if (filteri.dodatnaOprema != null && filteri.dodatnaOprema!.Count != 0)
                 {
-                    oglasi = oglasi.Where(oglas => oglas.ListDodatneOpreme.Any(tip => filteri.DodatnaOprema!.Contains(tip))).ToList();
+                    oglasi = oglasi.Where(oglas => oglas.ListDodatneOpreme.Any(tip => filteri.dodatnaOprema!.Contains(tip))).ToList();
                 }
 
-                List<DateTime> sviDaniUOpsegu = Enumerable.Range(0, (filteri.DatumDo.Date - filteri.DatumOd.Date).Days + 1)
-                                            .Select(offset => filteri.DatumOd.AddDays(offset))
+                List<DateTime> sviDaniUOpsegu = Enumerable.Range(0, (filteri.datumDo.Date - filteri.datumOd.Date).Days + 1)
+                                            .Select(offset => filteri.datumOd.AddDays(offset))
                                             .ToList();
 
                 oglasi = oglasi.Where(oglas => !oglas.ZauzetiDani!.Any(zauzetDan => sviDaniUOpsegu.Contains(zauzetDan)))
@@ -134,7 +132,14 @@ namespace backend.Controllers
                 oglasi = oglasi.Skip((pageNumber - 1) * pageSize)
                              .Take(pageSize).ToList();
 
-                return Ok(new { oglasi });
+                List<OglasObjektaResponse> response = new List<OglasObjektaResponse>();
+
+                foreach (OglasObjekta oglas in oglasi)
+                {
+                    response.Add(ObjectCreatorSingleton.Instance.ToOglasResult(oglas));
+                }
+
+                return Ok(response);
             }
             catch (Exception e)
             {
