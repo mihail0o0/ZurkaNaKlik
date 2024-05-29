@@ -15,5 +15,5 @@ const authApiSlice = api.injectEndpoints({
 });
 
 export const {
-    useGetUserDataQuery } = authApiSlice;,
+    useGetUserDataQuery } = authApiSlice;
 
