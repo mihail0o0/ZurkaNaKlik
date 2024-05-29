@@ -12,8 +12,8 @@ using WebTemplate.Models;
 namespace WebTemplate.Migrations
 {
     [DbContext(typeof(ZurkaNaKlikDbContext))]
-    [Migration("20240526214652_v6")]
-    partial class v6
+    [Migration("20240529144101_v1")]
+    partial class v1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -425,7 +425,7 @@ namespace WebTemplate.Migrations
                         .HasForeignKey("KorisnikId");
 
                     b.HasOne("backend.Models.OglasObjekta", "Oglas")
-                        .WithMany()
+                        .WithMany("ListaZakupkjenihOglasa")
                         .HasForeignKey("OglasId");
 
                     b.HasOne("backend.Models.ZahtevZaKetering", "ZahtevZaKetering")
@@ -442,6 +442,11 @@ namespace WebTemplate.Migrations
             modelBuilder.Entity("backend.Models.Kategorija", b =>
                 {
                     b.Navigation("ListaMenija");
+                });
+
+            modelBuilder.Entity("backend.Models.OglasObjekta", b =>
+                {
+                    b.Navigation("ListaZakupkjenihOglasa");
                 });
 
             modelBuilder.Entity("backend.Models.ZahtevZaKetering", b =>

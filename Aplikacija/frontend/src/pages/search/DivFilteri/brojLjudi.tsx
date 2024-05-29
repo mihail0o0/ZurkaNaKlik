@@ -33,7 +33,7 @@ const BrojLjudi = () => {
         icon="boy"
         backgroundColor="#d3d3d3"
         color="black"
-        wide="20%"
+        wide={true}
       />
       <Popover
         id={id}
@@ -64,6 +64,7 @@ const BrojLjudi = () => {
             id="textInput"
             value={broj}
             onChange={handleBroj}
+            min="1"
           />
         </div>
       </Popover>

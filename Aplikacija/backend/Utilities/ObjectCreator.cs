@@ -64,6 +64,23 @@ namespace backend.Utilities
             return agencija;
         }
 
+        public GetKorisnikResult ToKorisnikResult(Korisnik korisnik)
+        {
+            GetKorisnikResult getKorisnik = new GetKorisnikResult
+            {
+                id = korisnik.Id,
+                name = korisnik.Ime,
+                lastName = korisnik.Prezime,
+                email = korisnik.Email,
+                phoneNumber = korisnik.BrTel,
+                role = korisnik.Role,
+                profilePhoto = korisnik.SlikaProfila,
+                location = korisnik.Lokacija
+            };
+
+            return getKorisnik;
+        }
+
 
     }
 }

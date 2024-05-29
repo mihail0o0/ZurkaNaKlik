@@ -18,7 +18,7 @@ namespace backend.Models
 
         public required string Opis { get; set; }
 
-       // public int KolicinaUKG { get; set; } //?
+        // public int KolicinaUKG { get; set; } //?
 
         public required List<string> SastavMenija {get; set; }// pecivo, cevapi
 
@@ -26,6 +26,7 @@ namespace backend.Models
         public  Kategorija? Kategorija { get; set; }//Slatko/slano
 
         [JsonIgnore]
+        [InverseProperty("ZakupljeniMeniji")]
         public List<ZahtevZaKetering>? ListaZahetevaZaKetering { get; set; }
     }
 

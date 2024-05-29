@@ -17,7 +17,7 @@ namespace backend.Models
         public int BrojOcena { get; set; } = 0;
         [JsonIgnore]
         public List<Kategorija>? KategorijeMenija { get; set; } //slatko/slano/posno
-
+        [JsonIgnore]
         public List<ZahtevZaKetering>? ListaZahtevZaKetering { get; set; }
 
     }

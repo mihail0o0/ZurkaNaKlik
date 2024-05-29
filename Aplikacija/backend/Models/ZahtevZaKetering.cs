@@ -12,11 +12,11 @@ namespace backend.Models
         [Key]
         public int Id { get; set; }
         public int KonacnaCena { get; set; }
-        public ZakupljeniOglas? ZakupljeniOglas { get; set; }
         public bool StatusRezervacije { get; set; }
         public DateTime DatumRezervacije { get; set; }
         [JsonIgnore]
-        [InverseProperty("ListaZahetevaZaKetering")]
+        public ZakupljeniOglas? ZakupljeniOglas { get; set; }
+        [JsonIgnore]
         public List<MeniKeteringa>? ZakupljeniMeniji { get; set; }
         [JsonIgnore]
         public Agencija? Agencija { get; set; }

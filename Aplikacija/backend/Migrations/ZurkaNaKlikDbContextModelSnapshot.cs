@@ -422,7 +422,7 @@ namespace WebTemplate.Migrations
                         .HasForeignKey("KorisnikId");
 
                     b.HasOne("backend.Models.OglasObjekta", "Oglas")
-                        .WithMany()
+                        .WithMany("ListaZakupkjenihOglasa")
                         .HasForeignKey("OglasId");
 
                     b.HasOne("backend.Models.ZahtevZaKetering", "ZahtevZaKetering")
@@ -439,6 +439,11 @@ namespace WebTemplate.Migrations
             modelBuilder.Entity("backend.Models.Kategorija", b =>
                 {
                     b.Navigation("ListaMenija");
+                });
+
+            modelBuilder.Entity("backend.Models.OglasObjekta", b =>
+                {
+                    b.Navigation("ListaZakupkjenihOglasa");
                 });
 
             modelBuilder.Entity("backend.Models.ZahtevZaKetering", b =>

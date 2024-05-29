@@ -20,7 +20,7 @@ const AgencyProfile = () => {
 
   const [addCategory] = useAddCategoryMutation();
   const [deleteCategory] = useDeleteCategoryMutation();
-  const[brMenija,setBrMenija]=useState(1);
+  const [brMenija, setBrMenija] = useState(1);
 
   const addMeni = () => {
     setBrMenija(brMenija + 1);
@@ -28,12 +28,15 @@ const AgencyProfile = () => {
   const renderComponents = () => {
     const components = [];
     for (let i = 0; i < brMenija; i++) {
-      components.push(<div className={style.InputiOpisPlusic}><DodajMeni kategorije={kategorije} onClick={addMeni}/></div>);
+      components.push(
+        <div className={style.InputiOpisPlusic}>
+          <DodajMeni kategorije={kategorije} onClick={addMeni} />
+        </div>
+      );
     }
     return components;
   };
 
-    
   const { data: kategorije } = useGetAllCategoriesQuery();
 
   function handleChange() {
@@ -44,11 +47,10 @@ const AgencyProfile = () => {
   }
 
   const dodajNovuKategoriju = () => {
-    if(imeKategorije=="")
-        return;
+    if (imeKategorije == "") return;
     const kategorija: AddCategoryDTO = {
       naziv: imeKategorije,
-    }; 
+    };
     addCategory(kategorija);
     setImeKategorije("");
   };
@@ -122,9 +124,9 @@ const AgencyProfile = () => {
                     onClick={() => {}}
                     onDelete={() => deleteCategory(kategorija.id)}
                     sx={{
-                        width:"100px",
-                        height:"50px",
-                        margin:"3px"
+                      width: "100px",
+                      height: "50px",
+                      margin: "3px",
                     }}
                   ></Chip>
                 );
@@ -144,11 +146,7 @@ const AgencyProfile = () => {
             <h2>Dodaj menije</h2>
           </div>
           {/* odje ispod je za inputi opis i plusic */}
-          <div className={style.InputiOpisPlusic}>
-          {renderComponents()}
-
-          </div>
-          {/*  */}
+          <div>{renderComponents()}</div>
         </div>
       </div>
       <div className={style.NAJJACEDUGME}>
