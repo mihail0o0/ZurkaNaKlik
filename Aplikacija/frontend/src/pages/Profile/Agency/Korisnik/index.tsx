@@ -1,21 +1,58 @@
 import Input from "@/components/lib/inputs/text-input";
 import style from "./style.module.css";
-import { ChangeEvent, useRef, useState } from "react";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
 import MojButton from "@/components/lib/button";
 import LabeledAvatar from "@/components/LabeledAvatar";
 import { useSelector } from "react-redux";
 import { selectUser } from "@/store/auth";
 import OglasKartica from "@/components/OglasKartica";
+import { useGetUserDataQuery } from "@/store/api/endpoints/korisnik";
+import UserAvatar from "@/components/UserAvatar";
+
+import { Alert } from "@mui/material";
 
 const Profile = () => {
-  const user = useSelector(selectUser);
-
-  const [ime, setIme] = useState(user.name);
-  const [email, setEmail] = useState(user.email);
-  const [brTel, setBrTel] = useState(user.phoneNumber);
-  const [slikaProfila, setSlikaProfila] = useState("");
-  const [lokacija, setLokacija] = useState("");
+  const userCurr = useSelector(selectUser);
+  const { data: user } = useGetUserDataQuery(userCurr?.id);
+  const [ime, setIme] = useState(user?.name ?? "");
+  const [prezime, setPrezime] = useState(user?.lastName ?? "");
+  const [email, setEmail] = useState(user?.email ?? "");
+  const [brTel, setBrTel] = useState(user?.phoneNumber ?? "");
+  const [slikaProfila, setSlikaProfila] = useState(user?.profilePhoto ?? "");
+  const [lokacija, setLokacija] = useState(user?.location ?? "");
   const [opis, setOpis] = useState("");
+
+  useEffect(() => {
+    const savedProfile = localStorage.getItem("profileSettings");
+    if (savedProfile) {
+      const profileData = JSON.parse(savedProfile);
+      setIme(profileData.ime ?? "");
+      setPrezime(profileData.prezime ?? "");
+      setEmail(profileData.email ?? "");
+      setBrTel(profileData.brTel ?? "");
+      setSlikaProfila(profileData.slikaProfila ?? "");
+      setLokacija(profileData.lokacija ?? "");
+      setOpis(profileData.opis ?? "");
+    }
+  }, []);
+
+  const sacuvajIzmene = () => {
+    const profileData = {
+      ime,
+      prezime,
+      email,
+      brTel,
+      slikaProfila,
+      lokacija,
+      opis,
+    };
+    localStorage.setItem("profileSettings", JSON.stringify(profileData));
+    return (
+      <Alert variant="outlined" severity="success">
+        Promene su uspesno sacuvane!
+      </Alert>
+    );
+  };
 
   function handleOpis(event: ChangeEvent<HTMLTextAreaElement>) {
     setOpis(event.target.value);
@@ -23,23 +60,23 @@ const Profile = () => {
   return (
     <div className={`containerWrapper ${style.Container}`}>
       <div className={style.PostavkeProfila}>
-        <div >
+        <div>
           <h2>Postavke profila</h2>
         </div>
         <div className={style.Postavke2}>
           {/* odje ide slika od kad je clan broj oglasa i prosecna ocena */}
           <div className={style.KarticaSaSlikom}>
             <div className={style.SlikaImeIPrezime}>
-              {/* ovde ce mora da se uredi slika jer je ova sama zaobljena  i uslov ako nema slika onda ide avatar*/}
-              <img src=".\public\images\slikaprofila.png" />
-              {/* {ime && <LabeledAvatar text={ime} />} */}
-              {/* ime i prezime kad miks doda prezime */}
-              {ime && <p>{ime}</p>}
+              <UserAvatar src={slikaProfila} />
+
+              <p>
+                {user?.name ?? ""} {user?.lastName ?? ""}
+              </p>
             </div>
             <div className={style.InfoOClanu}>
-              {email && <p>Email: {email}</p>}
-              {brTel && <p>Broj telefona: {brTel}</p>}
-              <p>Clan od: 10.3.2002.</p>
+              {email && <p>Email: {user?.email ?? ""}</p>}
+              {brTel && <p>Broj telefona: {user?.phoneNumber ?? ""}</p>}
+              <p>{user?.location ?? ""}</p>
             </div>
           </div>
           <div className={style.OsnovnePostavkeProfila}>
@@ -49,13 +86,17 @@ const Profile = () => {
             <div className={style.Inputi}>
               <div className={style.Red}>
                 <div className={style.InputResssi}>
-                  <Input text={ime} icon="boy" onChange={setIme} />
+                  <Input
+                    text={ime + " " + prezime}
+                    icon="boy"
+                    onChange={setIme}
+                  />
                 </div>
                 <div className={style.InputResssi}>
                   <Input
-                    text={"trenutno nema"}
+                    text={lokacija}
                     icon="location_on"
-                    onChange={() => {}}
+                    onChange={setLokacija}
                   />
                 </div>
               </div>
@@ -82,7 +123,7 @@ const Profile = () => {
                 {/* da azuriram korisnika */}
                 <MojButton
                   text="Sacuvaj"
-                  onClick={() => {}}
+                  onClick={sacuvajIzmene}
                   wide={true}
                   center={true}
                 />
@@ -132,7 +173,7 @@ const Profile = () => {
             lokacija="Nis"
             onClick={() => {}}
           />
-             <OglasKartica
+          <OglasKartica
             nazivProstora="Vila Maria"
             slika="../public/images/slika-kartica-proba.jpg"
             tipProslave="zurka,proslava"
@@ -144,7 +185,7 @@ const Profile = () => {
             lokacija="Nis"
             onClick={() => {}}
           />
-             <OglasKartica
+          <OglasKartica
             nazivProstora="Vila Maria"
             slika="../public/images/slika-kartica-proba.jpg"
             tipProslave="zurka,proslava"
