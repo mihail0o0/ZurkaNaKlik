@@ -164,5 +164,28 @@ namespace backend.Controllers
             }
         }
 
+        [HttpGet("VratiVlasnikaObjavljenogOglasa/{idoglasa}")]
+        public async Task<IActionResult> VratiVlasnikaObjavljenogOglasa(int idoglasa)
+        {
+            try
+            {
+
+                var vlasnik = await Context.OglasiObjekta.Where(x =>x.Id == idoglasa).Select(x => 
+                    x.VlasnikOglasa).FirstOrDefaultAsync();
+            
+
+                if (vlasnik == null)
+                {
+                    return BadRequest("Nema vlasnika oglasa za ovaj objekat, postoji neka greska");
+                }
+
+                return Ok(vlasnik);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
     }
 }
