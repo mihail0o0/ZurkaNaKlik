@@ -458,9 +458,8 @@ namespace backend.Controllers
 
                 int idKorisnika = int.Parse((HttpContext.Items["idKorisnika"] as string)!);
 
-                ZakupljeniOglas? zakupljenioglas = await Context.ZakupljeniOglasi.IgnoreQueryFilters().FirstOrDefaultAsync(o => o.Id == idZakupljenOglas);
+                var zakupljenioglas = await Context.ZakupljeniOglasi.Include(i => i.Korisnik).Include(i => i.ZahtevZaKetering).IgnoreQueryFilters().FirstOrDefaultAsync( f => f.Id == idZakupljenOglas);
 
-                return Ok(new { zakupljenioglas.Id });
 
                 if (zakupljenioglas == null)
                 {
@@ -473,7 +472,13 @@ namespace backend.Controllers
                     return BadRequest("nisi ti taj bebo");
                 }
 
-                var agencija = await Context.Agencije.FindAsync(idAgencije);
+                if(zakupljenioglas.ZahtevZaKetering != null){
+                    return BadRequest("Ovaj oglas vec ima zakupljen ketering");
+                }
+
+
+                var agencija = await Context.Agencije.Include(i => i.ListaZahtevZaKetering).IgnoreQueryFilters().FirstOrDefaultAsync(f => f.Id == idAgencije);
+
 
                 if (agencija == null)
                 {
@@ -482,29 +487,7 @@ namespace backend.Controllers
 
                 List<int> idMenija = listamenija.Select(o => o.idMenija).ToList();
 
-                List<MeniKeteringa> sviMenijiIzabrani = await Context.MenijiKeteringa
-                             .Where(e => idMenija.Contains(e.Id))
-                             .ToListAsync();
-
-                foreach (var o in sviMenijiIzabrani)
-                {
-
-                    if (o.Kategorija!.Agencija!.Id != idAgencije)
-                    {
-                        return BadRequest("nisu iz iste agencije meniji");
-                    }
-
-                }
-
-                //List<MeniKeteringa> listaZaMenije = new List<MeniKeteringa>();
-
-                Dictionary<MeniKeteringa, int> poruceniMeniji = new Dictionary<MeniKeteringa, int>();
-
-                foreach (var m in sviMenijiIzabrani)
-                {
-                    var obj = listamenija.First(o => o.idMenija == m.Id);
-                    poruceniMeniji.Add(m, obj.kg);
-                }
+                //return Ok( new { idMenija});
 
                 var novizahtev = new ZahtevZaKetering
                 {
@@ -512,27 +495,52 @@ namespace backend.Controllers
                     DatumRezervacije = zakupljenioglas.ZakupljenOd,
                     StatusRezervacije = true,
                     Agencija = agencija,
-                    ZakupljeniMeniji = sviMenijiIzabrani
                 };
 
+                
+                int ukupnaCena = 0;
+                foreach(var o in listamenija){
+
+                    MeniKeteringa? jedanMeni = await Context.MenijiKeteringa
+                            .Include(i => i.Kategorija)
+                            .ThenInclude(t => t!.Agencija)
+                            .IgnoreQueryFilters()
+                            .FirstOrDefaultAsync(f => f.Id == o.idMenija);
+
+                    
+                    //
+
+
+                    if(jedanMeni == null){
+                        return BadRequest("Taj meni ne postoji");
+                    }
+
+                    novizahtev.ZakupljeniMeniji?.Add(jedanMeni);
+                    
+                    if(jedanMeni?.Kategorija!.Agencija!.Id != idAgencije){
+                        return BadRequest("nisu iz iste agencije meniji");
+                    }
+
+                    ukupnaCena += jedanMeni.CenaMenija * o.kg;
+                }
+
+                return Ok("ovde deckoo");
 
                 agencija!.ListaZahtevZaKetering!.Add(novizahtev);
 
-                int ukupnaCena = 0;
-
-                foreach (var o in poruceniMeniji)
-                {
-                    ukupnaCena += o.Key.CenaMenija * o.Value;
-                }
-
-
-                if (mogucnostDostave == true)
-                    ukupnaCena += novizahtev.Agencija!.CenaDostave;
+                if(mogucnostDostave == true)
+                    ukupnaCena += agencija.CenaDostave;
 
                 novizahtev.KonacnaCena = ukupnaCena;
 
+                //zakupljenioglas.ZahtevZaKetering = novizahtev;
 
-                return Ok(new { novizahtev, listamenija });
+                Context.ZahteviZaKetering.Add(novizahtev);
+                await Context.SaveChangesAsync();
+
+                return Ok(new { novizahtev.ZakupljeniOglas, ukupnaCena, zakupljenioglas.ZahtevZaKetering});
+
+                
             }
             catch (Exception e)
             {
@@ -751,6 +759,31 @@ namespace backend.Controllers
                 return BadRequest(ex.Message);
             }
 
+
+        }
+
+        #endregion
+
+        #region  PrikaziSveMenije
+        [HttpGet("PrikaziSveMenije/{idKategorije}")]
+        public async Task<IActionResult> PrikaziSveMenije(int idKategorije){
+            try{
+
+                var meniji = await Context.ZahteviZaKetering.Include(i => i.ZakupljeniMeniji).ToListAsync();
+                
+
+
+            if (meniji == null){
+                return BadRequest("Nema takvih kategorija i agencija zajedno");
+            }
+            else {
+                return Ok(meniji);
+            }   
+
+            }
+            catch(Exception ex){
+                return BadRequest(ex.Message);
+            }
 
         }
 

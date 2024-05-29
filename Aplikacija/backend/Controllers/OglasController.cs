@@ -169,5 +169,25 @@ namespace backend.Controllers
             }
         }
 
+        [HttpGet("VratiOglas")]
+        public async Task<IActionResult> VratiOglas()
+        {
+            try
+            {
+                List<string>? gradovi = await Context.OglasiObjekta.Select(x => x.Grad).Distinct().ToListAsync();
+
+                if (gradovi == null)
+                {
+                    return BadRequest("Nema jos objekata pa ni gradova");
+                }
+
+                return Ok(gradovi);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
     }
 }

@@ -26,6 +26,7 @@ namespace backend.Models
         public  Kategorija? Kategorija { get; set; }//Slatko/slano
 
         [JsonIgnore]
+        [InverseProperty("ZakupljeniMeniji")]
         public List<ZahtevZaKetering>? ListaZahetevaZaKetering { get; set; }
     }
 

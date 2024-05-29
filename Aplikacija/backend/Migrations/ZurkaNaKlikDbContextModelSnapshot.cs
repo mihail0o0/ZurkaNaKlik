@@ -300,7 +300,7 @@ namespace WebTemplate.Migrations
                     b.Property<DateTime>("ZakupljenOd")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("ZakupljeniKetering")
+                    b.Property<int?>("ZakupljeniOglas")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -309,9 +309,9 @@ namespace WebTemplate.Migrations
 
                     b.HasIndex("OglasId");
 
-                    b.HasIndex("ZakupljeniKetering")
+                    b.HasIndex("ZakupljeniOglas")
                         .IsUnique()
-                        .HasFilter("[ZakupljeniKetering] IS NOT NULL");
+                        .HasFilter("[ZakupljeniOglas] IS NOT NULL");
 
                     b.ToTable("ZakupljeniOglasi");
                 });
@@ -427,7 +427,7 @@ namespace WebTemplate.Migrations
 
                     b.HasOne("backend.Models.ZahtevZaKetering", "ZahtevZaKetering")
                         .WithOne("ZakupljeniOglas")
-                        .HasForeignKey("backend.Models.ZakupljeniOglas", "ZakupljeniKetering");
+                        .HasForeignKey("backend.Models.ZakupljeniOglas", "ZakupljeniOglas");
 
                     b.Navigation("Korisnik");
 
