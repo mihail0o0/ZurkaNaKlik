@@ -7,17 +7,17 @@ namespace backend.DTOs
 {
     public class Filters
     {
-        public string? Sort { get; set; }
-        public List<EnumTipProslava>? TipProslava { get; set; }
-        public List<EnumTipProstora>? TipProstora { get; set; }
-        public string? Grad { get; set; }
-        public int CenaOd { get; set; }
-        public int CenaDo { get; set; }
-        public int KvadraturaOd { get; set; }
-        public int KvadraturaDo { get; set; }
-        public List<EnumGrejanje>? Grejanje { get; set; }
-        public List<EnumDodatnaOprema>? DodatnaOprema { get; set; }
-        public DateTime DatumOd { get; set; }
-        public DateTime DatumDo { get; set; }
+        public string? sort { get; set; }
+        public List<EnumTipProslava>? tipProslava { get; set; }
+        public List<EnumTipProstora>? tipProstora { get; set; }
+        public string? grad { get; set; }
+        public int cenaOd { get; set; }
+        public int cenaDo { get; set; }
+        public int kvadraturaOd { get; set; }
+        public int kvadraturaDo { get; set; }
+        public List<EnumGrejanje>? grejanje { get; set; }
+        public List<EnumDodatnaOprema>? dodatnaOprema { get; set; }
+        public DateTime datumOd { get; set; }
+        public DateTime datumDo { get; set; }
     }
 }

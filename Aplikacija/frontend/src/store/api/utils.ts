@@ -3,12 +3,15 @@ export const providesList = <
   R extends { id: string | number }[]
 >(
   tagType: T,
-  resultsWithIds: R | undefined,
+  resultsWithIds?: R | undefined,
   customTagId?: string
 ) => {
   const tagId = customTagId ?? `LIST${tagType.toUpperCase()}`;
-  console.log("MRNJAO");
-  console.log(resultsWithIds ? resultsWithIds[0] : "Provides tags");
+
+  if (!resultsWithIds) {
+    return [{ type: tagType, id: tagId }];
+  }
+
   return resultsWithIds
     ? [
         ...resultsWithIds.map(({ id }) => ({ type: tagType, id })),

@@ -1,4 +1,3 @@
-
 import api from "../..";
 import { providesList, providesSingle } from "../../utils";
 import { AllUserData } from "./types";
@@ -14,6 +13,4 @@ const authApiSlice = api.injectEndpoints({
   }),
 });
 
-export const {
-    useGetUserDataQuery } = authApiSlice;
-
+export const { useGetUserDataQuery } = authApiSlice;

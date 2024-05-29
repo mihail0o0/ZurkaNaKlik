@@ -7,6 +7,7 @@ import {
   useDeleteCategoryMutation,
   useGetAllCategoriesQuery,
 } from "@/store/api/endpoints/agencija";
+import { useGetUserDataQuery } from "@/store/api/endpoints/korisnik";
 import { useLogoutMutation } from "@/store/api/endpoints/auth";
 import { selectUser } from "@/store/auth";
 import { Avatar } from "@mui/material";
@@ -18,6 +19,7 @@ const TestingPage = () => {
   const { data: allCategories } = useGetAllCategoriesQuery();
   const [deleteCategory] = useDeleteCategoryMutation();
   const [addCategory] = useAddCategoryMutation();
+
 
   console.log("ALL CATEGORIES");
   console.log(allCategories);

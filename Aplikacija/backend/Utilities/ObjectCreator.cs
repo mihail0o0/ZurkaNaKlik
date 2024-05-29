@@ -81,6 +81,35 @@ namespace backend.Utilities
             return getKorisnik;
         }
 
+        public OglasObjektaResponse ToOglasResult(OglasObjekta oglas)
+        {
+            OglasObjektaResponse oglasObjektaResponse = new OglasObjektaResponse
+            {
+                id = oglas.Id,
+                listaTipProslava = oglas.ListaTipProslava,
+                listaTipProstora = oglas.ListaTipProstora,
+                naziv = oglas.Naziv,
+                grad = oglas.Grad,
+                lokacija = oglas.Lokacija,
+                cenaPoDanu = oglas.CenaPoDanu,
+                brojSoba = oglas.BrojSoba,
+                kvadratura = oglas.Kvadratura,
+                brojKreveta = oglas.BrojKreveta,
+                brojKupatila = oglas.BrojKreveta,
+                grejanje = oglas.Grejanje,
+                listDodatneOpreme = oglas.ListDodatneOpreme,
+                brTel = oglas.BrTel,
+                opis = oglas.Opis,
+                slike = oglas.Slike,
+                ocena = oglas.Ocena,
+                brojOcena = oglas.BrojOcena,
+                zauzetiDani = oglas.ZauzetiDani,
+                idVlasnika = oglas.VlasnikOglasa?.Id,
+            };
+
+            return oglasObjektaResponse;
+        }
+
 
     }
 }
