@@ -17,6 +17,7 @@ namespace backend.Models
         [JsonIgnore]
         public ZakupljeniOglas? ZakupljeniOglas { get; set; }
         [JsonIgnore]
+        [InverseProperty("ListaZahetevaZaKetering")]
         public List<MeniKeteringa>? ZakupljeniMeniji { get; set; }
         [JsonIgnore]
         public Agencija? Agencija { get; set; }
