@@ -24,8 +24,7 @@ namespace backend.Controllers
         }
 
         #region VratiKategorije
-        [HttpGet("VratiKategorije")]
-        public async Task<ActionResult> VratiKategorije()
+        [HttpGet("VratiKategorije")]        public async Task<ActionResult> VratiKategorije()
         {
             try
             {
