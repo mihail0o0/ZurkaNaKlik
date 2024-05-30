@@ -823,10 +823,7 @@ namespace backend.Controllers
         #endregion
 
         
-        #region PrikaziZakupljeniKetering
-
-
-        #endregion
+        
 
 
 
