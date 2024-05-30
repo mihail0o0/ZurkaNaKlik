@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using backend.DTOs;
 using backend.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -12,6 +13,8 @@ namespace backend.Controllers
     [Authorize(Roles = "Agencija")]
     [ApiController]
     [Route("api/[controller]")]
+
+
     public class AgencijaController : ControllerBase
     {
         public ZurkaNaKlikDbContext Context { get; set; }
@@ -22,6 +25,32 @@ namespace backend.Controllers
             Context = context;
             _configuration = configuration;
         }
+
+        #region VratiAgenciju
+        [HttpGet("VratiAgenciju")]
+        public async Task<ActionResult> VratiAgenciju()
+        {
+            try
+            {
+                int idAgencije = int.Parse((HttpContext.Items["idAgencije"] as string)!);
+
+                Agencija? agencija = await Context.Agencije.FindAsync(idAgencije);
+
+                if (agencija == null)
+                {
+                    return BadRequest("Ne postoji agencija sa tim id-jem");
+                }
+
+                return Ok(new { agencija });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+
+        }
+        #endregion
 
         #region VratiKategorije
         [HttpGet("VratiKategorije")]
@@ -489,6 +518,80 @@ namespace backend.Controllers
 
 
                 return Ok( new { zahtevizaketering.StatusRezervacije });
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e);
+            }
+        }
+        #endregion
+
+        #region VratiAgencijeSaFilterimaISortiranjem
+        [HttpPost("VratiAgencije/{pageNumber}/{pageSize}")]
+        public async Task<ActionResult> VratiOglase([FromBody] FilteriAgencije filteri, int pageNumber, int pageSize)
+        { //dodaj sortiranje
+            try
+            {
+                // public class Filters
+                // {
+                //     public List<EnumTipProslava>? TipProslava { get; set; }
+                //     public List<EnumTipProstora>? TipProstora { get; set; }
+                //     public string? Grad { get; set; }
+                //     public int CenaOd { get; set; }
+                //     public int CenaDo { get; set; }
+                //     public int KvadraturaOd { get; set; }
+                //     public int KvadraturaDo { get; set; }
+                //     public List<EnumGrejanje>? Grejanje { get; set; }
+                //     public List<EnumDodatnaOprema>? DodatnaOprema { get; set; }
+                //     public DateTime DatumOd { get; set; }
+                //     public DateTime DatumDo { get; set; }
+                // }
+                List<Agencija> agencije = await Context.Agencije.IgnoreQueryFilters().Include(i => i.KategorijeMenija).ToListAsync();
+
+                switch (filteri.sort)
+                {
+                    case "CenaDostaveRastuca":
+                        agencije = agencije.OrderBy(o => o.CenaDostave).ToList();
+                        break;
+                    case "CenaDostaveOpadajuce":
+                        agencije = agencije.OrderByDescending(o => o.CenaDostave).ToList();
+                        break;
+                    case "OcenaRastuce":
+                        agencije = agencije.OrderBy(o => ((double)(o.Ocena ?? 0))).ToList();
+                        break;
+                    case "OcenaOpadajuce":
+                        agencije = agencije.OrderByDescending(o => ((double)(o.Ocena ?? 0))).ToList();
+                        break;
+                    default:
+                        return BadRequest("Ne postoji sort");
+                }
+
+                if (filteri.ListaKategorija != null && filteri.ListaKategorija!.Count != 0)
+                {
+                    agencije = agencije.Where(agencija => agencija.KategorijeMenija!.Any(tip => filteri.ListaKategorija!.Contains(tip.Naziv))).ToList();
+                }
+
+                if (filteri.Grad != null)
+                {
+                    agencije = agencije.Where(Agencija => Agencija.Lokacija.Equals(filteri.Grad)).ToList();
+                }
+
+                if (filteri.MogucnostDostave == true)
+                {
+                    agencije = agencije.Where(oglas => oglas.MogucnostDostave == true).ToList();
+
+                    if (filteri.CenaDostaveOd >= 0 && filteri.CenaDostaveDo <= Int32.MaxValue && filteri.CenaDostaveOd < filteri.CenaDostaveDo)
+                    {
+                        agencije = agencije.Where(agencija => agencija.CenaDostave >= filteri.CenaDostaveOd && agencija.CenaDostave <= filteri.CenaDostaveDo).ToList();
+                    }
+                }
+
+
+                //List<OglasObjektaResponse> response = new List<OglasObjektaResponse>();
+
+                
+
+                return Ok(new { agencije });
             }
             catch (Exception e)
             {

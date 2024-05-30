@@ -169,6 +169,26 @@ namespace backend.Controllers
             }
         }
 
+        [HttpGet("VratiKategorije")]
+        public async Task<IActionResult> VratiKategorije()
+        {
+            try
+            {
+                List<string>? kategorije = await Context.Kategorije.Select(x => x.Naziv).Distinct().ToListAsync();
+
+                if (kategorije == null)
+                {
+                    return BadRequest("Nema kategorija");
+                }
+
+                return Ok(kategorije);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
         [HttpGet("VratiOglas")]
         public async Task<IActionResult> VratiOglas()
         {
