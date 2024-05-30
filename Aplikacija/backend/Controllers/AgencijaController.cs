@@ -24,8 +24,8 @@ namespace backend.Controllers
         }
 
         #region VratiKategorije
-        [HttpGet("VratiKategorije")]        public async Task<ActionResult> VratiKategorije()
-        {
+        [HttpGet("VratiKategorije")]       
+         public async Task<ActionResult> VratiKategorije() {
             try
             {
                 int idAgencije = int.Parse((HttpContext.Items["idAgencije"] as string)!);
@@ -135,60 +135,11 @@ namespace backend.Controllers
         #endregion
 
         //ovo vrati sve menije pa ce preko id agencije = novo
-        #region VratiSveKategorijeNekeAgencije(idAgencije)
-        [HttpGet("VratiSveKategorijeNekeAgencije/{idAgencije}")]
-        public async Task<IActionResult> VratiSveKategorijeNekeAgencije(int idAgencije)
-        {
-            try
-            {
-                var kategorije = await Context.Kategorije.Include(x => x.ListaMenija).Where(x => x.Agencija!.Id == idAgencije).ToListAsync();
+        
 
+    
 
-                if (kategorije == null)
-                {
-                    return BadRequest("Nema takvih kategorija i agencija zajedno");
-                }
-                else
-                {
-                    return Ok(new { kategorije });
-                }
-
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-
-
-        }
-
-        #endregion
-
-        #region PrikaziAgenciju
-        [HttpGet("PrikaziAgenciju/{idAgencije}")]
-        public async Task<ActionResult> PrikaziAgenciju(int idAgencije)
-        {
-            try
-            {
-                var agencija = await Context.Agencije.Include(x => x.KategorijeMenija).Where(x => x.Id == idAgencije).FirstOrDefaultAsync();
-
-                if (agencija == null)
-                {
-                    return Ok("Ne postoji trazena agencija");
-                }
-
-                return Ok(agencija);
-
-
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-
-            }
-        }
-
-        #endregion
+       
 
 
 
@@ -382,29 +333,6 @@ namespace backend.Controllers
 
         #endregion
         
-        #region  PrikaziSveMenijeKategorije
-        [HttpGet("PrikaziSveMenijeKategorije/{idKategorije}")]
-        public async Task<IActionResult> PrikaziSveMenije(int idKategorije){
-            try{
-
-                var meniji = await Context.MenijiKeteringa.Where(k=>k.Kategorija!.Id== idKategorije).ToListAsync();
-
-            if (meniji == null){
-                return BadRequest("Nema takvih kategorija i agencija zajedno");
-            }
-            else {
-                return Ok(meniji);
-            }   
-
-            }
-            catch(Exception ex){
-                return BadRequest(ex.Message);
-            }
-
-        }
-
-        #endregion
-
 
         //prikazi sve porudzbine
         #region  PrikaziSvePorudzbine
@@ -495,6 +423,68 @@ namespace backend.Controllers
             }
         }
         #endregion
+
+        #region AzurirajAgenciju
+
+        [HttpPut("AzurirajAgenciju")]
+        public async Task<ActionResult> AzurirajAgenciju([FromBody] Agencija agencija){
+            try{
+
+                int idAgencije = int.Parse((HttpContext.Items["idAgencije"] as string)!);
+
+                var a = new {
+                    Ime = agencija.Ime,
+                    Email = agencija.Email,
+                    BrTel = agencija.BrTel,
+                    LozinkaHash = agencija.LozinkaHash,
+                    SlikaProfila = agencija.SlikaProfila,
+                    Lokacija = agencija.Lokacija,
+                    Opis = agencija.Opis,
+                    MogucnostDostave = agencija.MogucnostDostave,
+                    CenaDostave = agencija.CenaDostave
+
+                };
+
+                await Context.SaveChangesAsync();
+                return Ok(new { a });
+
+
+            }
+            catch(Exception e){
+                return BadRequest(e.Message);
+            }
+        }
+
+        #endregion
+
+         #region AzurirajKategoriju
+
+        [HttpPut("AzurirajKategoriju")]
+        public async Task<ActionResult> AzurirajKategoriju([FromBody] Kategorija kategorija){
+            try{
+
+                int idAgencije = int.Parse((HttpContext.Items["idAgencije"] as string)!);
+
+                var a = new {
+                    Naziv = kategorija.Naziv
+
+                };
+
+                await Context.SaveChangesAsync();
+                return Ok(new { a });
+
+
+            }
+            catch(Exception e){
+                return BadRequest(e.Message);
+            }
+        }
+
+        #endregion
+
+        //vrati kategorije i menije za neku agenciju(idagencije)
+
+       
 
 
 

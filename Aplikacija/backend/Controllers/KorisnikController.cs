@@ -115,29 +115,7 @@ namespace backend.Controllers
         #endregion
 
 
-        #region GetKorisnik
-        [HttpGet("GetKorisnik/{idK}")]
-        public async Task<IActionResult> GetKorisnik(int idK)
-        {
-            try
-            {
-                Korisnik korisnik = await Context.Korisnici.Where(x => x.Id == idK).FirstAsync();
-
-                if (korisnik == null)
-                {
-                    return BadRequest("Nema korisnika za prikaz");
-                }
-
-                GetKorisnikResult result = ObjectCreatorSingleton.Instance.ToKorisnikResult(korisnik);
-                return Ok(result);
-
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
-        }
-        #endregion
+       
         //Da vrati sve zakupljene oglase jednog korisnika ako adminu to treba
 
         #region PrikaziSveZakupljeneOglase
@@ -703,7 +681,8 @@ namespace backend.Controllers
                     BrTel = korisnik.BrTel,
                     LozinkaHash = korisnik.LozinkaHash,
                     SlikaProfila = korisnik.SlikaProfila,
-                    Lokacija = korisnik.Lokacija
+                    Lokacija = korisnik.Lokacija,
+                    Prezime = korisnik.Prezime
                 };
 
                 await Context.SaveChangesAsync();
