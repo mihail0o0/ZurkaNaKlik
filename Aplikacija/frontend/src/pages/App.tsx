@@ -22,6 +22,7 @@ import AgencySignUpForm from "@/components/AgencySignUpForm";
 import AgencySignUp from "./login/AgencySignUp";
 import AgencyProfile from "./Profile/Agency";
 import Profile from "./Profile/Agency/Korisnik";
+import OglasiProstor from "./oglasiProstor";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -34,6 +35,7 @@ const router = createBrowserRouter(
         <Route path="testing" element={<TestingPage />} />
         <Route path="mix" element={<TestingPage />} />
         <Route path="profile" element={<Profile />} />
+        <Route path="prostor/oglasiProstor" element={<OglasiProstor />}/>
         <Route path="logout" element={<Logout />} />
         
 
