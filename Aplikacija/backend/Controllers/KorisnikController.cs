@@ -771,5 +771,70 @@ namespace backend.Controllers
 
         // #endregion
 
+
+        #region PrikaziZakupljeniOglas
+        [HttpGet("PrikaziZakupljeniOglas/{idzakupljenogobjekta}")]
+        public async Task<IActionResult> PrikaziZakupljeniOglas(int idzakupljenogobjekta){
+            try{
+                var zakupljenioglas = await Context.ZakupljeniOglasi
+                                            .Include(x => x.ZahtevZaKetering)
+                                            .Where(x =>x.Id ==idzakupljenogobjekta)
+                                            .Select(x => new {
+                                                x.Id,
+                                                x.DatumZakupa,
+                                                x.ZakupljenOd,
+                                                x.ZakupljenDo,
+                                                x.ZahtevZaKetering
+
+                                            })
+                                            .FirstOrDefaultAsync();
+
+                if (zakupljenioglas == null){
+                    return  BadRequest("Nema takvog zakupljenog oglasa");
+                }
+
+                return Ok(zakupljenioglas);
+
+                // var rez = zakupljenioglas.Select(x => new {
+                //     x.Id,
+                //    // x.Oglas,
+                //    x.DatumZakupa,
+                //    x.ZakupljenOd,
+                //    x.ZakupljenDo,
+                //    ZahtevZaKetering = x.ZahtevZaKetering
+
+
+
+                // });
+
+    
+               
+
+
+            }
+            catch (Exception ex){
+                return BadRequest(ex.Message);
+            }
+        }
+
+
+
+
+        #endregion
+
+        
+        #region PrikaziZakupljeniKetering
+
+
+        #endregion
+
+
+
+
+
+        
+
+
+
     }
 }

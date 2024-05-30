@@ -22,7 +22,7 @@ namespace backend.Controllers
             _configuration = configuration;
         }
 
-        #region PrikaziOglas
+        #region PrikaziOglas *Prosledjen id oglasa*
         [HttpGet("PrikaziOglas/{idOglasa}")]
         public async Task<ActionResult> PrikaziOglas(int idOglasa)
         {
@@ -148,7 +148,7 @@ namespace backend.Controllers
         }
         #endregion
 
-
+        #region VratiSveGradove
         [HttpGet("VratiSveGradove")]
         public async Task<IActionResult> VratiSveGradove()
         {
@@ -169,25 +169,10 @@ namespace backend.Controllers
             }
         }
 
-        [HttpGet("VratiOglas")]
-        public async Task<IActionResult> VratiOglas()
-        {
-            try
-            {
-                List<string>? gradovi = await Context.OglasiObjekta.Select(x => x.Grad).Distinct().ToListAsync();
+        #endregion
 
-                if (gradovi == null)
-                {
-                    return BadRequest("Nema jos objekata pa ni gradova");
-                }
 
-                return Ok(gradovi);
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
-        }
+       #region  VratiVlasnikaObjavljenogOglasa
 
         [HttpGet("VratiVlasnikaObjavljenogOglasa/{idoglasa}")]
         public async Task<IActionResult> VratiVlasnikaObjavljenogOglasa(int idoglasa)
@@ -211,6 +196,8 @@ namespace backend.Controllers
                 return BadRequest(e.Message);
             }
         }
+
+        #endregion
 
     }
 }
