@@ -22,7 +22,7 @@ namespace backend.Controllers
             _configuration = configuration;
         }
 
-        #region PrikaziOglas
+        #region PrikaziOglas *Prosledjen id oglasa*
         [HttpGet("PrikaziOglas/{idOglasa}")]
         public async Task<ActionResult> PrikaziOglas(int idOglasa)
         {
@@ -148,7 +148,7 @@ namespace backend.Controllers
         }
         #endregion
 
-
+        #region VratiSveGradove
         [HttpGet("VratiSveGradove")]
         public async Task<IActionResult> VratiSveGradove()
         {
@@ -231,6 +231,8 @@ namespace backend.Controllers
                 return BadRequest(e.Message);
             }
         }
+
+        #endregion
 
     }
 }
