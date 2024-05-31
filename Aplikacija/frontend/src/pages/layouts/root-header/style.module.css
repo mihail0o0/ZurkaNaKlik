@@ -80,58 +80,78 @@
 .profileButton {
   padding: 10px;
 }
-.AppFooter{
+.AppFooterWrapper{
+  position: relative;
+  bottom:0;
+  left:0;
+}
+.AppFooter {
   display: flex;
   flex-direction: row;
   background-color: #f8f9fa;
-  
-  text-align: center;
-  position: fixed;
-  width: 100%;
-  bottom: 0;
-  justify-content: space-around;
   position: absolute;
   bottom: 0;
   width: 100%;
-  height: 60px;
-}
-.ZurNKlk{
-  display: flex;
-  flex-direction: column;
-  width:40%;
-  padding-left: 0px;
+  text-align: center;
+  position: fixed;
+  justify-content: space-around;
  
 }
-.LogoSLikaDiv{
+.ZurNKlk {
   display: flex;
-  width:150px;
+  flex-direction: column;
+  width: 40%;
+  padding-left: 0px;
+  padding-top: 10px;
+}
+.LogoSLikaDiv {
+  display: flex;
+  width: 150px;
   height: 90px;
 }
-.Opis{
-  width:450px;
+.Opis {
+  width: 450px;
   display: flex;
   text-align: left;
 }
-.RaditeSaNama{
-  
+.RaditeSaNama {
   display: flex;
   flex-direction: column;
   justify-content: top;
   align-items: top;
   text-align: left;
- 
 }
-.RaditeSaNama>h3{
+.RaditeSaNama > h3 {
   padding-bottom: 5px;
 }
-.Korisnik{
+.Korisnik {
   text-align: left;
-  width: 100%;
+  width: 90%;
   padding-top: 5px;
+  cursor: pointer;
 }
-.Red{
+
+.Red {
   text-align: left;
 }
-.Red>p{
+.Red > p {
   font-size: medium;
+}
+.Tim{
+  height: 100%;
+  display: flex;
+  flex-direction: column-rverse;
+}
+.Tim>p{
+  color: #D45A6B;
+}
+.rsn{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.nekinovidiv{
+  display: flex;
+  flex-direction: row;
+  gap:10px;
 }
