@@ -26,6 +26,7 @@ const HomeImage = () => {
           </p>
         </div>
       </div>
+
       <div className={style.DoleDiv}>
         {user ? (
           <div className={style.Dugmad}>

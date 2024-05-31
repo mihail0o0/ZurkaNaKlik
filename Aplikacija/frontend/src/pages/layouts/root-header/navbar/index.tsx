@@ -31,8 +31,6 @@ const Navbar = ({ user }: Props) => {
     return user.role == Role.USER;
   }, [user]);
 
-
-
   const zaPrikaz: ZaPrikaz[] = useMemo(() => {
     return ([
     { icon: "account_circle", text: "Profil", link: isUser ? "/user/profile" : "/catering/profile" },

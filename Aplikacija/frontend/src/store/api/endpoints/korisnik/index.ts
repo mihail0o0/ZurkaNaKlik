@@ -6,7 +6,7 @@ const authApiSlice = api.injectEndpoints({
   endpoints: (builder) => ({
     getUserData: builder.query<AllUserData, number>({
       query: (id) => ({
-        url: `Korisnik/GetKorisnik/${id}`,
+        url: `Pregled/GetKorisnik/${id}`,
       }),
       providesTags: (result) => providesSingle("User", result?.id),
     }),
