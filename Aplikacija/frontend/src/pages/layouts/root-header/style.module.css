@@ -80,3 +80,78 @@
 .profileButton {
   padding: 10px;
 }
+.AppFooterWrapper{
+  position: relative;
+  bottom:0;
+  left:0;
+}
+.AppFooter {
+  display: flex;
+  flex-direction: row;
+  background-color: #f8f9fa;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  text-align: center;
+  position: fixed;
+  justify-content: space-around;
+ 
+}
+.ZurNKlk {
+  display: flex;
+  flex-direction: column;
+  width: 40%;
+  padding-left: 0px;
+  padding-top: 10px;
+}
+.LogoSLikaDiv {
+  display: flex;
+  width: 150px;
+  height: 90px;
+}
+.Opis {
+  width: 450px;
+  display: flex;
+  text-align: left;
+}
+.RaditeSaNama {
+  display: flex;
+  flex-direction: column;
+  justify-content: top;
+  align-items: top;
+  text-align: left;
+}
+.RaditeSaNama > h3 {
+  padding-bottom: 5px;
+}
+.Korisnik {
+  text-align: left;
+  width: 90%;
+  padding-top: 5px;
+  cursor: pointer;
+}
+
+.Red {
+  text-align: left;
+}
+.Red > p {
+  font-size: medium;
+}
+.Tim{
+  height: 100%;
+  display: flex;
+  flex-direction: column-rverse;
+}
+.Tim>p{
+  color: #D45A6B;
+}
+.rsn{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.nekinovidiv{
+  display: flex;
+  flex-direction: row;
+  gap:10px;
+}
