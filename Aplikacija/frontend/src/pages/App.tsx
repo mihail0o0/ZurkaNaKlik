@@ -16,7 +16,7 @@ import TestingPage from "./testing";
 import ProtectedRoute from "@/components/AuthProvider/ProtectedRoute";
 import UserSignUpPage from "./login/UserSignUp";
 import RedirectBack from "@/components/AuthProvider/RedirectBack";
-import Search from "./search";
+import Home from "./Home";
 import Logout from "./login/Logout";
 import AgencySignUpForm from "@/components/AgencySignUpForm";
 import AgencySignUp from "./login/AgencySignUp";
@@ -32,7 +32,7 @@ const router = createBrowserRouter(
 
       {/* za prijavljene korisnike */}
       <Route element={<ProtectedRoute />}>
-        <Route path="search" element={<Search />} />
+        <Route path="home" element={<Home />} />
         <Route path="testing" element={<TestingPage />} />
         <Route path="mix" element={<TestingPage />} />
         <Route path="profile" element={<Profile />} />
