@@ -80,3 +80,58 @@
 .profileButton {
   padding: 10px;
 }
+.AppFooter{
+  display: flex;
+  flex-direction: row;
+  background-color: #f8f9fa;
+  
+  text-align: center;
+  position: fixed;
+  width: 100%;
+  bottom: 0;
+  justify-content: space-around;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 60px;
+}
+.ZurNKlk{
+  display: flex;
+  flex-direction: column;
+  width:40%;
+  padding-left: 0px;
+ 
+}
+.LogoSLikaDiv{
+  display: flex;
+  width:150px;
+  height: 90px;
+}
+.Opis{
+  width:450px;
+  display: flex;
+  text-align: left;
+}
+.RaditeSaNama{
+  
+  display: flex;
+  flex-direction: column;
+  justify-content: top;
+  align-items: top;
+  text-align: left;
+ 
+}
+.RaditeSaNama>h3{
+  padding-bottom: 5px;
+}
+.Korisnik{
+  text-align: left;
+  width: 100%;
+  padding-top: 5px;
+}
+.Red{
+  text-align: left;
+}
+.Red>p{
+  font-size: medium;
+}
