@@ -232,38 +232,38 @@ namespace backend.Controllers
 
         #region VratiSveKategorijeIMenijeAgencije
         [HttpGet("VratiSveKategorijeIMenijeAgencije/{idagencije}")]
-public async Task<ActionResult> VratiSveKategorijeIMenijeAgencije(int idagencije) {
-    try {
-        var sveinfoagencije = await Context.Kategorije
-                                           .Include(x => x.Agencija)
-                                           .Include(x => x.ListaMenija)
-                                           .Where(x => x.Agencija!.Id == idagencije)
-                                           .ToListAsync();
+        public async Task<ActionResult> VratiSveKategorijeIMenijeAgencije(int idagencije) {
+            try {
+                var sveinfoagencije = await Context.Kategorije
+                                                .Include(x => x.Agencija)
+                                                .Include(x => x.ListaMenija)
+                                                .Where(x => x.Agencija!.Id == idagencije)
+                                                .ToListAsync();
 
-        if (sveinfoagencije == null || !sveinfoagencije.Any()) {
-            return BadRequest("Nema agencije sa tim id-jem");
+                if (sveinfoagencije == null || !sveinfoagencije.Any()) {
+                    return BadRequest("Nema agencije sa tim id-jem");
+                }
+
+                var result = sveinfoagencije.Select(k => new {
+                    k.Id,
+                    k.Naziv,
+                    ListaMenija = k.ListaMenija!.Select(m => new {
+                        m.Id,
+                        m.Naziv,
+                        m.SastavMenija,
+                        m.CenaMenija,
+                        m.Slika,
+                        m.Opis
+
+                        
+                    })
+                });
+
+                return Ok(result);
+            } catch (Exception e) {
+                return BadRequest(e.Message);
+            }
         }
-
-        var result = sveinfoagencije.Select(k => new {
-            k.Id,
-            k.Naziv,
-            ListaMenija = k.ListaMenija!.Select(m => new {
-                m.Id,
-                m.Naziv,
-                m.SastavMenija,
-                m.CenaMenija,
-                m.Slika,
-                m.Opis
-
-                
-            })
-        });
-
-        return Ok(result);
-    } catch (Exception e) {
-        return BadRequest(e.Message);
-    }
-}
 
 
         #endregion
@@ -274,20 +274,7 @@ public async Task<ActionResult> VratiSveKategorijeIMenijeAgencije(int idagencije
         { //dodaj sortiranje
             try
             {
-                // public class Filters
-                // {
-                //     public List<EnumTipProslava>? TipProslava { get; set; }
-                //     public List<EnumTipProstora>? TipProstora { get; set; }
-                //     public string? Grad { get; set; }
-                //     public int CenaOd { get; set; }
-                //     public int CenaDo { get; set; }
-                //     public int KvadraturaOd { get; set; }
-                //     public int KvadraturaDo { get; set; }
-                //     public List<EnumGrejanje>? Grejanje { get; set; }
-                //     public List<EnumDodatnaOprema>? DodatnaOprema { get; set; }
-                //     public DateTime DatumOd { get; set; }
-                //     public DateTime DatumDo { get; set; }
-                // }
+                
                 List<Agencija> agencije = await Context.Agencije.IgnoreQueryFilters().Include(i => i.KategorijeMenija).ToListAsync();
 
                 switch (filteri.sort)
@@ -342,6 +329,35 @@ public async Task<ActionResult> VratiSveKategorijeIMenijeAgencije(int idagencije
         }
         #endregion
      
+        #region VratiSliku
+        [HttpGet("get-sliku")]
+        public IActionResult VratiSliku(string putanja)
+        {
+            if (System.IO.File.Exists(putanja))
+            {
+                var fileBytes = System.IO.File.ReadAllBytes(putanja);
+                var contentType = GetContentType(putanja);
+                var fileName = Path.GetFileName(putanja);
+
+                return File(fileBytes, contentType, fileName);
+            }
+
+            return NotFound();
+        }
+        #endregion
+
+        private string GetContentType(string path)
+        {
+            var ext = Path.GetExtension(path).ToLowerInvariant();
+            return ext switch
+            {
+                ".jpg" => "image/jpeg",
+                ".jpeg" => "image/jpeg",
+                ".png" => "image/png",
+                ".gif" => "image/gif",
+                _ => "application/octet-stream",
+            };
+        }
        
     }
 
