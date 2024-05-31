@@ -35,8 +35,9 @@ const router = createBrowserRouter(
         <Route path="home" element={<Home />} />
         <Route path="testing" element={<TestingPage />} />
         <Route path="mix" element={<TestingPage />} />
-        <Route path="prostor/oglasiProstor" element={<OglasiProstor />} />
-        <Route path="omiljeno" element={<FavoriteOglasi />} />
+        <Route path="user/profile" element={<UserProfile />} />
+        <Route path="prostor/oglasiProstor" element={<OglasiProstor />}/>
+        <Route path="omiljeno" element={<FavoriteOglasi />}/>
         <Route path="logout" element={<Logout />} />
 
         <Route path="user">

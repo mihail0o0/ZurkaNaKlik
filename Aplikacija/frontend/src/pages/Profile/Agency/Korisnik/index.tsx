@@ -29,6 +29,7 @@ const UserProfile = () => {
   const [slikaProfila, setSlikaProfila] = useState(user?.profilePhoto ?? "");
   const [lokacija, setLokacija] = useState(user?.location ?? "");
 
+
   const [opis, setOpis] = useState("");
   const getEnumTipProslava = (value: EnumTipProslava): string => {
     switch (value) {
