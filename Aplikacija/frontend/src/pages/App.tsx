@@ -21,7 +21,7 @@ import Logout from "./login/Logout";
 import AgencySignUpForm from "@/components/AgencySignUpForm";
 import AgencySignUp from "./login/AgencySignUp";
 import AgencyProfile from "./Profile/Agency";
-import Profile from "./Profile/Agency/Korisnik";
+import UserProfile from "./Profile/Agency/Korisnik";
 import OglasiProstor from "./oglasiProstor";
 import FavoriteOglasi from "./favoriteOglasi";
 
@@ -39,7 +39,10 @@ const router = createBrowserRouter(
         <Route path="prostor/oglasiProstor" element={<OglasiProstor />}/>
         <Route path="omiljeno" element={<FavoriteOglasi />}/>
         <Route path="logout" element={<Logout />} />
-        
+
+        <Route path="user">
+          <Route path="profile" element={<UserProfile />} />
+        </Route>
 
         {/* Agencija */}
         <Route path="catering">

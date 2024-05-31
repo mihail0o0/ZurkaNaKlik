@@ -9,7 +9,7 @@ namespace backend.Enum
         klima,
         kuhinja,
         dvoriste,
-        praking,
+        parking,
         frizider,
         zamrzivac
     }

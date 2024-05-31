@@ -15,12 +15,13 @@ import { useGetUserOglasiQuery } from "@/store/api/endpoints/oglas";
 import { EnumTipProslava } from "@/store/api/endpoints/oglas/types";
 
 
-const Profile = () => {
-  
+const UserProfile = () => {
   const navigate = useNavigate();
-  const userCurr= useSelector(selectUser);
+  const userCurr = useSelector(selectUser);
+  // TODO da se proveri dal postoji user
   const { data: user } = useGetUserDataQuery(userCurr.id);
   const { data: MojiOglasi } = useGetUserOglasiQuery(userCurr?.id);
+
   const [ime, setIme] = useState(user?.name ?? "");
   const [prezime, setPrezime] = useState(user?.lastName ?? "");
   const [email, setEmail] = useState(user?.email ?? "");
@@ -264,4 +265,4 @@ const Profile = () => {
     </div>
   );
 };
-export default Profile;
+export default UserProfile;
