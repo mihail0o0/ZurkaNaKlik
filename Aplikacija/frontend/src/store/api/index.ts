@@ -98,7 +98,7 @@ export const rtkErrorLogger: Middleware =
         return next(action);
       }
 
-      toast.error(errorObject.data);
+      toast.error(errorObject.data || "Unknown error");
       console.error("Error occured: ", errorObject);
     }
     return next(action);

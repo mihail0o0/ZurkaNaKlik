@@ -1,13 +1,20 @@
 import LabeledAvatar from "@/components/LabeledAvatar";
-import { Popover, Typography } from "@mui/material";
-import { useState } from "react";
+import { Popover, Typography, useMediaQuery } from "@mui/material";
+import { useMemo, useState } from "react";
 import style from "./style.module.css";
 import Icon from "@/components/lib/icon";
 import { NavLink } from "react-router-dom";
 import { User } from "@/models/user";
+import { Role } from "@/models/role";
 
 type Props = {
   user: User;
+};
+
+type ZaPrikaz = {
+  icon: string;
+  text: string;
+  link: string;
 };
 
 const Navbar = ({ user }: Props) => {
@@ -18,6 +25,24 @@ const Navbar = ({ user }: Props) => {
     setAnchor(event.currentTarget);
     setOpen((prevOpen) => !prevOpen);
   };
+
+  // true / false u zavisnosti od toga dal je korisnik ili agnecija
+  const isUser = useMemo(() => {
+    return user.role == Role.USER;
+  }, [user]);
+
+
+
+  const zaPrikaz: ZaPrikaz[] = useMemo(() => {
+    return ([
+    { icon: "account_circle", text: "Profil", link: isUser ? "/user/profile" : "/catering/profile" },
+    isUser ? { icon: "favorite", text: "Omiljeno", link: "/omiljeno" } : {icon: "shopping_bag", text: "Porudzbine", link: "/catering/porudzbine"},
+    { icon: "forum", text: "Čet", link: "/chat" },
+    isUser ?{ icon: "schedule", text: "Već posećeno", link: "/poseceno" } : null,
+    isUser ? { icon: "add", text: "Oglasi Prostor", link: "/prostor/oglasiprostor" } : null,
+    { icon: "logout", text: "Odjavi se", link: "/logout" },
+  ].filter((item): item is ZaPrikaz => item !== null));
+  }, [isUser]);
 
   return (
     <div>
@@ -44,16 +69,16 @@ const Navbar = ({ user }: Props) => {
         onClose={() => setOpen(false)}
       >
         <div className={style.popoverContent}>
-          {texts.map((text, index) => (
+          {zaPrikaz.map((element) => (
             <NavLink
-              key={text}
+              key={element.text}
               style={{ textDecoration: "none", color: "black" }}
-              to={links[index]}
+              to={element.link}
               onClick={() => setOpen(false)}
             >
               <div className={style.popoverItem}>
-                <Icon classes="pointer" icon={icons[index]} />
-                <Typography>{text}</Typography>
+                <Icon classes="pointer" icon={element.icon} />
+                <Typography>{element.text}</Typography>
               </div>
             </NavLink>
           ))}
@@ -62,32 +87,5 @@ const Navbar = ({ user }: Props) => {
     </div>
   );
 };
-
-const icons = [
-  "account_circle",
-  "forum",
-  "favorite",
-  "schedule",
-  "add",
-  "logout",
-];
-
-const texts = [
-  "Profil",
-  "Čet",
-  "Omiljeno",
-  "Već posećeno",
-  "Oglasi prostor",
-  "Odjavi se",
-];
-
-const links = [
-  "/profile",
-  "/chat",
-  "/omiljeno",
-  "/poseceno",
-  "/prostor/oglasiProstor",
-  "/logout",
-];
 
 export default Navbar;
