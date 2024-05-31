@@ -1,13 +1,13 @@
 import MojButton from "@/components/lib/button";
 import style from "./style.module.css";
-import OglasKartica from "@/components/OglasKartica";
-import { useState } from "react";
 import { useSelector } from "react-redux";
 import { selectUser } from "@/store/auth";
-import DivFilteri from "@/pages/search/DivFilteri";
+import DivFilteri from "@/pages/Home/DivFilteri";
 import { useGetAllCitiesQuery } from "@/store/api/endpoints/oglas";
+import { useNavigate } from "react-router-dom";
 
 const HomeImage = () => {
+  const navigate = useNavigate();
   const user = useSelector(selectUser);
   const cities = useGetAllCitiesQuery();
   console.log(cities);
@@ -26,10 +26,11 @@ const HomeImage = () => {
           </p>
         </div>
       </div>
+
       <div className={style.DoleDiv}>
         {user ? (
           <div className={style.Dugmad}>
-            {nizDugmad.map((dugme, index) => {
+            {nizDugmad.map((dugme) => {
               return (
                 <MojButton
                   text={dugme}
@@ -49,7 +50,9 @@ const HomeImage = () => {
               text="Prijava"
               backgroundColor="white"
               color="black"
-              onClick={() => {}}
+              onClick={() => {
+                navigate("/Login");
+              }}
               paddingX="40px"
               paddingY="15px"
             />
@@ -57,7 +60,9 @@ const HomeImage = () => {
               text="Pretrazi"
               backgroundColor="white"
               color="black"
-              onClick={() => {}}
+              onClick={() => {
+                navigate("/search");
+              }}
               paddingX="40px"
               paddingY="15px"
             />

@@ -1,6 +1,6 @@
 import Input from "@/components/lib/inputs/text-input";
 import style from "./style.module.css";
-import { ChangeEvent, useRef, useState } from "react";
+import { ChangeEvent,  useState } from "react";
 import MojButton from "@/components/lib/button";
 import DodajMeni from "./DodajMeni";
 import {

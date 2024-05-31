@@ -6,7 +6,7 @@ export enum EnumDodatnaOprema {
   klima,
   kuhinja,
   dvoriste,
-  praking,
+  parking,
   frizider,
   zamrzivac,
 }

@@ -33,5 +33,5 @@ const authApiSlice = api.injectEndpoints({
   }),
 });
 
-export const { useGetAllCitiesQuery, useGetFilteredOglasesQuery } =
+export const { useGetAllCitiesQuery, useGetFilteredOglasesQuery, useGetOglasQuery,useGetUserOglasiQuery } =
   authApiSlice;

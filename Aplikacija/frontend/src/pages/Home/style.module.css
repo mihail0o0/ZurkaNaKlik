@@ -1,8 +1,10 @@
 .SearchKartice {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  display: flex;
   width: 80%;
   margin-inline: 10%;
   padding: 30px;
   word-wrap: break-word;
+  gap: 50px;
+  flex-wrap: wrap;
 }
+
