@@ -18,6 +18,7 @@ import { EnumTipProslava } from "@/store/api/endpoints/oglas/types";
 const UserProfile = () => {
   const navigate = useNavigate();
   const userCurr = useSelector(selectUser);
+  // TODO da se proveri dal postoji user
   const { data: user } = useGetUserDataQuery(userCurr.id);
   const { data: MojiOglasi } = useGetUserOglasiQuery(userCurr?.id);
 
