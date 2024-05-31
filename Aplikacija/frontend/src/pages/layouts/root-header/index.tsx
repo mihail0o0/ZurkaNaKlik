@@ -77,7 +77,7 @@ const RootHeader = () => {
           </div>
         )}
       </div>
-      <main>
+      <main className={style.Main}>
         <Outlet />
       </main>
       <div className={style.AppFooterWrapper}>
@@ -96,53 +96,69 @@ const RootHeader = () => {
           <div className={style.rsn}>
             <h3>Radite sa nama</h3>
             <div className={style.nekinovidiv}>
-          <div className={style.RaditeSaNama}>
-            
-            <div className={style.Korisnik}>
-              <h5
-                onClick={() => {
-                  navigate("/user/signup");
-                }} 
-              >
-                Registrujte se kao korisnik
-              </h5>
-              <div className={style.Red}>
-                <p onClick={() => {
-                  navigate("/Login");
-                }} >Prijavite se kao korisnik</p>
+              <div className={style.RaditeSaNama}>
+                <div className={style.Korisnik}>
+                  <h5
+                    onClick={() => {
+                      navigate("/user/signup");
+                    }}
+                  >
+                    Registrujte se kao korisnik
+                  </h5>
+                  <div className={style.Red}>
+                    <p
+                      onClick={() => {
+                        navigate("/Login");
+                      }}
+                    >
+                      Prijavite se kao korisnik
+                    </p>
+                  </div>
+                  <div className={style.Red}>
+                    <p>Oglasite Vas prostor</p>
+                  </div>
+                </div>
               </div>
-              <div className={style.Red}>
-                <p>Oglasite Vas prostor</p>
+              <div className={style.RaditeSaNama}>
+                <div className={style.Korisnik}>
+                  <h5
+                    onClick={() => {
+                      navigate("/catering/register");
+                    }}
+                  >
+                    Registrujte se kao Agencija za ketering
+                  </h5>
+                  <div className={style.Red}>
+                    <p
+                      onClick={() => {
+                        navigate("/Login");
+                      }}
+                    >
+                      Prijavite se kao Agencija za ketering
+                    </p>
+                  </div>
+                  <div className={style.Red}>
+                    <p>Postavite Vase menije</p>
+                  </div>
+                </div>
               </div>
             </div>
-         
           </div>
-          <div className={style.RaditeSaNama}>
-          <div className={style.Korisnik}>
-              <h5 onClick={() => {
-                  navigate("/catering/register");
-                }} >Registrujte se kao Agencija za ketering</h5>
-              <div className={style.Red}>
-                <p onClick={() => {
-                  navigate("/Login");
-                }}>Prijavite se kao Agencija za ketering</p>
-              </div>
-              <div className={style.Red}>
-                <p>Postavite Vase menije</p>
-              </div>
-            </div>
-          </div>
-          </div>
-        </div>
           <div className={style.RaditeSaNama}>
             <h3>Kontaktirajte nas</h3>
             <div className={style.Korisnik}>
               <h5>Posaljite nam poruku</h5>
               <div className={style.Red}>
-                <p>Email: zurkanaklik@gmail.com</p>
+                <div>
+                  <img src="../public/images/mail.png" alt="Email" />
+                  <p>zurkanaklik@gmail.com</p>
+                </div>
               </div>
               <div className={style.Red}>
-                <p>Instagram: @ZurkaNaKlik</p>
+                <div>
+                  <img src="../public/images/instagram.png" alt="Instagram"/>
+                  <p> @ZurkaNaKlik</p>
+                </div>
               </div>
             </div>
           </div>

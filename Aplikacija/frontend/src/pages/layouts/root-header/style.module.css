@@ -155,3 +155,6 @@
   flex-direction: row;
   gap:10px;
 }
+.Main{
+  min-height: 500vh;
+}

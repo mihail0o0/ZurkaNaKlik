@@ -16,8 +16,9 @@ import { EnumTipProslava } from "@/store/api/endpoints/oglas/types";
 
 
 const Profile = () => {
+  
   const navigate = useNavigate();
-  const userCurr = useSelector(selectUser);
+  const userCurr= useSelector(selectUser);
   const { data: user } = useGetUserDataQuery(userCurr.id);
   const { data: MojiOglasi } = useGetUserOglasiQuery(userCurr?.id);
   const [ime, setIme] = useState(user?.name ?? "");
@@ -26,6 +27,7 @@ const Profile = () => {
   const [brTel, setBrTel] = useState(user?.phoneNumber ?? "");
   const [slikaProfila, setSlikaProfila] = useState(user?.profilePhoto ?? "");
   const [lokacija, setLokacija] = useState(user?.location ?? "");
+
 
   const [opis, setOpis] = useState("");
   const getEnumTipProslava = (value: EnumTipProslava): string => {

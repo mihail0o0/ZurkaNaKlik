@@ -5,6 +5,8 @@
     background-color: white;
     border-radius: 30px;
     padding: 20px;
+
+    padding-bottom:60px;
 }
 .Txt{
     display: flex;
