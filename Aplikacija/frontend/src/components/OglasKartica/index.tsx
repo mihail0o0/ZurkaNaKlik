@@ -7,11 +7,11 @@ import MojButton from "../lib/button";
 type Props = {
   nazivProstora: string;
   slika: string;
-  tipProslave: string;
+  tipProslave: string ;
   isFavorite: boolean;
-  prosecnaOcena: string;
+  prosecnaOcena: number | string;
   opis: string;
-  cena: string;
+  cena: string | number;
   brojLjudi: string;
   lokacija: string;
   onClick: React.MouseEventHandler<HTMLButtonElement> | (() => void);
