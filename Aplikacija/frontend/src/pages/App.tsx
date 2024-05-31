@@ -23,6 +23,7 @@ import AgencySignUp from "./login/AgencySignUp";
 import AgencyProfile from "./Profile/Agency";
 import Profile from "./Profile/Agency/Korisnik";
 import OglasiProstor from "./oglasiProstor";
+import FavoriteOglasi from "./favoriteOglasi";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -36,6 +37,7 @@ const router = createBrowserRouter(
         <Route path="mix" element={<TestingPage />} />
         <Route path="profile" element={<Profile />} />
         <Route path="prostor/oglasiProstor" element={<OglasiProstor />}/>
+        <Route path="omiljeno" element={<FavoriteOglasi />}/>
         <Route path="logout" element={<Logout />} />
         
 
