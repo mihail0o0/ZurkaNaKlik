@@ -17,7 +17,7 @@ const FavoriteOglasi=()=>{
            <div  className={style.Div222}>
             <div className={style.TxtDiv}>
                 <MojButton text="Pretrazite jos oglasa" onClick={() => {
-                navigate('/search');
+                navigate('/home');
               }} wide={true} center={true}/>
             </div>
            </div>
