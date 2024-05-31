@@ -6,6 +6,7 @@ import Navbar from "./navbar";
 import MojButton from "@/components/lib/button";
 import { useEffect, useMemo } from "react";
 import { Role } from "@/models/role";
+import PageSpacer from "@/components/lib/page-spacer";
 
 type ZaPrikaz = {
   message: string;
@@ -77,80 +78,63 @@ const RootHeader = () => {
           </div>
         )}
       </div>
+
       <main>
         <Outlet />
       </main>
-      <div className={style.AppFooterWrapper}>
-        <footer className={style.AppFooter}>
-          <div className={style.ZurNKlk}>
+
+      <PageSpacer variant="small" />
+
+      <footer className={style.footer}>
+        <div className={style.footerTop}>
+          <div className={style.footerContent}>
             <div className={style.LogoSLikaDiv}>
               <img src="../public/images/logo.png" />
             </div>
-            <div className={style.Opis}>
-              <p>
-                Zurka na klik je platforma za oglasavanje kuca, vikendica,
-                stanova, poslovnih prostora povodom zurka, proslava, sastanaka.
-              </p>
-            </div>
+            <p>
+              Zurka na klik je platforma za oglasavanje kuca, vikendica,
+              stanova, poslovnih prostora povodom zurka, proslava, sastanaka.
+            </p>
           </div>
-          <div className={style.rsn}>
-            <h3>Radite sa nama</h3>
-            <div className={style.nekinovidiv}>
-          <div className={style.RaditeSaNama}>
-            
-            <div className={style.Korisnik}>
-              <h5
-                onClick={() => {
-                  navigate("/user/signup");
-                }} 
-              >
-                Registrujte se kao korisnik
-              </h5>
-              <div className={style.Red}>
-                <p onClick={() => {
-                  navigate("/Login");
-                }} >Prijavite se kao korisnik</p>
-              </div>
-              <div className={style.Red}>
-                <p>Oglasite Vas prostor</p>
-              </div>
-            </div>
-         
+
+          <div className={style.footerContent}>
+            <h2>Radite sa nama</h2>
+            <NavLink className={style.footerLink} to="/user/signup">
+              Registrujte se kao korisnik
+            </NavLink>
+            <NavLink className={style.footerLink} to="/catering/signup">
+              Ponudite usluge keteringa
+            </NavLink>
+            <NavLink className={style.footerLink} to="/login">
+              Prijavite se
+            </NavLink>
+            <NavLink className={style.footerLink} to="/login">
+              Oglasite Vaš prostor
+            </NavLink>
           </div>
-          <div className={style.RaditeSaNama}>
-          <div className={style.Korisnik}>
-              <h5 onClick={() => {
-                  navigate("/catering/register");
-                }} >Registrujte se kao Agencija za ketering</h5>
-              <div className={style.Red}>
-                <p onClick={() => {
-                  navigate("/Login");
-                }}>Prijavite se kao Agencija za ketering</p>
-              </div>
-              <div className={style.Red}>
-                <p>Postavite Vase menije</p>
-              </div>
-            </div>
-          </div>
+
+          <div className={style.footerContent}>
+            <h2>Kontaktirajte nas</h2>
+            <NavLink
+              className={style.footerLink}
+              to="mailto:zurkanaklik@gmail.com"
+            >
+              Email: zurkanaklik@gmail.com
+            </NavLink>
+            <NavLink
+              className={style.footerLink}
+              to="https://www.instagram.com/zurkanaklik"
+            >
+              Instagram: @ZurkaNaKlik
+            </NavLink>
           </div>
         </div>
-          <div className={style.RaditeSaNama}>
-            <h3>Kontaktirajte nas</h3>
-            <div className={style.Korisnik}>
-              <h5>Posaljite nam poruku</h5>
-              <div className={style.Red}>
-                <p>Email: zurkanaklik@gmail.com</p>
-              </div>
-              <div className={style.Red}>
-                <p>Instagram: @ZurkaNaKlik</p>
-              </div>
-            </div>
-          </div>
-          <div className={style.Tim}>
-            <p>Tim LeVl</p>
-          </div>
-        </footer>
-      </div>
+
+        <div className={style.footerBottom}>
+          <p>ZurkaNaKlik</p>
+          <p>Tim <span className={style.timLevl}>LeVl</span></p>
+        </div>
+      </footer>
     </>
   );
 };

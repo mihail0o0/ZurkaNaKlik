@@ -1,13 +1,13 @@
-import { CSSProperties, useState } from "react";
+import { CSSProperties, useMemo, useState } from "react";
 import style from "./style.module.css";
 import Icon from "../lib/icon";
-import { Typography } from "@mui/material";
+import { Typography, useMediaQuery } from "@mui/material";
 import MojButton from "../lib/button";
 
 type Props = {
   nazivProstora: string;
   slika: string;
-  tipProslave: string ;
+  tipoviProslave: string[];
   isFavorite: boolean;
   prosecnaOcena: number | string;
   opis: string;
@@ -20,7 +20,7 @@ type Props = {
 const OglasKartica = ({
   nazivProstora,
   slika,
-  tipProslave,
+  tipoviProslave,
   isFavorite,
   prosecnaOcena,
   opis,
@@ -29,23 +29,41 @@ const OglasKartica = ({
   lokacija,
   onClick,
 }: Props) => {
-  const[favorite,setFavorite]=useState(isFavorite);
-  function updateFavorite(){setFavorite(prevFavorite => !prevFavorite);}
-  const OglasKarticaStyle: CSSProperties = {
-    
-  };
-  const SlikaKartica: CSSProperties={
-    backgroundImage: `url(${slika})`,
+  const [favorite, setFavorite] = useState(isFavorite);
+  function updateFavorite() {
+    setFavorite((prevFavorite) => !prevFavorite);
   }
+
+  const OglasKarticaStyle: CSSProperties = {};
+
+  const SlikaKartica: CSSProperties = {
+    backgroundImage: `url(${slika})`,
+  };
+
+  const textTipProslave: string = useMemo(() => {
+    let finalString = "";
+
+    for(let i = 0; i < tipoviProslave.length; i++){
+      finalString += tipoviProslave[i];
+      if(i < tipoviProslave.length - 1){
+        finalString += ", ";
+      }
+    }
+
+    return finalString;
+  }, [tipoviProslave]);
+
   return (
     <div className={style.GlavniDiv}>
       <div className={style.SlikaKartica} style={SlikaKartica}>
         {/* ovde ide slika , pa onda tip proslave i dal je omiljeno ili ne */}
         <div className={style.TipOmiljeno}>
           <div>
-            <p>{tipProslave}</p>
+            <p>{textTipProslave}</p>
           </div>
-         
+
+
+          {/* // TODO izmeni u icon */}
           <img
             onClick={updateFavorite}
             src={
@@ -55,6 +73,7 @@ const OglasKartica = ({
             }
             alt={favorite ? "Favorite" : "Not Favorite"}
           />
+
         </div>
       </div>
       <div className={style.ViseInfo}>
@@ -73,17 +92,17 @@ const OglasKartica = ({
         </div>
         {/* ovde cena broj lokacija */}
         <div className={style.CenaBrojLokacija}>
-          <div className={style.Cena}>
+          <div className={style.BottomIcon}>
             {/* cena  */}
             <Icon icon="euro_symbol" />
             <p>{cena}</p>
           </div>
-          <div className={style.BrojLjudi}>
+          <div className={style.BottomIcon}>
             {/* broj ljudi */}
             <Icon icon="boy" />
             <p>{brojLjudi}</p>
           </div>
-          <div className={style.Lokacija}>
+          <div className={style.BottomIcon}>
             {/* lokacija */}
             <Icon icon="location_on" />
             <p>{lokacija}</p>
