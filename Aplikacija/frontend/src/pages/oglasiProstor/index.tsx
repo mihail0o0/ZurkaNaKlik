@@ -4,7 +4,8 @@ import { ChangeEvent, useState } from "react";
 import Input from "@/components/lib/inputs/text-input";
 import { Chip, MenuItem, Select, SelectChangeEvent } from "@mui/material";
 import {
-    EnumDodatnaOprema,
+  EnumDodatnaOprema,
+  EnumGrejanje,
   EnumTipProslava,
   EnumTipProstora,
 } from "@/store/api/endpoints/oglas/types";
@@ -24,8 +25,27 @@ const OglasiProstor = () => {
   const [brojSoba, setBrojSoba] = useState("");
   const [brojKreveta, setBrojKreveta] = useState("");
   const [brojKupatila, setBrojKupatila] = useState("");
+  
+  const getEnumGrejanje = (value: EnumGrejanje): string => {
+    switch (value) {
+      case EnumGrejanje.Etazno:
+        return "Etažno";
+      case EnumGrejanje.Klima:
+        return "Klima";
+      case EnumGrejanje.Kotao:
+        return "Kotao";
+      case EnumGrejanje.Sporet:
+        return "Šporet";
+      case EnumGrejanje.TA_pec:
+        return "TA peć";
+      case EnumGrejanje.Nema:
+        return "Nema";
+      default:
+        return "";
+    }
+  };
 
-  const getEnumText = (value: EnumTipProslava): string => {
+  const getEnumTipProslava = (value: EnumTipProslava): string => {
     switch (value) {
       case EnumTipProslava.Rodjendan:
         return "Rođendan";
@@ -62,27 +82,27 @@ const OglasiProstor = () => {
   const getEnumDodatnaOprema = (value: EnumDodatnaOprema): string => {
     switch (value) {
       case EnumDodatnaOprema.net:
-        return 'Internet';
+        return "Internet";
       case EnumDodatnaOprema.tv:
-        return 'Televizor';
+        return "Televizor";
       case EnumDodatnaOprema.terasa:
-        return 'Terasa';
+        return "Terasa";
       case EnumDodatnaOprema.bazen:
-        return 'Bazen';
+        return "Bazen";
       case EnumDodatnaOprema.klima:
-        return 'Klima uređaj';
+        return "Klima uređaj";
       case EnumDodatnaOprema.kuhinja:
-        return 'Kuhinja';
+        return "Kuhinja";
       case EnumDodatnaOprema.dvoriste:
-        return 'Dvorište';
+        return "Dvorište";
       case EnumDodatnaOprema.parking:
-        return 'Parking';
+        return "Parking";
       case EnumDodatnaOprema.frizider:
-        return 'Frižider';
+        return "Frižider";
       case EnumDodatnaOprema.zamrzivac:
-        return 'Zamrzivač';
+        return "Zamrzivač";
       default:
-        return '';
+        return "";
     }
   };
 
@@ -183,12 +203,18 @@ const OglasiProstor = () => {
                 borderRadius: "20px",
               }}
             >
-              <MenuItem value={10}>TA pec</MenuItem>
-              <MenuItem value={20}>Klima</MenuItem>
-              <MenuItem value={30}>Sporet</MenuItem>
-              <MenuItem value={40}>Kotao</MenuItem>
-              <MenuItem value={50}>Etazno</MenuItem>
-              <MenuItem value={60}>Nema</MenuItem>
+             {Object.keys(EnumGrejanje)
+            .filter((key) => isNaN(Number(key)))
+            .map((key) => {
+              const value =
+              EnumGrejanje[key as keyof typeof EnumGrejanje];
+              return (
+                <div className={style.JedanChip}>
+                    <MenuItem value={20}>{getEnumGrejanje(value as EnumGrejanje)}</MenuItem>
+                </div>
+              );
+            })}
+         
             </Select>
           </div>
         </div>
@@ -208,7 +234,7 @@ const OglasiProstor = () => {
               return (
                 <div className={style.JedanChip}>
                   <Chip
-                    label={getEnumText(value as EnumTipProslava)}
+                    label={getEnumTipProslava(value as EnumTipProslava)}
                     variant="outlined"
                     onClick={() => {}}
                     onDelete={() => {}}
@@ -257,33 +283,37 @@ const OglasiProstor = () => {
       {/* dodatna oprema */}
       <div>
         <div className={style.TipoviProslava}>
-        <h3>Dodatna oprema koju poseduje Vas prostor</h3>
-        <div className={style.ChipProslave}>
-        {Object.values(EnumDodatnaOprema)
-        .filter((value) => typeof value === 'number') // Filtriramo samo numeričke vrednosti
-        .map((value) => (
-          <div className={style.JedanChip}>
-            <Chip
-              label={getEnumDodatnaOprema(value as EnumDodatnaOprema)}
-              variant="outlined"
-              onClick={() => {}}
-              onDelete={() => {}}
-              sx={{
-                width: "100%",
-                borderRadius: "20px",
-                height: "40px",
-                color: "black",
-              }}
-            />
-           
+          <h3>Dodatna oprema koju poseduje Vas prostor</h3>
+          <div className={style.ChipProslave}>
+            {Object.values(EnumDodatnaOprema)
+              .filter((value) => typeof value === "number") // Filtriramo samo numeričke vrednosti
+              .map((value) => (
+                <div className={style.JedanChip}>
+                  <Chip
+                    label={getEnumDodatnaOprema(value as EnumDodatnaOprema)}
+                    variant="outlined"
+                    onClick={() => {}}
+                    onDelete={() => {}}
+                    sx={{
+                      width: "100%",
+                      borderRadius: "20px",
+                      height: "40px",
+                      color: "black",
+                    }}
+                  />
+                </div>
+              ))}
           </div>
-        ))}
-        </div>
         </div>
       </div>
       <div className={style.NAJJACEDUGME}>
         <div className={style.dodajOglasDugme}>
-            <MojButton text="Dodajte oglas" center={true} wide={true} onClick={()=>{}}/>
+          <MojButton
+            text="Dodajte oglas"
+            center={true}
+            wide={true}
+            onClick={() => {}}
+          />
         </div>
       </div>
     </div>
