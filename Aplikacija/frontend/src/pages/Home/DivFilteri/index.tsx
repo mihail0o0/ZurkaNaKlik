@@ -5,6 +5,7 @@ import Cena from "./cena";
 import Datum from "./datum";
 import Grad from "./grad";
 import { useState } from "react";
+import JosFiltera from "./josFiltera";
 
 const DivFilteri = () => {
   const [gradValue, setGradValue] = useState<string | null>(null);
@@ -40,10 +41,7 @@ const DivFilteri = () => {
         />
       </div>
       {/*jos filterea*/}
-      <div className={style.JosFiltera}>
-        <img src="../public/images/page_info.png" />
-        <p>Još filtera</p>
-      </div>
+      <JosFiltera />
     </div>
   );
 };
