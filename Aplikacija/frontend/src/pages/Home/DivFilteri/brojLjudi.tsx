@@ -56,7 +56,7 @@ const BrojLjudi = () => {
       >
         {/* <Typography sx={{ p: 2 }}>The content of the Popover.</Typography> */}
         <div className={style.CenaVelikiDiv}>
-          <Typography sx={{ p: 2 }}>Broj ljudi</Typography>
+         
           <div className={style.CenaOd}>
             <Typography sx={{ p: 2 }}>Broj ljudi :</Typography>
 
