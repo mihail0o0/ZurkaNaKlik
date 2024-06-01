@@ -1,57 +1,54 @@
-.DivZaPretragu{
-    display: flex;
-    flex-direction: column;
-    background-color: aliceblue;
-    width: 60%;
-    
-    border-radius: 10px;
-    padding: 0px;
-    
-  }
-  .DugmeFilter{
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-around;
-    padding: 10px;
-    margin:0px;
-    width:100%;
-    padding-bottom: 5px;
-  }
-  .JosFiltera{
-    display: flex;
-    flex-direction: row;
-    align-items: center;
+.DivZaPretragu {
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  border-radius: 10px;
+  padding: 16px;
+  width: 100%;
+}
 
-    gap:6px;
-    padding-left: 20px;
-  }
-  .JosFiltera>P{
-    font-size: 15px;
-    display: flex;
-    
-  }
-  .JosFiltera>img{
-    display: flex;
-    padding: 10px;
-  }
-  .CenaVelikiDiv{
-    display: flex;
-    flex-direction: column;
+.DugmeFilter {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+  padding: 10px;
+  margin: 0px;
+  gap: 10px;
+  width: 100%;
+  padding-bottom: 5px;
+}
 
-  }
-  .CenaOd{
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    padding: auto;
+.JosFiltera {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 
-  }
-  .CenaOd>input{
-    height: 30px;
-    border-radius: 20px;
-    background-color: #d3d3d3;
-    border:none;
-
-  }
+  gap: 6px;
+  padding-left: 20px;
+}
+.JosFiltera > P {
+  font-size: 15px;
+  display: flex;
+}
+.JosFiltera > img {
+  display: flex;
+  padding: 10px;
+}
+.CenaVelikiDiv {
+  display: flex;
+  flex-direction: column;
+}
+.CenaOd {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: auto;
+}
+.CenaOd > input {
+  height: 30px;
+  border-radius: 20px;
+  background-color: #d3d3d3;
+  border: none;
+}

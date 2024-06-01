@@ -5,13 +5,12 @@ const Datum = () => {
     <MojButton
       text="Datum od - do"
       onClick={() => {}}
-      paddingX="13px"
+      paddingX="30px"
       paddingY="8px"
       fontSize="15px"
       icon="calendar_month"
       backgroundColor="#d3d3d3"
       color="black"
-      wide="20%"
     />
   );
 };

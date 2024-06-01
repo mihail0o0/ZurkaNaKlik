@@ -4,24 +4,31 @@ import BrojLjudi from "./brojLjudi";
 import Cena from "./cena";
 import Datum from "./datum";
 import Grad from "./grad";
+import { useState } from "react";
 
 const DivFilteri = () => {
+  const [gradValue, setGradValue] = useState<string | null>(null);
+
   return (
     <div className={style.DivZaPretragu}>
       {/* ovde idu filteri */}
       {/* prvo div za ikonice i unos teksta */}
       <div className={style.DugmeFilter}>
-        <Grad />
+        <Grad
+          value={gradValue}
+          setValue={setGradValue}
+        />
+
         <Datum />
+
         <Cena />
         <BrojLjudi />
         <MojButton
           text="Pretrazi "
           onClick={() => {}}
-          paddingX="25px"
+          paddingX="40px"
           paddingY="15px"
           fontSize="15px"
-          wide="20%"
           center={true}
         />
       </div>
