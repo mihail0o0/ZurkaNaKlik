@@ -168,9 +168,11 @@ namespace backend.Controllers
                 return BadRequest(e.Message);
             }
         }
+        #endregion
 
-        [HttpGet("VratiKategorije")]
-        public async Task<IActionResult> VratiKategorije()
+
+        [HttpGet("VratiNaziveKategorija")]
+        public async Task<IActionResult> VratiNaziveKategorija()
         {
             try
             {
@@ -189,6 +191,7 @@ namespace backend.Controllers
             }
         }
 
+        #region VratiOglas
         [HttpGet("VratiOglas")]
         public async Task<IActionResult> VratiOglas()
         {
@@ -208,7 +211,9 @@ namespace backend.Controllers
                 return BadRequest(e.Message);
             }
         }
+        #endregion
 
+        #region VratiVlasnikaObjavljenogOglasa/{idoglasa}
         [HttpGet("VratiVlasnikaObjavljenogOglasa/{idoglasa}")]
         public async Task<IActionResult> VratiVlasnikaObjavljenogOglasa(int idoglasa)
         {
@@ -231,7 +236,6 @@ namespace backend.Controllers
                 return BadRequest(e.Message);
             }
         }
-
         #endregion
 
     }
