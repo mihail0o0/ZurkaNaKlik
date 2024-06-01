@@ -81,6 +81,88 @@ export type OglasObjekata = {
 };
 
 export type GetOglasData = {
-    filters: Filters;
-    pageData: FiltersPaginationData;
-}
+  filters: Filters;
+  pageData: FiltersPaginationData;
+};
+
+export const getEnumGrejanje = (value: EnumGrejanje): string => {
+  switch (value) {
+    case EnumGrejanje.Etazno:
+      return "Etažno";
+    case EnumGrejanje.Klima:
+      return "Klima";
+    case EnumGrejanje.Kotao:
+      return "Kotao";
+    case EnumGrejanje.Sporet:
+      return "Šporet";
+    case EnumGrejanje.TA_pec:
+      return "TA peć";
+    case EnumGrejanje.Nema:
+      return "Nema";
+    default:
+      return "";
+  }
+};
+
+export const getEnumTipProslava = (value: EnumTipProslava): string => {
+  switch (value) {
+    case EnumTipProslava.Rodjendan:
+      return "Rođendan";
+    case EnumTipProslava.Zurka:
+      return "Žurka";
+    case EnumTipProslava.Teambuilding:
+      return "Teambuilding događaj";
+    case EnumTipProslava.Momacko:
+      return "Momacko veče";
+    case EnumTipProslava.Devojacko:
+      return "Devojačko veče";
+    case EnumTipProslava.Sve:
+      return "Sve proslave";
+    case EnumTipProslava.Ostalo:
+      return "Ostale proslave";
+    default:
+      return "";
+  }
+};
+
+export const getEnumTipProstora = (value: EnumTipProstora): string => {
+  switch (value) {
+    case EnumTipProstora.Vikendica:
+      return "Vikendica";
+    case EnumTipProstora.Stan:
+      return "Stan";
+    case EnumTipProstora.Lokal:
+      return "Lokal";
+    case EnumTipProstora.Kuca:
+      return "Kuca";
+    default:
+      return "";
+  }
+};
+
+export const getEnumDodatnaOprema = (value: EnumDodatnaOprema): string => {
+  switch (value) {
+    case EnumDodatnaOprema.net:
+      return "Internet";
+    case EnumDodatnaOprema.tv:
+      return "Televizor";
+    case EnumDodatnaOprema.terasa:
+      return "Terasa";
+    case EnumDodatnaOprema.bazen:
+      return "Bazen";
+    case EnumDodatnaOprema.klima:
+      return "Klima uređaj";
+    case EnumDodatnaOprema.kuhinja:
+      return "Kuhinja";
+    case EnumDodatnaOprema.dvoriste:
+      return "Dvorište";
+    case EnumDodatnaOprema.parking:
+      return "Parking";
+    case EnumDodatnaOprema.frizider:
+      return "Frižider";
+    case EnumDodatnaOprema.zamrzivac:
+      return "Zamrzivač";
+    default:
+      return "";
+  }
+};

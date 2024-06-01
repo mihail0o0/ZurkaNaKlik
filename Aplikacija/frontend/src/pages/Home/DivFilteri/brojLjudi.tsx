@@ -4,9 +4,13 @@ import { Popover, Typography } from "@mui/material";
 import { useState } from "react";
 import style from "./style.module.css";
 
-const BrojLjudi = () => {
+type Props = {
+  broj: string;
+  setBroj: React.Dispatch<React.SetStateAction<string>>;
+};
+
+const BrojLjudi = ({ broj, setBroj }: Props) => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
-  const [broj, setBroj] = useState("");
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -18,6 +22,7 @@ const BrojLjudi = () => {
 
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
+
   const handleBroj = (event: React.ChangeEvent<HTMLInputElement>) => {
     setBroj(event.target.value);
   };

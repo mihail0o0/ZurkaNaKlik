@@ -31,6 +31,21 @@ const HomeImage = () => {
     let sel = [...tipoviProslave];
     sel[index].selected = !sel[index].selected;
 
+    // klik na sve
+    if (sel[index].value == "Sve") {
+      sel.forEach((el) => {
+        el.selected = sel[index].selected;
+      });
+    }
+
+    // klik na bilo sta drugo kad je selektano sve
+    if (sel[index].value != "Sve" && sel[index].selected == false) {
+      sel.forEach((el) => {
+        if (el.value != "Sve") return;
+        el.selected = false;
+      });
+    }
+
     setTipoviProslave(sel);
   };
 
@@ -38,12 +53,12 @@ const HomeImage = () => {
     <div className={style.SearchDiv}>
       <div className={style.contentWrapper}>
         <div className={style.GoreDiv}>
-            <h1>Pronađite svoj savršeni prostor!</h1>
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
-              mattis ornare tortor sed dignissim. Nunc ac ipsum placerat, cursus
-              arcu in, facilisis purus.{" "}
-            </p>
+          <h1>Pronađite svoj savršeni prostor!</h1>
+          <p>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed mattis
+            ornare tortor sed dignissim. Nunc ac ipsum placerat, cursus arcu in,
+            facilisis purus.{" "}
+          </p>
         </div>
 
         <div className={style.DoleDiv}>
