@@ -9,22 +9,27 @@ import JosFiltera from "./josFiltera";
 
 const DivFilteri = () => {
   const [gradValue, setGradValue] = useState<string | null>(null);
+  const [cenaOd, setCenaOd] = useState("");
+  const [cenaDo, setCenaDo] = useState("");
+  const [broj, setBroj] = useState("");
 
   return (
     <div className={style.DivZaPretragu}>
       {/* ovde idu filteri */}
       {/* prvo div za ikonice i unos teksta */}
       <div className={style.DugmeFilter}>
-        <Grad
-          value={gradValue}
-          setValue={setGradValue}
-        />
+        <Grad value={gradValue} setValue={setGradValue} />
 
         <Datum />
 
-        <Cena />
+        <Cena
+          cenaOd={cenaOd}
+          cenaDo={cenaDo}
+          setCenaOd={setCenaOd}
+          setCenaDo={setCenaDo}
+        />
 
-        <BrojLjudi />
+        <BrojLjudi broj={broj} setBroj={setBroj} />
 
         <MojButton
           text="Pretrazi "

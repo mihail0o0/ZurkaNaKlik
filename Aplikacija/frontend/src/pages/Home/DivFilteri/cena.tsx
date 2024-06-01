@@ -3,12 +3,16 @@ import { Popover, Typography } from "@mui/material";
 import { SyntheticEvent, useState } from "react";
 import style from "./style.module.css";
 import Icon from "@/components/lib/icon";
-import Input from "@/components/lib/inputs/text-input";
 
-const Cena = () => {
+type Props = {
+  cenaOd: string;
+  cenaDo: string;
+  setCenaOd: React.Dispatch<React.SetStateAction<string>>;
+  setCenaDo: React.Dispatch<React.SetStateAction<string>>;
+};
+
+const Cena = ({ cenaOd, cenaDo, setCenaOd, setCenaDo }: Props) => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
-  const [cenaOd, setCenaOd] = useState("");
-  const [cenaDo, setCenaDo] = useState("");
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
