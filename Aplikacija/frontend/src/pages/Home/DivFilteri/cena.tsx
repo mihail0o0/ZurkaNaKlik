@@ -32,8 +32,8 @@ const Cena = () => {
       <MojButton
         text="Cena"
         onClick={handleClick}
-        paddingX="13px"
-        paddingY="8px"
+        paddingX="80px"
+        paddingY="14px"
         fontSize="15px"
         icon="euro_symbol"
         grey={true}

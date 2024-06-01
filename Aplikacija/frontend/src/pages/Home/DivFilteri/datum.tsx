@@ -5,8 +5,8 @@ const Datum = () => {
     <MojButton
       text="Datum od - do"
       onClick={() => {}}
-      paddingX="30px"
-      paddingY="8px"
+      paddingX="80px"
+      paddingY="14px"
       fontSize="15px"
       icon="calendar_month"
       grey={true}

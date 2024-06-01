@@ -28,8 +28,8 @@ const DivFilteri = () => {
         <MojButton
           text="Pretrazi "
           onClick={() => {}}
-          paddingX="40px"
-          paddingY="15px"
+          paddingX="80px"
+          paddingY="18px"
           fontSize="15px"
           center={true}
         />
