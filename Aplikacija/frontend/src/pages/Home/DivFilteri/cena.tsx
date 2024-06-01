@@ -3,6 +3,7 @@ import { Popover, Typography } from "@mui/material";
 import { SyntheticEvent, useState } from "react";
 import style from "./style.module.css";
 import Icon from "@/components/lib/icon";
+import Input from "@/components/lib/inputs/text-input";
 
 const Cena = () => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
@@ -19,10 +20,10 @@ const Cena = () => {
 
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
-  const handleCenaOd = (event : React.ChangeEvent<HTMLInputElement>) => {
+  const handleCenaOd = (event: React.ChangeEvent<HTMLInputElement>) => {
     setCenaOd(event.target.value);
   };
-  const handleCenaDo = (event : React.ChangeEvent<HTMLInputElement>) => {
+  const handleCenaDo = (event: React.ChangeEvent<HTMLInputElement>) => {
     setCenaDo(event.target.value);
   };
 
@@ -35,7 +36,7 @@ const Cena = () => {
         paddingY="8px"
         fontSize="15px"
         icon="euro_symbol"
-        backgroundColor="#d3d3d3"
+        grey={true}
         color="black"
         wide={true}
       />
@@ -45,10 +46,9 @@ const Cena = () => {
         anchorEl={anchorEl}
         onClose={handleClose}
         sx={{
-            "& .css-3bmhjh-MuiPaper-root-MuiPopover-paper": {
-                borderRadius: "30px",
-            
-              },
+          "& .css-3bmhjh-MuiPaper-root-MuiPopover-paper": {
+            borderRadius: "30px",
+          },
         }}
         anchorOrigin={{
           vertical: "bottom",
@@ -63,33 +63,30 @@ const Cena = () => {
         <div className={style.CenaVelikiDiv}>
           <div>
             {" "}
-            <Typography sx={{ p: 2 }}>Cena :</Typography>{" "}
+            <Typography sx={{ p: 2 }}>Cena</Typography>{" "}
           </div>
           <div className={style.CenaOd}>
             <Typography sx={{ p: 2 }}>Od :</Typography>
-            
-              <Icon icon="euro_symbol" />
-              <input
-                type="number"
-                id="textInput"
-                value={cenaOd}
-                onChange={handleCenaOd}
-              />
-            
+
+            <Icon icon="euro_symbol" />
+
+            <input
+              type="number"
+              id="textInput"
+              value={cenaOd}
+              onChange={handleCenaOd}
+            />
           </div>
           <div className={style.CenaOd}>
             <Typography sx={{ p: 2 }}>Do :</Typography>
-           
-              <Icon icon="euro_symbol" />
-              <input
-              
-                type="number"
-                id="textInput"
-                value={cenaDo}
-                onChange={handleCenaDo}
-                
-              />
-            
+
+            <Icon icon="euro_symbol" />
+            <input
+              type="number"
+              id="textInput"
+              value={cenaDo}
+              onChange={handleCenaDo}
+            />
           </div>
         </div>
       </Popover>

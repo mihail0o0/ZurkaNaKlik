@@ -22,7 +22,9 @@ const DivFilteri = () => {
         <Datum />
 
         <Cena />
+
         <BrojLjudi />
+
         <MojButton
           text="Pretrazi "
           onClick={() => {}}

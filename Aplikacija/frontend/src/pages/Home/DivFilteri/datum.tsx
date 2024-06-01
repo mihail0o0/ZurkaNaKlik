@@ -9,7 +9,7 @@ const Datum = () => {
       paddingY="8px"
       fontSize="15px"
       icon="calendar_month"
-      backgroundColor="#d3d3d3"
+      grey={true}
       color="black"
     />
   );

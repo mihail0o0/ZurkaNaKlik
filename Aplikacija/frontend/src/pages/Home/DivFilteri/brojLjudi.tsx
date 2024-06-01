@@ -31,7 +31,7 @@ const BrojLjudi = () => {
         paddingY="8px"
         fontSize="15px"
         icon="boy"
-        backgroundColor="#d3d3d3"
+        grey={true}
         color="black"
         wide={true}
       />
@@ -55,17 +55,20 @@ const BrojLjudi = () => {
         }}
       >
         {/* <Typography sx={{ p: 2 }}>The content of the Popover.</Typography> */}
-        <div className={style.CenaOd}>
-          <Typography sx={{ p: 2 }}>Broj ljudi :</Typography>
+        <div className={style.CenaVelikiDiv}>
+          <Typography sx={{ p: 2 }}>Broj ljudi</Typography>
+          <div className={style.CenaOd}>
+            <Typography sx={{ p: 2 }}>Broj ljudi :</Typography>
 
-          <Icon icon="boy" />
-          <input
-            type="number"
-            id="textInput"
-            value={broj}
-            onChange={handleBroj}
-            min="1"
-          />
+            <Icon icon="boy" />
+            <input
+              type="number"
+              id="textInput"
+              value={broj}
+              onChange={handleBroj}
+              min="1"
+            />
+          </div>
         </div>
       </Popover>
     </div>
