@@ -8,12 +8,17 @@ import { selectUser } from "@/store/auth";
 import OglasKartica from "@/components/OglasKartica";
 import { useGetUserDataQuery } from "@/store/api/endpoints/korisnik";
 import UserAvatar from "@/components/UserAvatar";
-import { NavLink, Outlet, useLocation, useNavigate,BrowserRouter  } from "react-router-dom";
+import {
+  NavLink,
+  Outlet,
+  useLocation,
+  useNavigate,
+  BrowserRouter,
+} from "react-router-dom";
 
 import { Alert } from "@mui/material";
 import { useGetUserOglasiQuery } from "@/store/api/endpoints/oglas";
 import { EnumTipProslava } from "@/store/api/endpoints/oglas/types";
-
 
 const UserProfile = () => {
   const navigate = useNavigate();
@@ -28,7 +33,6 @@ const UserProfile = () => {
   const [brTel, setBrTel] = useState(user?.phoneNumber ?? "");
   const [slikaProfila, setSlikaProfila] = useState(user?.profilePhoto ?? "");
   const [lokacija, setLokacija] = useState(user?.location ?? "");
-
 
   const [opis, setOpis] = useState("");
   const getEnumTipProslava = (value: EnumTipProslava): string => {
@@ -65,7 +69,6 @@ const UserProfile = () => {
       setOpis(profileData.opis ?? "");
     }
   }, []);
- 
 
   const sacuvajIzmene = () => {
     const profileData = {
@@ -174,9 +177,9 @@ const UserProfile = () => {
                 <OglasKartica
                   nazivProstora={oglas.naziv}
                   slika={oglas.slike[0]}
-                  tipProslave={oglas.listaTipProslava
-                    .map((tip: EnumTipProslava) => getEnumTipProslava(tip))
-                    .join(", ")}
+                  tipoviProslave={oglas.listaTipProslava.map(
+                    (tip: EnumTipProslava) => getEnumTipProslava(tip)
+                  )}
                   isFavorite={false}
                   prosecnaOcena={oglas.ocena !== undefined ? oglas.ocena : ""}
                   opis={oglas.opis}
@@ -254,7 +257,7 @@ const UserProfile = () => {
             <MojButton
               text="Dodaj oglas"
               onClick={() => {
-                navigate('/prostor/oglasiProstor');
+                navigate("/prostor/oglasiProstor");
               }}
               wide={true}
               center={true}

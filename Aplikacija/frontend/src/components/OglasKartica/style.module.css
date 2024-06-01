@@ -29,9 +29,10 @@
 /* div za tip proslave */
 .TipOmiljeno > div{
     display: flex;
-    background-color: aliceblue;
+    background-color: white;
     justify-content: center;
     align-items: center;
+    border: 1px solid var(--lightText);
     border-radius: 20px;
     height: 35px;
     padding-inline: 5px;

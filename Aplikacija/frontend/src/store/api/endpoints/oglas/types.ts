@@ -1,14 +1,14 @@
 export enum EnumDodatnaOprema {
-  net = "net",
-  tv = "tv",
-  terasa = "terasa",
-  bazen = "bazen",
-  klima = "klima",
-  kuhinja = "kuhinja",
-  dvoriste = "dvoriste",
-  parking = "parking",
-  frizider = "frizider",
-  zamrzivac = "zamrzivac",
+  net,
+  tv,
+  terasa,
+  bazen,
+  klima,
+  kuhinja,
+  dvoriste,
+  parking,
+  frizider,
+  zamrzivac,
 }
 
 export enum EnumTipProslava {
@@ -22,20 +22,59 @@ export enum EnumTipProslava {
 }
 
 export enum EnumTipProstora {
-  Vikendica="Vikendica",
-  Stan="Stan",
-  Lokal="Lokal",
-  Kuca="Kuca",
+  Vikendica,
+  Stan,
+  Lokal,
+  Kuca,
 }
 
 export enum EnumGrejanje {
-  TA_pec="TA_pec",
-  Klima="Klima",
-  Sporet="Sporet",
-  Kotao="Kotao",
-  Etazno="Etazno",
-  Nema="Nema",
+  TA_pec,
+  Klima,
+  Sporet,
+  Kotao,
+  Etazno,
+  Nema,
 }
+
+export const dodatnaOpremaMap: { [key in EnumDodatnaOprema]: string } = {
+  [EnumDodatnaOprema.net]: "Internet",
+  [EnumDodatnaOprema.tv]: "TV",
+  [EnumDodatnaOprema.terasa]: "Terasa",
+  [EnumDodatnaOprema.bazen]: "Bazen",
+  [EnumDodatnaOprema.klima]: "Klima",
+  [EnumDodatnaOprema.kuhinja]: "Kuhinja",
+  [EnumDodatnaOprema.dvoriste]: "Dvoriste",
+  [EnumDodatnaOprema.parking]: "Parking",
+  [EnumDodatnaOprema.frizider]: "Fridzer",
+  [EnumDodatnaOprema.zamrzivac]: "Zamrzivač",
+};
+
+export const tipProslavaMap: { [key in EnumTipProslava]: string } = {
+  [EnumTipProslava.Rodjendan]: "Rodjendan",
+  [EnumTipProslava.Zurka]: "Zurka",
+  [EnumTipProslava.Teambuilding]: "Teambuilding",
+  [EnumTipProslava.Momacko]: "Momacko",
+  [EnumTipProslava.Devojacko]: "Devojacko",
+  [EnumTipProslava.Sve]: "Sve",
+  [EnumTipProslava.Ostalo]: "Ostalo",
+};
+
+export const tipProstoraMap: { [key in EnumTipProstora]: string } = {
+  [EnumTipProstora.Vikendica]: "Vikendica",
+  [EnumTipProstora.Stan]: "Stan",
+  [EnumTipProstora.Lokal]: "Lokal",
+  [EnumTipProstora.Kuca]: "Kuca",
+};
+
+export const tipGrejanjaMap: { [key in EnumGrejanje]: string } = {
+  [EnumGrejanje.TA_pec]: "TA_pec",
+  [EnumGrejanje.Klima]: "Klima",
+  [EnumGrejanje.Sporet]: "Sporet",
+  [EnumGrejanje.Kotao]: "Kotao",
+  [EnumGrejanje.Etazno]: "Etazno",
+  [EnumGrejanje.Nema]: "Nema",
+};
 
 export type Filters = {
   sort?: string;
@@ -61,6 +100,8 @@ export type OglasObjekata = {
   id: number;
   listaTipProslava: EnumTipProslava[];
   listaTipProstora: EnumTipProstora[];
+  listDodatneOpreme: EnumDodatnaOprema[];
+  grejanje: EnumGrejanje;
   naziv: string;
   grad: string;
   lokacija: string;
@@ -69,8 +110,6 @@ export type OglasObjekata = {
   kvadratura: number;
   brojKreveta: number;
   brojKupatila: number;
-  grejanje: EnumGrejanje;
-  listDodatneOpreme: EnumDodatnaOprema[];
   brTel: string;
   opis: string;
   slike: string[];
@@ -80,89 +119,9 @@ export type OglasObjekata = {
   idVlasnika: number;
 };
 
+export type AddOglasObjektaDTO = Omit<OglasObjekata, "id" | "zauzetiDani" | "idVlasnika">;
+
 export type GetOglasData = {
   filters: Filters;
   pageData: FiltersPaginationData;
-};
-
-export const getEnumGrejanje = (value: EnumGrejanje): string => {
-  switch (value) {
-    case EnumGrejanje.Etazno:
-      return "Etažno";
-    case EnumGrejanje.Klima:
-      return "Klima";
-    case EnumGrejanje.Kotao:
-      return "Kotao";
-    case EnumGrejanje.Sporet:
-      return "Šporet";
-    case EnumGrejanje.TA_pec:
-      return "TA peć";
-    case EnumGrejanje.Nema:
-      return "Nema";
-    default:
-      return "";
-  }
-};
-
-export const getEnumTipProslava = (value: EnumTipProslava): string => {
-  switch (value) {
-    case EnumTipProslava.Rodjendan:
-      return "Rođendan";
-    case EnumTipProslava.Zurka:
-      return "Žurka";
-    case EnumTipProslava.Teambuilding:
-      return "Teambuilding događaj";
-    case EnumTipProslava.Momacko:
-      return "Momacko veče";
-    case EnumTipProslava.Devojacko:
-      return "Devojačko veče";
-    case EnumTipProslava.Sve:
-      return "Sve proslave";
-    case EnumTipProslava.Ostalo:
-      return "Ostale proslave";
-    default:
-      return "";
-  }
-};
-
-export const getEnumTipProstora = (value: EnumTipProstora): string => {
-  switch (value) {
-    case EnumTipProstora.Vikendica:
-      return "Vikendica";
-    case EnumTipProstora.Stan:
-      return "Stan";
-    case EnumTipProstora.Lokal:
-      return "Lokal";
-    case EnumTipProstora.Kuca:
-      return "Kuca";
-    default:
-      return "";
-  }
-};
-
-export const getEnumDodatnaOprema = (value: EnumDodatnaOprema): string => {
-  switch (value) {
-    case EnumDodatnaOprema.net:
-      return "Internet";
-    case EnumDodatnaOprema.tv:
-      return "Televizor";
-    case EnumDodatnaOprema.terasa:
-      return "Terasa";
-    case EnumDodatnaOprema.bazen:
-      return "Bazen";
-    case EnumDodatnaOprema.klima:
-      return "Klima uređaj";
-    case EnumDodatnaOprema.kuhinja:
-      return "Kuhinja";
-    case EnumDodatnaOprema.dvoriste:
-      return "Dvorište";
-    case EnumDodatnaOprema.parking:
-      return "Parking";
-    case EnumDodatnaOprema.frizider:
-      return "Frižider";
-    case EnumDodatnaOprema.zamrzivac:
-      return "Zamrzivač";
-    default:
-      return "";
-  }
 };

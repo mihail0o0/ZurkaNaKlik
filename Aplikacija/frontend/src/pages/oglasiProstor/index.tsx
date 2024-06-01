@@ -2,24 +2,38 @@ import MojButton from "@/components/lib/button";
 import style from "./style.module.css";
 import { ChangeEvent, useState } from "react";
 import Input from "@/components/lib/inputs/text-input";
-import { Chip, MenuItem, Select, SelectChangeEvent, SxProps, Theme } from "@mui/material";
 import {
+  Chip,
+  InputLabel,
+  MenuItem,
+  OutlinedInput,
+  Select,
+  SelectChangeEvent,
+  SxProps,
+  Theme,
+} from "@mui/material";
+import {
+  AddOglasObjektaDTO,
   EnumDodatnaOprema,
   EnumGrejanje,
   EnumTipProslava,
   EnumTipProstora,
-  getEnumDodatnaOprema,
-  getEnumGrejanje,
-  getEnumTipProslava,
-  getEnumTipProstora,
+  dodatnaOpremaMap,
+  tipGrejanjaMap,
+  tipProslavaMap,
+  tipProstoraMap,
 } from "@/store/api/endpoints/oglas/types";
 import Icon from "@/components/lib/icon";
+import { enumToString, stringToEnum } from "@/utils/enumMappings";
+import { useAddUserOglasMutation } from "@/store/api/endpoints/oglas";
+import { addUserOglas } from "@/utils/validators";
+import { toast } from "react-toastify";
+import { getValidationMessage } from "@/utils/validationMessage";
+import { useNavigate } from "react-router-dom";
 
 const OglasiProstor = () => {
   const [opisProstora, setOpisProstora] = useState("");
-  function updateOpisProstora(event: ChangeEvent<HTMLTextAreaElement>) {
-    setOpisProstora(event.target.value);
-  }
+
   const [grejanje, setGrejanje] = useState("");
   const [naziv, setNaziv] = useState("");
   const [brojTelefona, setBrojTelefona] = useState("");
@@ -31,16 +45,165 @@ const OglasiProstor = () => {
   const [brojKreveta, setBrojKreveta] = useState("");
   const [brojKupatila, setBrojKupatila] = useState("");
 
+  const [selectedTipoviProslava, setSelectedTipoviProslava] = useState<
+    number[]
+  >([]);
+  const [selectedTipoviProstora, setSelectedTipoviProstora] = useState<
+    number[]
+  >([]);
+  const [selectedDodatnaOprema, setSelectedDodatnaOprema] = useState<number[]>(
+    []
+  );
+
+  const [addUser] = useAddUserOglasMutation();
+  const navigate = useNavigate();
+
   const handleChangeGrejanje = (event: SelectChangeEvent) => {
     setGrejanje(event.target.value);
   };
 
-  const chipSx: SxProps<Theme> = {
-    width: "100%",
-    borderRadius: "12px",
-    height: "40px",
-    color: "var(--lightText)",
-    border: "1px solid var(--lightText)",
+  function updateOpisProstora(event: ChangeEvent<HTMLTextAreaElement>) {
+    setOpisProstora(event.target.value);
+  }
+
+  const handleTipProslavaChange = (value: string) => {
+    const selected = stringToEnum(value, tipProslavaMap);
+    if (selected == undefined) return;
+
+    const tipoviSet = new Set(selectedTipoviProslava);
+    if (tipoviSet.has(selected)) {
+      tipoviSet.delete(selected);
+
+      if(tipoviSet.has(EnumTipProslava.Sve)){
+        tipoviSet.delete(EnumTipProslava.Sve);
+      }
+    } else {
+      tipoviSet.add(selected);
+
+      if (tipoviSet.has(EnumTipProslava.Sve)) {
+        Object.values(EnumTipProslava).forEach((element) => {
+          if (typeof element !== "number") return;
+          tipoviSet.add(element);
+        });
+      }
+    }
+
+    setSelectedTipoviProslava(Array.from(tipoviSet));
+  };
+
+  const handleTipProstoraChange = (value: string) => {
+    const selected = stringToEnum(value, tipProstoraMap);
+    if (selected == undefined) return;
+
+    const tipoviSet = new Set(selectedTipoviProstora);
+    if (tipoviSet.has(selected)) {
+      tipoviSet.delete(selected);
+    } else {
+      tipoviSet.add(selected);
+    }
+
+    setSelectedTipoviProstora(Array.from(tipoviSet));
+  };
+
+  const handleDodatnaOpremaChange = (value: string) => {
+    const selected = stringToEnum(value, dodatnaOpremaMap);
+    if (selected == undefined) return;
+
+    const tipoviSet = new Set(selectedDodatnaOprema);
+    if (tipoviSet.has(selected)) {
+      tipoviSet.delete(selected);
+    } else {
+      tipoviSet.add(selected);
+    }
+
+    setSelectedDodatnaOprema(Array.from(tipoviSet));
+  };
+
+  function getChipSx<T extends string>(
+    value: T,
+    enumMap: { [key in T]: string },
+    selected: number[]
+  ): SxProps<Theme> {
+    const defaultSx: SxProps<Theme> = {
+      width: "100%",
+      borderRadius: "12px",
+      height: "40px",
+      color: "var(--lightText)",
+      border: "1px solid var(--lightText)",
+    };
+
+    const selectedSx: SxProps<Theme> = {
+      width: "100%",
+      borderRadius: "12px",
+      height: "40px",
+      color: "black",
+      border: "1px solid black",
+    };
+
+    const item = stringToEnum(value, enumMap);
+    if (item == undefined) return defaultSx;
+    if (selected.indexOf(item) == -1) {
+      return defaultSx;
+    }
+
+    return selectedSx;
+  }
+
+  function isSelected<T extends string>(
+    value: T,
+    enumMap: { [key in T]: string },
+    selected: number[]
+  ): boolean {
+    const item = stringToEnum(value, enumMap);
+    if (item == undefined) return false;
+    if (selected.indexOf(item) == -1) {
+      return false;
+    }
+
+    return true;
+  }
+
+  const submit = async () => {
+    const tipGrejanja = stringToEnum(grejanje, tipGrejanjaMap);
+    if (tipGrejanja == undefined) {
+      console.log("Tipp grejanja nije validan");
+      return;
+    }
+
+    const oglasObject: AddOglasObjektaDTO = {
+      listaTipProslava: selectedTipoviProslava,
+      listaTipProstora: selectedTipoviProstora,
+      listDodatneOpreme: selectedDodatnaOprema,
+      grejanje: tipGrejanja,
+      brojKreveta: parseInt(brojKreveta),
+      brojKupatila: parseInt(brojKupatila),
+      brojSoba: parseInt(brojSoba),
+      kvadratura: parseInt(kvadratura),
+      ocena: 0,
+      brojOcena: 0,
+      brTel: brojTelefona,
+      cenaPoDanu: parseInt(cenaDan),
+      grad: grad,
+      lokacija: adresa,
+      naziv: naziv,
+      opis: opisProstora,
+      slike: [],
+    };
+
+    const validation = addUserOglas.validate(oglasObject);
+    if (validation.error) {
+      const [type, msg] = getValidationMessage(validation);
+      toast.error(`Polje ${msg}`);
+    }
+
+    const response = await addUser(oglasObject);
+    if ("error" in response) {
+      return;
+    }
+
+    toast.success("Oglas uspesno dodat");
+
+    navigate("/user/profile");
   };
 
   return (
@@ -124,116 +287,140 @@ const OglasiProstor = () => {
             />
           </div>
           <div>
+            {/* // TODO stavi label na ovaj mrtvi select */}
             <Select
-              value={grejanje}
-              label="Grejanje"
-              placeholder="Grejanje"
+              id="select-tip-grejanja"
+              value={grejanje ?? ""}
               onChange={handleChangeGrejanje}
               sx={{
                 width: "100%",
                 borderRadius: "12px",
+                color: "black",
               }}
             >
-              {Object.keys(EnumGrejanje)
-                .filter((key) => isNaN(Number(key)))
-                .map((key) => {
-                  const value = EnumGrejanje[key as keyof typeof EnumGrejanje];
-                  return (
-                    <div className={style.JedanChip}>
-                      <MenuItem value={getEnumGrejanje(value)}>
-                        {getEnumGrejanje(value)}
-                      </MenuItem>
-                    </div>
-                  );
-                })}
+              {Object.values(tipGrejanjaMap).map((value) => {
+                return (
+                  <MenuItem key={`Select-${value}`} value={value}>
+                    {value}
+                  </MenuItem>
+                );
+              })}
             </Select>
           </div>
         </div>
       </div>
+
       <div className={style.TipoviProslava}>
-        {/* tipovi proslava koje dozvoljavate */}
         <div>
           <h3>Tipovi proslava koje dozvoljavate</h3>
         </div>
         <div className={style.ChipProslave}>
-          {/* ovde treba da se doda za delete */}
-          {Object.keys(EnumTipProslava)
-            .filter((key) => isNaN(Number(key)))
-            .map((key) => {
-              const value =
-                EnumTipProslava[key as keyof typeof EnumTipProslava];
-              return (
-                <div className={style.JedanChip}>
-                  <Chip
-                    label={getEnumTipProslava(value as EnumTipProslava)}
-                    variant="outlined"
-                    onClick={() => {}}
-                    onDelete={() => {}}
-                    sx={chipSx}
-                  />
-                </div>
-              );
-            })}
+          {Object.values(tipProslavaMap).map((value) => {
+            return (
+              <div className={style.JedanChip}>
+                <Chip
+                  label={value}
+                  variant="outlined"
+                  onClick={() => handleTipProslavaChange(value)}
+                  onDelete={() => handleTipProslavaChange(value)}
+                  deleteIcon={
+                    isSelected(
+                      value,
+                      tipProslavaMap,
+                      selectedTipoviProslava
+                    ) ? undefined : (
+                      <Icon
+                        classes={style.addIcon}
+                        fontSize="23px"
+                        icon="add_circle"
+                      />
+                    )
+                  }
+                  sx={getChipSx(value, tipProslavaMap, selectedTipoviProslava)}
+                />
+              </div>
+            );
+          })}
         </div>
       </div>
-      {/* tipovi prostora u koje vas oglas pripada */}
+
       <div>
         <div className={style.TipoviProslava}>
           <h3>Tipovi prostora u koje Vas oglas pripada</h3>
           <div className={style.ChipProslave}>
-            {Object.keys(EnumTipProstora)
-              .filter((key) => isNaN(Number(key))) // Filtriramo samo string ključeve
-              .map((key) => {
-                const value =
-                  EnumTipProstora[key as keyof typeof EnumTipProstora];
-                return (
-                  <div className={style.JedanChip}>
-                    <Chip
-                      label={getEnumTipProstora(value as EnumTipProstora)}
-                      variant="outlined"
-                      onClick={() => {}}
-                      onDelete={() => {}}
-                      sx={chipSx}
-                    />
-                  </div>
-                );
-              })}
+            {Object.values(tipProstoraMap).map((value) => {
+              return (
+                <div className={style.JedanChip}>
+                  <Chip
+                    label={value}
+                    variant="outlined"
+                    onClick={() => handleTipProstoraChange(value)}
+                    onDelete={() => handleTipProstoraChange(value)}
+                    deleteIcon={
+                      isSelected(
+                        value,
+                        tipProstoraMap,
+                        selectedTipoviProstora
+                      ) ? undefined : (
+                        <Icon
+                          classes={style.addIcon}
+                          fontSize="23px"
+                          icon="add_circle"
+                        />
+                      )
+                    }
+                    sx={getChipSx(
+                      value,
+                      tipProstoraMap,
+                      selectedTipoviProstora
+                    )}
+                  />
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>
-      {/* dodatna oprema */}
+
       <div>
         <div className={style.TipoviProslava}>
           <h3>Dodatna oprema koju poseduje Vas prostor</h3>
           <div className={style.ChipProslave}>
-            {Object.values(EnumDodatnaOprema).map((value) => (
+            {Object.values(dodatnaOpremaMap).map((value) => (
               <div className={style.JedanChip}>
                 <Chip
-                  label={getEnumDodatnaOprema(value as EnumDodatnaOprema)}
+                  label={value}
                   variant="outlined"
-                  onClick={() => {}}
-                  onDelete={() => {}}
+                  onClick={() => handleDodatnaOpremaChange(value)}
+                  onDelete={() => handleDodatnaOpremaChange(value)}
                   deleteIcon={
-                    <Icon
-                      classes={style.addIcon}
-                      fontSize="24px"
-                      icon="add_circle"
-                    />
+                    isSelected(
+                      value,
+                      dodatnaOpremaMap,
+                      selectedDodatnaOprema
+                    ) ? undefined : (
+                      <Icon
+                        classes={style.addIcon}
+                        fontSize="23px"
+                        icon="add_circle"
+                      />
+                    )
                   }
-                  sx={chipSx}
+                  sx={getChipSx(value, dodatnaOpremaMap, selectedDodatnaOprema)}
                 />
               </div>
             ))}
           </div>
         </div>
       </div>
+
       <div className={style.NAJJACEDUGME}>
         <div className={style.dodajOglasDugme}>
           <MojButton
             text="Dodajte oglas"
             center={true}
             wide={true}
-            onClick={() => {}}
+            onClick={submit}
           />
         </div>
       </div>
