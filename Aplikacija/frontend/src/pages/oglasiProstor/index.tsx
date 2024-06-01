@@ -2,7 +2,7 @@ import MojButton from "@/components/lib/button";
 import style from "./style.module.css";
 import { ChangeEvent, useState } from "react";
 import Input from "@/components/lib/inputs/text-input";
-import { Chip, MenuItem, Select, SelectChangeEvent } from "@mui/material";
+import { Chip, MenuItem, Select, SelectChangeEvent, SxProps, Theme } from "@mui/material";
 import {
   EnumDodatnaOprema,
   EnumGrejanje,
@@ -13,6 +13,7 @@ import {
   getEnumTipProslava,
   getEnumTipProstora,
 } from "@/store/api/endpoints/oglas/types";
+import Icon from "@/components/lib/icon";
 
 const OglasiProstor = () => {
   const [opisProstora, setOpisProstora] = useState("");
@@ -32,6 +33,14 @@ const OglasiProstor = () => {
 
   const handleChangeGrejanje = (event: SelectChangeEvent) => {
     setGrejanje(event.target.value);
+  };
+
+  const chipSx: SxProps<Theme> = {
+    width: "100%",
+    borderRadius: "12px",
+    height: "40px",
+    color: "var(--lightText)",
+    border: "1px solid var(--lightText)",
   };
 
   return (
@@ -160,12 +169,7 @@ const OglasiProstor = () => {
                     variant="outlined"
                     onClick={() => {}}
                     onDelete={() => {}}
-                    sx={{
-                      width: "100%",
-                      borderRadius: "20px",
-                      height: "40px",
-                      color: "black",
-                    }}
+                    sx={chipSx}
                   />
                 </div>
               );
@@ -189,12 +193,7 @@ const OglasiProstor = () => {
                       variant="outlined"
                       onClick={() => {}}
                       onDelete={() => {}}
-                      sx={{
-                        width: "100%",
-                        borderRadius: "20px",
-                        height: "40px",
-                        color: "black",
-                      }}
+                      sx={chipSx}
                     />
                   </div>
                 );
@@ -207,25 +206,24 @@ const OglasiProstor = () => {
         <div className={style.TipoviProslava}>
           <h3>Dodatna oprema koju poseduje Vas prostor</h3>
           <div className={style.ChipProslave}>
-            {Object.values(EnumDodatnaOprema)
-              .filter((value) => typeof value === "number") // Filtriramo samo numeričke vrednosti
-              .map((value) => (
-                <div className={style.JedanChip}>
-                  <Chip
-                    label={getEnumDodatnaOprema(value as EnumDodatnaOprema)}
-                    variant="outlined"
-                    onClick={() => {}}
-                    onDelete={() => {}}
-                    sx={{
-                      width: "100%",
-                      borderRadius: "20px",
-                      height: "40px",
-                      color: "black",
-
-                    }}
-                  />
-                </div>
-              ))}
+            {Object.values(EnumDodatnaOprema).map((value) => (
+              <div className={style.JedanChip}>
+                <Chip
+                  label={getEnumDodatnaOprema(value as EnumDodatnaOprema)}
+                  variant="outlined"
+                  onClick={() => {}}
+                  onDelete={() => {}}
+                  deleteIcon={
+                    <Icon
+                      classes={style.addIcon}
+                      fontSize="24px"
+                      icon="add_circle"
+                    />
+                  }
+                  sx={chipSx}
+                />
+              </div>
+            ))}
           </div>
         </div>
       </div>

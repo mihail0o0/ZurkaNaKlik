@@ -84,3 +84,11 @@
   padding: 30px;
   width: 450px;
 }
+
+.addIcon {
+  color: var(--lightText);
+}
+
+.addIcon:hover {
+  color: var(--mediumText);
+}
