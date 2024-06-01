@@ -25,7 +25,7 @@ const OglasiProstor = () => {
   const [brojSoba, setBrojSoba] = useState("");
   const [brojKreveta, setBrojKreveta] = useState("");
   const [brojKupatila, setBrojKupatila] = useState("");
-  
+
   const getEnumGrejanje = (value: EnumGrejanje): string => {
     switch (value) {
       case EnumGrejanje.Etazno:
@@ -203,18 +203,18 @@ const OglasiProstor = () => {
                 borderRadius: "20px",
               }}
             >
-             {Object.keys(EnumGrejanje)
-            .filter((key) => isNaN(Number(key)))
-            .map((key) => {
-              const value =
-              EnumGrejanje[key as keyof typeof EnumGrejanje];
-              return (
-                <div className={style.JedanChip}>
-                    <MenuItem value={20}>{getEnumGrejanje(value as EnumGrejanje)}</MenuItem>
-                </div>
-              );
-            })}
-         
+              {Object.keys(EnumGrejanje)
+                .filter((key) => isNaN(Number(key)))
+                .map((key) => {
+                  const value = EnumGrejanje[key as keyof typeof EnumGrejanje];
+                  return (
+                    <div className={style.JedanChip}>
+                      <MenuItem value={20}>
+                        {getEnumGrejanje(value as EnumGrejanje)}
+                      </MenuItem>
+                    </div>
+                  );
+                })}
             </Select>
           </div>
         </div>
@@ -285,24 +285,22 @@ const OglasiProstor = () => {
         <div className={style.TipoviProslava}>
           <h3>Dodatna oprema koju poseduje Vas prostor</h3>
           <div className={style.ChipProslave}>
-            {Object.values(EnumDodatnaOprema)
-              .filter((value) => typeof value === "number") // Filtriramo samo numeričke vrednosti
-              .map((value) => (
-                <div className={style.JedanChip}>
-                  <Chip
-                    label={getEnumDodatnaOprema(value as EnumDodatnaOprema)}
-                    variant="outlined"
-                    onClick={() => {}}
-                    onDelete={() => {}}
-                    sx={{
-                      width: "100%",
-                      borderRadius: "20px",
-                      height: "40px",
-                      color: "black",
-                    }}
-                  />
-                </div>
-              ))}
+            {Object.values(EnumDodatnaOprema).map((value) => (
+              <div key={value} className={style.JedanChip}>
+                <Chip
+                  label={getEnumDodatnaOprema(value as EnumDodatnaOprema)}
+                  variant="outlined"
+                  onClick={() => {}}
+                  onDelete={() => {}}
+                  sx={{
+                    width: "100%",
+                    borderRadius: "20px",
+                    height: "40px",
+                    color: "black",
+                  }}
+                />
+              </div>
+            ))}
           </div>
         </div>
       </div>

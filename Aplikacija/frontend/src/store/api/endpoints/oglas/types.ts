@@ -1,14 +1,14 @@
 export enum EnumDodatnaOprema {
-  net,
-  tv,
-  terasa,
-  bazen,
-  klima,
-  kuhinja,
-  dvoriste,
-  parking,
-  frizider,
-  zamrzivac,
+  net = "net",
+  tv = "tv",
+  terasa = "terasa",
+  bazen = "bazen",
+  klima = "klima",
+  kuhinja = "kuhinja",
+  dvoriste = "dvoriste",
+  parking = "parking",
+  frizider = "frizider",
+  zamrzivac = "zamrzivac",
 }
 
 export enum EnumTipProslava {
@@ -22,19 +22,19 @@ export enum EnumTipProslava {
 }
 
 export enum EnumTipProstora {
-  Vikendica,
-  Stan,
-  Lokal,
-  Kuca,
+  Vikendica="Vikendica",
+  Stan="Stan",
+  Lokal="Lokal",
+  Kuca="Kuca",
 }
 
 export enum EnumGrejanje {
-  TA_pec,
-  Klima,
-  Sporet,
-  Kotao,
-  Etazno,
-  Nema,
+  TA_pec="TA_pec",
+  Klima="Klima",
+  Sporet="Sporet",
+  Kotao="Kotao",
+  Etazno="Etazno",
+  Nema="Nema",
 }
 
 export type Filters = {
