@@ -7,6 +7,8 @@ type Props = {
   onClick?: () => void;
   enabled?: boolean;
   classes?: string;
+  enabledCursor?:boolean;
+  cursor?: boolean;
 };
 
 const Icon = ({
@@ -16,11 +18,14 @@ const Icon = ({
   iconMargin,
   classes = "cursorDefault",
   enabled = true,
+  enabledCursor,
+  cursor,
 }: Props) => {
   const iconStyle = {
     display: "block",
     fontSize: fontSize ?? "28px",
     marginRight: iconMargin ?? "8px",
+    cursor: typeof cursor === "string" ? cursor : enabledCursor ? "pointer" : "default",
   };
 
   if (!icon) return <></>;

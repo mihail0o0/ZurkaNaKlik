@@ -35,15 +35,15 @@ const OglasiProstor = () => {
   const [opisProstora, setOpisProstora] = useState("");
 
   const [grejanje, setGrejanje] = useState("");
-  const [naziv, setNaziv] = useState("");
-  const [brojTelefona, setBrojTelefona] = useState("");
-  const [grad, setGrad] = useState("");
-  const [adresa, setAdresa] = useState("");
-  const [cenaDan, setCenaDan] = useState("");
-  const [kvadratura, setKvadratura] = useState("");
-  const [brojSoba, setBrojSoba] = useState("");
-  const [brojKreveta, setBrojKreveta] = useState("");
-  const [brojKupatila, setBrojKupatila] = useState("");
+  const [naziv, setNaziv] = useState("Naziv prostora");
+  const [brojTelefona, setBrojTelefona] = useState("Broj telefona");
+  const [grad, setGrad] = useState("Grad");
+  const [adresa, setAdresa] = useState("Adresa");
+  const [cenaDan, setCenaDan] = useState("Cena po danu");
+  const [kvadratura, setKvadratura] = useState("Kvadratura");
+  const [brojSoba, setBrojSoba] = useState("Broj soba");
+  const [brojKreveta, setBrojKreveta] = useState("Broj kreveta");
+  const [brojKupatila, setBrojKupatila] = useState("Broj kupatila");
 
   const [selectedTipoviProslava, setSelectedTipoviProslava] = useState<
     number[]
@@ -244,44 +244,44 @@ const OglasiProstor = () => {
         </div>
         <div className={style.KolonaTxtArea}>
           <div>
-            <Input text="Naziv" icon="house" onChange={setNaziv} />
+            <Input text={naziv} icon="house" onChange={setNaziv} />
           </div>
           <div>
             <Input
-              text="Broj telefona"
+              text={brojTelefona}
               icon="call"
               onChange={setBrojTelefona}
             />
           </div>
           <div>
-            <Input text="Grad" icon="location_on" onChange={setGrad} />
+            <Input text={grad} icon="location_on" onChange={setGrad} />
           </div>
           <div>
-            <Input text="Adresa" icon="location_on" onChange={setAdresa} />
+            <Input text={adresa} icon="location_on" onChange={setAdresa} />
           </div>
           <div>
             <Input
-              text="Cena po danu"
+              text={cenaDan}
               icon="euro_symbol"
               onChange={setCenaDan}
             />
           </div>
           <div>
             <Input
-              text="Kvadratura"
+              text={kvadratura}
               icon="view_in_ar"
               onChange={setKvadratura}
             />
           </div>
           <div>
-            <Input text="Broj soba" icon="chair" onChange={setBrojSoba} />
+            <Input text={brojSoba} icon="chair" onChange={setBrojSoba} />
           </div>
           <div>
-            <Input text="Broj kreveta" icon="bed" onChange={setBrojKreveta} />
+            <Input text={brojKreveta} icon="bed" onChange={setBrojKreveta} />
           </div>
           <div>
             <Input
-              text="Broj kupatila"
+              text={brojKupatila}
               icon="bathroom"
               onChange={setBrojKupatila}
             />
