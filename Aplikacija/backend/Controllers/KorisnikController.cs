@@ -826,6 +826,7 @@ namespace backend.Controllers
 
         #endregion
 
+<<<<<<< HEAD
         
         [HttpPost("uploadKorisnik")]
         public async Task<IActionResult> UploadSlikaKorisnik(IFormFile file)
@@ -868,6 +869,8 @@ namespace backend.Controllers
 
             return Ok(new { Putanja = relativePath });
         }
+=======
+>>>>>>> aceeb3b (nesto)
 
 
 
