@@ -49,7 +49,6 @@ const baseQueryWithAuth: BaseQueryFn<
     !result.meta?.request.url.includes("/login")
   ) {
     await mutex.waitForUnlock();
-    let result = await baseQuery(args, api, extraOptions);
     console.log("second result");
     console.log(result);
 
@@ -62,7 +61,7 @@ const baseQueryWithAuth: BaseQueryFn<
           api,
           extraOptions
         );
-        console.log("Result");
+        console.log("Refresh Result");
         console.log(refreshResult);
         if (refreshResult.data) {
           const refreshResultData = refreshResult.data as LoginResponse;
@@ -106,7 +105,14 @@ export const rtkErrorLogger: Middleware =
 
 export const api = createApi({
   reducerPath: "api",
-  tagTypes: ["User", "AgencyCategory", "AgencyMenu", "Location", "Oglas"],
+  tagTypes: [
+    "User",
+    "Agency",
+    "AgencyCategory",
+    "AgencyMenu",
+    "Location",
+    "Oglas",
+  ],
   baseQuery: baseQueryWithAuth,
   endpoints: () => ({}),
 });

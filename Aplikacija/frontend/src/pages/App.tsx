@@ -21,7 +21,7 @@ import Logout from "./login/Logout";
 import AgencySignUpForm from "@/components/AgencySignUpForm";
 import AgencySignUp from "./login/AgencySignUp";
 import AgencyProfile from "./Profile/Agency";
-import UserProfile from "./Profile/Agency/Korisnik";
+import UserProfile from "./Profile/Korisnik";
 import OglasiProstor from "./oglasiProstor";
 import FavoriteOglasi from "./favoriteOglasi";
 import Oglas from "./Oglas";

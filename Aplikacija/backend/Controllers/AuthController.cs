@@ -84,7 +84,7 @@ namespace backend.Controllers
 
                 string lozinkaHash = BCrypt.Net.BCrypt.HashPassword(request.password);
                 var agencija = ObjectCreatorSingleton.Instance.FromRegistrationAgencija(request, lozinkaHash);
-                
+
                 LoginResult loginResult = ObjectCreatorSingleton.Instance.ToLoginResult(agencija);
 
                 string accessToken = prijava(agencija);
@@ -135,7 +135,8 @@ namespace backend.Controllers
             }
         }
 
-        private string prijava(KorisnikAgencija korisnikagencija){
+        private string prijava(KorisnikAgencija korisnikagencija)
+        {
             string accessToken = CreateToken(korisnikagencija!);
 
             var refreshToken = GenerateRefreshToken();
@@ -156,8 +157,6 @@ namespace backend.Controllers
 
         //usera vec imas u cookie samo g auzmi odatle
 
-
-        [Authorize]
         [HttpGet("RefreshToken")]
         public async Task<ActionResult> RefreshToken()
         {
@@ -170,6 +169,7 @@ namespace backend.Controllers
                     return BadRequest("Nema refresh tokena");
                 }
 
+                // TODO ne mozes ovako i guess, vadi iz token id
                 int userId = int.Parse(_userService.GetMyId());
                 KorisnikAgencija? user = await Context.KorisniciAgencije.FirstOrDefaultAsync(k => k.Id == userId);
 
@@ -204,7 +204,7 @@ namespace backend.Controllers
 
                 await Context.SaveChangesAsync();
 
-                return Ok(new { token });
+                return Ok(token);
             }
             catch (Exception e)
             {
@@ -254,29 +254,33 @@ namespace backend.Controllers
 
 
         #region Logout
-        [HttpPut("Logout")]
-        public async Task<IActionResult> Logout(){
-            try{
+        [HttpGet("Logout")]
+        public async Task<IActionResult> Logout()
+        {
+            try
+            {
 
                 int idKorisnika = int.Parse((HttpContext.Items["idKorisnika"] as string)!);
 
 
-                Korisnik? k  = await Context.Korisnici.FindAsync(idKorisnika);
+                Korisnik? k = await Context.Korisnici.FindAsync(idKorisnika);
 
-                if (k == null){
+                if (k == null)
+                {
                     return BadRequest("nema korisnika");
                 }
 
-                k.RefreshToken= String.Empty;
-                
+                k.RefreshToken = String.Empty;
 
-                await Context.SaveChangesAsync(); 
+
+                await Context.SaveChangesAsync();
 
                 return Ok("Obrisan je korisnik");
 
 
             }
-            catch(Exception ex){
+            catch (Exception ex)
+            {
                 return BadRequest(ex.Message);
             }
         }

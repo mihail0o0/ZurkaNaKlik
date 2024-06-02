@@ -7,7 +7,7 @@ namespace backend.Models
     {
         public int id { get; set; }
         public string naziv { get; set; }
-        public List<MeniKeteringa>? meniKeteringa { get; set; }
+        public List<MeniKeteringaResult>? meniKeteringa { get; set; }
 
         public VratiMenijeResultElement(int id, string naziv){
             this.id = id;

@@ -150,7 +150,7 @@ namespace backend.Controllers
         {
             try
             {
-                var agencija = await Context.Agencije.Include(x => x.KategorijeMenija).Where(x => x.Id == idAgencije).FirstOrDefaultAsync();
+                Agencija? agencija = await Context.Agencije.Include(x => x.KategorijeMenija).Where(x => x.Id == idAgencije).FirstOrDefaultAsync();
 
                 if (agencija == null)
                 {
@@ -158,54 +158,49 @@ namespace backend.Controllers
                 }
 
                 return Ok(agencija);
-
-
             }
             catch (Exception e)
             {
                 return BadRequest(e.Message);
-
             }
         }
 
         #endregion
 
-        #region VratiMenijeSaKategorijama
-        [HttpGet("VratiMenijeSaKategorijama/{idagencije}")]
-        public async Task<ActionResult> VratiMenije(int idagencije)
-        {
-            try
-            {
+        // TODO Dupla, ne koristi se, izbrisi je
+        // #region VratiMenijeSaKategorijama
+        // [HttpGet("VratiMenijeSaKategorijama/{idagencije}")]
+        // public async Task<ActionResult> VratiMenije(int idagencije)
+        // {
+        //     try
+        //     {
                 
-                List<Kategorija>? kategorije = await Context.Kategorije.Where(k => k.Agencija!.Id == idagencije).ToListAsync();
+        //         List<Kategorija>? kategorije = await Context.Kategorije.Where(k => k.Agencija!.Id == idagencije).ToListAsync();
 
-                List<VratiMenijeResultElement>? meniKeteringa = new();
+        //         List<VratiMenijeResultElement>? meniKeteringa = new();
 
-                if (kategorije == null)
-                {
-                    return Ok(meniKeteringa);
-                }
+        //         if (kategorije == null)
+        //         {
+        //             return Ok(meniKeteringa);
+        //         }
 
-                foreach (Kategorija kat in kategorije)
-                {
-                    VratiMenijeResultElement element = new(kat.Id, kat.Naziv);
-                    List<MeniKeteringa>? meniji = await Context.MenijiKeteringa.Where(m => m.Kategorija!.Id == kat.Id).ToListAsync();
-                    element.meniKeteringa = meniji;
+        //         foreach (Kategorija kat in kategorije)
+        //         {
+        //             VratiMenijeResultElement element = new(kat.Id, kat.Naziv);
+        //             List<MeniKeteringa>? meniji = await Context.MenijiKeteringa.Where(m => m.Kategorija!.Id == kat.Id).ToListAsync();
+        //             element.meniKeteringa = meniji;
 
-                    meniKeteringa.Add(element);
-                }
+        //             meniKeteringa.Add(element);
+        //         }
 
-                return Ok(meniKeteringa);
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
-
-
-        }
-
-        #endregion
+        //         return Ok(meniKeteringa);
+        //     }
+        //     catch (Exception e)
+        //     {
+        //         return BadRequest(e.Message);
+        //     }
+        // }
+        // #endregion
    
         #region  PrikaziSveMenijeKategorije
         [HttpGet("PrikaziSveMenijeKategorije/{idKategorije}")]

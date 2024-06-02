@@ -99,44 +99,51 @@ const UserSignUpForm = () => {
         <Input
           onChange={setNameText}
           icon={"edit"}
-          text={"Ime"}
+          text={nameText}
+          placeholder={"Ime"}
           error={nameError}
         />
         <Input
           onChange={setLastNameText}
           icon={"edit"}
-          text={"Prezime"}
+          text={lastNameText}
+          placeholder={"Prezime"}
           error={lastNameError}
         />
         <Input
           onChange={setPhoneNumberText}
           icon={"phone"}
-          text={"Broj Telefona"}
+          text={phoneNumberText}
+          placeholder={"Broj Telefona"}
           error={phoneNumberError}
         />
         <Input
           onChange={setMailText}
           icon={"mail"}
-          text={"Email"}
+          text={emailText}
+          placeholder={"Email"}
           error={emailError}
         />
         <Input
           onChange={setLocationText}
           icon={"location_on"}
-          text={"Ime Grada"}
+          text={locationText}
+          placeholder={"Ime Grada"}
           error={locationError}
         />
         <Input
           onChange={setPasswordText}
           icon={"lock"}
-          text={"Lozinka"}
+          text={passwordText}
+          placeholder={"Lozinka"}
           suffixIcon={true}
           error={passwordError}
         />
         <Input
           onChange={setRepeatPasswordText}
           icon={"lock"}
-          text={"Ponovi Lozinku"}
+          text={repeatPasswordText}
+          placeholder={"Ponovi Lozinku"}
           suffixIcon={true}
           error={repeatPasswordError}
         />

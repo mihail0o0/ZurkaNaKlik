@@ -1,47 +1,90 @@
 import Input from "@/components/lib/inputs/text-input";
 import style from "./style.module.css";
-import { ChangeEvent,  useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import MojButton from "@/components/lib/button";
 import DodajMeni from "./DodajMeni";
 import {
   useAddCategoryMutation,
   useDeleteCategoryMutation,
+  useGetAgencyDataQuery,
   useGetAllCategoriesQuery,
+  useGetMenuesQuery,
+  useUpdateAgencyDataMutation,
 } from "@/store/api/endpoints/agencija";
-import { Chip } from "@mui/material";
+import { Chip, Typography } from "@mui/material";
+import { useSelector } from "react-redux";
+import { selectUser } from "@/store/auth";
+import { updateAgencySchema } from "@/utils/validators";
+import { getMessage } from "@reduxjs/toolkit/dist/actionCreatorInvariantMiddleware";
+import { getValidationMessage } from "@/utils/validationMessage";
+import { toast } from "react-toastify";
+import { skipToken } from "@reduxjs/toolkit/query";
+import UserAvatar from "@/components/UserAvatar";
+import PageSpacer from "@/components/lib/page-spacer";
 
 const AgencyProfile = () => {
-  const [checked, SetChecked] = useState(false);
+  const currUser = useSelector(selectUser);
+
+  const { data: agencyData } = useGetAgencyDataQuery(currUser?.id!, {
+    skip: !currUser,
+  });
+
+  const { data: menues } = useGetMenuesQuery();
+  const { data: kategorije } = useGetAllCategoriesQuery();
+
+  const [updateAgency] = useUpdateAgencyDataMutation();
+  const [deleteAgency] = useDeleteCategoryMutation();
+
+  useEffect(() => {
+    if (!agencyData) return;
+    setOpisAgencije(agencyData.opis ?? "");
+    SetChecked(agencyData.mogucnostDostave);
+    setGrad(agencyData.lokacija);
+    setBroj(agencyData.brTel);
+    setCenaAgencija(String(agencyData.cenaDostave));
+  }, [agencyData]);
+
+  const [imeAgencije, setImeAgencije] = useState("");
   const [opisAgencije, setOpisAgencije] = useState("");
   const [grad, setGrad] = useState("");
   const [broj, setBroj] = useState("");
   const [cenaAgencija, setCenaAgencija] = useState("");
+  const [checked, SetChecked] = useState(false);
+
   const [imeKategorije, setImeKategorije] = useState<string>("");
 
   const [addCategory] = useAddCategoryMutation();
   const [deleteCategory] = useDeleteCategoryMutation();
-  const [brMenija, setBrMenija] = useState(1);
 
-  const addMeni = () => {
-    setBrMenija(brMenija + 1);
-  };
-  const renderComponents = () => {
-    const components = [];
-    for (let i = 0; i < brMenija; i++) {
-      components.push(
-        <div className={style.InputiOpisPlusic}>
-          <DodajMeni kategorije={kategorije} onClick={addMeni} />
-        </div>
-      );
+  const submit = async () => {
+    if (!agencyData) return;
+
+    const novaAgencija: UpdateAgencyDTO = {
+      ime: imeAgencije,
+      email: agencyData.email,
+      brTel: broj,
+      cenaDostave: parseInt(cenaAgencija),
+      lokacija: grad,
+      mogucnostDostave: checked,
+      opis: opisAgencije,
+    };
+
+    const valResult = updateAgencySchema.validate(novaAgencija);
+
+    if (valResult.error) {
+      const [type, msg] = getValidationMessage(valResult);
+
+      console.log(msg);
+      toast.error(msg);
+      return;
     }
-    return components;
   };
 
-  const { data: kategorije } = useGetAllCategoriesQuery();
-
-  function handleChange() {
+  const handleChange = () => {
+    if (!checked) setCenaAgencija("");
     SetChecked(!checked);
-  }
+  };
+
   function updateOpisAgencije(event: ChangeEvent<HTMLTextAreaElement>) {
     setOpisAgencije(event.target.value);
   }
@@ -53,22 +96,31 @@ const AgencyProfile = () => {
     };
     addCategory(kategorija);
     setImeKategorije("");
+    console.log("Jao");
   };
 
+  if(!currUser){
+    return null;
+  }
+
   return (
+    <>
+    <PageSpacer variant="xs"/>
     <div className={`containerWrapper ${style.Glavni}`}>
       <div className={style.Gore}>
         {/* DIV TXT */}
-        <div>
-          <div>
+        <div className={style.Heading}>
+          <div className={style.HeadingText}>
             <h1> Postavke agencije</h1>
-          </div>
-          <div className={style.Paragraf}>
-            <p>
+            <p className={style.Paragraf}>
               {" "}
               Dodajte opis i ostale podatke, i podesite kategorije menija koje
               posedujete, kao i individualne menije iza svake kategorije.
             </p>
+          </div>
+          <div className={style.AvatarText}>
+            <UserAvatar size={100} letter={currUser.name[0]} />
+            <Typography fontSize={24}>{currUser.name}</Typography>
           </div>
         </div>
         {/* div za opis agencije i grad,brtel, cenu i mogucnost dostave */}
@@ -85,20 +137,32 @@ const AgencyProfile = () => {
           </div>
           {/* inputi za grad br cenu i check */}
           <div className={style.Inputs}>
-            <div className={style.Inputsredi}>
-              <Input text="Grad" icon="location_on" onChange={setGrad} />
-            </div>
-            <div className={style.Inputsredi}>
-              <Input text="0677676382" icon="call" onChange={setBroj} />
-            </div>
-            <div className={style.Inputsredi}>
-              <Input
-                text="Cena"
-                icon="euro_symbol"
-                onChange={setCenaAgencija}
-              />
-            </div>
-            <label className={style.Inputsredi}>
+            <Input
+              text={imeAgencije}
+              placeholder="Ime"
+              icon="edit"
+              onChange={setGrad}
+            />
+            <Input
+              text={grad}
+              placeholder="Grad"
+              icon="location_on"
+              onChange={setGrad}
+            />
+            <Input
+              placeholder="Broj Telefona"
+              text={broj}
+              icon="call"
+              onChange={setBroj}
+            />
+            <Input
+              text={cenaAgencija}
+              placeholder="Cena"
+              icon="euro_symbol"
+              onChange={setCenaAgencija}
+              disabled={checked}
+            />
+            <label>
               <input
                 type="checkbox"
                 checked={checked}
@@ -119,6 +183,7 @@ const AgencyProfile = () => {
               kategorije.map((kategorija) => {
                 return (
                   <Chip
+                    key={`Chip-${kategorija.id}`}
                     label={kategorija.naziv}
                     variant="outlined"
                     onClick={() => {}}
@@ -131,7 +196,11 @@ const AgencyProfile = () => {
                   ></Chip>
                 );
               })}
-            <Input text="Ime kategorije" onChange={setImeKategorije} />
+            <Input
+              text={imeKategorije}
+              placeholder="Ime Kategorije"
+              onChange={setImeKategorije}
+            />
             <MojButton
               icon="add"
               onClick={dodajNovuKategoriju}
@@ -139,14 +208,9 @@ const AgencyProfile = () => {
             />
           </div>
         </div>
-        {/* ovde mi treba komponenta cela za dodaj menije */}
         <div className={style.DodajMenije}>
-          {/* div za naslov samo */}
-          <div>
-            <h2>Dodaj menije</h2>
-          </div>
-          {/* odje ispod je za inputi opis i plusic */}
-          <div>{renderComponents()}</div>
+          <h2>Dodaj menije</h2>
+          <DodajMeni kategorije={kategorije} />
         </div>
       </div>
       <div className={style.NAJJACEDUGME}>
@@ -160,6 +224,7 @@ const AgencyProfile = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 

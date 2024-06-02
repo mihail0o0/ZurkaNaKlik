@@ -29,6 +29,7 @@ const authApiSlice = api.injectEndpoints({
       }),
       providesTags: (result) => providesSingle("Oglas", result?.id),
     }),
+    // PREBACI U KORISNIKA
     getUserOglasi: builder.query<OglasObjekata[], void>({
       query: () => ({
         url: `Korisnik/PrikaziOglaseKorisnika`,
