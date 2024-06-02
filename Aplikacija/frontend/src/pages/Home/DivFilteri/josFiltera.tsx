@@ -5,6 +5,9 @@ import {
   EnumDodatnaOprema,
   EnumGrejanje,
   EnumTipProstora,
+  dodatnaOpremaMap,
+  tipGrejanjaMap,
+  tipProstoraMap,
 } from "@/store/api/endpoints/oglas/types";
 import { pink } from "@mui/material/colors";
 
@@ -85,73 +88,92 @@ function SimpleDialog(props: SimpleDialogProps) {
   };
 
   return (
-    <Dialog onClose={handleClose} open={open} sx={{ width: "100%", borderRadius:"30px",padding:"15px" }}>
+    <Dialog
+      onClose={handleClose}
+      open={open}
+      sx={{ width: "100%", borderRadius: "30px", padding: "15px" }}
+    >
       <DialogTitle>Izaberite jos filtera</DialogTitle>
 
       <div className={style.Tip}>
         <h3>Izaberite dodatnu opremu</h3>
         <div className={style.TipContainer}>
-        {Object.keys(EnumDodatnaOprema).map((key) => (
-            <div key={key} className={style.JedanChk}>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    sx={{
-                      color: pink[800],
-                      '&.Mui-checked': {
-                        color: pink[600],
-                      },
-                    }}
+          {Object.values(EnumDodatnaOprema)
+            .filter((value) => typeof value === "number") 
+            .map((key) => {
+              const enumKey = key as EnumDodatnaOprema; 
+              return (
+                <div className={style.JedanChk} key={enumKey}>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        sx={{
+                          color: pink[800],
+                          "&.Mui-checked": {
+                            color: pink[600],
+                          },
+                        }}
+                      />
+                    }
+                    label={dodatnaOpremaMap[enumKey]}
                   />
-                }
-                label={getEnumDodatnaOprema(EnumDodatnaOprema[key as keyof typeof EnumDodatnaOprema])}
-              />
-            </div>
-          ))}
+                </div>
+              );
+            })}
         </div>
       </div>
       <div className={style.Tip}>
         <h3>Tipovi prostora</h3>
         <div className={style.TipContainer}>
-        {Object.keys(EnumTipProstora).map((key) => (
-            <div key={key} className={style.JedanChk}>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    sx={{
-                      color: pink[800],
-                      '&.Mui-checked': {
-                        color: pink[600],
-                      },
-                    }}
+        {Object.values(EnumTipProstora)
+            .filter((value) => typeof value === "number") 
+            .map((key) => {
+              const enumKey = key as EnumTipProstora; 
+              return (
+                <div className={style.JedanChk} key={enumKey}>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        sx={{
+                          color: pink[800],
+                          "&.Mui-checked": {
+                            color: pink[600],
+                          },
+                        }}
+                      />
+                    }
+                    label={tipProstoraMap[enumKey]}
                   />
-                }
-                label={getEnumTipProstora(EnumTipProstora[key as keyof typeof EnumTipProstora])}
-              />
-            </div>
-          ))}
+                </div>
+              );
+            })}
         </div>
       </div>
       <div className={style.Tip}>
         <h3>Grejanje</h3>
         <div className={style.TipContainer}>
-        {Object.keys(EnumGrejanje).map((key) => (
-            <div key={key} className={style.JedanChk}>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    sx={{
-                      color: pink[800],
-                      '&.Mui-checked': {
-                        color: pink[600],
-                      },
-                    }}
+        {Object.values(EnumGrejanje)
+            .filter((value) => typeof value === "number") 
+            .map((key) => {
+              const enumKey = key as EnumGrejanje; 
+              return (
+                <div className={style.JedanChk} key={enumKey}>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        sx={{
+                          color: pink[800],
+                          "&.Mui-checked": {
+                            color: pink[600],
+                          },
+                        }}
+                      />
+                    }
+                    label={tipGrejanjaMap[enumKey]}
                   />
-                }
-                label={getEnumGrejanje(EnumGrejanje[key as keyof typeof EnumGrejanje])}
-              />
-            </div>
-          ))}
+                </div>
+              );
+            })}
         </div>
       </div>
     </Dialog>

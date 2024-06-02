@@ -8,6 +8,10 @@ import {
   tipProslavaMap,
 } from "@/store/api/endpoints/oglas/types";
 import { enumToString } from "@/utils/enumMappings";
+import { useSelector } from "react-redux";
+import { useGetUserDataQuery } from "@/store/api/endpoints/korisnik";
+import { selectUser } from "@/store/auth";
+import { useNavigate } from "react-router-dom";
 
 // type Props = {
 //   nazivProstora: string;
@@ -28,7 +32,12 @@ type Props = {
 };
 
 const OglasKartica = ({ oglas, onClick }: Props) => {
+  const navigate = useNavigate();
   const [favorite, setFavorite] = useState(false);
+  const userCurr = useSelector(selectUser);
+  const { data: user } = useGetUserDataQuery(userCurr?.id!, {
+    skip: !userCurr,
+  });
 
   function updateFavorite() {
     setFavorite((prevFavorite) => !prevFavorite);
@@ -66,7 +75,9 @@ const OglasKartica = ({ oglas, onClick }: Props) => {
   }, [oglas]);
 
   return (
-    <div className={style.GlavniDiv}>
+    <div className={style.GlavniDiv} onClick={() => {
+      navigate(`/place/${oglas.id}`);
+    }}>
       <div className={style.SlikaKartica} style={SlikaKartica}>
         {/* ovde ide slika , pa onda tip proslave i dal je omiljeno ili ne */}
         <div className={style.TipOmiljeno}>
@@ -77,15 +88,20 @@ const OglasKartica = ({ oglas, onClick }: Props) => {
           </div>
 
           {/* // TODO izmeni u icon */}
-          <img
-            onClick={updateFavorite}
-            src={
-              favorite
-                ? "../public/images/favorite.png"
-                : "../public/images/not_favorite.png"
-            }
-            alt={favorite ? "Favorite" : "Not Favorite"}
-          />
+          {/* ovde treba da ide u zavisnosti od toga da li je svoj oglas ikonica za izmeni */}
+          {user && user.id !== oglas.idVlasnika ? (
+            <img
+              onClick={updateFavorite}
+              src={
+                favorite
+                  ? "../public/images/favorite.png"
+                  : "../public/images/not_favorite.png"
+              }
+              alt={favorite ? "Favorite" : "Not Favorite"}
+            />
+          ) : (
+            <Icon icon="edit" onClick={() => {} } cursor={true} enabledCursor={true} />
+          )}
         </div>
       </div>
       <div className={style.ViseInfo}>
@@ -122,6 +138,7 @@ const OglasKartica = ({ oglas, onClick }: Props) => {
         </div>
       </div>
     </div>
+  
   );
 };
 export default OglasKartica;
