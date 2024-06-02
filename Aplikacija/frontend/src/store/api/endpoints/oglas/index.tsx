@@ -1,6 +1,11 @@
 import api from "../..";
 import { providesList, providesSingle } from "../../utils";
-import { FiltersPaginationData, GetOglasData, OglasObjekata } from "./types";
+import {
+  AddOglasObjektaDTO,
+  FiltersPaginationData,
+  GetOglasData,
+  OglasObjekata,
+} from "./types";
 
 const authApiSlice = api.injectEndpoints({
   endpoints: (builder) => ({
@@ -30,8 +35,24 @@ const authApiSlice = api.injectEndpoints({
       }),
       providesTags: (result) => providesList("Oglas", result),
     }),
+    addUserOglas: builder.mutation<OglasObjekata, AddOglasObjektaDTO>({
+      query: (body) => ({
+        url: "Korisnik/DodajOglas",
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: (result, err, args) => [
+        { type: "Oglas", id: "LISTOGLAS" },
+        { type: "Oglas", id: result?.id },
+      ],
+    }),
   }),
 });
 
-export const { useGetAllCitiesQuery, useGetFilteredOglasesQuery, useGetOglasQuery,useGetUserOglasiQuery } =
-  authApiSlice;
+export const {
+  useGetAllCitiesQuery,
+  useGetFilteredOglasesQuery,
+  useGetOglasQuery,
+  useGetUserOglasiQuery,
+  useAddUserOglasMutation,
+} = authApiSlice;

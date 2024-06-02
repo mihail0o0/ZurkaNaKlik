@@ -7,13 +7,14 @@
 :root {
   --mainColor: #d45a6b;
   --lightText: #a9a9a9;
+  --mediumText: #737373;
   --lightGrey: #eeeeee;
   --mediumGrey: #d2d2d2;
   --golden: #ffc700;
   --blur: 8px;
   --borderRadiusBig: 35px;
   --borderRadiusMedium: 20px;
-  --borderRadiusSmall: 12px;
+  --borderRadiusSmall: 14px;
   --boxShadowSoft: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 

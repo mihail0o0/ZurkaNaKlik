@@ -1,81 +1,94 @@
+.Glavni {
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  border-radius: 30px;
+  padding: 20px;
 
-.Glavni{
-    display: flex;
-    flex-direction: column;
-    background-color: white;
-    border-radius: 30px;
-    padding: 20px;
+  padding-bottom: 60px;
+}
 
-    padding-bottom:60px;
+.Txt {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  padding: 10px;
 }
-.Txt{
-    display: flex;
-    flex-direction: column;
-    align-items: start;
-    padding: 10px;
-}
-.TxtDodaj{
-    width:500px;
-}
-.NAJJACEDUGME{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 30px;
-}
-.DodajSLikuDugme{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 30px;
-    width: 250px;
-  
-}
-.OpisiProstora{
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
 
+.TxtDodaj {
+  width: 500px;
 }
-.TxtArea{
-    width: 100%;
-    height: 800px;
-    padding: 10px;
-    font-size: 16px;
-    border: 2px solid lightgray;
-    border-radius: 20px;
-    transition: border-color 0.3s, box-shadow 0.3s;
-    display: flex;
-}
-.KolonaTxtArea{
-    display: flex;
-    gap:20px;
-    padding: 20px;
-    flex-direction: column;
-    width:50%;
 
+.NAJJACEDUGME {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 30px;
+}
 
+.DodajSLikuDugme {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 30px;
+  width: 250px;
 }
-.TipoviProslava{
-    display: flex;
-    flex-direction: column;
-    padding: 20px;
+
+.OpisiProstora {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
 }
-.ChipProslave{
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
+
+.TxtArea {
+  width: 100%;
+  height: 800px;
+  padding: 10px;
+  font-size: 16px;
+  border: 2px solid lightgray;
+  border-radius: 20px;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  display: flex;
 }
-.JedanChip{
-    width: 25%;
-    gap:10px;
-    padding: 10px;
+
+.KolonaTxtArea {
+  display: flex;
+  gap: 20px;
+  padding: 20px;
+  flex-direction: column;
+  width: 50%;
 }
-.dodajOglasDugme{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 30px;
-    width: 450px;
+
+.TipoviProslava {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+}
+
+.ChipProslave {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.JedanChip {
+  min-width: 150px;
+}
+
+.dodajOglasDugme {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 30px;
+  width: 450px;
+}
+
+.addIcon {
+  color: var(--lightText);
+}
+
+.addIcon:hover {
+  color: var(--mediumText);
 }

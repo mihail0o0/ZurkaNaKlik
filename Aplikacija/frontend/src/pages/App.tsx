@@ -24,6 +24,7 @@ import AgencyProfile from "./Profile/Agency";
 import UserProfile from "./Profile/Agency/Korisnik";
 import OglasiProstor from "./oglasiProstor";
 import FavoriteOglasi from "./favoriteOglasi";
+import Oglas from "./Oglas";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -38,6 +39,7 @@ const router = createBrowserRouter(
         <Route path="user/profile" element={<UserProfile />} />
         <Route path="prostor/oglasiProstor" element={<OglasiProstor />}/>
         <Route path="omiljeno" element={<FavoriteOglasi />}/>
+        <Route path="/place/:id" element={<Oglas />} />
         <Route path="logout" element={<Logout />} />
 
         <Route path="user">

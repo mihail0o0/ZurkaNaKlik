@@ -1,0 +1,114 @@
+.Glavni{
+    display: flex;
+    flex-direction: column;
+}
+.PodeliteOmiljeno{
+    display: flex;
+    flex-direction: row;
+    gap:30px;
+}
+.Podelite{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+.Informacije{
+    display: flex;
+    flex-direction: row;
+    gap:10px;
+
+}
+.InformacijeKolona{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    align-items: center;
+    gap:20px;
+
+}
+.PrvaKocka{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-bottom: 5px solid lightgray;
+    width: 100%;
+
+}
+.PrvaKocka>div{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+.PrvaKocka>div>h1{
+    text-align: left;
+}
+.OsobeKrevetKupatilo{
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+
+}
+.Osobe{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 5px;
+    margin-right: 0;
+    
+}
+.InfoOVlasniku{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+   padding-top: 30px;
+   padding-bottom: 30px;
+   border-bottom: 5px solid lightgray;
+}
+.Slikaime{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 45%;
+}
+.OpisVlasnika{
+    width: 50%;
+}
+.Kontakt{
+    background-color: white;
+    border-radius: 30px;
+    display: flex;
+    flex-direction: column;
+    width: 60%;
+    justify-content: space-around;
+    padding: 20px
+ 
+    
+}
+.RedKontakt{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    border-top: 1px solid lightgray;
+}
+.DodajteKetering{
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    border-radius: 30px;
+    width: 60%;
+    align-items: center;
+    padding: 15px
+    
+}
+.DodajteKetering>h4{
+    padding-bottom: 5px;
+    height: 20%;
+}
+.DodajteKetering>div{
+    width: 200px;
+}
