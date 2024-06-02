@@ -9,6 +9,7 @@ import BrojLjudi from "../Home/DivFilteri/brojLjudi";
 
 const Oglas = () => {
   const { id } = useParams();
+ 
   const { data: currentOglas } = useGetOglasQuery(id);
   const { data: VlasnikOglasa } = useGetUserDataQuery(currentOglas?.idVlasnika);
   console.log(currentOglas?.listaTipProslava);

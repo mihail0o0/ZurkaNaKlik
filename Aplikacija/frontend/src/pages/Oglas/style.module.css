@@ -85,6 +85,7 @@
     flex-direction: column;
     width: 60%;
     justify-content: space-around;
+    padding: 20px
  
     
 }
@@ -101,6 +102,7 @@
     border-radius: 30px;
     width: 60%;
     align-items: center;
+    padding: 15px
     
 }
 .DodajteKetering>h4{
