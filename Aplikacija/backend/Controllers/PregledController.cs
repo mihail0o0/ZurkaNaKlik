@@ -6,6 +6,7 @@ using backend.DTOs;
 using backend.Utilities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Extensions.Hosting;
 
 namespace backend.Controllers
 {
@@ -13,13 +14,15 @@ namespace backend.Controllers
     [Route("api/[controller]")]
     public class PregledController : ControllerBase
     {
+        private readonly IWebHostEnvironment _hostEnvironment;
         public ZurkaNaKlikDbContext Context { get; set; }
         private readonly IConfiguration _configuration;
 
-        public PregledController(ZurkaNaKlikDbContext context, IConfiguration configuration)
+        public PregledController(ZurkaNaKlikDbContext context, IConfiguration configuration, IWebHostEnvironment hostEnvironment)
         {
             Context = context;
             _configuration = configuration;
+            _hostEnvironment = hostEnvironment;
         }
 
         #region GetKorisnik
@@ -325,19 +328,27 @@ namespace backend.Controllers
         #endregion
      
         #region VratiSliku
-        [HttpGet("get-sliku")]
+        [HttpGet("get-sliku/{putanja}")]
         public IActionResult VratiSliku(string putanja)
         {
-            if (System.IO.File.Exists(putanja))
+
+            putanja = Uri.UnescapeDataString(putanja);
+
+            var webRootPath = _hostEnvironment.WebRootPath;
+            var absolutePath = Path.Combine(webRootPath, putanja);
+
+            //return Ok(absolutePath);
+
+            if (System.IO.File.Exists(absolutePath))
             {
-                var fileBytes = System.IO.File.ReadAllBytes(putanja);
-                var contentType = GetContentType(putanja);
-                var fileName = Path.GetFileName(putanja);
+                var fileBytes = System.IO.File.ReadAllBytes(absolutePath);
+                var contentType = GetContentType(absolutePath);
+                var fileName = Path.GetFileName(absolutePath);
 
                 return File(fileBytes, contentType, fileName);
             }
 
-            return NotFound();
+            return NotFound("Slika nije pronađena.");
         }
         #endregion
 
@@ -353,6 +364,49 @@ namespace backend.Controllers
                 _ => "application/octet-stream",
             };
         }
+
+        [HttpPost("uploadOglas/{oglasId}")]
+        public async Task<IActionResult> UploadSlikaOglas(int oglasId, IFormFile file)
+        {
+            var oglas = await Context.OglasiObjekta.FindAsync(oglasId);
+            if (oglas == null)
+            {
+                return NotFound("Oglas nije pronađen.");
+            }
+
+            if (file == null || file.Length == 0)
+            {
+                return BadRequest("Nijedna slika nije poslata.");
+            }
+
+            var folderPath = Path.Combine("wwwroot", "images", "Oglasi", oglasId.ToString());
+            if (!Directory.Exists(folderPath))
+            {
+                Directory.CreateDirectory(folderPath);
+            }
+
+            var files = Directory.GetFiles(folderPath);
+            var fileCount = files.Length;
+
+            var fileName = $"s{fileCount + 1}{Path.GetExtension(file.FileName)}";
+            var filePath = Path.Combine(folderPath, fileName);
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await file.CopyToAsync(stream);
+            }
+
+            var relativePath = Path.Combine("images", "Oglasi", oglasId.ToString(), fileName).Replace("\\", "/");
+
+
+            oglas.Slike.Add(relativePath);
+            await Context.SaveChangesAsync();
+
+            return Ok(new { Putanja = relativePath });
+        }
+
+        
+
        
     }
 

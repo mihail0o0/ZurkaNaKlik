@@ -827,7 +827,47 @@ namespace backend.Controllers
         #endregion
 
         
-        
+        [HttpPost("uploadKorisnik")]
+        public async Task<IActionResult> UploadSlikaKorisnik(IFormFile file)
+        {
+            int korisnikid = int.Parse((HttpContext.Items["idKorisnika"] as string)!);
+
+            var korisnik = await Context.Korisnici.FindAsync(korisnikid);
+            if (korisnik == null)
+            {
+                return NotFound("Oglas nije pronađen.");
+            }
+
+            if (file == null || file.Length == 0)
+            {
+                return BadRequest("Nijedna slika nije poslata.");
+            }
+
+            var folderPath = Path.Combine("wwwroot", "images", "Korisnik", korisnikid.ToString());
+            if (!Directory.Exists(folderPath))
+            {
+                Directory.CreateDirectory(folderPath);
+            }
+
+            var files = Directory.GetFiles(folderPath);
+            var fileCount = files.Length;
+
+            var fileName = $"s{fileCount + 1}{Path.GetExtension(file.FileName)}";
+            var filePath = Path.Combine(folderPath, fileName);
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await file.CopyToAsync(stream);
+            }
+
+            var relativePath = Path.Combine("images", "Oglasi", korisnikid.ToString(), fileName).Replace("\\", "/");
+
+
+            korisnik.SlikaProfila = (relativePath);
+            await Context.SaveChangesAsync();
+
+            return Ok(new { Putanja = relativePath });
+        }
 
 
 
