@@ -133,7 +133,7 @@ const OglasKartica = ({ oglas, onClick }: Props) => {
           <div className={style.BottomIcon}>
             {/* lokacija */}
             <Icon icon="location_on" />
-            <p>{oglas.lokacija}</p>
+            <p>{oglas.grad}</p>
           </div>
         </div>
       </div>
