@@ -1,8 +1,35 @@
 import api from "../..";
-import { providesList } from "../../utils";
+import { providesList, providesSingle } from "../../utils";
 
 const authApiSlice = api.injectEndpoints({
   endpoints: (builder) => ({
+    getAgencyData: builder.query<Agency, number>({
+      query: (id) => ({
+        url: `Pregled/PrikaziAgenciju/${id}`,
+      }),
+      providesTags: (result) => providesSingle("Agency", result?.id),
+    }),
+    updateAgencyData: builder.mutation<Agency, UpdateAgencyDTO>({
+      query: (body) => ({
+        url: "Agencija/AzurirajAgenciju",
+        method: "PUT",
+        body,
+      }),
+      invalidatesTags: (result, err, arg) => [
+        { type: "Agency", id: result?.id },
+        { type: "Agency", id: "LISTAGENCY" },
+      ],
+    }),
+    deleteAgency: builder.mutation<void, number>({
+      query: () => ({
+        url: `Agencija/ObrisiAgenciju`,
+        method: "DELETE",
+      }),
+      invalidatesTags: (result, err, arg) => [
+        { type: "Agency", id: arg },
+        { type: "Agency", id: "LISTAGENCY" },
+      ],
+    }),
     getAllCategories: builder.query<Category[], void>({
       query: () => ({
         url: "Agencija/VratiKategorije",
@@ -33,7 +60,7 @@ const authApiSlice = api.injectEndpoints({
     // meniji
     getMenues: builder.query<GetMenuDTO[], void>({
       query: () => ({
-        url: "Agencija/VratiSveMenije",
+        url: "Agencija/VratiMenije",
       }),
       providesTags: (result) => providesList("AgencyMenu", result),
     }),
@@ -73,7 +100,13 @@ const authApiSlice = api.injectEndpoints({
 });
 
 export const {
+  useGetAgencyDataQuery,
+  useUpdateAgencyDataMutation,
+  useDeleteAgencyMutation,
   useGetAllCategoriesQuery,
   useAddCategoryMutation,
   useDeleteCategoryMutation,
+  useGetMenuesQuery,
+  useAddMenuMutation,
+  useDeleteMenuMutation,
 } = authApiSlice;

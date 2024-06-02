@@ -103,9 +103,15 @@ const UserProfile = () => {
             </div>
             <div className={style.Inputi}>
               <div className={style.Red}>
-                <Input text={ime} icon="boy" onChange={setIme} />
+                <Input
+                  text={ime}
+                  placeholder="Ime"
+                  icon="boy"
+                  onChange={setIme}
+                />
                 <Input
                   text={lokacija}
+                  placeholder="Grad"
                   icon="location_on"
                   onChange={setLokacija}
                 />
@@ -114,6 +120,7 @@ const UserProfile = () => {
                 <Input
                   disabled
                   text={user.email}
+                  placeholder="Email"
                   icon="mail"
                   onChange={() => {}}
                 />

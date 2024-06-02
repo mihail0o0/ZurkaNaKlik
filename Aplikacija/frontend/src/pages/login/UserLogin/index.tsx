@@ -6,7 +6,6 @@ import PageSpacer from "@/components/lib/page-spacer";
 import { useGetAllCategoriesQuery } from "@/store/api/endpoints/agencija";
 
 function UserLoginPage() {
-
   return (
     <>
       <PageSpacer variant="xs" />

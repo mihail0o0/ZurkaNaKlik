@@ -173,7 +173,7 @@ export const agencyLoginSchema = Joi.object({
   password: passwordVal,
 });
 
-export const addUserOglas = Joi.object({
+export const addUserOglasSchema = Joi.object({
   listaTipProslava: Joi.array(),
   listaTipProstora: Joi.array(),
   listDodatneOpreme: Joi.array(),
@@ -191,4 +191,12 @@ export const addUserOglas = Joi.object({
   ocena: Joi.number().label("Ocena"),
   brojOcena: Joi.number().label("Broj Ocena"),
   grejanje: Joi.number().label("Grejanje"),
+});
+
+export const updateAgencySchema = Joi.object<UpdateAgencyDTO>({
+  brTel: phoneNumberVal,
+  lokacija: cityValReq,
+  opis: Joi.string().label("Opis"),
+  mogucnostDostave: Joi.boolean().label("Mogucnost dostave"),
+  cenaDostave: Joi.number().label("Cena dostave"),
 });

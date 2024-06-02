@@ -2,7 +2,6 @@ import MojButton from "@/components/lib/button";
 import { Autocomplete, Popover, TextField } from "@mui/material";
 import { useMemo, useState } from "react";
 import style from "./style.module.css";
-import Input from "@/components/lib/inputs/text-input";
 import { useGetAllCitiesQuery } from "@/store/api/endpoints/oglas";
 
 // type autocompleteOptions = {

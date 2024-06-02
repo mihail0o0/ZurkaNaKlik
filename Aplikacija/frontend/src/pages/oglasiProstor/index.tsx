@@ -26,7 +26,7 @@ import {
 import Icon from "@/components/lib/icon";
 import { enumToString, stringToEnum } from "@/utils/enumMappings";
 import { useAddUserOglasMutation } from "@/store/api/endpoints/oglas";
-import { addUserOglas } from "@/utils/validators";
+import { addUserOglasSchema } from "@/utils/validators";
 import { toast } from "react-toastify";
 import { getValidationMessage } from "@/utils/validationMessage";
 import { useNavigate } from "react-router-dom";
@@ -190,7 +190,7 @@ const OglasiProstor = () => {
       slike: [],
     };
 
-    const validation = addUserOglas.validate(oglasObject);
+    const validation = addUserOglasSchema.validate(oglasObject);
     if (validation.error) {
       const [type, msg] = getValidationMessage(validation);
       toast.error(`Polje ${msg}`);
