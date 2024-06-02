@@ -151,7 +151,7 @@ namespace backend.Controllers
 
         #region DodajOglas
         [HttpPost("DodajOglas")]
-        public async Task<ActionResult> DodajOglas([FromBody] OglasObjekta dodatOglas)
+        public async Task<ActionResult> DodajOglas([FromBody] OglasObjektaBasic dodatOglas)
         {
 
             try
@@ -164,38 +164,42 @@ namespace backend.Controllers
                     return BadRequest("Korisnik ne postoji");
                 }
 
-                var oglas = new OglasObjekta
-                {
-                    ListaTipProslava = dodatOglas.ListaTipProslava,
-                    ListaTipProstora = dodatOglas.ListaTipProstora,
-                    Naziv = dodatOglas.Naziv,
-                    Grad = dodatOglas.Grad,
-                    Lokacija = dodatOglas.Lokacija,
-                    CenaPoDanu = dodatOglas.CenaPoDanu,
-                    BrojSoba = dodatOglas.BrojSoba,
-                    Kvadratura = dodatOglas.Kvadratura,
-                    BrojKreveta = dodatOglas.Kvadratura,
-                    BrojKupatila = dodatOglas.BrojKupatila,
-                    Grejanje = dodatOglas.Grejanje,
-                    ListDodatneOpreme = dodatOglas.ListDodatneOpreme,
-                    BrTel = dodatOglas.BrTel,
-                    Opis = dodatOglas.Opis,
-                    Slike = dodatOglas.Slike,
-                    BrojOcena = dodatOglas.BrojOcena,
-                    ZauzetiDani = dodatOglas.ZauzetiDani,
-                    VlasnikOglasa = korisnik
-                };
+                dodatOglas.ocena = 0;
+                dodatOglas.brojOcena = 0;
+                dodatOglas.zauzetiDani = [];
+                OglasObjekta oglas = ObjectCreatorSingleton.Instance.ToOglas(dodatOglas);
+                oglas.VlasnikOglasa = korisnik;
+
+                // var oglas = new OglasObjekta
+                // {
+                //     ListaTipProslava = dodatOglas.ListaTipProslava,
+                //     ListaTipProstora = dodatOglas.ListaTipProstora,
+                //     Naziv = dodatOglas.Naziv,
+                //     Grad = dodatOglas.Grad,
+                //     Lokacija = dodatOglas.Lokacija,
+                //     CenaPoDanu = dodatOglas.CenaPoDanu,
+                //     BrojSoba = dodatOglas.BrojSoba,
+                //     Kvadratura = dodatOglas.Kvadratura,
+                //     BrojKreveta = dodatOglas.Kvadratura,
+                //     BrojKupatila = dodatOglas.BrojKupatila,
+                //     Grejanje = dodatOglas.Grejanje,
+                //     ListDodatneOpreme = dodatOglas.ListDodatneOpreme,
+                //     BrTel = dodatOglas.BrTel,
+                //     Opis = dodatOglas.Opis,
+                //     Slike = dodatOglas.Slike,
+                //     BrojOcena = dodatOglas.BrojOcena,
+                //     ZauzetiDani = dodatOglas.ZauzetiDani,
+                //     VlasnikOglasa = korisnik
+                // };
 
                 /*korisnik.ListaObjavljenihOglasaObjekta?.Add(oglas);*/
                 // Postavljanje vlasnika oglasa
 
-                // Dodavanje oglasa u DbSet
                 Context.OglasiObjekta.Add(oglas);
-
-                // Čuvanje promena u bazi podataka
                 await Context.SaveChangesAsync();
 
-                return Ok(new { Context.OglasiObjekta });
+                OglasObjektaResponse response = ObjectCreatorSingleton.Instance.ToOglasResult(oglas);
+                return Ok(response);
             }
             catch (Exception e)
             {

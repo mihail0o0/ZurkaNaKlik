@@ -24,6 +24,7 @@
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
+    margin-inline: 16px;
 }
 
 /* div za tip proslave */
@@ -33,9 +34,9 @@
     justify-content: center;
     align-items: center;
     border: 1px solid var(--lightText);
-    border-radius: 20px;
+    border-radius: 40px;
     height: 35px;
-    padding-inline: 5px;
+    padding: 8px;
 }
 
 .TipOmiljeno > div > p {

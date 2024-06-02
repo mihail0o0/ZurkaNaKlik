@@ -9,9 +9,8 @@ type Props = {
 };
 
 const UserAvatar = ({ src, letter, size, color, bgColor }: Props) => {
-  
-  if (!letter){
-    letter = 'a';
+  if (!letter) {
+    letter = "a";
   }
 
   bgColor ??= avatarColors[letter.charCodeAt(0) % avatarColors?.length];
@@ -19,7 +18,7 @@ const UserAvatar = ({ src, letter, size, color, bgColor }: Props) => {
   return (
     <Avatar
       src={src}
-      sx={{ width: size, height: size, color: color, backgroundColor: bgColor }}
+      sx={{ fontSize: size ? (size / 2) : undefined, width: size, height: size, color: color, backgroundColor: bgColor }}
     >
       {letter}
     </Avatar>

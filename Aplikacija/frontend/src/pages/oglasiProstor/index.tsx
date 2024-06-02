@@ -166,7 +166,7 @@ const OglasiProstor = () => {
   const submit = async () => {
     const tipGrejanja = stringToEnum(grejanje, tipGrejanjaMap);
     if (tipGrejanja == undefined) {
-      console.log("Tipp grejanja nije validan");
+      toast.error("Tip grejanja nije validan");
       return;
     }
 

@@ -3,55 +3,67 @@ import style from "./style.module.css";
 import Icon from "../lib/icon";
 import { Typography, useMediaQuery } from "@mui/material";
 import MojButton from "../lib/button";
+import {
+  OglasObjekata,
+  tipProslavaMap,
+} from "@/store/api/endpoints/oglas/types";
+import { enumToString } from "@/utils/enumMappings";
+
+// type Props = {
+//   nazivProstora: string;
+//   slika: string[];
+//   tipoviProslave: string[];
+//   isFavorite: boolean;
+//   prosecnaOcena: number | string;
+//   opis: string;
+//   cena: string | number;
+//   brojLjudi: string;
+//   lokacija: string;
+//   onClick: React.MouseEventHandler<HTMLButtonElement> | (() => void);
+// };
 
 type Props = {
-  nazivProstora: string;
-  slika: string;
-  tipoviProslave: string[];
-  isFavorite: boolean;
-  prosecnaOcena: number | string;
-  opis: string;
-  cena: string | number;
-  brojLjudi: string;
-  lokacija: string;
+  oglas: OglasObjekata;
   onClick: React.MouseEventHandler<HTMLButtonElement> | (() => void);
 };
 
-const OglasKartica = ({
-  nazivProstora,
-  slika,
-  tipoviProslave,
-  isFavorite,
-  prosecnaOcena,
-  opis,
-  cena,
-  brojLjudi,
-  lokacija,
-  onClick,
-}: Props) => {
-  const [favorite, setFavorite] = useState(isFavorite);
+const OglasKartica = ({ oglas, onClick }: Props) => {
+  const [favorite, setFavorite] = useState(false);
+
   function updateFavorite() {
     setFavorite((prevFavorite) => !prevFavorite);
   }
 
+  const defaultImage = "/public/images/imageNotFound.jpg";
+
   const OglasKarticaStyle: CSSProperties = {};
 
+  // TODO IZMENI, OVDE TREBA GETUJES SLIKU SA BEKA
   const SlikaKartica: CSSProperties = {
-    backgroundImage: `url(${slika})`,
+    backgroundImage:
+      oglas.slike?.length > 0
+        ? `url(${oglas.slike[0]})`
+        : `url(${defaultImage})`,
   };
+
+  const tipoviProslave: string[] = useMemo(() => {
+    return oglas.listaTipProslava.map((tip) => {
+      return enumToString(tip, tipProslavaMap);
+    });
+  }, [oglas]);
 
   const textTipProslave: string = useMemo(() => {
     let finalString = "";
 
-    for(let i = 0; i < tipoviProslave.length; i++){
+    for (let i = 0; i < tipoviProslave.length; i++) {
       finalString += tipoviProslave[i];
-      if(i < tipoviProslave.length - 1){
+      if (i < tipoviProslave.length - 1) {
         finalString += ", ";
       }
     }
 
     return finalString;
-  }, [tipoviProslave]);
+  }, [oglas]);
 
   return (
     <div className={style.GlavniDiv}>
@@ -59,9 +71,10 @@ const OglasKartica = ({
         {/* ovde ide slika , pa onda tip proslave i dal je omiljeno ili ne */}
         <div className={style.TipOmiljeno}>
           <div>
-            <p>{textTipProslave}</p>
+            <Typography noWrap maxWidth={150}>
+              {textTipProslave}
+            </Typography>
           </div>
-
 
           {/* // TODO izmeni u icon */}
           <img
@@ -73,21 +86,20 @@ const OglasKartica = ({
             }
             alt={favorite ? "Favorite" : "Not Favorite"}
           />
-
         </div>
       </div>
       <div className={style.ViseInfo}>
         {/* treba mi za tekst gore i dole za cenu,broj,lokaciju*/}
         <div className={style.ViseInfoTekst}>
           <div className={style.ImeOcena}>
-            <h2>{nazivProstora}</h2>
+            <h2>{oglas.naziv}</h2>
             <div className={style.Ocena}>
               <Icon icon="grade" />
-              <p>{prosecnaOcena}</p>
+              <p>{oglas.ocena}</p>
             </div>
           </div>
           <div className={style.Opis}>
-            <Typography>{opis}</Typography>
+            <Typography>{oglas.opis}</Typography>
           </div>
         </div>
         {/* ovde cena broj lokacija */}
@@ -95,17 +107,17 @@ const OglasKartica = ({
           <div className={style.BottomIcon}>
             {/* cena  */}
             <Icon icon="euro_symbol" />
-            <p>{cena}</p>
+            <p>{oglas.cenaPoDanu}</p>
           </div>
           <div className={style.BottomIcon}>
             {/* broj ljudi */}
-            <Icon icon="boy" />
-            <p>{brojLjudi}</p>
+            <Icon icon="view_in_ar" />
+            <p>{oglas.kvadratura}</p>
           </div>
           <div className={style.BottomIcon}>
             {/* lokacija */}
             <Icon icon="location_on" />
-            <p>{lokacija}</p>
+            <p>{oglas.lokacija}</p>
           </div>
         </div>
       </div>

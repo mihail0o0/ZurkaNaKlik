@@ -23,74 +23,58 @@ import { EnumTipProslava } from "@/store/api/endpoints/oglas/types";
 const UserProfile = () => {
   const navigate = useNavigate();
   const userCurr = useSelector(selectUser);
-  // TODO da se proveri dal postoji user
-  const { data: user } = useGetUserDataQuery(userCurr.id);
-  const { data: MojiOglasi } = useGetUserOglasiQuery(userCurr?.id);
 
-  const [ime, setIme] = useState(user?.name ?? "");
-  const [prezime, setPrezime] = useState(user?.lastName ?? "");
-  const [email, setEmail] = useState(user?.email ?? "");
-  const [brTel, setBrTel] = useState(user?.phoneNumber ?? "");
-  const [slikaProfila, setSlikaProfila] = useState(user?.profilePhoto ?? "");
-  const [lokacija, setLokacija] = useState(user?.location ?? "");
+  // nece da se pozove ako ne postoji user, zbog skip
+  const { data: user } = useGetUserDataQuery(userCurr?.id!, {
+    skip: !userCurr,
+  });
+  const { data: MojiOglasi } = useGetUserOglasiQuery();
 
+  console.log(user);
+
+  const [ime, setIme] = useState("");
+  const [prezime, setPrezime] = useState("");
+  const [brTel, setBrTel] = useState("");
+  const [slikaProfila, setSlikaProfila] = useState<string | undefined>("");
+  const [lokacija, setLokacija] = useState("");
   const [opis, setOpis] = useState("");
-  const getEnumTipProslava = (value: EnumTipProslava): string => {
-    switch (value) {
-      case EnumTipProslava.Rodjendan:
-        return "Rođendan";
-      case EnumTipProslava.Zurka:
-        return "Žurka";
-      case EnumTipProslava.Teambuilding:
-        return "Teambuilding događaj";
-      case EnumTipProslava.Momacko:
-        return "Momacko veče";
-      case EnumTipProslava.Devojacko:
-        return "Devojačko veče";
-      case EnumTipProslava.Sve:
-        return "Sve proslave";
-      case EnumTipProslava.Ostalo:
-        return "Ostale proslave";
-      default:
-        return "";
-    }
-  };
 
   useEffect(() => {
-    const savedProfile = localStorage.getItem("profileSettings");
-    if (savedProfile) {
-      const profileData = JSON.parse(savedProfile);
-      setIme(profileData.ime ?? "");
-      setPrezime(profileData.prezime ?? "");
-      setEmail(profileData.email ?? "");
-      setBrTel(profileData.brTel ?? "");
-      setSlikaProfila(profileData.slikaProfila ?? "");
-      setLokacija(profileData.lokacija ?? "");
-      setOpis(profileData.opis ?? "");
-    }
-  }, []);
+    if (!user) return;
 
-  const sacuvajIzmene = () => {
-    const profileData = {
-      ime,
-      prezime,
-      email,
-      brTel,
-      slikaProfila,
-      lokacija,
-      opis,
-    };
-    localStorage.setItem("profileSettings", JSON.stringify(profileData));
-    return (
-      <Alert variant="outlined" severity="success">
-        Promene su uspesno sacuvane!
-      </Alert>
-    );
-  };
+    setIme(user.name);
+    setPrezime(user.lastName);
+    setBrTel(user.phoneNumber);
+    setSlikaProfila(user.profilePhoto);
+    setLokacija(user.location);
+  }, [user]);
+
+  // const sacuvajIzmene = () => {
+  //   const profileData = {
+  //     ime,
+  //     prezime,
+  //     email,
+  //     brTel,
+  //     slikaProfila,
+  //     lokacija,
+  //     opis,
+  //   };
+  //   localStorage.setItem("profileSettings", JSON.stringify(profileData));
+  //   return (
+  //     <Alert variant="outlined" severity="success">
+  //       Promene su uspesno sacuvane!
+  //     </Alert>
+  //   );
+  // };
 
   function handleOpis(event: ChangeEvent<HTMLTextAreaElement>) {
     setOpis(event.target.value);
   }
+
+  if (!user) {
+    return null;
+  }
+
   return (
     <div className={`containerWrapper ${style.Container}`}>
       <div className={style.PostavkeProfila}>
@@ -101,16 +85,16 @@ const UserProfile = () => {
           {/* odje ide slika od kad je clan broj oglasa i prosecna ocena */}
           <div className={style.KarticaSaSlikom}>
             <div className={style.SlikaImeIPrezime}>
-              <UserAvatar src={slikaProfila} />
+              <UserAvatar size={100} letter={user.name[0]} src={slikaProfila} />
 
               <p>
-                {user?.name ?? ""} {user?.lastName ?? ""}
+                {user.name} {user.lastName}
               </p>
             </div>
             <div className={style.InfoOClanu}>
-              {email && <p>Email: {user?.email ?? ""}</p>}
-              {brTel && <p>Broj telefona: {user?.phoneNumber ?? ""}</p>}
-              <p>{user?.location ?? ""}</p>
+              <p>Email: {user.email}</p>
+              <p>Broj telefona: {user.phoneNumber}</p>
+              <p>{user.location}</p>
             </div>
           </div>
           <div className={style.OsnovnePostavkeProfila}>
@@ -119,28 +103,21 @@ const UserProfile = () => {
             </div>
             <div className={style.Inputi}>
               <div className={style.Red}>
-                <div className={style.InputResssi}>
-                  <Input
-                    text={ime + " " + prezime}
-                    icon="boy"
-                    onChange={setIme}
-                  />
-                </div>
-                <div className={style.InputResssi}>
-                  <Input
-                    text={lokacija}
-                    icon="location_on"
-                    onChange={setLokacija}
-                  />
-                </div>
+                <Input text={ime} icon="boy" onChange={setIme} />
+                <Input
+                  text={lokacija}
+                  icon="location_on"
+                  onChange={setLokacija}
+                />
               </div>
               <div className={style.Red}>
-                <div className={style.InputResssi}>
-                  <Input text={email} icon="mail" onChange={setEmail} />
-                </div>
-                <div className={style.InputResssi}>
-                  <Input text={brTel} icon="call" onChange={setBrTel} />
-                </div>
+                <Input
+                  disabled
+                  text={user.email}
+                  icon="mail"
+                  onChange={() => {}}
+                />
+                <Input text={brTel} icon="call" onChange={setBrTel} />
               </div>
             </div>
 
@@ -157,7 +134,7 @@ const UserProfile = () => {
                 {/* da azuriram korisnika */}
                 <MojButton
                   text="Sacuvaj"
-                  onClick={sacuvajIzmene}
+                  onClick={() => {}}
                   wide={true}
                   center={true}
                 />
@@ -174,83 +151,9 @@ const UserProfile = () => {
           {MojiOglasi &&
             MojiOglasi.map((oglas) => (
               <div key={oglas.id}>
-                <OglasKartica
-                  nazivProstora={oglas.naziv}
-                  slika={oglas.slike[0]}
-                  tipoviProslave={oglas.listaTipProslava.map(
-                    (tip: EnumTipProslava) => getEnumTipProslava(tip)
-                  )}
-                  isFavorite={false}
-                  prosecnaOcena={oglas.ocena !== undefined ? oglas.ocena : ""}
-                  opis={oglas.opis}
-                  cena={oglas.cenaPoDanu}
-                  brojLjudi="nema"
-                  lokacija={oglas.grad}
-                  onClick={() => {}}
-                />
+                <OglasKartica oglas={oglas} onClick={() => {}} />
               </div>
             ))}
-          {/* <OglasKartica
-            nazivProstora="Vila Maria"
-            slika="../public/images/slika-kartica-proba.jpg"
-            tipProslave="zurka,proslava"
-            isFavorite={false}
-            prosecnaOcena={4}
-            opis="Prelepa vikendica u blizini Nisa koja svakog posetioca ostavlja bez daha! Posetite nas i vidite zasto je bas nasa usluga najbolja"
-            cena="120"
-            brojLjudi="12"
-            lokacija="Nis"
-            onClick={() => {}}
-          />
-          <OglasKartica
-            nazivProstora="Vila Maria"
-            slika="slika"
-            tipProslave="zurka,proslava"
-            isFavorite={false}
-            prosecnaOcena={4}
-            opis="Prelepa vikendica u blizini Nisa koja svakog posetioca ostavlja bez daha! Posetite nas i vidite zasto je bas nasa usluga najbolja"
-            cena="120"
-            brojLjudi="12"
-            lokacija="Nis"
-            onClick={() => {}}
-          />
-          <OglasKartica
-            nazivProstora="Vila Maria"
-            slika="../public/images/slika-kartica-proba.jpg"
-            tipProslave="zurka,proslava"
-            isFavorite={true}
-            prosecnaOcena={4}
-            opis="Prelepa vikendica u blizini Nisa koja svakog posetioca ostavlja bez daha! Posetite nas i vidite zasto je bas nasa usluga najbolja"
-            cena="120"
-            brojLjudi="12"
-            lokacija="Nis"
-            onClick={() => {}}
-          />
-          <OglasKartica
-            nazivProstora="Vila Maria"
-            slika="../public/images/slika-kartica-proba.jpg"
-            tipProslave="zurka,proslava"
-            isFavorite={true}
-            prosecnaOcena="4,5"
-            opis="Prelepa vikendica u blizini Nisa koja svakog posetioca ostavlja bez daha! Posetite nas i vidite zasto je bas nasa usluga najbolja"
-            cena="120"
-            brojLjudi="12"
-            lokacija="Nis"
-            onClick={() => {}}
-          />
-          <OglasKartica
-            nazivProstora="Vila Maria"
-            slika="../public/images/slika-kartica-proba.jpg"
-            tipProslave="zurka,proslava"
-            isFavorite={true}
-            prosecnaOcena="4,5"
-            opis="Prelepa vikendica u blizini Nisa koja svakog posetioca ostavlja bez daha! Posetite nas i vidite zasto je bas nasa usluga najbolja"
-            cena="120"
-            brojLjudi="12"
-            lokacija="Nis"
-            onClick={() => {}}
-          /> */}
-          {/* ovde idu kartice */}
         </div>
         <div className={style.Dugmenajjace}>
           <div className={style.Dugme2}>
