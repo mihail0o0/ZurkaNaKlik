@@ -139,7 +139,7 @@ namespace backend.Controllers
         {
             string accessToken = CreateToken(korisnikagencija!);
 
-            var refreshToken = GenerateRefreshToken();
+            var refreshToken = GenerateRefreshToken(korisnikagencija.Id);
             var cookieOptions = new CookieOptions
             {
                 HttpOnly = true,
@@ -147,7 +147,9 @@ namespace backend.Controllers
             };
 
             Response.Cookies.Append("refreshToken", refreshToken.Token, cookieOptions); //postavlja cookie
+            Response.Cookies.Append("refreshTokenid", refreshToken.id.ToString(), cookieOptions); //postavlja cookie
 
+            korisnikagencija!.RefreshToken = refreshToken.id.ToString();
             korisnikagencija!.RefreshToken = refreshToken.Token;
             korisnikagencija!.TokenCreated = refreshToken.Created;
             korisnikagencija!.TokenExpires = refreshToken.Expires;
@@ -163,6 +165,7 @@ namespace backend.Controllers
             try
             {
                 string? refreshTokenValue = Request.Cookies["refreshToken"];
+                string? userId = Request.Cookies["refreshTokenid"];
 
                 if (refreshTokenValue == null)
                 {
@@ -170,8 +173,12 @@ namespace backend.Controllers
                 }
 
                 // TODO ne mozes ovako i guess, vadi iz token id
-                int userId = int.Parse(_userService.GetMyId());
-                KorisnikAgencija? user = await Context.KorisniciAgencije.FirstOrDefaultAsync(k => k.Id == userId);
+                //int userId = int.Parse(_userService.GetMyId());
+                if(userId == null){
+                    return BadRequest("izvini miks ako je ovde greska kazi");
+                }
+
+                KorisnikAgencija? user = await Context.KorisniciAgencije.FirstOrDefaultAsync(k => k.Id == int.Parse(userId!));
 
                 if (user == null)
                 {
@@ -188,7 +195,7 @@ namespace backend.Controllers
                 }
 
                 string token = CreateToken(user);
-                var newRefreshToken = GenerateRefreshToken();
+                var newRefreshToken = GenerateRefreshToken(int.Parse(userId));
 
                 var cookieOptions = new CookieOptions
                 {
@@ -212,11 +219,12 @@ namespace backend.Controllers
             }
         }
 
-        private RefreshToken GenerateRefreshToken()
+        private RefreshToken GenerateRefreshToken(int id)
         {
 
             var refreshToken = new RefreshToken
             {
+                id = id,
                 Token = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64)),
                 Expires = DateTime.Now.AddDays(2)
             };
