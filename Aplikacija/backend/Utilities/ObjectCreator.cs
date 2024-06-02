@@ -137,6 +137,46 @@ namespace backend.Utilities
             return oglasObjekta;
         }
 
+        public MeniKeteringa ToMeniKeteringa(MeniKeteringaBasic meni)
+        {
+            MeniKeteringa meniKeteringa = new MeniKeteringa
+            {
+                CenaMenija = meni.cenaMenija,
+                Naziv = meni.naziv,
+                Opis = meni.opis,
+                SastavMenija = meni.sastavMenija,
+                Slika = meni.slika,
+            };
 
+            return meniKeteringa;
+        }
+
+        public MeniKeteringaResult ToMeniKeteringaResult(MeniKeteringa meni)
+        {
+            MeniKeteringaResult meniKeteringa = new MeniKeteringaResult
+            {
+                id = meni.Id,
+                cenaMenija = meni.CenaMenija,
+                naziv = meni.Naziv,
+                opis = meni.Opis,
+                sastavMenija = meni.SastavMenija,
+                slika = meni.Slika,
+                idKategorije = meni?.Kategorija?.Id
+            };
+
+            return meniKeteringa;
+        }
+
+        public KategorijaResult ToKategorijaResult(Kategorija kategorija)
+        {
+            KategorijaResult kat = new KategorijaResult
+            {
+                id = kategorija.Id,
+                naziv = kategorija.Naziv,
+                idAgencije = kategorija.Agencija?.Id
+            };
+
+            return kat;
+        }
     }
 }
