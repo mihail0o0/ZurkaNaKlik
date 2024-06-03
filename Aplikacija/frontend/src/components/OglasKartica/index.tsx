@@ -34,6 +34,7 @@ type Props = {
 const OglasKartica = ({ oglas, onClick }: Props) => {
   const navigate = useNavigate();
   const [favorite, setFavorite] = useState(false);
+
   const userCurr = useSelector(selectUser);
   const { data: user } = useGetUserDataQuery(userCurr?.id!, {
     skip: !userCurr,
@@ -75,9 +76,12 @@ const OglasKartica = ({ oglas, onClick }: Props) => {
   }, [oglas]);
 
   return (
-    <div className={style.GlavniDiv} onClick={() => {
-      navigate(`/place/${oglas.id}`);
-    }}>
+    <div
+      className={style.GlavniDiv}
+      // onClick={() => {
+      //   navigate(`/place/${oglas.id}`);
+      // }}
+    >
       <div className={style.SlikaKartica} style={SlikaKartica}>
         {/* ovde ide slika , pa onda tip proslave i dal je omiljeno ili ne */}
         <div className={style.TipOmiljeno}>
@@ -100,7 +104,12 @@ const OglasKartica = ({ oglas, onClick }: Props) => {
               alt={favorite ? "Favorite" : "Not Favorite"}
             />
           ) : (
-            <Icon icon="edit" onClick={() => {} } cursor={true} enabledCursor={true} />
+            <Icon
+              icon="edit"
+              onClick={() => navigate(`/prostor/izmeniProstor/${oglas.id}`)}
+              cursor={true}
+              enabledCursor={true}
+            />
           )}
         </div>
       </div>
@@ -138,7 +147,6 @@ const OglasKartica = ({ oglas, onClick }: Props) => {
         </div>
       </div>
     </div>
-  
   );
 };
 export default OglasKartica;
