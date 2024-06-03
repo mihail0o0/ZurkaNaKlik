@@ -365,94 +365,10 @@ namespace backend.Controllers
             };
         }
 
-        #region UploadujSlikuOglasa
-
-        [HttpPost("uploadOglas/{oglasId}")]
-        public async Task<IActionResult> UploadSlikaOglas(int oglasId, IFormFile file)
-        {
-            var oglas = await Context.OglasiObjekta.FindAsync(oglasId);
-            if (oglas == null)
-            {
-                return NotFound("Oglas nije pronađen.");
-            }
-
-            if (file == null || file.Length == 0)
-            {
-                return BadRequest("Nijedna slika nije poslata.");
-            }
-
-            var folderPath = Path.Combine("wwwroot", "images", "Oglasi", oglasId.ToString());
-            if (!Directory.Exists(folderPath))
-            {
-                Directory.CreateDirectory(folderPath);
-            }
-
-            var files = Directory.GetFiles(folderPath);
-            var fileCount = files.Length;
-
-            var fileName = $"s{fileCount + 1}{Path.GetExtension(file.FileName)}";
-            var filePath = Path.Combine(folderPath, fileName);
-
-            using (var stream = new FileStream(filePath, FileMode.Create))
-            {
-                await file.CopyToAsync(stream);
-            }
-
-            var relativePath = Path.Combine("images", "Oglasi", oglasId.ToString(), fileName).Replace("\\", "/");
+        
 
 
-            oglas.Slike.Add(relativePath);
-            await Context.SaveChangesAsync();
-
-            return Ok(new { Putanja = relativePath });
-        }
-
-        #endregion
-
-
-        #region UploadujSlikuMenija
-
-        [HttpPost("UploadujSlikuMenija/{idmenija}")]
-        public async Task<IActionResult> UploadujSlikuMenija(int idmenija, IFormFile file)
-        {
-            var oglas = await Context.OglasiObjekta.FindAsync(idmenija);
-            if (oglas == null)
-            {
-                return NotFound("Oglas nije pronađen.");
-            }
-
-            if (file == null || file.Length == 0)
-            {
-                return BadRequest("Nijedna slika nije poslata.");
-            }
-
-            var folderPath = Path.Combine("wwwroot", "images", "Meni", idmenija.ToString());
-            if (!Directory.Exists(folderPath))
-            {
-                Directory.CreateDirectory(folderPath);
-            }
-
-            var files = Directory.GetFiles(folderPath);
-            var fileCount = files.Length;
-
-            var fileName = $"s{fileCount + 1}{Path.GetExtension(file.FileName)}";
-            var filePath = Path.Combine(folderPath, fileName);
-
-            using (var stream = new FileStream(filePath, FileMode.Create))
-            {
-                await file.CopyToAsync(stream);
-            }
-
-            var relativePath = Path.Combine("images", "Meniji", idmenija.ToString(), fileName).Replace("\\", "/");
-
-
-            oglas.Slike.Add(relativePath);
-            await Context.SaveChangesAsync();
-
-            return Ok(new { Putanja = relativePath });
-        }
-
-        #endregion
+        
 
         
 
