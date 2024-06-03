@@ -5,6 +5,7 @@ import {
   FiltersPaginationData,
   GetOglasData,
   OglasObjekata,
+  UpdateOglasObjektaDTO,
 } from "./types";
 
 const authApiSlice = api.injectEndpoints({
@@ -47,6 +48,27 @@ const authApiSlice = api.injectEndpoints({
         { type: "Oglas", id: result?.id },
       ],
     }),
+    updateUserOglas: builder.mutation<OglasObjekata, UpdateOglasObjektaDTO>({
+      query: (body) => ({
+        url: "Korisnik/IzmeniOglas",
+        method: "PUT",
+        body,
+      }),
+      invalidatesTags: (result, err, args) => [
+        { type: "Oglas", id: "LISTOGLAS" },
+        { type: "Oglas", id: result?.id },
+      ],
+    }),
+    deleteUserOglas: builder.mutation<void, number>({
+      query: (id) => ({
+        url: `Korisnik/ObrisiOglas/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: (result, err, args) => [
+        { type: "Oglas", id: "LISTOGLAS" },
+        { type: "Oglas", id: args },
+      ],
+    }),
   }),
 });
 
@@ -56,4 +78,6 @@ export const {
   useGetOglasQuery,
   useGetUserOglasiQuery,
   useAddUserOglasMutation,
+  useUpdateUserOglasMutation,
+  useDeleteUserOglasMutation,
 } = authApiSlice;

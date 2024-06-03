@@ -110,6 +110,33 @@ namespace backend.Utilities
             return oglasObjektaResponse;
         }
 
+        public OglasObjekta FromOglasResponse(OglasObjektaResponse oglas){
+            OglasObjekta oglasObjekta = new OglasObjekta
+            {
+                Id = oglas.id,
+                ListaTipProslava = oglas.listaTipProslava,
+                ListaTipProstora = oglas.listaTipProstora,
+                Naziv = oglas.naziv,
+                Grad = oglas.grad,
+                Lokacija = oglas.lokacija,
+                CenaPoDanu = oglas.cenaPoDanu,
+                BrojSoba = oglas.brojSoba,
+                Kvadratura = oglas.kvadratura,
+                BrojKreveta = oglas.brojKreveta,
+                BrojKupatila = oglas.brojKreveta,
+                Grejanje = oglas.grejanje,
+                ListDodatneOpreme = oglas.listDodatneOpreme,
+                BrTel = oglas.brTel,
+                Opis = oglas.opis,
+                Slike = oglas.slike,
+                Ocena = oglas.ocena,
+                BrojOcena = oglas.brojOcena,
+                ZauzetiDani = oglas.zauzetiDani,
+            };
+
+            return oglasObjekta;
+        }
+
         public OglasObjekta ToOglas(OglasObjektaBasic oglas)
         {
             OglasObjekta oglasObjekta = new OglasObjekta

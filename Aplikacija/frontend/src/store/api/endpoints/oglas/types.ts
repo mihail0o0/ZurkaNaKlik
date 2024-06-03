@@ -120,6 +120,7 @@ export type OglasObjekata = {
 };
 
 export type AddOglasObjektaDTO = Omit<OglasObjekata, "id" | "zauzetiDani" | "idVlasnika">;
+export type UpdateOglasObjektaDTO = Omit<OglasObjekata, "zauzetiDani" | "idVlasnika">;
 
 export type GetOglasData = {
   filters: Filters;

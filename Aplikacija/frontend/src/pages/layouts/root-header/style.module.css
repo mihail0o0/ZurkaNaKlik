@@ -86,7 +86,14 @@
   padding: 10px;
 }
 
+.EverythingWrapper {
+  position: relative;
+  padding-bottom: 600px;
+}
+
 .footer{
+  position: absolute;
+  bottom: 0;
   display: flex;
   flex-direction: column;
   width: 100%;

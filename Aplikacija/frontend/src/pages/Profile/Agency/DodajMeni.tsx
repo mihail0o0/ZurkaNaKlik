@@ -1,22 +1,33 @@
 import MojButton from "@/components/lib/button";
 import Input from "@/components/lib/inputs/text-input";
 import style from "./style.module.css";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { InputLabel, MenuItem, Select, SelectChangeEvent } from "@mui/material";
 import {
   useAddMenuMutation,
   useDeleteMenuMutation,
 } from "@/store/api/endpoints/agencija";
+import { enumToString } from "@/utils/enumMappings";
 
 type Props = {
   kategorije?: Category[];
+  menuData?: Menu;
 };
 
-const DodajMeni = ({ kategorije }: Props) => {
+const DodajIzmeniMeni = ({ kategorije, menuData }: Props) => {
   const [opisMenija, setOpisMenija] = useState("");
   const [imeMenija, setImeMenija] = useState("");
   const [cenaMeni, setCenaMeni] = useState("");
-  const [kategorijaa, setkategorija] = useState("");
+  const [kategorija, setkategorija] = useState("");
+
+  useEffect(() => {
+    if (!menuData) return;
+
+
+
+    setOpisMenija(menuData.opis);
+    setImeMenija(menuData.naziv);
+  }, [menuData]);
 
   const handleChange = (event: SelectChangeEvent) => {
     console.log(event.target.value);
@@ -30,9 +41,7 @@ const DodajMeni = ({ kategorije }: Props) => {
   const [addMenu] = useAddMenuMutation();
   const [deleteMenu] = useDeleteMenuMutation();
 
-  const submit = async () => {
-
-  };
+  const submit = async () => {};
 
   return (
     <div className={style.menijji}>
@@ -62,7 +71,7 @@ const DodajMeni = ({ kategorije }: Props) => {
             </div>
             <div className={style.Inputsredi}>
               <Select
-                value={kategorijaa}
+                value={kategorija}
                 onChange={handleChange}
                 sx={{
                   minWidth: "250px",
@@ -104,4 +113,4 @@ const DodajMeni = ({ kategorije }: Props) => {
     </div>
   );
 };
-export default DodajMeni;
+export default DodajIzmeniMeni;
