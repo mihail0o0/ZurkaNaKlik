@@ -39,7 +39,7 @@ const Cena = ({ cenaOd, cenaDo, setCenaOd, setCenaDo }: Props) => {
         paddingX="80px"
         paddingY="14px"
         fontSize="15px"
-        icon="euro_symbol"
+        icon="payments"
         grey={true}
         color="black"
         wide={true}
@@ -65,14 +65,11 @@ const Cena = ({ cenaOd, cenaDo, setCenaOd, setCenaDo }: Props) => {
       >
         {/* <Typography sx={{ p: 2 }}>The content of the Popover.</Typography> */}
         <div className={style.CenaVelikiDiv}>
-          <div>
-            {" "}
-            <Typography sx={{ p: 2 }}>Cena</Typography>{" "}
-          </div>
+      
           <div className={style.CenaOd}>
             <Typography sx={{ p: 2 }}>Od :</Typography>
 
-            <Icon icon="euro_symbol" />
+            <Icon icon="payments" />
 
             <input
               type="number"
@@ -84,7 +81,7 @@ const Cena = ({ cenaOd, cenaDo, setCenaOd, setCenaDo }: Props) => {
           <div className={style.CenaOd}>
             <Typography sx={{ p: 2 }}>Do :</Typography>
 
-            <Icon icon="euro_symbol" />
+            <Icon icon="payments" />
             <input
               type="number"
               id="textInput"

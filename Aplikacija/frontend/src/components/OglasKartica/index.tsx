@@ -97,6 +97,7 @@ const OglasKartica = ({ oglas, onClick }: Props) => {
                   : "/images/not_favorite.png"
               }
               alt={favorite ? "Favorite" : "Not Favorite"}
+              className="cursorPointer"
             />
           ) : (
             <Icon
@@ -132,7 +133,7 @@ const OglasKartica = ({ oglas, onClick }: Props) => {
         <div className={style.CenaBrojLokacija}>
           <div className={style.BottomIcon}>
             {/* cena  */}
-            <Icon icon="euro_symbol" />
+            <Icon icon="payments" />
             <p>{oglas.cenaPoDanu}</p>
           </div>
           <div className={style.BottomIcon}>

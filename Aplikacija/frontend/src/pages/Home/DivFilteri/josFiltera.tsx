@@ -32,7 +32,6 @@ export interface JosFilteraProps {
   handleChangeTipGrejanja: (value: string) => void;
 }
 
-
 function SimpleDialog(props: SimpleDialogProps) {
   const {
     onClose,
@@ -51,20 +50,6 @@ function SimpleDialog(props: SimpleDialogProps) {
 
   const handleListItemClick = (value: string) => {
     onClose(value);
-  };
-
-  const handleChange = (value: string) => {
-    const type = stringToEnum(value, dodatnaOpremaMap);
-    if (type == undefined || type == null) return;
-
-    const set = new Set(selectedDodatnaOprema);
-    if (set.has(type)) {
-      set.delete(type);
-    } else {
-      set.add(type);
-    }
-
-    setSelectedDodatnaOprema(Array.from(set));
   };
 
   console.log(selectedDodatnaOprema);
@@ -181,7 +166,6 @@ const JosFiltera = (props: JosFilteraProps) => {
   return (
     <div>
       <div className={style.JosFiltera} onClick={handleClickOpen}>
-        <img src="/images/page_info.png" alt="Page Info" />
         <img src="/images/page_info.png" alt="Page Info" />
         <p>Još filtera</p>
       </div>

@@ -72,7 +72,7 @@ const UserProfile = () => {
     <div className={`containerWrapper ${style.Container}`}>
       <div className={style.PostavkeProfila}>
         <div>
-          <h2>Postavke profila</h2>
+         {flag &&  <h2>Postavke profila</h2>}
         </div>
         <div className={style.Postavke2}>
           {/* odje ide slika od kad je clan broj oglasa i prosecna ocena */}
@@ -85,11 +85,11 @@ const UserProfile = () => {
                 {vlasnikOglasa &&  vlasnikOglasa.lastName}
               </p>
             </div>
-            <div className={style.InfoOClanu}>
+            {/* <div className={style.InfoOClanu}>
               {flag && <p>Email: {vlasnikOglasa && vlasnikOglasa.email}</p>}
              {flag && <p>Broj telefona: {vlasnikOglasa && vlasnikOglasa.phoneNumber}</p>}
              {flag &&<p>{vlasnikOglasa && vlasnikOglasa.location}</p>}
-            </div>
+            </div> */}
           </div>
           <div className={style.OsnovnePostavkeProfila}>
             <div className={style.PostavkeProfilaTXT}>
@@ -114,7 +114,7 @@ const UserProfile = () => {
                     icon={"boy"}
                     text={
                       (vlasnikOglasa &&
-                        vlasnikOglasa.name + vlasnikOglasa?.lastName) ||
+                        vlasnikOglasa.name + " "+  vlasnikOglasa?.lastName) ||
                       ""
                     }
                   />
