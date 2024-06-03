@@ -69,6 +69,13 @@ const authApiSlice = api.injectEndpoints({
         { type: "Oglas", id: args },
       ],
     }),
+    getKorisnikOglasi: builder.query<OglasObjekata[], number>({
+      query: (id) => ({
+        url: `Pregled/PrikaziOglaseKorisnika/${id}`,
+      }),
+      providesTags: (result) => providesList("Oglas", result),
+    }),
+    
   }),
 });
 
@@ -80,4 +87,5 @@ export const {
   useAddUserOglasMutation,
   useUpdateUserOglasMutation,
   useDeleteUserOglasMutation,
+  useGetKorisnikOglasiQuery,
 } = authApiSlice;

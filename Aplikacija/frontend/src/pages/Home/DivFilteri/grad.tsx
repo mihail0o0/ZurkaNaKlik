@@ -46,7 +46,14 @@ const Grad = ({ value, setValue }: Props) => {
           setInputValue(newInputValue);
         }}
         options={gradovi ?? []}
-        sx={{ width: 300 }}
+        sx={{
+          width: 300,
+         
+          ".css-154xyx0-MuiInputBase-root-MuiOutlinedInput-root": {
+            borderRadius: "var(--borderRadiusMedium)",
+            backgroundColor: "var(--lightGrey)",
+          },
+        }}
         renderInput={(params) => <TextField {...params} label="Grad" />}
       />
     </>
