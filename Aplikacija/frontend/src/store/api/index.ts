@@ -109,6 +109,7 @@ export const api = createApi({
     "AgencyMenu",
     "Location",
     "Oglas",
+    "OmiljeniOglasi"
   ],
   baseQuery: baseQueryWithAuth,
   endpoints: () => ({}),

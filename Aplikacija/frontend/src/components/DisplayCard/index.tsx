@@ -5,7 +5,8 @@ type DisplayKardProps = {
   text: string;
   icon: string;
 };
-const DisplayKard = ({ text, icon }: DisplayKardProps) => {
+
+const DisplayCard = ({ text, icon }: DisplayKardProps) => {
   return (
     <div className={style.LabeleIkone}>
       <Icon icon={icon} />
@@ -13,4 +14,4 @@ const DisplayKard = ({ text, icon }: DisplayKardProps) => {
     </div>
   );
 };
-export default DisplayKard;
+export default DisplayCard;

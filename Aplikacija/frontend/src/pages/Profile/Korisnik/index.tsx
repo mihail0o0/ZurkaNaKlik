@@ -22,7 +22,7 @@ import { useGetKorisnikOglasiQuery, useGetUserOglasiQuery } from "@/store/api/en
 import { EnumTipProslava } from "@/store/api/endpoints/oglas/types";
 import { skipToken } from "@reduxjs/toolkit/query";
 import Icon from "@/components/lib/icon";
-import DisplayKard from "@/components/displayKard/DisplayKard";
+import DisplayCard from "@/components/DisplayCard";
 
 const UserProfile = () => {
   const navigate = useNavigate();
@@ -110,7 +110,7 @@ const UserProfile = () => {
                     onChange={setIme}
                   />
                 ) : (
-                  <DisplayKard
+                  <DisplayCard
                     icon={"boy"}
                     text={
                       (vlasnikOglasa &&
@@ -128,7 +128,7 @@ const UserProfile = () => {
                     onChange={setLokacija}
                   />
                 ) : (
-                  <DisplayKard
+                  <DisplayCard
                     icon={"location_on"}
                     text={(vlasnikOglasa && vlasnikOglasa.location) || ""}
                   />
@@ -144,7 +144,7 @@ const UserProfile = () => {
                     onChange={() => {}}
                   />
                 ) : (
-                  <DisplayKard
+                  <DisplayCard
                     icon={"mail"}
                     text={(vlasnikOglasa && vlasnikOglasa.email) || ""}
                   />
@@ -157,7 +157,7 @@ const UserProfile = () => {
                     onChange={setBrTel}
                   />
                 ) : (
-                  <DisplayKard
+                  <DisplayCard
                     icon={"call"}
                     text={(vlasnikOglasa && vlasnikOglasa.phoneNumber) || ""}
                   />

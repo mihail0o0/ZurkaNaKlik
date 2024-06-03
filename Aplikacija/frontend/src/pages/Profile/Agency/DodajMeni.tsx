@@ -10,6 +10,8 @@ import {
 import { enumToString } from "@/utils/enumMappings";
 import { useSelector } from "react-redux";
 import { selectUser } from "@/store/auth";
+import DisplayCard from "@/components/DisplayCard";
+
 
 type Props = {
   kategorije?: Category[];
@@ -63,11 +65,14 @@ const DodajIzmeniMeni = ({ kategorije, menuData }: Props) => {
         <div className={style.Kocka}>
           <div className={style.Red}>
             <div className={style.Inputsredi}>
-              <Input
+            {/* <DisplayCard></DisplayCard> */}
+              
+              {/* <DisplayCard /> */}
+              {/* <Input
                 text={imeMenija}
                 placeholder="Ime menija"
                 onChange={setImeMenija}
-              />
+              /> */}
             </div>
 
             <div className={style.Inputsredi}>
