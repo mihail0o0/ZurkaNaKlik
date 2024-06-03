@@ -112,3 +112,19 @@
 .DodajteKetering>div{
     width: 200px;
 }
+.Opremljenost{
+    display: flex;
+    flex-wrap: wrap;
+}
+.JedanChk {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+    width: 50%;
+}
+.OpremljenostDIV{
+    display: flex;
+    flex-direction: column;
+    width: 100%
+    
+}

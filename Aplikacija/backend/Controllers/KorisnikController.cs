@@ -208,41 +208,47 @@ namespace backend.Controllers
         }
         #endregion
 
-       #region ObrisiOglas
-[HttpDelete("ObrisiOglas/{idOglasa}")]
-public async Task<ActionResult> ObrisiOglas(int idOglasa)
-{
-    try
-    {
-        int idKorisnika = int.Parse((HttpContext.Items["idKorisnika"] as string)!);
-        Korisnik? korisnik = await Context.Korisnici.FindAsync(idKorisnika);
-
-        if (korisnik == null)
+        #region ObrisiOglas
+        [HttpDelete("ObrisiOglas/{idOglasa}")]
+        public async Task<ActionResult> ObrisiOglas(int idOglasa)
         {
-            return BadRequest("Korisnik ne postoji");
-        }
+            try
+            {
+                int idKorisnika = int.Parse((HttpContext.Items["idKorisnika"] as string)!);
+                Korisnik? korisnik = await Context.Korisnici.FindAsync(idKorisnika);
 
-        OglasObjekta? oglas = await Context.OglasiObjekta.FindAsync(idOglasa);
+                if (korisnik == null)
+                {
+                    return BadRequest("Korisnik ne postoji");
+                }
 
-        if (oglas == null)
-        {
-            return BadRequest("Oglas ne postoji");
-        }
+                OglasObjekta? oglas = await Context.OglasiObjekta.Include(i => i.VlasnikOglasa).Include(i => i.ListaZakupkjenihOglasa).FirstOrDefaultAsync(f => f.Id == idOglasa);
 
-        if (oglas.VlasnikOglasa!.Id != korisnik.Id)
-        {
-            return BadRequest("Ti nisi vlasnik oglasa bato");
-        }
+                if (oglas == null)
+                {
+                    return BadRequest("Oglas ne postoji");
+                }
 
-        // Brisanje slika iz foldera oglasa
-        var folderPath = Path.Combine("wwwroot", "images", "Oglasi", oglas.Id.ToString());
-        if (Directory.Exists(folderPath))
-        {
-            Directory.Delete(folderPath, true); // true znači da će se obrisati i svi fajlovi i podfolderi
-        }
+                if (oglas.VlasnikOglasa!.Id != korisnik.Id)
+                {
+                    return BadRequest("Ti nisi vlasnik oglasa bato");
+                }
 
-        Context.OglasiObjekta.Remove(oglas);
-        await Context.SaveChangesAsync();
+                if(oglas.ListaZakupkjenihOglasa != null){
+                    foreach(var zakupljen in oglas.ListaZakupkjenihOglasa){
+                        Context.ZakupljeniOglasi.Remove(zakupljen);
+                    }
+                }
+
+                //Brisanje slika iz foldera oglasa
+                var folderPath = Path.Combine("wwwroot", "images", "Oglasi", oglas.Id.ToString());
+                if (Directory.Exists(folderPath))
+                {
+                    Directory.Delete(folderPath, true); // true znači da će se obrisati i svi fajlovi i podfolderi
+                }
+
+                Context.OglasiObjekta.Remove(oglas);
+                await Context.SaveChangesAsync();
 
         return Ok();
     }
@@ -258,12 +264,14 @@ public async Task<ActionResult> ObrisiOglas(int idOglasa)
         #region IzmeniOglas
         [HttpPut("IzmeniOglas")]
         public async Task<ActionResult> IzmeniOglas([FromBody] OglasObjektaResponse izmeniOglas)
+        public async Task<ActionResult> IzmeniOglas([FromBody] OglasObjektaResponse izmeniOglas)
         {
 
             try
             {
                 int idKorisnika = int.Parse((HttpContext.Items["idKorisnika"] as string)!);
 
+                OglasObjekta? oglas = await Context.OglasiObjekta.Where(k => k.Id == izmeniOglas.id)
                 OglasObjekta? oglas = await Context.OglasiObjekta.Where(k => k.Id == izmeniOglas.id)
                                                             .IgnoreQueryFilters()
                                                             .FirstOrDefaultAsync(o => o.VlasnikOglasa!.Id == idKorisnika);
@@ -287,9 +295,26 @@ public async Task<ActionResult> ObrisiOglas(int idOglasa)
                 oglas.ListDodatneOpreme = izmeniOglas.listDodatneOpreme;
                 oglas.BrTel = izmeniOglas.brTel;
                 oglas.Opis = izmeniOglas.opis;
+                oglas.ListaTipProslava = izmeniOglas.listaTipProslava;
+                oglas.ListaTipProstora = izmeniOglas.listaTipProstora;
+                oglas.Naziv = izmeniOglas.naziv;
+                oglas.Grad = izmeniOglas.grad;
+                oglas.Lokacija = izmeniOglas.lokacija;
+                oglas.CenaPoDanu = izmeniOglas.cenaPoDanu;
+                oglas.BrojSoba = izmeniOglas.brojSoba;
+                oglas.Kvadratura = izmeniOglas.kvadratura;
+                oglas.BrojKreveta = izmeniOglas.brojKreveta;
+                oglas.BrojKupatila = izmeniOglas.brojKupatila;
+                oglas.Grejanje = izmeniOglas.grejanje;
+                oglas.ListDodatneOpreme = izmeniOglas.listDodatneOpreme;
+                oglas.BrTel = izmeniOglas.brTel;
+                oglas.Opis = izmeniOglas.opis;
 
                 await Context.SaveChangesAsync();
 
+                OglasObjektaResponse response = ObjectCreatorSingleton.Instance.ToOglasResult(oglas);
+
+                return Ok(response);
                 OglasObjektaResponse response = ObjectCreatorSingleton.Instance.ToOglasResult(oglas);
 
                 return Ok(response);

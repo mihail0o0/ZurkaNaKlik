@@ -76,12 +76,7 @@ const OglasKartica = ({ oglas, onClick }: Props) => {
   }, [oglas]);
 
   return (
-    <div
-      className={style.GlavniDiv}
-      // onClick={() => {
-      //   navigate(`/place/${oglas.id}`);
-      // }}
-    >
+    <div className={style.GlavniDiv}>
       <div className={style.SlikaKartica} style={SlikaKartica}>
         {/* ovde ide slika , pa onda tip proslave i dal je omiljeno ili ne */}
         <div className={style.TipOmiljeno}>
@@ -116,7 +111,14 @@ const OglasKartica = ({ oglas, onClick }: Props) => {
         {/* treba mi za tekst gore i dole za cenu,broj,lokaciju*/}
         <div className={style.ViseInfoTekst}>
           <div className={style.ImeOcena}>
-            <h2>{oglas.naziv}</h2>
+            <h2
+              onClick={() => {
+                navigate(`/place/${oglas.id}`);
+              }}
+              className="cursorPointer"
+            >
+              {oglas.naziv}
+            </h2>
             <div className={style.Ocena}>
               <Icon icon="grade" />
               <p>{oglas.ocena}</p>

@@ -16,15 +16,35 @@ export interface SimpleDialogProps {
   open: boolean;
   selectedValue: string;
   onClose: (value: string) => void;
+  selectedDodatnaOprema: number[];
+  selectedTipoviProstora: number[];
+  selectedTipoviGrejanja: number[];
+  handleChangeDodatnaOprema: (value: string) => void;
+  handleChangeTipProstora: (value: string) => void;
+  handleChangeTipGrejanja: (value: string) => void;
+}
+export interface JosFilteraProps {
+  selectedDodatnaOprema: number[];
+  selectedTipoviProstora: number[];
+  selectedTipoviGrejanja: number[];
+  handleChangeDodatnaOprema: (value: string) => void;
+  handleChangeTipProstora: (value: string) => void;
+  handleChangeTipGrejanja: (value: string) => void;
 }
 
+
 function SimpleDialog(props: SimpleDialogProps) {
-  const { onClose, selectedValue, open } = props;
-
-  const [selectedDodatnaOprema, setSelectedDodatnaOprema] = useState<number[]>(
-    []
-  );
-
+  const {
+    onClose,
+    selectedValue,
+    open,
+    selectedDodatnaOprema,
+    selectedTipoviProstora,
+    selectedTipoviGrejanja,
+    handleChangeDodatnaOprema,
+    handleChangeTipProstora,
+    handleChangeTipGrejanja,
+  } = props;
   const handleClose = () => {
     onClose(selectedValue);
   };
@@ -67,7 +87,7 @@ function SimpleDialog(props: SimpleDialogProps) {
                   control={
                     <Checkbox
                       value={key}
-                      onChange={() => handleChange(key)}
+                      onChange={() => handleChangeDodatnaOprema(key)}
                       sx={{
                         color: pink[800],
                         "&.Mui-checked": {
@@ -86,62 +106,68 @@ function SimpleDialog(props: SimpleDialogProps) {
       <div className={style.Tip}>
         <h3>Tipovi prostora</h3>
         <div className={style.TipContainer}>
-          {Object.values(EnumTipProstora)
-            .filter((value) => typeof value === "number")
-            .map((key) => {
-              const enumKey = key as EnumTipProstora;
-              return (
-                <div className={style.JedanChk} key={enumKey}>
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        sx={{
-                          color: pink[800],
-                          "&.Mui-checked": {
-                            color: pink[600],
-                          },
-                        }}
-                      />
-                    }
-                    label={tipProstoraMap[enumKey]}
-                  />
-                </div>
-              );
-            })}
+          {Object.values(tipProstoraMap).map((key) => {
+            return (
+              <div className={style.JedanChk} key={key}>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      value={key}
+                      onChange={() => handleChangeTipProstora(key)}
+                      sx={{
+                        color: pink[800],
+                        "&.Mui-checked": {
+                          color: pink[600],
+                        },
+                      }}
+                    />
+                  }
+                  label={key}
+                />
+              </div>
+            );
+          })}
         </div>
       </div>
       <div className={style.Tip}>
         <h3>Grejanje</h3>
         <div className={style.TipContainer}>
-          {Object.values(EnumGrejanje)
-            .filter((value) => typeof value === "number")
-            .map((key) => {
-              const enumKey = key as EnumGrejanje;
-              return (
-                <div className={style.JedanChk} key={enumKey}>
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        sx={{
-                          color: pink[800],
-                          "&.Mui-checked": {
-                            color: pink[600],
-                          },
-                        }}
-                      />
-                    }
-                    label={tipGrejanjaMap[enumKey]}
-                  />
-                </div>
-              );
-            })}
+          {Object.values(tipGrejanjaMap).map((key) => {
+            return (
+              <div className={style.JedanChk} key={key}>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      value={key}
+                      onChange={() => handleChangeTipGrejanja(key)}
+                      sx={{
+                        color: pink[800],
+                        "&.Mui-checked": {
+                          color: pink[600],
+                        },
+                      }}
+                    />
+                  }
+                  label={key}
+                />
+              </div>
+            );
+          })}
         </div>
       </div>
     </Dialog>
   );
 }
 
-const JosFiltera = () => {
+const JosFiltera = (props: JosFilteraProps) => {
+  const {
+    selectedDodatnaOprema,
+    selectedTipoviProstora,
+    selectedTipoviGrejanja,
+    handleChangeDodatnaOprema,
+    handleChangeTipProstora,
+    handleChangeTipGrejanja,
+  } = props;
   const [open, setOpen] = useState(false);
 
   const handleClickOpen = () => {
@@ -156,9 +182,20 @@ const JosFiltera = () => {
     <div>
       <div className={style.JosFiltera} onClick={handleClickOpen}>
         <img src="/images/page_info.png" alt="Page Info" />
+        <img src="/images/page_info.png" alt="Page Info" />
         <p>Još filtera</p>
       </div>
-      <SimpleDialog open={open} selectedValue="default" onClose={handleClose} />
+      <SimpleDialog
+        open={open}
+        selectedValue="default"
+        onClose={handleClose}
+        selectedDodatnaOprema={selectedDodatnaOprema}
+        selectedTipoviProstora={selectedTipoviProstora}
+        selectedTipoviGrejanja={selectedTipoviGrejanja}
+        handleChangeDodatnaOprema={handleChangeDodatnaOprema}
+        handleChangeTipProstora={handleChangeTipProstora}
+        handleChangeTipGrejanja={handleChangeTipGrejanja}
+      />
     </div>
   );
 };
