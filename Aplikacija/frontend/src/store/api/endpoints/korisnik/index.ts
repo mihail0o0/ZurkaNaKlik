@@ -11,6 +11,12 @@ const authApiSlice = api.injectEndpoints({
       }),
       providesTags: (result) => providesSingle("User", result?.id),
     }),
+    // updateUser: builder.mutation<AllUserData, number>({
+    //   query: (id) => ({
+    //     url: `Pregled/GetKorisnik/${id}`,
+    //   }),
+    //   providesTags: (result) => providesSingle("User", result?.id),
+    // }),
     getFavourites: builder.query<OglasObjekata[], void>({
       query: () => ({
         url: "Pregled/PrikaziSveOmiljeneOglase",

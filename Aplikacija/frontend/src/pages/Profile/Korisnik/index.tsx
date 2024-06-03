@@ -63,6 +63,11 @@ const UserProfile = () => {
   function handleOpis(event: ChangeEvent<HTMLTextAreaElement>) {
     setOpis(event.target.value);
   }
+  
+  const submit = async() => {
+
+
+  }
 
   if (!user) {
     return null;
@@ -180,7 +185,7 @@ const UserProfile = () => {
                 {flag && (
                   <MojButton
                     text="Sacuvaj"
-                    onClick={() => {}}
+                    onClick={() => {submit}}
                     wide={true}
                     center={true}
                   />

@@ -825,17 +825,15 @@ namespace backend.Controllers
                 var k = new
                 {
                     Ime = korisnik.Ime,
-                    Email = korisnik.Email,
+                    Prezime = korisnik.Prezime,
                     BrTel = korisnik.BrTel,
-                    LozinkaHash = korisnik.LozinkaHash,
-                    Lokacija = korisnik.Lokacija,
-                    Prezime = korisnik.Prezime
+                    Lokacija = korisnik.Lokacija
                 };
 
                 await Context.SaveChangesAsync();
-                return Ok(new { k });
 
-
+                GetKorisnikResult result = ObjectCreatorSingleton.Instance.ToKorisnikResult(korisnik);
+                return Ok(result);
             }
             catch (Exception ex)
             {
