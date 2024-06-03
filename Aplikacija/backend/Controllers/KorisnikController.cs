@@ -208,50 +208,56 @@ namespace backend.Controllers
         }
         #endregion
 
-       #region ObrisiOglas
-[HttpDelete("ObrisiOglas/{idOglasa}")]
-public async Task<ActionResult> ObrisiOglas(int idOglasa)
-{
-    try
-    {
-        int idKorisnika = int.Parse((HttpContext.Items["idKorisnika"] as string)!);
-        Korisnik? korisnik = await Context.Korisnici.FindAsync(idKorisnika);
-
-        if (korisnik == null)
+        #region ObrisiOglas
+        [HttpDelete("ObrisiOglas/{idOglasa}")]
+        public async Task<ActionResult> ObrisiOglas(int idOglasa)
         {
-            return BadRequest("Korisnik ne postoji");
+            try
+            {
+                int idKorisnika = int.Parse((HttpContext.Items["idKorisnika"] as string)!);
+                Korisnik? korisnik = await Context.Korisnici.FindAsync(idKorisnika);
+
+                if (korisnik == null)
+                {
+                    return BadRequest("Korisnik ne postoji");
+                }
+
+                OglasObjekta? oglas = await Context.OglasiObjekta.Include(i => i.VlasnikOglasa).Include(i => i.ListaZakupkjenihOglasa).FirstOrDefaultAsync(f => f.Id == idOglasa);
+
+                if (oglas == null)
+                {
+                    return BadRequest("Oglas ne postoji");
+                }
+
+                if (oglas.VlasnikOglasa!.Id != korisnik.Id)
+                {
+                    return BadRequest("Ti nisi vlasnik oglasa bato");
+                }
+
+                if(oglas.ListaZakupkjenihOglasa != null){
+                    foreach(var zakupljen in oglas.ListaZakupkjenihOglasa){
+                        Context.ZakupljeniOglasi.Remove(zakupljen);
+                    }
+                }
+
+                //Brisanje slika iz foldera oglasa
+                var folderPath = Path.Combine("wwwroot", "images", "Oglasi", oglas.Id.ToString());
+                if (Directory.Exists(folderPath))
+                {
+                    Directory.Delete(folderPath, true); // true znači da će se obrisati i svi fajlovi i podfolderi
+                }
+
+                Context.OglasiObjekta.Remove(oglas);
+                await Context.SaveChangesAsync();
+
+                return Ok("Oglas je uspešno obrisan.");
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
         }
-
-        OglasObjekta? oglas = await Context.OglasiObjekta.FindAsync(idOglasa);
-
-        if (oglas == null)
-        {
-            return BadRequest("Oglas ne postoji");
-        }
-
-        if (oglas.VlasnikOglasa!.Id != korisnik.Id)
-        {
-            return BadRequest("Ti nisi vlasnik oglasa bato");
-        }
-
-        // Brisanje slika iz foldera oglasa
-        var folderPath = Path.Combine("wwwroot", "images", "Oglasi", oglas.Id.ToString());
-        if (Directory.Exists(folderPath))
-        {
-            Directory.Delete(folderPath, true); // true znači da će se obrisati i svi fajlovi i podfolderi
-        }
-
-        Context.OglasiObjekta.Remove(oglas);
-        await Context.SaveChangesAsync();
-
-        return Ok("Oglas je uspešno obrisan.");
-    }
-    catch (Exception e)
-    {
-        return BadRequest(e.Message);
-    }
-}
-#endregion
+        #endregion
 
 
         //ovde je sve odjednom ne mora svaki properti da ima posebno azuriranje
