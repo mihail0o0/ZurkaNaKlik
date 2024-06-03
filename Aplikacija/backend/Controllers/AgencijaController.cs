@@ -102,48 +102,48 @@ namespace backend.Controllers
         #endregion
 
         //put i delete
-       #region ObrisiKategoriju
-[HttpDelete("ObrisiKategoriju/{KategorijaID}")]
-public async Task<ActionResult> ObrisiKategoriju(int KategorijaID)
-{
-    try
-    {
-        int idAgencije = int.Parse((HttpContext.Items["idAgencije"] as string)!);
-
-        var kategorija = await Context.Kategorije
-            .Include(x => x.ListaMenija)
-            .Where(x => x.Agencija!.Id == idAgencije)
-            .FirstOrDefaultAsync(x => x.Id == KategorijaID);
-
-        if (kategorija == null)
+        #region ObrisiKategoriju
+        [HttpDelete("ObrisiKategoriju/{KategorijaID}")]
+        public async Task<ActionResult> ObrisiKategoriju(int KategorijaID)
         {
-            return BadRequest("Nema takve kategorije");
-        }
-
-        kategorija.ListaMenija!.ForEach(meni =>
-        {
-            // Brisanje direktorijuma sa slikama
-            var folderPath = Path.Combine("wwwroot", "images", "Meniji", meni.Id.ToString());
-            if (Directory.Exists(folderPath))
+            try
             {
-                Directory.Delete(folderPath, true); // true znači da će se obrisati i svi fajlovi i podfolderi
+                int idAgencije = int.Parse((HttpContext.Items["idAgencije"] as string)!);
+
+                var kategorija = await Context.Kategorije
+                    .Include(x => x.ListaMenija)
+                    .Where(x => x.Agencija!.Id == idAgencije)
+                    .FirstOrDefaultAsync(x => x.Id == KategorijaID);
+
+                if (kategorija == null)
+                {
+                    return BadRequest("Nema takve kategorije");
+                }
+
+                kategorija.ListaMenija!.ForEach(meni =>
+                {
+                    // Brisanje direktorijuma sa slikama
+                    var folderPath = Path.Combine("wwwroot", "images", "Meniji", meni.Id.ToString());
+                    if (Directory.Exists(folderPath))
+                    {
+                        Directory.Delete(folderPath, true); // true znači da će se obrisati i svi fajlovi i podfolderi
+                    }
+
+                    Context.MenijiKeteringa.Remove(meni);
+                });
+
+                Context.Kategorije.Remove(kategorija);
+                await Context.SaveChangesAsync();
+
+                KategorijaResult result = ObjectCreatorSingleton.Instance.ToKategorijaResult(kategorija);
+                return Ok(result);
             }
-
-            Context.MenijiKeteringa.Remove(meni);
-        });
-
-        Context.Kategorije.Remove(kategorija);
-        await Context.SaveChangesAsync();
-
-        KategorijaResult result = ObjectCreatorSingleton.Instance.ToKategorijaResult(kategorija);
-        return Ok(result);
-    }
-    catch (Exception ex)
-    {
-        return BadRequest(ex.Message);
-    }
-}
-#endregion
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        #endregion
 
         //ovo vrati sve menije pa ce preko id agencije = novo
 
@@ -239,10 +239,15 @@ public async Task<ActionResult> ObrisiKategoriju(int KategorijaID)
             {
                 int idAgencije = int.Parse((HttpContext.Items["idAgencije"] as string)!);
 
-                var meni = await Context.MenijiKeteringa.FindAsync(MeniID);
+                var meni = await Context.MenijiKeteringa.Include(i => i.Kategorija!).ThenInclude(t => t.Agencija).FirstOrDefaultAsync(f => f.Id == MeniID);
+
                 if (meni == null)
                 {
                     return BadRequest("Pogresno unet meni");
+                }
+
+                if(meni.Kategorija?.Agencija?.Id != idAgencije){
+                    return BadRequest("nisi ti taj bebo");
                 }
 
                 var folderPath = Path.Combine("wwwroot", "images", "Meniji", MeniID.ToString());
@@ -311,59 +316,59 @@ public async Task<ActionResult> ObrisiKategoriju(int KategorijaID)
         }
 
         #endregion
-#region ObrisiAgenciju
+        #region ObrisiAgenciju
 
-[HttpDelete("ObrisiAgenciju")]
-public async Task<ActionResult> ObrisiAgenciju()
-{
-    try
-    {
-        int idAgencije = int.Parse((HttpContext.Items["idAgencije"] as string)!);
-
-        var agencija = await Context.Agencije
-            .Include(a => a.KategorijeMenija!)
-                .ThenInclude(k => k.ListaMenija)
-            .FirstOrDefaultAsync(a => a.Id == idAgencije);
-
-        if (agencija == null)
+        [HttpDelete("ObrisiAgenciju")]
+        public async Task<ActionResult> ObrisiAgenciju()
         {
-            return NotFound("Agencija nije pronađena.");
-        }
-
-        // Iteriramo kroz sve kategorije agencije
-        agencija.KategorijeMenija!.ForEach(kategorija =>
-        {
-            // Iteriramo kroz sve menije unutar kategorije
-            kategorija.ListaMenija!.ForEach(meni =>
+            try
             {
-                // Brisanje direktorijuma sa slikama
-                var folderPath = Path.Combine("wwwroot", "images", "Meniji", meni.Id.ToString());
-                if (Directory.Exists(folderPath))
+                int idAgencije = int.Parse((HttpContext.Items["idAgencije"] as string)!);
+
+                var agencija = await Context.Agencije
+                                                .Include(a => a.KategorijeMenija!)
+                                                .ThenInclude(k => k.ListaMenija)
+                                                .FirstOrDefaultAsync(a => a.Id == idAgencije);
+
+                if (agencija == null)
                 {
-                    Directory.Delete(folderPath, true); // true znači da će se obrisati i svi fajlovi i podfolderi
+                    return NotFound("Agencija nije pronađena.");
                 }
 
-                // Uklanjanje menija iz baze podataka
-                Context.MenijiKeteringa.Remove(meni);
-            });
+                // Iteriramo kroz sve kategorije agencije
+                agencija.KategorijeMenija!.ForEach(kategorija =>
+                {
+                    // Iteriramo kroz sve menije unutar kategorije
+                    kategorija.ListaMenija!.ForEach(meni =>
+                    {
+                        // Brisanje direktorijuma sa slikama
+                        var folderPath = Path.Combine("wwwroot", "images", "Meniji", meni.Id.ToString());
+                        if (Directory.Exists(folderPath))
+                        {
+                            Directory.Delete(folderPath, true); // true znači da će se obrisati i svi fajlovi i podfolderi
+                        }
 
-            // Uklanjanje kategorije iz baze podataka
-            Context.Kategorije.Remove(kategorija);
-        });
+                        // Uklanjanje menija iz baze podataka
+                        Context.MenijiKeteringa.Remove(meni);
+                    });
 
-        // Uklanjanje agencije iz baze podataka
-        Context.Agencije.Remove(agencija);
-        await Context.SaveChangesAsync();
+                    // Uklanjanje kategorije iz baze podataka
+                    Context.Kategorije.Remove(kategorija);
+                });
 
-        return Ok("Agencija je uspešno obrisana.");
-    }
-    catch (Exception ex)
-    {
-        return BadRequest(ex.Message);
-    }
-}
+                // Uklanjanje agencije iz baze podataka
+                Context.KorisniciAgencije.Remove(agencija);
+                // await Context.SaveChangesAsync();
 
-#endregion
+                return Ok("Agencija je uspešno obrisana.");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        #endregion
 
         //prikazi sve porudzbine
         #region  PrikaziSvePorudzbine
@@ -498,17 +503,19 @@ public async Task<ActionResult> ObrisiAgenciju()
         {
             try
             {
-
+                // TODO: treba da se izmeni
                 int idAgencije = int.Parse((HttpContext.Items["idAgencije"] as string)!);
 
-                var a = new
-                {
-                    Naziv = kategorija.Naziv
+                var kategorijaMenija = await Context.Kategorije.Where(w => w.Agencija!.Id == idAgencije).FirstOrDefaultAsync(f => f.Id == kategorija.Id);
 
-                };
+                if(kategorijaMenija == null){
+                    return NotFound("ne postoji ta kategorija ili ti nisi vlasnik kategorije");
+                }
+
+                kategorijaMenija.Naziv = kategorija.Naziv;
 
                 await Context.SaveChangesAsync();
-                return Ok(new { a });
+                return Ok(new { kategorijaMenija });
 
 
             }
@@ -520,6 +527,145 @@ public async Task<ActionResult> ObrisiAgenciju()
 
         #endregion
 
+        [HttpPost("uploadAgencije")]
+        public async Task<IActionResult> UploadSlikaAgencije(IFormFile file)
+        {
+            int idAgencije = int.Parse((HttpContext.Items["idAgencije"] as string)!);
+
+            var agencija = await Context.Agencije.FindAsync(idAgencije);
+            if (agencija == null)
+            {
+                return NotFound("Agencija nije pronađen.");
+            }
+
+            if (file == null || file.Length == 0)
+            {
+                return BadRequest("Nijedna slika nije poslata.");
+            }
+
+            var folderPath = Path.Combine("wwwroot", "images", "Agencija", idAgencije.ToString());
+            if (!Directory.Exists(folderPath))
+            {
+                Directory.CreateDirectory(folderPath);
+            }
+
+            var files = Directory.GetFiles(folderPath);
+            var fileCount = files.Length;
+
+            var fileName = $"s{fileCount + 1}{Path.GetExtension(file.FileName)}";
+            var filePath = Path.Combine(folderPath, fileName);
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await file.CopyToAsync(stream);
+            }
+
+            var relativePath = Path.Combine("images", "Agencija", idAgencije.ToString(), fileName).Replace("\\", "/");
+
+
+            agencija.SlikaProfila = (relativePath);
+            await Context.SaveChangesAsync();
+
+            return Ok(new { Putanja = relativePath });
+        }
+
+        [HttpPut("AzurirajSlikuAgencije")]
+        public async Task<ActionResult> AzurirajSlikuAgencije(IFormFile file)
+        {
+            try
+            {
+                int idAgencije = int.Parse((HttpContext.Items["idAgencije"] as string)!);
+
+                var agencija = await Context.Agencije.FindAsync(idAgencije);
+                if (agencija == null)
+                {
+                    return NotFound("Agencija nije pronađen.");
+                }
+
+                if (file == null || file.Length == 0)
+                {
+                    return BadRequest("Nijedna slika nije poslata.");
+                }
+
+                var folderPath = Path.Combine("wwwroot", "images", "Agencija", idAgencije.ToString());
+                if (!Directory.Exists(folderPath))
+                {
+                    Directory.CreateDirectory(folderPath);
+                }
+
+                // Obriši postojeću sliku korisnika ako postoji
+                var existingFiles = Directory.GetFiles(folderPath);
+                foreach (var existingFile in existingFiles)
+                {
+                    System.IO.File.Delete(existingFile);
+                }
+
+                var fileName = $"s1{Path.GetExtension(file.FileName)}"; // Uvek koristi isto ime za sliku (s1.jpg) kako bi se izbegao konflikt sa prethodnim slikama
+                var filePath = Path.Combine(folderPath, fileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await file.CopyToAsync(stream);
+                }
+
+                var relativePath = Path.Combine("images", "Agencija", idAgencije.ToString(), fileName).Replace("\\", "/");
+
+                agencija.SlikaProfila = relativePath;
+                await Context.SaveChangesAsync();
+
+                return Ok(new { Putanja = relativePath });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        #region UploadujSlikuMenija
+
+        [HttpPost("UploadujSlikuMenija/{idmenija}")]
+        public async Task<IActionResult> UploadujSlikuMenija(int idmenija, IFormFile file)
+        {
+
+            // TODO: proveri da li je oglas od logovane agencije
+            var oglas = await Context.OglasiObjekta.FindAsync(idmenija);
+            if (oglas == null)
+            {
+                return NotFound("Oglas nije pronađen.");
+            }
+
+            if (file == null || file.Length == 0)
+            {
+                return BadRequest("Nijedna slika nije poslata.");
+            }
+
+            var folderPath = Path.Combine("wwwroot", "images", "Meniji", idmenija.ToString());
+            if (!Directory.Exists(folderPath))
+            {
+                Directory.CreateDirectory(folderPath);
+            }
+
+            var files = Directory.GetFiles(folderPath);
+            var fileCount = files.Length;
+
+            var fileName = $"s{fileCount + 1}{Path.GetExtension(file.FileName)}";
+            var filePath = Path.Combine(folderPath, fileName);
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await file.CopyToAsync(stream);
+            }
+
+            var relativePath = Path.Combine("images", "Meniji", idmenija.ToString(), fileName).Replace("\\", "/");
+
+
+            oglas.Slike.Add(relativePath);
+            await Context.SaveChangesAsync();
+
+            return Ok(new { Putanja = relativePath });
+        }
+
+        #endregion
         //vrati kategorije i menije za neku agenciju(idagencije)
 
 
