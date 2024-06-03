@@ -92,7 +92,9 @@ const OglasKartica = ({ oglas, onClick }: Props) => {
             <img
               onClick={updateFavorite}
               src={
-                favorite ? "/images/favorite.png" : "/images/not_favorite.png"
+                favorite
+                  ? "/images/favorite.png"
+                  : "/images/not_favorite.png"
               }
               alt={favorite ? "Favorite" : "Not Favorite"}
             />

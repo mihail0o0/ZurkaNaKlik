@@ -44,7 +44,7 @@ const authApiSlice = api.injectEndpoints({
       }),
       invalidatesTags: (result, err, arg) => [
         { type: "AgencyCategory", id: result?.id },
-        { type: "AgencyCategory", id: "LISTAGENCY" },
+        { type: "AgencyCategory", id: "LISTAGENCYCATEGORY" },
       ],
     }),
     deleteCategory: builder.mutation<void, number>({
@@ -54,7 +54,7 @@ const authApiSlice = api.injectEndpoints({
       }),
       invalidatesTags: (result, err, arg) => [
         { type: "AgencyCategory", id: arg },
-        { type: "AgencyCategory", id: "LISTAGENCY" },
+        { type: "AgencyCategory", id: "LISTAGENCYCATEGORY" },
       ],
     }),
     // meniji

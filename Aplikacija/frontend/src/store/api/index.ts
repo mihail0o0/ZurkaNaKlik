@@ -75,7 +75,7 @@ const baseQueryWithAuth: BaseQueryFn<
     }
   } else {
     await mutex.waitForUnlock();
-    result = await baseQuery(args, api, extraOptions);
+    //result = await baseQuery(args, api, extraOptions);
   }
 
   return result;

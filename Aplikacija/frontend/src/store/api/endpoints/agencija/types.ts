@@ -12,10 +12,7 @@ type Agency = {
   brojOcena: number;
 };
 
-type UpdateAgencyDTO = Omit<
-  Agency,
-  "id" | "slikaProfila" | "ocena" | "brojOcena"
->;
+type UpdateAgencyDTO = Agency;
 
 type Category = {
   id: number;

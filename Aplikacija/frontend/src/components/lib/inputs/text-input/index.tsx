@@ -25,7 +25,6 @@ const Input = ({
   const [visibilityIcon, setVisibilityIcon] = useState("visibility_off");
 
   const handleTextChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(text);
     onChange(event.target.value);
   };
 
