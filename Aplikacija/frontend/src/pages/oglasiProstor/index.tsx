@@ -35,15 +35,15 @@ const OglasiProstor = () => {
   const [opisProstora, setOpisProstora] = useState("");
 
   const [grejanje, setGrejanje] = useState("");
-  const [naziv, setNaziv] = useState("Naziv prostora");
-  const [brojTelefona, setBrojTelefona] = useState("Broj telefona");
-  const [grad, setGrad] = useState("Grad");
-  const [adresa, setAdresa] = useState("Adresa");
-  const [cenaDan, setCenaDan] = useState("Cena po danu");
-  const [kvadratura, setKvadratura] = useState("Kvadratura");
-  const [brojSoba, setBrojSoba] = useState("Broj soba");
-  const [brojKreveta, setBrojKreveta] = useState("Broj kreveta");
-  const [brojKupatila, setBrojKupatila] = useState("Broj kupatila");
+  const [naziv, setNaziv] = useState("");
+  const [brojTelefona, setBrojTelefona] = useState("");
+  const [grad, setGrad] = useState("");
+  const [adresa, setAdresa] = useState("");
+  const [cenaDan, setCenaDan] = useState("");
+  const [kvadratura, setKvadratura] = useState("");
+  const [brojSoba, setBrojSoba] = useState("");
+  const [brojKreveta, setBrojKreveta] = useState("");
+  const [brojKupatila, setBrojKupatila] = useState("");
 
   const [selectedTipoviProslava, setSelectedTipoviProslava] = useState<
     number[]
@@ -55,7 +55,7 @@ const OglasiProstor = () => {
     []
   );
 
-  const [addUser] = useAddUserOglasMutation();
+  const [addOglas] = useAddUserOglasMutation();
   const navigate = useNavigate();
 
   const handleChangeGrejanje = (event: SelectChangeEvent) => {
@@ -74,7 +74,7 @@ const OglasiProstor = () => {
     if (tipoviSet.has(selected)) {
       tipoviSet.delete(selected);
 
-      if(tipoviSet.has(EnumTipProslava.Sve)){
+      if (tipoviSet.has(EnumTipProslava.Sve)) {
         tipoviSet.delete(EnumTipProslava.Sve);
       }
     } else {
@@ -194,15 +194,16 @@ const OglasiProstor = () => {
     if (validation.error) {
       const [type, msg] = getValidationMessage(validation);
       toast.error(`Polje ${msg}`);
+      return;
     }
 
-    const response = await addUser(oglasObject);
+    const response = await addOglas(oglasObject);
+    console.log("STO MI NISI DODO");
     if ("error" in response) {
       return;
     }
 
     toast.success("Oglas uspesno dodat");
-
     navigate("/user/profile");
   };
 
@@ -244,24 +245,41 @@ const OglasiProstor = () => {
         </div>
         <div className={style.KolonaTxtArea}>
           <div>
-            <Input text={naziv} icon="house" onChange={setNaziv} />
+            <Input
+              text={naziv}
+              placeholder="Naziv prostora"
+              icon="house"
+              onChange={setNaziv}
+            />
           </div>
           <div>
             <Input
               text={brojTelefona}
+              placeholder="Broj Telefona"
               icon="call"
               onChange={setBrojTelefona}
             />
           </div>
           <div>
-            <Input text={grad} icon="location_on" onChange={setGrad} />
+            <Input
+              text={grad}
+              placeholder="Grad"
+              icon="location_on"
+              onChange={setGrad}
+            />
           </div>
           <div>
-            <Input text={adresa} icon="location_on" onChange={setAdresa} />
+            <Input
+              text={adresa}
+              placeholder="Adresa"
+              icon="location_on"
+              onChange={setAdresa}
+            />
           </div>
           <div>
             <Input
               text={cenaDan}
+              placeholder="Cena po danu"
               icon="euro_symbol"
               onChange={setCenaDan}
             />
@@ -269,25 +287,36 @@ const OglasiProstor = () => {
           <div>
             <Input
               text={kvadratura}
+              placeholder="Kvadratura"
               icon="view_in_ar"
               onChange={setKvadratura}
             />
           </div>
           <div>
-            <Input text={brojSoba} icon="chair" onChange={setBrojSoba} />
+            <Input
+              text={brojSoba}
+              placeholder="Broj soba"
+              icon="chair"
+              onChange={setBrojSoba}
+            />
           </div>
           <div>
-            <Input text={brojKreveta} icon="bed" onChange={setBrojKreveta} />
+            <Input
+              text={brojKreveta}
+              placeholder="Broj kreveta"
+              icon="bed"
+              onChange={setBrojKreveta}
+            />
           </div>
           <div>
             <Input
               text={brojKupatila}
+              placeholder="Broj kupatila"
               icon="bathroom"
               onChange={setBrojKupatila}
             />
           </div>
           <div>
-            {/* // TODO stavi label na ovaj mrtvi select */}
             <Select
               id="select-tip-grejanja"
               value={grejanje ?? ""}

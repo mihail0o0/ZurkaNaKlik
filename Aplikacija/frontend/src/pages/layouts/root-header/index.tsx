@@ -42,12 +42,12 @@ const RootHeader = () => {
     zaPrikaz && isFirstLogin && location.pathname !== "/catering/profile";
 
   return (
-    <>
+    <div className={style.EverythingWrapper}>
       <div className={style.AppHeaderWrapper}>
         <header className={style.AppHeader}>
           <nav>
             <NavLink to="/" className={style.ZurkaNaKlik}>
-              <img src="../public/images/logo.png" />
+              <img src="/images/logo.png" />
             </NavLink>
 
             {user && <Navbar user={user} />}
@@ -89,7 +89,7 @@ const RootHeader = () => {
         <div className={style.footerTop}>
           <div className={style.footerContent}>
             <div className={style.LogoSLikaDiv}>
-              <img src="../public/images/logo.png" />
+              <img src="/images/logo.png" />
             </div>
             <p>
               Zurka na klik je platforma za oglasavanje kuca, vikendica,
@@ -132,10 +132,12 @@ const RootHeader = () => {
 
         <div className={style.footerBottom}>
           <p>ZurkaNaKlik</p>
-          <p>Tim <span className={style.timLevl}>LeVl</span></p>
+          <p>
+            Tim <span className={style.timLevl}>LeVl</span>
+          </p>
         </div>
       </footer>
-    </>
+    </div>
   );
 };
 

@@ -44,7 +44,7 @@ const OglasKartica = ({ oglas, onClick }: Props) => {
     setFavorite((prevFavorite) => !prevFavorite);
   }
 
-  const defaultImage = "/public/images/imageNotFound.jpg";
+  const defaultImage = "/images/imageNotFound.jpg";
 
   const OglasKarticaStyle: CSSProperties = {};
 
@@ -98,8 +98,8 @@ const OglasKartica = ({ oglas, onClick }: Props) => {
               onClick={updateFavorite}
               src={
                 favorite
-                  ? "../public/images/favorite.png"
-                  : "../public/images/not_favorite.png"
+                  ? "/images/favorite.png"
+                  : "/images/not_favorite.png"
               }
               alt={favorite ? "Favorite" : "Not Favorite"}
             />
@@ -107,8 +107,7 @@ const OglasKartica = ({ oglas, onClick }: Props) => {
             <Icon
               icon="edit"
               onClick={() => navigate(`/prostor/izmeniProstor/${oglas.id}`)}
-              cursor={true}
-              enabledCursor={true}
+              classes="cursorPointer"
             />
           )}
         </div>

@@ -18,6 +18,7 @@ import {
   EnumGrejanje,
   EnumTipProslava,
   EnumTipProstora,
+  UpdateOglasObjektaDTO,
   dodatnaOpremaMap,
   tipGrejanjaMap,
   tipProslavaMap,
@@ -27,9 +28,11 @@ import Icon from "@/components/lib/icon";
 import { enumToString, stringToEnum } from "@/utils/enumMappings";
 import {
   useAddUserOglasMutation,
+  useDeleteUserOglasMutation,
   useGetOglasQuery,
+  useUpdateUserOglasMutation,
 } from "@/store/api/endpoints/oglas";
-import { addUserOglasSchema } from "@/utils/validators";
+import { addUserOglasSchema, updateUserOglasSchema } from "@/utils/validators";
 import { toast } from "react-toastify";
 import { getValidationMessage } from "@/utils/validationMessage";
 import { useNavigate, useParams } from "react-router-dom";
@@ -64,11 +67,8 @@ const IzmeniOglas = () => {
 
   const { data: oglas } = useGetOglasQuery(idOglasa || skipToken);
 
-  console.log(oglas);
-  console.log(id);
-
   useEffect(() => {
-    if(!oglas) return;
+    if (!oglas) return;
 
     setSelectedTipoviProslava(oglas.listaTipProslava);
     setSelectedTipoviProstora(oglas.listaTipProstora);
@@ -86,7 +86,8 @@ const IzmeniOglas = () => {
     setOpisProstora(oglas.opis);
   }, [oglas]);
 
-//   const [updateOglas] = use();
+  const [updateOglas] = useUpdateUserOglasMutation();
+  const [deleteOglas] = useDeleteUserOglasMutation();
   const navigate = useNavigate();
 
   const handleChangeGrejanje = (event: SelectChangeEvent) => {
@@ -194,14 +195,30 @@ const IzmeniOglas = () => {
     return true;
   }
 
+  const handleDelete = async () => {
+    if (!oglas) return;
+    const response = await deleteOglas(oglas.id);
+
+    if ("error" in response) {
+      navigate("/user/profile");
+      return;
+    }
+
+    toast.success("Oglas uspesno obrisan");
+    navigate("/user/profile");
+  };
+
   const submit = async () => {
+    if (!oglas) return;
+
     const tipGrejanja = stringToEnum(grejanje, tipGrejanjaMap);
     if (tipGrejanja == undefined) {
       toast.error("Tip grejanja nije validan");
       return;
     }
 
-    const oglasObject: AddOglasObjektaDTO = {
+    const oglasObject: UpdateOglasObjektaDTO = {
+      id: oglas.id,
       listaTipProslava: selectedTipoviProslava,
       listaTipProstora: selectedTipoviProstora,
       listDodatneOpreme: selectedDodatnaOprema,
@@ -221,10 +238,11 @@ const IzmeniOglas = () => {
       slike: [],
     };
 
-    const validation = addUserOglasSchema.validate(oglasObject);
+    const validation = updateUserOglasSchema.validate(oglasObject);
     if (validation.error) {
       const [type, msg] = getValidationMessage(validation);
       toast.error(`Polje ${msg}`);
+      return;
     }
 
     const response = await updateOglas(oglasObject);
@@ -232,22 +250,25 @@ const IzmeniOglas = () => {
       return;
     }
 
-    toast.success("Oglas uspesno dodat");
-
-    navigate("/user/profile");
+    toast.success("Oglas uspesno izmenjen");
   };
 
   return (
     <div className={`containerWrapper ${style.Glavni}`}>
-      <div className={style.Txt}>
-        <div>
-          <h2>Oglasite prostor za izdavanje</h2>
-        </div>
-        <div className={style.TxtDodaj}>
-          <p>
-            Dodajte sve validne podatke za Vas prostor, kako bi korisnicima dali
-            sto siru sliku prostora kojeg izdajete.
+      <div className={style.Heading}>
+        <div className={style.Txt}>
+          <h2>Izmenite oglašeni prostor</h2>
+          <p className={style.TxtDodaj}>
+            Dodajte sve validne podatke za Vaš prostor, kako bi korisnicima dali
+            sto širu sliku prostora kojeg izdajete.
           </p>
+        </div>
+        <div className={style.DeleteIcon} onClick={handleDelete}>
+          <Icon
+            icon="delete"
+            classes={"cursorPointer"}
+            iconMargin="0px"
+          />
         </div>
       </div>
       <div>{/* ovde idu slike  */}</div>

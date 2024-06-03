@@ -193,6 +193,27 @@ export const addUserOglasSchema = Joi.object({
   grejanje: Joi.number().label("Grejanje"),
 });
 
+export const updateUserOglasSchema = Joi.object({
+  id: Joi.any(),
+  listaTipProslava: Joi.array(),
+  listaTipProstora: Joi.array(),
+  listDodatneOpreme: Joi.array(),
+  naziv: nameVal,
+  brTel: phoneNumberVal.label("Broj Telefona"),
+  grad: cityVal,
+  lokacija: cityVal.label("Adresa"),
+  cenaPoDanu: Joi.number().label("Cena po danu"),
+  brojSoba: Joi.number().label("Broj Soba"),
+  kvadratura: Joi.number().label("Kvadratura"),
+  brojKreveta: Joi.number().label("Broj Kreveta"),
+  brojKupatila: Joi.number().label("Broj Kupatila"),
+  opis: Joi.string().label("Opis"),
+  slike: Joi.array().label("Slike"),
+  ocena: Joi.number().label("Ocena"),
+  brojOcena: Joi.number().label("Broj Ocena"),
+  grejanje: Joi.number().label("Grejanje"),
+});
+
 export const updateAgencySchema = Joi.object<UpdateAgencyDTO>({
   brTel: phoneNumberVal,
   lokacija: cityValReq,
