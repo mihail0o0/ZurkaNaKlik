@@ -24,9 +24,8 @@ import PageSpacer from "@/components/lib/page-spacer";
 
 const AgencyProfile = () => {
   const currUser = useSelector(selectUser);
-  console.log(currUser);
 
-  const { data: agencyData } = useGetAgencyDataQuery(currUser?.id || skipToken);
+  const { data: agencyData } = useGetAgencyDataQuery(currUser?.id ?? skipToken);
 
   const { data: menues } = useGetMenuesQuery();
   const { data: kategorije } = useGetAllCategoriesQuery();

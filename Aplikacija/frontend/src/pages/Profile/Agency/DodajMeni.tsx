@@ -8,6 +8,8 @@ import {
   useDeleteMenuMutation,
 } from "@/store/api/endpoints/agencija";
 import { enumToString } from "@/utils/enumMappings";
+import { useSelector } from "react-redux";
+import { selectUser } from "@/store/auth";
 
 type Props = {
   kategorije?: Category[];
@@ -15,6 +17,8 @@ type Props = {
 };
 
 const DodajIzmeniMeni = ({ kategorije, menuData }: Props) => {
+  const currUser = useSelector(selectUser);
+
   const [opisMenija, setOpisMenija] = useState("");
   const [imeMenija, setImeMenija] = useState("");
   const [cenaMeni, setCenaMeni] = useState("");
@@ -23,10 +27,19 @@ const DodajIzmeniMeni = ({ kategorije, menuData }: Props) => {
   useEffect(() => {
     if (!menuData) return;
 
-
+    let selectedKategorija = "";
+    if(kategorije){
+      for(let i = 0; i < kategorije?.length; i++){
+        if(kategorije[i].id === menuData.idKategorije){
+          selectedKategorija = kategorije[i].naziv;
+        }
+      }
+    }
 
     setOpisMenija(menuData.opis);
     setImeMenija(menuData.naziv);
+    setCenaMeni(String(menuData.cenaMenija));
+    setkategorija(selectedKategorija);
   }, [menuData]);
 
   const handleChange = (event: SelectChangeEvent) => {

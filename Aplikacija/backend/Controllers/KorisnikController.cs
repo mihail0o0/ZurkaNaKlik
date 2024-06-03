@@ -264,14 +264,12 @@ namespace backend.Controllers
         #region IzmeniOglas
         [HttpPut("IzmeniOglas")]
         public async Task<ActionResult> IzmeniOglas([FromBody] OglasObjektaResponse izmeniOglas)
-        public async Task<ActionResult> IzmeniOglas([FromBody] OglasObjektaResponse izmeniOglas)
         {
 
             try
             {
                 int idKorisnika = int.Parse((HttpContext.Items["idKorisnika"] as string)!);
 
-                OglasObjekta? oglas = await Context.OglasiObjekta.Where(k => k.Id == izmeniOglas.id)
                 OglasObjekta? oglas = await Context.OglasiObjekta.Where(k => k.Id == izmeniOglas.id)
                                                             .IgnoreQueryFilters()
                                                             .FirstOrDefaultAsync(o => o.VlasnikOglasa!.Id == idKorisnika);
@@ -312,9 +310,6 @@ namespace backend.Controllers
 
                 await Context.SaveChangesAsync();
 
-                OglasObjektaResponse response = ObjectCreatorSingleton.Instance.ToOglasResult(oglas);
-
-                return Ok(response);
                 OglasObjektaResponse response = ObjectCreatorSingleton.Instance.ToOglasResult(oglas);
 
                 return Ok(response);
