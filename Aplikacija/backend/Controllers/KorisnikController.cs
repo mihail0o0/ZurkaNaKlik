@@ -208,45 +208,51 @@ namespace backend.Controllers
         }
         #endregion
 
-        #region ObrisiOglas
-        [HttpDelete("ObrisiOglas/{idOglasa}")]
-        public async Task<ActionResult> ObrisiOglas(int idOglasa)
+       #region ObrisiOglas
+[HttpDelete("ObrisiOglas/{idOglasa}")]
+public async Task<ActionResult> ObrisiOglas(int idOglasa)
+{
+    try
+    {
+        int idKorisnika = int.Parse((HttpContext.Items["idKorisnika"] as string)!);
+        Korisnik? korisnik = await Context.Korisnici.FindAsync(idKorisnika);
+
+        if (korisnik == null)
         {
-
-            try
-            {
-                int idKorisnika = int.Parse((HttpContext.Items["idKorisnika"] as string)!);
-                Korisnik? korisnik = await Context.Korisnici.FindAsync(idKorisnika);
-
-                if (korisnik == null)
-                {
-                    return BadRequest("Korisnik ne postoji");
-                }
-
-                OglasObjekta? oglas = await Context.OglasiObjekta.FindAsync(idOglasa);
-
-                if (oglas == null)
-                {
-                    return BadRequest("Oglas ne postoji");
-                }
-
-                if (oglas.VlasnikOglasa!.Id != korisnik.Id)
-                {
-                    return BadRequest("Ti nisi vlasnik oglasa bato");
-                }
-
-
-                Context.OglasiObjekta.Remove(oglas);
-                await Context.SaveChangesAsync();
-
-                return Ok(new { Context.OglasiObjekta });
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
+            return BadRequest("Korisnik ne postoji");
         }
-        #endregion
+
+        OglasObjekta? oglas = await Context.OglasiObjekta.FindAsync(idOglasa);
+
+        if (oglas == null)
+        {
+            return BadRequest("Oglas ne postoji");
+        }
+
+        if (oglas.VlasnikOglasa!.Id != korisnik.Id)
+        {
+            return BadRequest("Ti nisi vlasnik oglasa bato");
+        }
+
+        // Brisanje slika iz foldera oglasa
+        var folderPath = Path.Combine("wwwroot", "images", "Oglasi", oglas.Id.ToString());
+        if (Directory.Exists(folderPath))
+        {
+            Directory.Delete(folderPath, true); // true znači da će se obrisati i svi fajlovi i podfolderi
+        }
+
+        Context.OglasiObjekta.Remove(oglas);
+        await Context.SaveChangesAsync();
+
+        return Ok("Oglas je uspešno obrisan.");
+    }
+    catch (Exception e)
+    {
+        return BadRequest(e.Message);
+    }
+}
+#endregion
+
 
         //ovde je sve odjednom ne mora svaki properti da ima posebno azuriranje
         #region IzmeniOglas
@@ -704,30 +710,60 @@ namespace backend.Controllers
 
 
         #region ObrisiKorisnika
-        [HttpDelete("ObrisiKorisnika")]
-        public async Task<ActionResult> ObrisiKorisnika()
+      
+[HttpDelete("ObrisiKorisnika")]
+public async Task<ActionResult> ObrisiKorisnika()
+{
+    try
+    {
+        int idKorisnika = int.Parse((HttpContext.Items["idKorisnika"] as string)!);
+
+        Korisnik? korisnik = await Context.Korisnici.FindAsync(idKorisnika);
+
+        // Korisnik? korisnik = await Context.Korisnici
+        //     .Include(k => k.ListaZakupljenihOglasa) // Pretpostavljam da korisnik ima kolekciju oglasa
+        //     .FirstOrDefaultAsync(k => k.Id == idKorisnika);
+
+        if (korisnik == null)
         {
-            try
+            return BadRequest("Korisnik ne postoji");
+        }
+
+        if (!string.IsNullOrEmpty(korisnik.SlikaProfila))
+        {
+            var profilnaSlikaPath = Path.Combine("wwwroot", korisnik.SlikaProfila);
+            if (System.IO.File.Exists(profilnaSlikaPath))
             {
-                int idKorisnika = int.Parse((HttpContext.Items["idKorisnika"] as string)!);
-
-                Korisnik? k = await Context.Korisnici.FindAsync(idKorisnika);
-
-                Context.Korisnici.Remove(k!);
-
-                await Context.SaveChangesAsync();
-
-                return Ok("Obrisan je korisnik");
-
-
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
+                System.IO.File.Delete(profilnaSlikaPath);
             }
         }
 
-        #endregion
+        // Brisanje svih oglasa korisnika i njihovih slika
+        foreach (var oglas in korisnik.ListaObjavljenihOglasaObjekta!)
+        {
+            var folderPath = Path.Combine("wwwroot", "images", "Oglasi", oglas.Id.ToString());
+            if (Directory.Exists(folderPath))
+            {
+                Directory.Delete(folderPath, true); // true znači da će se obrisati i svi fajlovi i podfolderi
+            }
+
+            Context.OglasiObjekta.Remove(oglas);
+        }
+
+        Context.Korisnici.Remove(korisnik);
+        await Context.SaveChangesAsync();
+
+        return Ok("Korisnik je uspešno obrisan.");
+    }
+    catch (Exception ex)
+    {
+        return BadRequest(ex.Message);
+    }
+}
+#endregion
+
+
+        
 
         // Izmena podataka (idKorisnika)
         #region IzmeniPodatkeOKorisniku

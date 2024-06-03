@@ -48,7 +48,7 @@ namespace backend.Controllers
         #endregion
 
         #region VratiOglaseSaFilterimaISortiranjem
-        [HttpPost("VratiOglase/{pageNumber}/{pageSize}")]
+        [HttpGet("VratiOglase/{pageNumber}/{pageSize}")]
         public async Task<ActionResult> VratiOglase([FromBody] Filters filteri, int pageNumber, int pageSize)
         { //dodaj sortiranje
             try
