@@ -28,9 +28,9 @@ const Grad = ({ value, setValue }: Props) => {
   // };
 
   // TODO ODKOMENTARISI, RN NEMAM GRADOVE
-  // const { data: gradovi } = useGetAllCitiesQuery();
+   const { data: gradovi } = useGetAllCitiesQuery();
 
-  const gradovi = ["Nis", "Beograd", "Sombor"];
+  //const gradovi = ["Nis", "Beograd", "Sombor"];
 
   return (
     <>

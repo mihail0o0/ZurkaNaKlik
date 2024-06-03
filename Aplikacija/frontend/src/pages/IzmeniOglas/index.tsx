@@ -37,8 +37,11 @@ import { toast } from "react-toastify";
 import { getValidationMessage } from "@/utils/validationMessage";
 import { useNavigate, useParams } from "react-router-dom";
 import { skipToken } from "@reduxjs/toolkit/query";
+import { useSelector } from "react-redux";
+import { selectUser } from "@/store/auth";
 
 const IzmeniOglas = () => {
+  const user = useSelector(selectUser);
   const [opisProstora, setOpisProstora] = useState("");
 
   const [grejanje, setGrejanje] = useState("");
@@ -251,6 +254,7 @@ const IzmeniOglas = () => {
     }
 
     toast.success("Oglas uspesno izmenjen");
+    {user && navigate(`/user/profile/${user.id}`);}
   };
 
   return (
