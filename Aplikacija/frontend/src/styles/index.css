@@ -5,12 +5,16 @@
 }
 
 :root {
+  /* colors */
   --mainColor: #d45a6b;
   --lightText: #a9a9a9;
   --mediumText: #737373;
   --lightGrey: #eeeeee;
   --mediumGrey: #d2d2d2;
+  --delete: rgb(214, 46, 46);
+  --deleteHover: rgb(171, 22, 22);
   --golden: #ffc700;
+  /* other */
   --blur: 8px;
   --borderRadiusBig: 35px;
   --borderRadiusMedium: 20px;

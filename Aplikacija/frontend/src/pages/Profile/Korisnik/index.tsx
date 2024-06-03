@@ -31,6 +31,7 @@ const UserProfile = () => {
   const { data: MojiOglasi } = useGetUserOglasiQuery();
 
   console.log(user);
+  console.log(MojiOglasi);
 
   const [ime, setIme] = useState("");
   const [prezime, setPrezime] = useState("");
@@ -48,24 +49,6 @@ const UserProfile = () => {
     setSlikaProfila(user.profilePhoto);
     setLokacija(user.location);
   }, [user]);
-
-  // const sacuvajIzmene = () => {
-  //   const profileData = {
-  //     ime,
-  //     prezime,
-  //     email,
-  //     brTel,
-  //     slikaProfila,
-  //     lokacija,
-  //     opis,
-  //   };
-  //   localStorage.setItem("profileSettings", JSON.stringify(profileData));
-  //   return (
-  //     <Alert variant="outlined" severity="success">
-  //       Promene su uspesno sacuvane!
-  //     </Alert>
-  //   );
-  // };
 
   function handleOpis(event: ChangeEvent<HTMLTextAreaElement>) {
     setOpis(event.target.value);

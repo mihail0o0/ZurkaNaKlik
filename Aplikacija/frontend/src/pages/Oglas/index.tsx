@@ -6,12 +6,18 @@ import { useGetUserDataQuery } from "@/store/api/endpoints/korisnik";
 import UserAvatar from "@/components/UserAvatar";
 import MojButton from "@/components/lib/button";
 import BrojLjudi from "../Home/DivFilteri/brojLjudi";
+import { skipToken } from "@reduxjs/toolkit/query";
+import { useState } from "react";
+import { dodatnaOpremaIkoniceMap, dodatnaOpremaMap } from "@/store/api/endpoints/oglas/types";
 
 const Oglas = () => {
+  const [brojLjudi,SetBrojLjudi]=useState("");
   const { id } = useParams();
+  const idOglasa=id ? parseInt(id) : undefined;
+
  
-  const { data: currentOglas } = useGetOglasQuery(id);
-  const { data: VlasnikOglasa } = useGetUserDataQuery(currentOglas?.idVlasnika);
+  const { data: currentOglas } = useGetOglasQuery(idOglasa || skipToken);
+  const { data: VlasnikOglasa } = useGetUserDataQuery(currentOglas?.idVlasnika || skipToken);
   console.log(currentOglas?.listaTipProslava);
   return (
     <div className={`containerWrapper ${style.Glavni}`}>
@@ -84,7 +90,21 @@ const Oglas = () => {
             </div>
           </div>
           {/* ii opremljenost */}
-          <div className={style.Opremljenost}></div>
+          <div className={style.OpremljenostDIV}>
+            <h3>Opremljenost</h3>
+          <div className={style.Opremljenost}>
+            {/* ovde */}
+            {currentOglas && currentOglas?.listDodatneOpreme.map((oprema)=>{
+              return(
+                  <div className={style.JedanChk}>
+                      <Icon icon={dodatnaOpremaIkoniceMap[oprema]}/>
+                      <label>{dodatnaOpremaMap[oprema]}</label>
+                  </div>
+              )
+            })}
+          </div>
+          </div>
+          
         </div>
         {/* ovde ide s desne strane sve sto treba */}
         <div className={style.InformacijeKolona}>
@@ -111,7 +131,7 @@ const Oglas = () => {
           </div>
           <div className={style.DodajteKetering}>
                 <h4>Unesite broj gostiju: </h4>
-                <BrojLjudi />
+                { <BrojLjudi broj={brojLjudi} setBroj={SetBrojLjudi} />}
                 
           </div>
         </div>

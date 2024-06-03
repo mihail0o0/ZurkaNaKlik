@@ -172,9 +172,9 @@ namespace backend.Controllers
                     return BadRequest("Nema refresh tokena");
                 }
 
-                // TODO ne mozes ovako i guess, vadi iz token id
                 //int userId = int.Parse(_userService.GetMyId());
-                if(userId == null){
+                if (userId == null)
+                {
                     return BadRequest("izvini miks ako je ovde greska kazi");
                 }
 
@@ -194,7 +194,7 @@ namespace backend.Controllers
                     return Unauthorized("Token expired.");
                 }
 
-                string token = CreateToken(user);
+                string accessToken = CreateToken(user);
                 var newRefreshToken = GenerateRefreshToken(int.Parse(userId));
 
                 var cookieOptions = new CookieOptions
@@ -209,9 +209,11 @@ namespace backend.Controllers
                 user.TokenCreated = newRefreshToken.Created;
                 user.TokenExpires = newRefreshToken.Expires;
 
+                LoginResult loginResult = ObjectCreatorSingleton.Instance.ToLoginResult(user);
+
                 await Context.SaveChangesAsync();
 
-                return Ok(token);
+                return Ok(new { accessToken, loginResult });
             }
             catch (Exception e)
             {

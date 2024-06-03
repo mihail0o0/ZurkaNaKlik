@@ -1,6 +1,6 @@
 import MojButton from "@/components/lib/button";
-import style from "./style.module.css";
-import { ChangeEvent, useState } from "react";
+import style from "../oglasiProstor/style.module.css";
+import { ChangeEvent, useEffect, useState } from "react";
 import Input from "@/components/lib/inputs/text-input";
 import {
   Chip,
@@ -18,6 +18,7 @@ import {
   EnumGrejanje,
   EnumTipProslava,
   EnumTipProstora,
+  UpdateOglasObjektaDTO,
   dodatnaOpremaMap,
   tipGrejanjaMap,
   tipProslavaMap,
@@ -25,25 +26,31 @@ import {
 } from "@/store/api/endpoints/oglas/types";
 import Icon from "@/components/lib/icon";
 import { enumToString, stringToEnum } from "@/utils/enumMappings";
-import { useAddUserOglasMutation } from "@/store/api/endpoints/oglas";
-import { addUserOglasSchema } from "@/utils/validators";
+import {
+  useAddUserOglasMutation,
+  useDeleteUserOglasMutation,
+  useGetOglasQuery,
+  useUpdateUserOglasMutation,
+} from "@/store/api/endpoints/oglas";
+import { addUserOglasSchema, updateUserOglasSchema } from "@/utils/validators";
 import { toast } from "react-toastify";
 import { getValidationMessage } from "@/utils/validationMessage";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { skipToken } from "@reduxjs/toolkit/query";
 
-const OglasiProstor = () => {
+const IzmeniOglas = () => {
   const [opisProstora, setOpisProstora] = useState("");
 
   const [grejanje, setGrejanje] = useState("");
-  const [naziv, setNaziv] = useState("");
-  const [brojTelefona, setBrojTelefona] = useState("");
-  const [grad, setGrad] = useState("");
-  const [adresa, setAdresa] = useState("");
-  const [cenaDan, setCenaDan] = useState("");
-  const [kvadratura, setKvadratura] = useState("");
-  const [brojSoba, setBrojSoba] = useState("");
-  const [brojKreveta, setBrojKreveta] = useState("");
-  const [brojKupatila, setBrojKupatila] = useState("");
+  const [naziv, setNaziv] = useState("Naziv prostora");
+  const [brojTelefona, setBrojTelefona] = useState("Broj telefona");
+  const [grad, setGrad] = useState("Grad");
+  const [adresa, setAdresa] = useState("Adresa");
+  const [cenaDan, setCenaDan] = useState("Cena po danu");
+  const [kvadratura, setKvadratura] = useState("Kvadratura");
+  const [brojSoba, setBrojSoba] = useState("Broj soba");
+  const [brojKreveta, setBrojKreveta] = useState("Broj kreveta");
+  const [brojKupatila, setBrojKupatila] = useState("Broj kupatila");
 
   const [selectedTipoviProslava, setSelectedTipoviProslava] = useState<
     number[]
@@ -55,7 +62,32 @@ const OglasiProstor = () => {
     []
   );
 
-  const [addOglas] = useAddUserOglasMutation();
+  const { id } = useParams();
+  const idOglasa = id ? parseInt(id) : undefined;
+
+  const { data: oglas } = useGetOglasQuery(idOglasa || skipToken);
+
+  useEffect(() => {
+    if (!oglas) return;
+
+    setSelectedTipoviProslava(oglas.listaTipProslava);
+    setSelectedTipoviProstora(oglas.listaTipProstora);
+    setSelectedDodatnaOprema(oglas.listDodatneOpreme);
+    setGrejanje(enumToString(oglas.grejanje, tipGrejanjaMap));
+    setNaziv(oglas.naziv);
+    setBrojTelefona(oglas.brTel);
+    setGrad(oglas.grad);
+    setAdresa(oglas.lokacija);
+    setCenaDan(String(oglas.cenaPoDanu));
+    setKvadratura(String(oglas.kvadratura));
+    setBrojSoba(String(oglas.brojSoba));
+    setBrojKreveta(String(oglas.brojKreveta));
+    setBrojKupatila(String(oglas.brojKupatila));
+    setOpisProstora(oglas.opis);
+  }, [oglas]);
+
+  const [updateOglas] = useUpdateUserOglasMutation();
+  const [deleteOglas] = useDeleteUserOglasMutation();
   const navigate = useNavigate();
 
   const handleChangeGrejanje = (event: SelectChangeEvent) => {
@@ -163,14 +195,30 @@ const OglasiProstor = () => {
     return true;
   }
 
+  const handleDelete = async () => {
+    if (!oglas) return;
+    const response = await deleteOglas(oglas.id);
+
+    if ("error" in response) {
+      navigate("/user/profile");
+      return;
+    }
+
+    toast.success("Oglas uspesno obrisan");
+    navigate("/user/profile");
+  };
+
   const submit = async () => {
+    if (!oglas) return;
+
     const tipGrejanja = stringToEnum(grejanje, tipGrejanjaMap);
     if (tipGrejanja == undefined) {
       toast.error("Tip grejanja nije validan");
       return;
     }
 
-    const oglasObject: AddOglasObjektaDTO = {
+    const oglasObject: UpdateOglasObjektaDTO = {
+      id: oglas.id,
       listaTipProslava: selectedTipoviProslava,
       listaTipProstora: selectedTipoviProstora,
       listDodatneOpreme: selectedDodatnaOprema,
@@ -190,34 +238,37 @@ const OglasiProstor = () => {
       slike: [],
     };
 
-    const validation = addUserOglasSchema.validate(oglasObject);
+    const validation = updateUserOglasSchema.validate(oglasObject);
     if (validation.error) {
       const [type, msg] = getValidationMessage(validation);
       toast.error(`Polje ${msg}`);
       return;
     }
 
-    const response = await addOglas(oglasObject);
-    console.log("STO MI NISI DODO");
+    const response = await updateOglas(oglasObject);
     if ("error" in response) {
       return;
     }
 
-    toast.success("Oglas uspesno dodat");
-    navigate("/user/profile");
+    toast.success("Oglas uspesno izmenjen");
   };
 
   return (
     <div className={`containerWrapper ${style.Glavni}`}>
-      <div className={style.Txt}>
-        <div>
-          <h2>Oglasite prostor za izdavanje</h2>
-        </div>
-        <div className={style.TxtDodaj}>
-          <p>
-            Dodajte sve validne podatke za Vas prostor, kako bi korisnicima dali
-            sto siru sliku prostora kojeg izdajete.
+      <div className={style.Heading}>
+        <div className={style.Txt}>
+          <h2>Izmenite oglašeni prostor</h2>
+          <p className={style.TxtDodaj}>
+            Dodajte sve validne podatke za Vaš prostor, kako bi korisnicima dali
+            sto širu sliku prostora kojeg izdajete.
           </p>
+        </div>
+        <div className={style.DeleteIcon} onClick={handleDelete}>
+          <Icon
+            icon="delete"
+            classes={"cursorPointer"}
+            iconMargin="0px"
+          />
         </div>
       </div>
       <div>{/* ovde idu slike  */}</div>
@@ -245,78 +296,42 @@ const OglasiProstor = () => {
         </div>
         <div className={style.KolonaTxtArea}>
           <div>
-            <Input
-              text={naziv}
-              placeholder="Naziv prostora"
-              icon="house"
-              onChange={setNaziv}
-            />
+            <Input text={naziv} icon="house" onChange={setNaziv} />
           </div>
           <div>
-            <Input
-              text={brojTelefona}
-              placeholder="Broj Telefona"
-              icon="call"
-              onChange={setBrojTelefona}
-            />
+            <Input text={brojTelefona} icon="call" onChange={setBrojTelefona} />
           </div>
           <div>
-            <Input
-              text={grad}
-              placeholder="Grad"
-              icon="location_on"
-              onChange={setGrad}
-            />
+            <Input text={grad} icon="location_on" onChange={setGrad} />
           </div>
           <div>
-            <Input
-              text={adresa}
-              placeholder="Adresa"
-              icon="location_on"
-              onChange={setAdresa}
-            />
+            <Input text={adresa} icon="location_on" onChange={setAdresa} />
           </div>
           <div>
-            <Input
-              text={cenaDan}
-              placeholder="Cena po danu"
-              icon="euro_symbol"
-              onChange={setCenaDan}
-            />
+            <Input text={cenaDan} icon="euro_symbol" onChange={setCenaDan} />
           </div>
           <div>
             <Input
               text={kvadratura}
-              placeholder="Kvadratura"
               icon="view_in_ar"
               onChange={setKvadratura}
             />
           </div>
           <div>
-            <Input
-              text={brojSoba}
-              placeholder="Broj soba"
-              icon="chair"
-              onChange={setBrojSoba}
-            />
+            <Input text={brojSoba} icon="chair" onChange={setBrojSoba} />
           </div>
           <div>
-            <Input
-              text={brojKreveta}
-              placeholder="Broj kreveta"
-              icon="bed"
-              onChange={setBrojKreveta}
-            />
+            <Input text={brojKreveta} icon="bed" onChange={setBrojKreveta} />
           </div>
           <div>
             <Input
               text={brojKupatila}
-              placeholder="Broj kupatila"
               icon="bathroom"
               onChange={setBrojKupatila}
             />
           </div>
           <div>
+            {/* // TODO stavi label na ovaj mrtvi select */}
             <Select
               id="select-tip-grejanja"
               value={grejanje ?? ""}
@@ -446,7 +461,7 @@ const OglasiProstor = () => {
       <div className={style.NAJJACEDUGME}>
         <div className={style.dodajOglasDugme}>
           <MojButton
-            text="Dodajte oglas"
+            text="Izmenite oglas"
             center={true}
             wide={true}
             onClick={submit}
@@ -456,4 +471,4 @@ const OglasiProstor = () => {
     </div>
   );
 };
-export default OglasiProstor;
+export default IzmeniOglas;

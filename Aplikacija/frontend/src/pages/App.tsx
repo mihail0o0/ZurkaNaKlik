@@ -25,6 +25,7 @@ import UserProfile from "./Profile/Korisnik";
 import OglasiProstor from "./oglasiProstor";
 import FavoriteOglasi from "./favoriteOglasi";
 import Oglas from "./Oglas";
+import IzmeniOglas from "./IzmeniOglas";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -37,11 +38,14 @@ const router = createBrowserRouter(
         <Route path="testing" element={<TestingPage />} />
         <Route path="mix" element={<TestingPage />} />
         <Route path="user/profile" element={<UserProfile />} />
-        <Route path="prostor/oglasiProstor" element={<OglasiProstor />}/>
-        <Route path="omiljeno" element={<FavoriteOglasi />}/>
+        <Route path="omiljeno" element={<FavoriteOglasi />} />
         <Route path="/place/:id" element={<Oglas />} />
         <Route path="logout" element={<Logout />} />
 
+        <Route path="prostor">
+          <Route path="oglasiProstor" element={<OglasiProstor />} />
+          <Route path="izmeniProstor/:id" element={<IzmeniOglas />} />
+        </Route>
         <Route path="user">
           <Route path="profile" element={<UserProfile />} />
         </Route>

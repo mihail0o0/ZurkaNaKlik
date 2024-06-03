@@ -263,43 +263,42 @@ namespace backend.Controllers
         //ovde je sve odjednom ne mora svaki properti da ima posebno azuriranje
         #region IzmeniOglas
         [HttpPut("IzmeniOglas")]
-        public async Task<ActionResult> IzmeniOglas([FromBody] OglasObjekta o)
+        public async Task<ActionResult> IzmeniOglas([FromBody] OglasObjektaResponse izmeniOglas)
         {
 
             try
             {
                 int idKorisnika = int.Parse((HttpContext.Items["idKorisnika"] as string)!);
 
-                OglasObjekta? oglas = await Context.OglasiObjekta.Where(k => k.Id == o.Id)
+                OglasObjekta? oglas = await Context.OglasiObjekta.Where(k => k.Id == izmeniOglas.id)
                                                             .IgnoreQueryFilters()
                                                             .FirstOrDefaultAsync(o => o.VlasnikOglasa!.Id == idKorisnika);
-
 
                 if (oglas == null)
                 {
                     return BadRequest("Oglas ne postoji");
                 }
 
-                oglas.ListaTipProslava = o.ListaTipProslava;
-                oglas.ListaTipProstora = o.ListaTipProstora;
-                oglas.Naziv = o.Naziv;
-                oglas.Grad = o.Grad;
-                oglas.Lokacija = o.Lokacija;
-                oglas.CenaPoDanu = o.CenaPoDanu;
-                oglas.BrojSoba = o.BrojSoba;
-                oglas.Kvadratura = o.Kvadratura;
-                oglas.BrojKreveta = o.BrojKreveta;
-                oglas.BrojKupatila = o.BrojKupatila;
-                oglas.Grejanje = o.Grejanje;
-                oglas.ListDodatneOpreme = o.ListDodatneOpreme;
-                oglas.BrTel = o.BrTel;
-                oglas.Opis = o.Opis;
-
-
+                oglas.ListaTipProslava = izmeniOglas.listaTipProslava;
+                oglas.ListaTipProstora = izmeniOglas.listaTipProstora;
+                oglas.Naziv = izmeniOglas.naziv;
+                oglas.Grad = izmeniOglas.grad;
+                oglas.Lokacija = izmeniOglas.lokacija;
+                oglas.CenaPoDanu = izmeniOglas.cenaPoDanu;
+                oglas.BrojSoba = izmeniOglas.brojSoba;
+                oglas.Kvadratura = izmeniOglas.kvadratura;
+                oglas.BrojKreveta = izmeniOglas.brojKreveta;
+                oglas.BrojKupatila = izmeniOglas.brojKupatila;
+                oglas.Grejanje = izmeniOglas.grejanje;
+                oglas.ListDodatneOpreme = izmeniOglas.listDodatneOpreme;
+                oglas.BrTel = izmeniOglas.brTel;
+                oglas.Opis = izmeniOglas.opis;
 
                 await Context.SaveChangesAsync();
 
-                return Ok(new { oglas });
+                OglasObjektaResponse response = ObjectCreatorSingleton.Instance.ToOglasResult(oglas);
+
+                return Ok(response);
             }
             catch (Exception e)
             {
@@ -842,8 +841,6 @@ public async Task<ActionResult> ObrisiKorisnika()
             {
                 return BadRequest(ex.Message);
             }
-
-
         }
 
         #endregion

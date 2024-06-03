@@ -49,6 +49,18 @@ export const dodatnaOpremaMap: { [key in EnumDodatnaOprema]: string } = {
   [EnumDodatnaOprema.frizider]: "Fridzer",
   [EnumDodatnaOprema.zamrzivac]: "Zamrzivač",
 };
+export const dodatnaOpremaIkoniceMap: { [key in EnumDodatnaOprema]: string } = {
+  [EnumDodatnaOprema.net]: "wifi",
+  [EnumDodatnaOprema.tv]: "desktop_windows",
+  [EnumDodatnaOprema.terasa]: "balcony",
+  [EnumDodatnaOprema.bazen]: "waves",
+  [EnumDodatnaOprema.klima]: "thermostat",
+  [EnumDodatnaOprema.kuhinja]: "soup_kitchen",
+  [EnumDodatnaOprema.dvoriste]: "deck",
+  [EnumDodatnaOprema.parking]: "local_parking",
+  [EnumDodatnaOprema.frizider]: "kitchen",
+  [EnumDodatnaOprema.zamrzivac]: "ac_unit",
+};
 
 export const tipProslavaMap: { [key in EnumTipProslava]: string } = {
   [EnumTipProslava.Rodjendan]: "Rodjendan",
@@ -120,6 +132,7 @@ export type OglasObjekata = {
 };
 
 export type AddOglasObjektaDTO = Omit<OglasObjekata, "id" | "zauzetiDani" | "idVlasnika">;
+export type UpdateOglasObjektaDTO = Omit<OglasObjekata, "zauzetiDani" | "idVlasnika">;
 
 export type GetOglasData = {
   filters: Filters;
