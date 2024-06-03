@@ -282,7 +282,6 @@ namespace backend.Controllers
                 oglas.ListDodatneOpreme = o.ListDodatneOpreme;
                 oglas.BrTel = o.BrTel;
                 oglas.Opis = o.Opis;
-                oglas.Slike = o.Slike;
 
 
 
@@ -295,7 +294,68 @@ namespace backend.Controllers
                 return BadRequest(e.Message);
             }
         }
-        #endregion 
+        #endregion
+
+        [HttpPut("IzmeniSlikuOglasa")]
+        public async Task<ActionResult> IzmeniSlikuOglasa(int oglasId, IFormFile file, string staraPutanja)
+        {
+            try
+            {
+
+                var oglas = await Context.OglasiObjekta.Include(i => i.VlasnikOglasa).FirstOrDefaultAsync(f => f.Id == oglasId);
+                if (oglas == null)
+                {
+                    return NotFound("Oglas nije pronađen.");
+                }
+
+                int idKorisnika = int.Parse((HttpContext.Items["idKorisnika"] as string)!);
+
+                if(oglas.VlasnikOglasa!.Id != idKorisnika){
+                    return BadRequest("nisi ti taj bebo");
+                }
+
+                var folderPath = Path.Combine("wwwroot", "images", "Oglasi", oglasId.ToString());
+                if (!Directory.Exists(folderPath))
+                {
+                    Directory.CreateDirectory(folderPath);
+                }
+
+                // Brišemo staru sliku ako je prosleđena putanja
+                if (!string.IsNullOrEmpty(staraPutanja))
+                {
+                    var staraPutanjaFajla = Path.Combine(folderPath, Path.GetFileName(staraPutanja));
+                    if (System.IO.File.Exists(staraPutanjaFajla))
+                    {
+                        System.IO.File.Delete(staraPutanjaFajla);
+
+                        oglas.Slike.Remove(staraPutanja);
+                    }
+                }
+
+                // Dodajemo novu sliku ako je prosleđena
+                if (file != null && file.Length > 0)
+                {
+                    var fileName = $"s1{Path.GetExtension(file.FileName)}";
+                    var filePath = Path.Combine(folderPath, fileName);
+
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await file.CopyToAsync(stream);
+                    }
+
+                    var relativePath = Path.Combine("images", "Oglasi", oglasId.ToString(), fileName).Replace("\\", "/");
+                    oglas.Slike.Clear(); // Brišemo sve postojeće slike oglasa
+                    oglas.Slike.Add(relativePath); // Dodajemo novu sliku
+                }
+
+                await Context.SaveChangesAsync();
+                return Ok("Slika uspešno izmenjena.");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
         #region OceniAgenciju
         [HttpPut("OceniAgenciju/{idAgencije}/{novaOcena}")]
@@ -684,7 +744,6 @@ namespace backend.Controllers
                     Email = korisnik.Email,
                     BrTel = korisnik.BrTel,
                     LozinkaHash = korisnik.LozinkaHash,
-                    SlikaProfila = korisnik.SlikaProfila,
                     Lokacija = korisnik.Lokacija,
                     Prezime = korisnik.Prezime
                 };
@@ -867,6 +926,58 @@ namespace backend.Controllers
             await Context.SaveChangesAsync();
 
             return Ok(new { Putanja = relativePath });
+        }
+
+        [HttpPut("AzurirajSlikuKorisnika")]
+        public async Task<ActionResult> AzurirajSlikuKorisnika(IFormFile file)
+        {
+            try
+            {
+                int korisnikid = int.Parse((HttpContext.Items["idKorisnika"] as string)!);
+
+                var korisnik = await Context.Korisnici.FindAsync(korisnikid);
+                if (korisnik == null)
+                {
+                    return NotFound("Korisnik nije pronađen.");
+                }
+
+                if (file == null || file.Length == 0)
+                {
+                    return BadRequest("Nijedna slika nije poslata.");
+                }
+
+                var folderPath = Path.Combine("wwwroot", "images", "Korisnik", korisnikid.ToString());
+                if (!Directory.Exists(folderPath))
+                {
+                    Directory.CreateDirectory(folderPath);
+                }
+
+                // Obriši postojeću sliku korisnika ako postoji
+                var existingFiles = Directory.GetFiles(folderPath);
+                foreach (var existingFile in existingFiles)
+                {
+                    System.IO.File.Delete(existingFile);
+                }
+
+                var fileName = $"s1{Path.GetExtension(file.FileName)}"; // Uvek koristi isto ime za sliku (s1.jpg) kako bi se izbegao konflikt sa prethodnim slikama
+                var filePath = Path.Combine(folderPath, fileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await file.CopyToAsync(stream);
+                }
+
+                var relativePath = Path.Combine("images", "Oglasi", korisnikid.ToString(), fileName).Replace("\\", "/");
+
+                korisnik.SlikaProfila = relativePath;
+                await Context.SaveChangesAsync();
+
+                return Ok(new { Putanja = relativePath });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
 
