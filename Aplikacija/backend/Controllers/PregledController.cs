@@ -267,7 +267,7 @@ namespace backend.Controllers
         #endregion
 
         #region VratiAgencijeSaFilterimaISortiranjem
-        [HttpGet("VratiAgencije/{pageNumber}/{pageSize}")]
+        [HttpPost("VratiAgencije/{pageNumber}/{pageSize}")]
         public async Task<ActionResult> VratiOglase([FromBody] FilteriAgencije filteri, int pageNumber, int pageSize)
         { //dodaj sortiranje
             try
