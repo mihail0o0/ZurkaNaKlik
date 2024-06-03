@@ -826,18 +826,26 @@ namespace backend.Controllers
             {
                 int idKorisnika = int.Parse((HttpContext.Items["idKorisnika"] as string)!);
 
-                var k = new
-                {
-                    Ime = korisnik.Ime,
-                    Email = korisnik.Email,
-                    BrTel = korisnik.BrTel,
-                    LozinkaHash = korisnik.LozinkaHash,
-                    Lokacija = korisnik.Lokacija,
-                    Prezime = korisnik.Prezime
-                };
+                if(idKorisnika != korisnik.Id){
+                    return BadRequest("nema");
+                }
+
+                Korisnik? korisnikk = await Context.Korisnici.FindAsync(idKorisnika);
+                
+                if(korisnikk == null){
+                    return BadRequest("nema");
+                }
+
+                    korisnikk.Ime = korisnik.Ime;
+                    korisnikk.Email = korisnik.Email;
+                    korisnikk.BrTel = korisnik.BrTel;
+                    korisnikk.LozinkaHash = korisnik.LozinkaHash;
+                    korisnikk.Lokacija = korisnik.Lokacija;
+                    korisnikk.Prezime = korisnik.Prezime;
 
                 await Context.SaveChangesAsync();
-                return Ok(new { k });
+
+                return Ok(new { korisnik });
 
 
             }
