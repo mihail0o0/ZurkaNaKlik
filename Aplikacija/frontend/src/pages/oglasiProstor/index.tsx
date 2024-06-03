@@ -30,6 +30,8 @@ import { addUserOglasSchema } from "@/utils/validators";
 import { toast } from "react-toastify";
 import { getValidationMessage } from "@/utils/validationMessage";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { selectUser } from "@/store/auth";
 
 const OglasiProstor = () => {
   const [opisProstora, setOpisProstora] = useState("");
@@ -54,7 +56,7 @@ const OglasiProstor = () => {
   const [selectedDodatnaOprema, setSelectedDodatnaOprema] = useState<number[]>(
     []
   );
-
+  const user = useSelector(selectUser);
   const [addOglas] = useAddUserOglasMutation();
   const navigate = useNavigate();
 
@@ -198,13 +200,13 @@ const OglasiProstor = () => {
     }
 
     const response = await addOglas(oglasObject);
-    console.log("STO MI NISI DODO");
+    
     if ("error" in response) {
       return;
     }
 
     toast.success("Oglas uspesno dodat");
-    navigate("/user/profile");
+    {user && navigate(`/user/profile/${user.id}`);}
   };
 
   return (
@@ -280,7 +282,7 @@ const OglasiProstor = () => {
             <Input
               text={cenaDan}
               placeholder="Cena po danu"
-              icon="euro_symbol"
+              icon="payments"
               onChange={setCenaDan}
             />
           </div>

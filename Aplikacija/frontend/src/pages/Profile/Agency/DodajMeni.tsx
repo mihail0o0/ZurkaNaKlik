@@ -1,22 +1,48 @@
 import MojButton from "@/components/lib/button";
 import Input from "@/components/lib/inputs/text-input";
 import style from "./style.module.css";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { InputLabel, MenuItem, Select, SelectChangeEvent } from "@mui/material";
 import {
   useAddMenuMutation,
   useDeleteMenuMutation,
 } from "@/store/api/endpoints/agencija";
+import { enumToString } from "@/utils/enumMappings";
+import { useSelector } from "react-redux";
+import { selectUser } from "@/store/auth";
+import DisplayCard from "@/components/DisplayCard";
+
 
 type Props = {
   kategorije?: Category[];
+  menuData?: Menu;
 };
 
-const DodajMeni = ({ kategorije }: Props) => {
+const DodajIzmeniMeni = ({ kategorije, menuData }: Props) => {
+  const currUser = useSelector(selectUser);
+
   const [opisMenija, setOpisMenija] = useState("");
   const [imeMenija, setImeMenija] = useState("");
   const [cenaMeni, setCenaMeni] = useState("");
-  const [kategorijaa, setkategorija] = useState("");
+  const [kategorija, setkategorija] = useState("");
+
+  useEffect(() => {
+    if (!menuData) return;
+
+    let selectedKategorija = "";
+    if(kategorije){
+      for(let i = 0; i < kategorije?.length; i++){
+        if(kategorije[i].id === menuData.idKategorije){
+          selectedKategorija = kategorije[i].naziv;
+        }
+      }
+    }
+
+    setOpisMenija(menuData.opis);
+    setImeMenija(menuData.naziv);
+    setCenaMeni(String(menuData.cenaMenija));
+    setkategorija(selectedKategorija);
+  }, [menuData]);
 
   const handleChange = (event: SelectChangeEvent) => {
     console.log(event.target.value);
@@ -30,9 +56,7 @@ const DodajMeni = ({ kategorije }: Props) => {
   const [addMenu] = useAddMenuMutation();
   const [deleteMenu] = useDeleteMenuMutation();
 
-  const submit = async () => {
-
-  };
+  const submit = async () => {};
 
   return (
     <div className={style.menijji}>
@@ -41,11 +65,14 @@ const DodajMeni = ({ kategorije }: Props) => {
         <div className={style.Kocka}>
           <div className={style.Red}>
             <div className={style.Inputsredi}>
-              <Input
+            {/* <DisplayCard></DisplayCard> */}
+              
+              {/* <DisplayCard /> */}
+              {/* <Input
                 text={imeMenija}
                 placeholder="Ime menija"
                 onChange={setImeMenija}
-              />
+              /> */}
             </div>
 
             <div className={style.Inputsredi}>
@@ -62,7 +89,7 @@ const DodajMeni = ({ kategorije }: Props) => {
             </div>
             <div className={style.Inputsredi}>
               <Select
-                value={kategorijaa}
+                value={kategorija}
                 onChange={handleChange}
                 sx={{
                   minWidth: "250px",
@@ -104,4 +131,4 @@ const DodajMeni = ({ kategorije }: Props) => {
     </div>
   );
 };
-export default DodajMeni;
+export default DodajIzmeniMeni;

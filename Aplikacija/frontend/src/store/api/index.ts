@@ -75,7 +75,7 @@ const baseQueryWithAuth: BaseQueryFn<
     }
   } else {
     await mutex.waitForUnlock();
-    result = await baseQuery(args, api, extraOptions);
+    //result = await baseQuery(args, api, extraOptions);
   }
 
   return result;
@@ -109,6 +109,7 @@ export const api = createApi({
     "AgencyMenu",
     "Location",
     "Oglas",
+    "OmiljeniOglasi"
   ],
   baseQuery: baseQueryWithAuth,
   endpoints: () => ({}),

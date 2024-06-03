@@ -32,7 +32,6 @@ export interface JosFilteraProps {
   handleChangeTipGrejanja: (value: string) => void;
 }
 
-
 function SimpleDialog(props: SimpleDialogProps) {
   const {
     onClose,
@@ -52,6 +51,8 @@ function SimpleDialog(props: SimpleDialogProps) {
   const handleListItemClick = (value: string) => {
     onClose(value);
   };
+
+  console.log(selectedDodatnaOprema);
 
   return (
     <Dialog

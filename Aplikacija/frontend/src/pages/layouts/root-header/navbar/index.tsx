@@ -20,6 +20,7 @@ type ZaPrikaz = {
 const Navbar = ({ user }: Props) => {
   const [anchor, setAnchor] = useState<HTMLDivElement | null>();
   const [open, setOpen] = useState(false);
+  
 
   const onClick = (event: React.MouseEvent<HTMLDivElement>) => {
     setAnchor(event.currentTarget);
@@ -33,7 +34,7 @@ const Navbar = ({ user }: Props) => {
 
   const zaPrikaz: ZaPrikaz[] = useMemo(() => {
     return ([
-    { icon: "account_circle", text: "Profil", link: isUser ? "/user/profile" : "/catering/profile" },
+    { icon: "account_circle", text: "Profil", link: isUser ? `/user/profile/${user.id}`: "/catering/profile" },
     isUser ? { icon: "favorite", text: "Omiljeno", link: "/omiljeno" } : {icon: "shopping_bag", text: "Porudzbine", link: "/catering/porudzbine"},
     { icon: "forum", text: "Čet", link: "/chat" },
     isUser ?{ icon: "schedule", text: "Već posećeno", link: "/poseceno" } : null,

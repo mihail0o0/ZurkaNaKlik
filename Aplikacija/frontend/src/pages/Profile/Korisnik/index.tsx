@@ -14,15 +14,25 @@ import {
   useLocation,
   useNavigate,
   BrowserRouter,
+  useParams,
 } from "react-router-dom";
 
 import { Alert } from "@mui/material";
-import { useGetUserOglasiQuery } from "@/store/api/endpoints/oglas";
+import { useGetKorisnikOglasiQuery, useGetUserOglasiQuery } from "@/store/api/endpoints/oglas";
 import { EnumTipProslava } from "@/store/api/endpoints/oglas/types";
+import { skipToken } from "@reduxjs/toolkit/query";
+import Icon from "@/components/lib/icon";
+import DisplayCard from "@/components/DisplayCard";
 
 const UserProfile = () => {
   const navigate = useNavigate();
   const userCurr = useSelector(selectUser);
+  const { id } = useParams();
+  const idKorisnika = id ? parseInt(id) : undefined;
+  //znaci ovo je ako nisu isti
+  const { data: vlasnikOglasa } = useGetUserDataQuery(idKorisnika ?? skipToken);
+  const flag = idKorisnika === userCurr?.id;
+  const {data : tudjiOglasi}=useGetKorisnikOglasiQuery(idKorisnika ?? skipToken);
 
   // nece da se pozove ako ne postoji user, zbog skip
   const { data: user } = useGetUserDataQuery(userCurr?.id!, {
@@ -31,7 +41,7 @@ const UserProfile = () => {
   const { data: MojiOglasi } = useGetUserOglasiQuery();
 
   console.log(user);
-  console.log(MojiOglasi);
+  console.log(tudjiOglasi);
 
   const [ime, setIme] = useState("");
   const [prezime, setPrezime] = useState("");
@@ -41,13 +51,13 @@ const UserProfile = () => {
   const [opis, setOpis] = useState("");
 
   useEffect(() => {
-    if (!user) return;
+    if (!vlasnikOglasa) return;
 
-    setIme(user.name);
-    setPrezime(user.lastName);
-    setBrTel(user.phoneNumber);
-    setSlikaProfila(user.profilePhoto);
-    setLokacija(user.location);
+    setIme(vlasnikOglasa.name);
+    setPrezime(vlasnikOglasa.lastName);
+    setBrTel(vlasnikOglasa.phoneNumber);
+    setSlikaProfila(vlasnikOglasa.profilePhoto);
+    setLokacija(vlasnikOglasa.location);
   }, [user]);
 
   function handleOpis(event: ChangeEvent<HTMLTextAreaElement>) {
@@ -62,7 +72,7 @@ const UserProfile = () => {
     <div className={`containerWrapper ${style.Container}`}>
       <div className={style.PostavkeProfila}>
         <div>
-          <h2>Postavke profila</h2>
+         {flag &&  <h2>Postavke profila</h2>}
         </div>
         <div className={style.Postavke2}>
           {/* odje ide slika od kad je clan broj oglasa i prosecna ocena */}
@@ -71,49 +81,94 @@ const UserProfile = () => {
               <UserAvatar size={100} letter={user.name[0]} src={slikaProfila} />
 
               <p>
-                {user.name} {user.lastName}
+                {vlasnikOglasa && vlasnikOglasa.name}{" "}
+                {vlasnikOglasa &&  vlasnikOglasa.lastName}
               </p>
             </div>
-            <div className={style.InfoOClanu}>
-              <p>Email: {user.email}</p>
-              <p>Broj telefona: {user.phoneNumber}</p>
-              <p>{user.location}</p>
-            </div>
+            {/* <div className={style.InfoOClanu}>
+              {flag && <p>Email: {vlasnikOglasa && vlasnikOglasa.email}</p>}
+             {flag && <p>Broj telefona: {vlasnikOglasa && vlasnikOglasa.phoneNumber}</p>}
+             {flag &&<p>{vlasnikOglasa && vlasnikOglasa.location}</p>}
+            </div> */}
           </div>
           <div className={style.OsnovnePostavkeProfila}>
             <div className={style.PostavkeProfilaTXT}>
-              <h2>Osnovne postavke profila</h2>
+              {flag ? (
+                <h2>Osnovne postavke profila</h2>
+              ) : (
+                <h2>Osnovne informacije profila</h2>
+              )}
             </div>
             <div className={style.Inputi}>
               <div className={style.Red}>
-                <Input
-                  text={ime}
-                  placeholder="Ime"
-                  icon="boy"
-                  onChange={setIme}
-                />
-                <Input
-                  text={lokacija}
-                  placeholder="Grad"
-                  icon="location_on"
-                  onChange={setLokacija}
-                />
+                {flag ? (
+                  <Input
+                    disabled={!flag}
+                    text={ime}
+                    placeholder="Ime"
+                    icon="boy"
+                    onChange={setIme}
+                  />
+                ) : (
+                  <DisplayCard
+                    icon={"boy"}
+                    text={
+                      (vlasnikOglasa &&
+                        vlasnikOglasa.name + " "+  vlasnikOglasa?.lastName) ||
+                      ""
+                    }
+                  />
+                )}
+                {flag ? (
+                  <Input
+                    disabled={!flag}
+                    text={lokacija}
+                    placeholder="Grad"
+                    icon="location_on"
+                    onChange={setLokacija}
+                  />
+                ) : (
+                  <DisplayCard
+                    icon={"location_on"}
+                    text={(vlasnikOglasa && vlasnikOglasa.location) || ""}
+                  />
+                )}
               </div>
               <div className={style.Red}>
-                <Input
-                  disabled
-                  text={user.email}
-                  placeholder="Email"
-                  icon="mail"
-                  onChange={() => {}}
-                />
-                <Input text={brTel} icon="call" onChange={setBrTel} />
+                {flag ? (
+                  <Input
+                    disabled
+                    text={(vlasnikOglasa && vlasnikOglasa.email) || ""}
+                    placeholder="Email"
+                    icon="mail"
+                    onChange={() => {}}
+                  />
+                ) : (
+                  <DisplayCard
+                    icon={"mail"}
+                    text={(vlasnikOglasa && vlasnikOglasa.email) || ""}
+                  />
+                )}
+                {flag ? (
+                  <Input
+                    disabled={!flag}
+                    text={brTel}
+                    icon="call"
+                    onChange={setBrTel}
+                  />
+                ) : (
+                  <DisplayCard
+                    icon={"call"}
+                    text={(vlasnikOglasa && vlasnikOglasa.phoneNumber) || ""}
+                  />
+                )}
               </div>
             </div>
 
             <div className={style.TekstArea}>
               <textarea
-                placeholder="Recite nesto vise o sebi"
+                disabled={!flag}
+                placeholder={flag ? "Recite nesto vise o sebi" : ""}
                 className={style.TxtArea}
                 onChange={handleOpis}
                 value={opis}
@@ -122,12 +177,14 @@ const UserProfile = () => {
             <div className={style.Dugmenajjace}>
               <div className={style.Dugme2}>
                 {/* da azuriram korisnika */}
-                <MojButton
-                  text="Sacuvaj"
-                  onClick={() => {}}
-                  wide={true}
-                  center={true}
-                />
+                {flag && (
+                  <MojButton
+                    text="Sacuvaj"
+                    onClick={() => {}}
+                    wide={true}
+                    center={true}
+                  />
+                )}
               </div>
             </div>
           </div>
@@ -135,11 +192,19 @@ const UserProfile = () => {
       </div>
       <div className={style.MojiOglasi}>
         <div>
-          <h2>Moji oglasi</h2>
+          {flag ? (
+            <h2>Moji oglasi</h2>
+          ) : (
+            <h2>Oglasi korisnika {vlasnikOglasa?.name}</h2>
+          )}
         </div>
         <div className={style.OglasiKartice}>
-          {MojiOglasi &&
-            MojiOglasi.map((oglas) => (
+          {flag ?
+            MojiOglasi?.map((oglas) => (
+              <div key={oglas.id}>
+                <OglasKartica oglas={oglas} onClick={() => {}} />
+              </div>
+            )) :   tudjiOglasi?.map((oglas) => (
               <div key={oglas.id}>
                 <OglasKartica oglas={oglas} onClick={() => {}} />
               </div>
@@ -147,14 +212,16 @@ const UserProfile = () => {
         </div>
         <div className={style.Dugmenajjace}>
           <div className={style.Dugme2}>
-            <MojButton
-              text="Dodaj oglas"
-              onClick={() => {
-                navigate("/prostor/oglasiProstor");
-              }}
-              wide={true}
-              center={true}
-            />
+            {flag && (
+              <MojButton
+                text="Dodaj oglas"
+                onClick={() => {
+                  navigate("/prostor/oglasiProstor");
+                }}
+                wide={true}
+                center={true}
+              />
+            )}
           </div>
         </div>
       </div>

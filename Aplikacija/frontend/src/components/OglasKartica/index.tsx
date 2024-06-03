@@ -92,9 +92,12 @@ const OglasKartica = ({ oglas, onClick }: Props) => {
             <img
               onClick={updateFavorite}
               src={
-                favorite ? "/images/favorite.png" : "/images/not_favorite.png"
+                favorite
+                  ? "/images/favorite.png"
+                  : "/images/not_favorite.png"
               }
               alt={favorite ? "Favorite" : "Not Favorite"}
+              className="cursorPointer"
             />
           ) : (
             <Icon
@@ -130,7 +133,7 @@ const OglasKartica = ({ oglas, onClick }: Props) => {
         <div className={style.CenaBrojLokacija}>
           <div className={style.BottomIcon}>
             {/* cena  */}
-            <Icon icon="euro_symbol" />
+            <Icon icon="payments" />
             <p>{oglas.cenaPoDanu}</p>
           </div>
           <div className={style.BottomIcon}>

@@ -215,9 +215,15 @@ export const updateUserOglasSchema = Joi.object({
 });
 
 export const updateAgencySchema = Joi.object<UpdateAgencyDTO>({
+  id: Joi.number(),
+  brojOcena: Joi.number(),
+  cenaDostave: Joi.number(),
+  email: emailVal,
+  ime: nameVal,
   brTel: phoneNumberVal,
   lokacija: cityValReq,
   opis: Joi.string().label("Opis"),
   mogucnostDostave: Joi.boolean().label("Mogucnost dostave"),
-  cenaDostave: Joi.number().label("Cena dostave"),
+  ocena: Joi.any(),
+  slikaProfila: Joi.any(),
 });
