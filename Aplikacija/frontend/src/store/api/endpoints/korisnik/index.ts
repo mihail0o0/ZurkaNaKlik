@@ -62,12 +62,9 @@ const authApiSlice = api.injectEndpoints({
       query: (id) => ({
         url: `Korisnik/DaLiOmiljen/${id}`,
       }),
-      providesTags: (result, error, id) => {
-        if (error) {
-          return [{ type: 'User' }, { type: 'OmiljeniOglasi', id }];
-        }
-        return [{ type: 'OmiljeniOglasi', id }];
-      },
+      providesTags: (result, error, id) => [
+        { type: 'OmiljeniOglasi', id },
+      ],
     }),
   }),
 });

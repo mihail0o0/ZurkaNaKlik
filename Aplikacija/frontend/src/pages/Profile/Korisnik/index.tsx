@@ -65,7 +65,6 @@ const UserProfile = () => {
   const [brTel, setBrTel] = useState("");
   const [slikaProfila, setSlikaProfila] = useState<string | undefined>("");
   const [lokacija, setLokacija] = useState("");
-
   const [opis, setOpis] = useState("");
   const [openDialog, setOpenDialog] = useState(false);
   const[deleteUser]=useDeleteUserMutation();
@@ -149,7 +148,7 @@ const UserProfile = () => {
           {/* odje ide slika od kad je clan broj oglasa i prosecna ocena */}
           <div className={style.KarticaSaSlikom}>
             <div className={style.SlikaImeIPrezime}>
-              <UserAvatar size={100} letter={user.name[0]} src={slikaProfila} />
+            <UserAvatar size={100} letter={vlasnikOglasa && vlasnikOglasa.name[0]} src={slikaProfila} />
               <p>
                 {vlasnikOglasa && vlasnikOglasa.name}{" "}
                 {vlasnikOglasa && vlasnikOglasa.lastName}
