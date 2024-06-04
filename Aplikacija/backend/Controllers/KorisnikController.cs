@@ -829,25 +829,27 @@ namespace backend.Controllers
             {
                 int idKorisnika = int.Parse((HttpContext.Items["idKorisnika"] as string)!);
 
-                if (idKorisnika != korisnik.Id)
+                if (idKorisnika != korisnik.id)
                 {
                     return BadRequest("nema");
                 }
 
-                Korisnik? korisnikk = await Context.Korisnici.FindAsync(idKorisnika);
+                Korisnik? dboKorisnik = await Context.Korisnici.FindAsync(idKorisnika);
 
-                if (korisnikk == null)
+                if (dboKorisnik == null)
                 {
                     return BadRequest("nema");
                 }
 
-                korisnikk.Ime = korisnik.Ime;
-                korisnikk.Email = korisnik.Email;
-                korisnikk.BrTel = korisnik.BrTel;
-                korisnikk.Lokacija = korisnik.Lokacija;
-                korisnikk.Prezime = korisnik.Prezime;
+                dboKorisnik.Ime = korisnik.name;
+                dboKorisnik.Email = korisnik.email;
+                dboKorisnik.BrTel = korisnik.phoneNumber;
+                dboKorisnik.Lokacija = korisnik.location;
+                dboKorisnik.Prezime = korisnik.lastName;
 
-                GetKorisnikResult result = ObjectCreatorSingleton.Instance.ToKorisnikResult(korisnikk);
+                await Context.SaveChangesAsync();
+
+                GetKorisnikResult result = ObjectCreatorSingleton.Instance.ToKorisnikResult(dboKorisnik);
                 return Ok(result);
             }
             catch (Exception ex)
@@ -1018,11 +1020,10 @@ namespace backend.Controllers
 
             var relativePath = Path.Combine("images", "Korisnik", korisnikid.ToString(), fileName).Replace("\\", "/");
 
-
             korisnik.SlikaProfila = (relativePath);
             await Context.SaveChangesAsync();
 
-            return Ok(new { Putanja = relativePath });
+            return Ok(new { relativePath });
         }
 
         [HttpPut("AzurirajSlikuKorisnika")]

@@ -39,6 +39,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { skipToken } from "@reduxjs/toolkit/query";
 import { useSelector } from "react-redux";
 import { selectUser } from "@/store/auth";
+import PageSpacer from "@/components/lib/page-spacer";
 
 const IzmeniOglas = () => {
   const user = useSelector(selectUser);
@@ -254,161 +255,132 @@ const IzmeniOglas = () => {
     }
 
     toast.success("Oglas uspesno izmenjen");
-    {user && navigate(`/user/profile/${user.id}`);}
+    {
+      user && navigate(`/user/profile/${user.id}`);
+    }
   };
 
   return (
-    <div className={`containerWrapper ${style.Glavni}`}>
-      <div className={style.Heading}>
-        <div className={style.Txt}>
-          <h2>Izmenite oglašeni prostor</h2>
-          <p className={style.TxtDodaj}>
-            Dodajte sve validne podatke za Vaš prostor, kako bi korisnicima dali
-            sto širu sliku prostora kojeg izdajete.
-          </p>
+    <>
+      <PageSpacer variant="xs" />
+      <div className={`containerWrapper ${style.Glavni}`}>
+        <div className={style.Heading}>
+          <div className={style.Txt}>
+            <h2>Izmenite oglašeni prostor</h2>
+            <p className={style.TxtDodaj}>
+              Dodajte sve validne podatke za Vaš prostor, kako bi korisnicima
+              dali sto širu sliku prostora kojeg izdajete.
+            </p>
+          </div>
+          <div className={style.DeleteIcon} onClick={handleDelete}>
+            <Icon icon="delete" classes={"cursorPointer"} iconMargin="0px" />
+          </div>
         </div>
-        <div className={style.DeleteIcon} onClick={handleDelete}>
-          <Icon
-            icon="delete"
-            classes={"cursorPointer"}
-            iconMargin="0px"
-          />
-        </div>
-      </div>
-      <div>{/* ovde idu slike  */}</div>
-      <div className={style.NAJJACEDUGME}>
-        <div className={style.DodajSLikuDugme}>
-          <MojButton
-            text="Dodaj sliku"
-            icon="add_photo_alternate"
-            backgroundColor="lightgrey"
-            color="black"
-            wide={true}
-            center={true}
-          />
-        </div>
-      </div>
-      <div className={style.OpisiProstora}>
-        {/* opisi */}
-        <div className={style.KolonaTxtArea}>
-          <textarea
-            placeholder="Opis prostora"
-            className={style.TxtArea}
-            onChange={updateOpisProstora}
-            value={opisProstora}
-          />
-        </div>
-        <div className={style.KolonaTxtArea}>
-          <div>
-            <Input text={naziv} icon="house" onChange={setNaziv} />
-          </div>
-          <div>
-            <Input text={brojTelefona} icon="call" onChange={setBrojTelefona} />
-          </div>
-          <div>
-            <Input text={grad} icon="location_on" onChange={setGrad} />
-          </div>
-          <div>
-            <Input text={adresa} icon="location_on" onChange={setAdresa} />
-          </div>
-          <div>
-            <Input text={cenaDan} icon="euro_symbol" onChange={setCenaDan} />
-          </div>
-          <div>
-            <Input
-              text={kvadratura}
-              icon="view_in_ar"
-              onChange={setKvadratura}
+        <div>{/* ovde idu slike  */}</div>
+        <div className={style.NAJJACEDUGME}>
+          <div className={style.DodajSLikuDugme}>
+            <MojButton
+              text="Dodaj sliku"
+              icon="add_photo_alternate"
+              backgroundColor="lightgrey"
+              color="black"
+              wide={true}
+              center={true}
             />
           </div>
-          <div>
-            <Input text={brojSoba} icon="chair" onChange={setBrojSoba} />
-          </div>
-          <div>
-            <Input text={brojKreveta} icon="bed" onChange={setBrojKreveta} />
-          </div>
-          <div>
-            <Input
-              text={brojKupatila}
-              icon="bathroom"
-              onChange={setBrojKupatila}
+        </div>
+        <div className={style.OpisiProstora}>
+          {/* opisi */}
+          <div className={style.KolonaTxtArea}>
+            <textarea
+              placeholder="Opis prostora"
+              className={style.TxtArea}
+              onChange={updateOpisProstora}
+              value={opisProstora}
             />
           </div>
-          <div>
-            {/* // TODO stavi label na ovaj mrtvi select */}
-            <Select
-              id="select-tip-grejanja"
-              value={grejanje ?? ""}
-              onChange={handleChangeGrejanje}
-              sx={{
-                width: "100%",
-                borderRadius: "12px",
-                color: "black",
-              }}
-            >
-              {Object.values(tipGrejanjaMap).map((value) => {
-                return (
-                  <MenuItem key={`Select-${value}`} value={value}>
-                    {value}
-                  </MenuItem>
-                );
-              })}
-            </Select>
+          <div className={style.KolonaTxtArea}>
+            <div>
+              <Input text={naziv} icon="house" onChange={setNaziv} />
+            </div>
+            <div>
+              <Input
+                text={brojTelefona}
+                icon="call"
+                onChange={setBrojTelefona}
+              />
+            </div>
+            <div>
+              <Input text={grad} icon="location_on" onChange={setGrad} />
+            </div>
+            <div>
+              <Input text={adresa} icon="location_on" onChange={setAdresa} />
+            </div>
+            <div>
+              <Input text={cenaDan} icon="euro_symbol" onChange={setCenaDan} />
+            </div>
+            <div>
+              <Input
+                text={kvadratura}
+                icon="view_in_ar"
+                onChange={setKvadratura}
+              />
+            </div>
+            <div>
+              <Input text={brojSoba} icon="chair" onChange={setBrojSoba} />
+            </div>
+            <div>
+              <Input text={brojKreveta} icon="bed" onChange={setBrojKreveta} />
+            </div>
+            <div>
+              <Input
+                text={brojKupatila}
+                icon="bathroom"
+                onChange={setBrojKupatila}
+              />
+            </div>
+            <div>
+              {/* // TODO stavi label na ovaj mrtvi select */}
+              <Select
+                id="select-tip-grejanja"
+                value={grejanje ?? ""}
+                onChange={handleChangeGrejanje}
+                sx={{
+                  width: "100%",
+                  borderRadius: "12px",
+                  color: "black",
+                }}
+              >
+                {Object.values(tipGrejanjaMap).map((value) => {
+                  return (
+                    <MenuItem key={`Select-${value}`} value={value}>
+                      {value}
+                    </MenuItem>
+                  );
+                })}
+              </Select>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div className={style.TipoviProslava}>
-        <div>
-          <h3>Tipovi proslava koje dozvoljavate</h3>
-        </div>
-        <div className={style.ChipProslave}>
-          {Object.values(tipProslavaMap).map((value) => {
-            return (
-              <div className={style.JedanChip}>
-                <Chip
-                  label={value}
-                  variant="outlined"
-                  onClick={() => handleTipProslavaChange(value)}
-                  onDelete={() => handleTipProslavaChange(value)}
-                  deleteIcon={
-                    isSelected(
-                      value,
-                      tipProslavaMap,
-                      selectedTipoviProslava
-                    ) ? undefined : (
-                      <Icon
-                        classes={style.addIcon}
-                        fontSize="23px"
-                        icon="add_circle"
-                      />
-                    )
-                  }
-                  sx={getChipSx(value, tipProslavaMap, selectedTipoviProslava)}
-                />
-              </div>
-            );
-          })}
-        </div>
-      </div>
-
-      <div>
         <div className={style.TipoviProslava}>
-          <h3>Tipovi prostora u koje Vas oglas pripada</h3>
+          <div>
+            <h3>Tipovi proslava koje dozvoljavate</h3>
+          </div>
           <div className={style.ChipProslave}>
-            {Object.values(tipProstoraMap).map((value) => {
+            {Object.values(tipProslavaMap).map((value) => {
               return (
                 <div className={style.JedanChip}>
                   <Chip
                     label={value}
                     variant="outlined"
-                    onClick={() => handleTipProstoraChange(value)}
-                    onDelete={() => handleTipProstoraChange(value)}
+                    onClick={() => handleTipProslavaChange(value)}
+                    onDelete={() => handleTipProslavaChange(value)}
                     deleteIcon={
                       isSelected(
                         value,
-                        tipProstoraMap,
-                        selectedTipoviProstora
+                        tipProslavaMap,
+                        selectedTipoviProslava
                       ) ? undefined : (
                         <Icon
                           classes={style.addIcon}
@@ -419,8 +391,8 @@ const IzmeniOglas = () => {
                     }
                     sx={getChipSx(
                       value,
-                      tipProstoraMap,
-                      selectedTipoviProstora
+                      tipProslavaMap,
+                      selectedTipoviProslava
                     )}
                   />
                 </div>
@@ -428,51 +400,93 @@ const IzmeniOglas = () => {
             })}
           </div>
         </div>
-      </div>
 
-      <div>
-        <div className={style.TipoviProslava}>
-          <h3>Dodatna oprema koju poseduje Vas prostor</h3>
-          <div className={style.ChipProslave}>
-            {Object.values(dodatnaOpremaMap).map((value) => (
-              <div className={style.JedanChip}>
-                <Chip
-                  label={value}
-                  variant="outlined"
-                  onClick={() => handleDodatnaOpremaChange(value)}
-                  onDelete={() => handleDodatnaOpremaChange(value)}
-                  deleteIcon={
-                    isSelected(
+        <div>
+          <div className={style.TipoviProslava}>
+            <h3>Tipovi prostora u koje Vas oglas pripada</h3>
+            <div className={style.ChipProslave}>
+              {Object.values(tipProstoraMap).map((value) => {
+                return (
+                  <div className={style.JedanChip}>
+                    <Chip
+                      label={value}
+                      variant="outlined"
+                      onClick={() => handleTipProstoraChange(value)}
+                      onDelete={() => handleTipProstoraChange(value)}
+                      deleteIcon={
+                        isSelected(
+                          value,
+                          tipProstoraMap,
+                          selectedTipoviProstora
+                        ) ? undefined : (
+                          <Icon
+                            classes={style.addIcon}
+                            fontSize="23px"
+                            icon="add_circle"
+                          />
+                        )
+                      }
+                      sx={getChipSx(
+                        value,
+                        tipProstoraMap,
+                        selectedTipoviProstora
+                      )}
+                    />
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div className={style.TipoviProslava}>
+            <h3>Dodatna oprema koju poseduje Vas prostor</h3>
+            <div className={style.ChipProslave}>
+              {Object.values(dodatnaOpremaMap).map((value) => (
+                <div className={style.JedanChip}>
+                  <Chip
+                    label={value}
+                    variant="outlined"
+                    onClick={() => handleDodatnaOpremaChange(value)}
+                    onDelete={() => handleDodatnaOpremaChange(value)}
+                    deleteIcon={
+                      isSelected(
+                        value,
+                        dodatnaOpremaMap,
+                        selectedDodatnaOprema
+                      ) ? undefined : (
+                        <Icon
+                          classes={style.addIcon}
+                          fontSize="23px"
+                          icon="add_circle"
+                        />
+                      )
+                    }
+                    sx={getChipSx(
                       value,
                       dodatnaOpremaMap,
                       selectedDodatnaOprema
-                    ) ? undefined : (
-                      <Icon
-                        classes={style.addIcon}
-                        fontSize="23px"
-                        icon="add_circle"
-                      />
-                    )
-                  }
-                  sx={getChipSx(value, dodatnaOpremaMap, selectedDodatnaOprema)}
-                />
-              </div>
-            ))}
+                    )}
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div className={style.NAJJACEDUGME}>
+          <div className={style.dodajOglasDugme}>
+            <MojButton
+              text="Izmenite oglas"
+              center={true}
+              wide={true}
+              onClick={submit}
+            />
           </div>
         </div>
       </div>
-
-      <div className={style.NAJJACEDUGME}>
-        <div className={style.dodajOglasDugme}>
-          <MojButton
-            text="Izmenite oglas"
-            center={true}
-            wide={true}
-            onClick={submit}
-          />
-        </div>
-      </div>
-    </div>
+    </>
   );
 };
 export default IzmeniOglas;

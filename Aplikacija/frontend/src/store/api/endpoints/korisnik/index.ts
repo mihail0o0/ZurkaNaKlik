@@ -64,6 +64,8 @@ const authApiSlice = api.injectEndpoints({
 
 export const {
   useGetUserDataQuery,
+  useUpdateUserMutation,
+  useDeleteUserMutation,
   useGetFavouritesQuery,
   useAddFavouriteMutation,
   useDeleteFavouriteMutation,

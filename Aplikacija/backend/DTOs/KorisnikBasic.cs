@@ -8,11 +8,11 @@ namespace backend.Models
 {
     public class KorisnikBasic
     {
-        public int Id { get; set; }
-        public required string Ime { get; set; }
-        public required string Prezime { get; set; }
-        public required string Email { get; set; }
-        public required string BrTel { get; set; }
-        public required string Lokacija { get; set; }
+        public int id { get; set; }
+        public required string name { get; set; }
+        public required string lastName { get; set; }
+        public required string email { get; set; }
+        public required string phoneNumber { get; set; }
+        public required string location { get; set; }
     }
 }
