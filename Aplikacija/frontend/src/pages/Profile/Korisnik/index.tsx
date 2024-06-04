@@ -5,13 +5,13 @@ import MojButton from "@/components/lib/button";
 import { useSelector } from "react-redux";
 import { selectUser } from "@/store/auth";
 import OglasKartica from "@/components/OglasKartica";
-import * as React from 'react';
-import Button from '@mui/material/Button';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
+import * as React from "react";
+import Button from "@mui/material/Button";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
 import {
   useDeleteUserMutation,
   useGetUserDataQuery,
@@ -33,7 +33,6 @@ import { getValidationMessage } from "@/utils/validationMessage";
 import { toast } from "react-toastify";
 import Icon from "@/components/lib/icon";
 
-
 const UserProfile = () => {
   const navigate = useNavigate();
   const userCurr = useSelector(selectUser);
@@ -46,7 +45,6 @@ const UserProfile = () => {
     idKorisnika ?? skipToken
   );
 
- 
   // nece da se pozove ako ne postoji user, zbog skip
   const { data: user } = useGetUserDataQuery(userCurr?.id!, {
     skip: !userCurr,
@@ -67,9 +65,7 @@ const UserProfile = () => {
   const [lokacija, setLokacija] = useState("");
   const [opis, setOpis] = useState("");
   const [openDialog, setOpenDialog] = useState(false);
-  const[deleteUser]=useDeleteUserMutation();
-
-
+  const [deleteUser] = useDeleteUserMutation();
 
   useEffect(() => {
     if (!vlasnikOglasa) return;
@@ -82,16 +78,15 @@ const UserProfile = () => {
     setLokacija(vlasnikOglasa.location);
   }, [user]);
 
-
   // function handleOpis(event: ChangeEvent<HTMLTextAreaElement>)) {
   //   setOpis(event.target.value);
   // }
   const handleDelete = () => {
-    setOpenDialog(true); 
-  }
+    setOpenDialog(true);
+  };
   const submit = async () => {
     if (!user) return;
-    if(!flag) return;
+    if (!flag) return;
 
     const updateUser: UpdateUserDTO = {
       id: user.id,
@@ -115,25 +110,21 @@ const UserProfile = () => {
     if ("error" in result) return;
 
     toast.success("Uspesno izmenjeni podaci");
-
   };
 
   const handleDialogClose = async (agree: boolean) => {
-    setOpenDialog(false); 
+    setOpenDialog(false);
 
     if (agree) {
-       if (!userCurr) return;
-    const response = await deleteUser(userCurr.id);
+      if (!userCurr) return;
+      const response = await deleteUser(userCurr.id);
 
-    if ("error" in response) {
-      toast.error("Neuspesno brisanje naloga");
-      navigate(`/user/profile/${userCurr.id}`);
-      return;
-    }
+      if ("error" in response) {
+        return;
+      }
 
-    toast.success("Uspesno obrisan nalog");
-    navigate("user/signup");
-     
+      toast.success("Uspesno obrisan nalog");
+      navigate("user/signup");
     }
   };
   if (!user) {
@@ -148,21 +139,27 @@ const UserProfile = () => {
           {/* odje ide slika od kad je clan broj oglasa i prosecna ocena */}
           <div className={style.KarticaSaSlikom}>
             <div className={style.SlikaImeIPrezime}>
-            <UserAvatar size={100} letter={vlasnikOglasa && vlasnikOglasa.name[0]} src={slikaProfila} />
+              <UserAvatar
+                size={100}
+                letter={vlasnikOglasa && vlasnikOglasa.name[0]}
+                src={slikaProfila}
+              />
               <p>
                 {vlasnikOglasa && vlasnikOglasa.name}{" "}
                 {vlasnikOglasa && vlasnikOglasa.lastName}
               </p>
-            {flag && <div className={style.obrrrisibhrate}>
-            <div className={style.DeleteIcon} onClick={handleDelete}>
-              <Icon
-                icon="delete"
-                classes={"cursorPointer"}
-                iconMargin="0px"
-              />
-              </div>
-              <label>Izbrisi nalog</label>
-            </div>}
+              {flag && (
+                <div className={style.obrrrisibhrate}>
+                  <div className={style.DeleteIcon} onClick={handleDelete}>
+                    <Icon
+                      icon="delete"
+                      classes={"cursorPointer"}
+                      iconMargin="0px"
+                    />
+                  </div>
+                  <label>Izbrisi nalog</label>
+                </div>
+              )}
             </div>
           </div>
           <div className={style.OsnovnePostavkeProfila}>
@@ -310,10 +307,13 @@ const UserProfile = () => {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">{"Da li ste sigurni da želite da obrišete nalog?"}</DialogTitle>
+        <DialogTitle id="alert-dialog-title">
+          {"Da li ste sigurni da želite da obrišete nalog?"}
+        </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Brisanje naloga je trajna akcija i ne može se poništiti. Da li ste sigurni da želite da nastavite?
+            Brisanje naloga je trajna akcija i ne može se poništiti. Da li ste
+            sigurni da želite da nastavite?
           </DialogContentText>
         </DialogContent>
         <DialogActions>
@@ -324,9 +324,7 @@ const UserProfile = () => {
         </DialogActions>
       </Dialog>
     </div>
-    
   );
-  
 };
 
 export default UserProfile;

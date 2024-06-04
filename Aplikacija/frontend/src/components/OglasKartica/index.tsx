@@ -62,13 +62,13 @@ const OglasKartica = ({ oglas, onClick }: Props) => {
 
     try {
       if (localFavorite) {
-        const response = await deleteFavorite(oglas.id).unwrap();
+        const response = await deleteFavorite(oglas.id);
         toast.success('Oglas uspešno uklonjen iz omiljenih.');
-        setLocalFavorite(false);
+        setLocalFavorite(prevFavorite => !prevFavorite);
       } else {
-        const response = await addFavorite(oglas.id).unwrap();
+        const response = await addFavorite(oglas.id);
         toast.success('Oglas uspešno dodat u omiljene.');
-        setLocalFavorite(true);
+        setLocalFavorite(prevFavorite => !prevFavorite);
       }
     } catch (error) {
       console.error('Error updating favorite status:', error);
