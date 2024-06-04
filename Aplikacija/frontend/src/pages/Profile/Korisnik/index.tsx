@@ -154,16 +154,16 @@ const UserProfile = () => {
                 {vlasnikOglasa && vlasnikOglasa.name}{" "}
                 {vlasnikOglasa && vlasnikOglasa.lastName}
               </p>
-              <div className={style.obrrrisibhrate}>
-              <div className={style.DeleteIcon} onClick={handleDelete}>
-                <Icon
-                  icon="delete"
-                  classes={"cursorPointer"}
-                  iconMargin="0px"
-                />
-                </div>
-                <label>Izbrisi nalog</label>
+            {flag && <div className={style.obrrrisibhrate}>
+            <div className={style.DeleteIcon} onClick={handleDelete}>
+              <Icon
+                icon="delete"
+                classes={"cursorPointer"}
+                iconMargin="0px"
+              />
               </div>
+              <label>Izbrisi nalog</label>
+            </div>}
             </div>
           </div>
           <div className={style.OsnovnePostavkeProfila}>

@@ -24,13 +24,13 @@ const authApiSlice = api.injectEndpoints({
     }),
     getFavourites: builder.query<OglasObjekata[], void>({
       query: () => ({
-        url: "Pregled/PrikaziSveOmiljeneOglase",
+        url: "Korisnik/PrikaziSveOmiljeneOglase",
       }),
       providesTags: (result) => providesList("OmiljeniOglasi", result),
     }),
     addFavourite: builder.mutation<OglasObjekata, number>({
       query: (id) => ({
-        url: `Pregled/DodajOmiljeniOglas/${id}`,
+        url: `Korisnik/DodajOmiljeniOglas/${id}`,
         method: "PUT",
       }),
       invalidatesTags: (result, err, arg) => [
@@ -40,7 +40,7 @@ const authApiSlice = api.injectEndpoints({
     }),
     deleteFavourite: builder.mutation<OglasObjekata, number>({
       query: (id) => ({
-        url: `Pregled/ObrisiOmiljeniOglas/${id}`,
+        url: `Korisnik/ObrisiOmiljeniOglas/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: (result, err, arg) => [
@@ -58,6 +58,17 @@ const authApiSlice = api.injectEndpoints({
         { type: "User", id: "LISTUSER" },
       ],
     }),
+    isFavorite: builder.query<boolean, number>({
+      query: (id) => ({
+        url: `Korisnik/DaLiOmiljen/${id}`,
+      }),
+      providesTags: (result, error, id) => {
+        if (error) {
+          return [{ type: 'User' }, { type: 'OmiljeniOglasi', id }];
+        }
+        return [{ type: 'OmiljeniOglasi', id }];
+      },
+    }),
   }),
 });
 
@@ -68,4 +79,5 @@ export const {
   useAddFavouriteMutation,
   useDeleteFavouriteMutation,
   useDeleteUserMutation,
+  useIsFavoriteQuery,
 } = authApiSlice;
