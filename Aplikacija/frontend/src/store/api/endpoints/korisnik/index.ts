@@ -37,6 +37,16 @@ const authApiSlice = api.injectEndpoints({
         { type: "OmiljeniOglasi", id: "LISTOMILJENIOGLASI" },
       ],
     }),
+    deleteUser: builder.mutation<void, number>({
+      query: () => ({
+        url: `Korisnik/ObrisiKorisnika`,
+        method: "DELETE",
+      }),
+      invalidatesTags: (result, err, arg) => [
+        { type: "User", id: arg },
+        { type: "User", id: "LISTAUSER" },
+      ],
+    }),
   }),
 });
 
@@ -45,4 +55,5 @@ export const {
   useGetFavouritesQuery,
   useAddFavouriteMutation,
   useDeleteFavouriteMutation,
+  useDeleteUserMutation,
 } = authApiSlice;

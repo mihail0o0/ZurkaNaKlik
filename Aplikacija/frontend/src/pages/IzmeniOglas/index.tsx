@@ -3,7 +3,13 @@ import style from "../oglasiProstor/style.module.css";
 import { ChangeEvent, useEffect, useState } from "react";
 import Input from "@/components/lib/inputs/text-input";
 import {
+  Button,
   Chip,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   InputLabel,
   MenuItem,
   OutlinedInput,
@@ -54,6 +60,7 @@ const IzmeniOglas = () => {
   const [brojSoba, setBrojSoba] = useState("Broj soba");
   const [brojKreveta, setBrojKreveta] = useState("Broj kreveta");
   const [brojKupatila, setBrojKupatila] = useState("Broj kupatila");
+  const [openDialog, setOpenDialog] = useState(false);
 
   const [selectedTipoviProslava, setSelectedTipoviProslava] = useState<
     number[]
@@ -197,19 +204,29 @@ const IzmeniOglas = () => {
 
     return true;
   }
+  const handleDelete = () => {
+    setOpenDialog(true); 
+  };
 
-  const handleDelete = async () => {
-    if (!oglas) return;
-    const response = await deleteOglas(oglas.id);
+  const handleDialogClose = async (agree: boolean) => {
+    setOpenDialog(false); 
+
+    if (agree) {
+       if (!oglas) return;
+       const response = await deleteOglas(oglas.id);
 
     if ("error" in response) {
-      navigate("/user/profile");
+      toast.error("Neuspesno brisanje oglasa");
+      navigate(`/user/profile/${user?.id}`);
       return;
     }
 
     toast.success("Oglas uspesno obrisan");
-    navigate("/user/profile");
+    navigate(`/user/profile/${user?.id}`);
+     
+    }
   };
+ 
 
   const submit = async () => {
     if (!oglas) return;
@@ -312,7 +329,7 @@ const IzmeniOglas = () => {
             <Input text={adresa} icon="location_on" onChange={setAdresa} />
           </div>
           <div>
-            <Input text={cenaDan} icon="euro_symbol" onChange={setCenaDan} />
+            <Input text={cenaDan} icon="payments" onChange={setCenaDan} />
           </div>
           <div>
             <Input
@@ -472,6 +489,25 @@ const IzmeniOglas = () => {
           />
         </div>
       </div>
+      <Dialog
+        open={openDialog}
+        onClose={() => handleDialogClose(false)}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">{"Da li ste sigurni da želite da obrišete oglas?"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Brisanje oglasa je trajna akcija i ne može se poništiti. Da li ste sigurni da želite da nastavite?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => handleDialogClose(false)}>Ne</Button>
+          <Button onClick={() => handleDialogClose(true)} autoFocus>
+            Da
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };

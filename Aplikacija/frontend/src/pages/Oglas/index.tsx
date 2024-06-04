@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import style from "./style.module.css";
 import { useGetOglasQuery } from "@/store/api/endpoints/oglas";
 import Icon from "@/components/lib/icon";
@@ -9,11 +9,16 @@ import BrojLjudi from "../Home/DivFilteri/brojLjudi";
 import { skipToken } from "@reduxjs/toolkit/query";
 import { useState } from "react";
 import { dodatnaOpremaIkoniceMap, dodatnaOpremaMap } from "@/store/api/endpoints/oglas/types";
+import { useSelector } from "react-redux";
+import { selectUser } from "@/store/auth";
 
 const Oglas = () => {
   const [brojLjudi,SetBrojLjudi]=useState("");
   const { id } = useParams();
   const idOglasa=id ? parseInt(id) : undefined;
+  const navigate = useNavigate();
+
+
 
  
   const { data: currentOglas } = useGetOglasQuery(idOglasa || skipToken);
@@ -72,10 +77,10 @@ const Oglas = () => {
               </h2>
               <div>
                 <MojButton
-                  text="Posalji poruku"
+                  text="Prikazi profil"
                   wide={true}
                   center={true}
-                  onClick={() => {}}
+                  onClick= {() => navigate(`/user/profile/${VlasnikOglasa && VlasnikOglasa.id}`)}
                 />
               </div>
             </div>

@@ -42,6 +42,7 @@ const OglasKartica = ({ oglas, onClick }: Props) => {
 
   function updateFavorite() {
     setFavorite((prevFavorite) => !prevFavorite);
+    // ovde da se dodaju omiljeni na back
   }
 
   const defaultImage = "/images/imageNotFound.jpg";
@@ -121,7 +122,7 @@ const OglasKartica = ({ oglas, onClick }: Props) => {
               {oglas.naziv}
             </h2>
             <div className={style.Ocena}>
-              <Icon icon="grade" />
+              <Icon icon="grade"  />
               <p>{oglas.ocena}</p>
             </div>
           </div>

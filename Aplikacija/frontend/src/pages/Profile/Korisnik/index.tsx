@@ -6,8 +6,15 @@ import LabeledAvatar from "@/components/LabeledAvatar";
 import { useSelector } from "react-redux";
 import { selectUser } from "@/store/auth";
 import OglasKartica from "@/components/OglasKartica";
-import { useGetUserDataQuery } from "@/store/api/endpoints/korisnik";
+import { useDeleteUserMutation, useGetUserDataQuery } from "@/store/api/endpoints/korisnik";
 import UserAvatar from "@/components/UserAvatar";
+import * as React from 'react';
+import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
 import {
   NavLink,
   Outlet,
@@ -18,11 +25,17 @@ import {
 } from "react-router-dom";
 
 import { Alert } from "@mui/material";
-import { useGetKorisnikOglasiQuery, useGetUserOglasiQuery } from "@/store/api/endpoints/oglas";
+import {
+  useGetKorisnikOglasiQuery,
+  useGetUserOglasiQuery,
+} from "@/store/api/endpoints/oglas";
 import { EnumTipProslava } from "@/store/api/endpoints/oglas/types";
 import { skipToken } from "@reduxjs/toolkit/query";
 import Icon from "@/components/lib/icon";
 import DisplayCard from "@/components/DisplayCard";
+import { toast } from "react-toastify";
+
+
 
 const UserProfile = () => {
   const navigate = useNavigate();
@@ -32,7 +45,10 @@ const UserProfile = () => {
   //znaci ovo je ako nisu isti
   const { data: vlasnikOglasa } = useGetUserDataQuery(idKorisnika ?? skipToken);
   const flag = idKorisnika === userCurr?.id;
-  const {data : tudjiOglasi}=useGetKorisnikOglasiQuery(idKorisnika ?? skipToken);
+  const { data: tudjiOglasi } = useGetKorisnikOglasiQuery(
+    idKorisnika ?? skipToken
+  );
+ 
 
   // nece da se pozove ako ne postoji user, zbog skip
   const { data: user } = useGetUserDataQuery(userCurr?.id!, {
@@ -49,6 +65,8 @@ const UserProfile = () => {
   const [slikaProfila, setSlikaProfila] = useState<string | undefined>("");
   const [lokacija, setLokacija] = useState("");
   const [opis, setOpis] = useState("");
+  const [openDialog, setOpenDialog] = useState(false);
+  const[deleteUser]=useDeleteUserMutation();
 
   useEffect(() => {
     if (!vlasnikOglasa) return;
@@ -63,7 +81,28 @@ const UserProfile = () => {
   function handleOpis(event: ChangeEvent<HTMLTextAreaElement>) {
     setOpis(event.target.value);
   }
+  const handleDelete = () => {
+    setOpenDialog(true); 
+  };
 
+  const handleDialogClose = async (agree: boolean) => {
+    setOpenDialog(false); 
+
+    if (agree) {
+       if (!userCurr) return;
+    const response = await deleteUser(userCurr.id);
+
+    if ("error" in response) {
+      toast.error("Neuspesno brisanje naloga");
+      navigate(`/user/profile/${userCurr.id}`);
+      return;
+    }
+
+    toast.success("Uspesno obrisan nalog");
+    navigate("user/signup");
+     
+    }
+  };
   if (!user) {
     return null;
   }
@@ -71,9 +110,7 @@ const UserProfile = () => {
   return (
     <div className={`containerWrapper ${style.Container}`}>
       <div className={style.PostavkeProfila}>
-        <div>
-         {flag &&  <h2>Postavke profila</h2>}
-        </div>
+        <div>{flag && <h2>Postavke profila</h2>}</div>
         <div className={style.Postavke2}>
           {/* odje ide slika od kad je clan broj oglasa i prosecna ocena */}
           <div className={style.KarticaSaSlikom}>
@@ -82,8 +119,18 @@ const UserProfile = () => {
 
               <p>
                 {vlasnikOglasa && vlasnikOglasa.name}{" "}
-                {vlasnikOglasa &&  vlasnikOglasa.lastName}
+                {vlasnikOglasa && vlasnikOglasa.lastName}
               </p>
+              <div className={style.obrrrisibhrate}>
+              <div className={style.DeleteIcon} onClick={handleDelete}>
+                <Icon
+                  icon="delete"
+                  classes={"cursorPointer"}
+                  iconMargin="0px"
+                />
+                </div>
+                <label>Izbrisi nalog</label>
+              </div>
             </div>
             {/* <div className={style.InfoOClanu}>
               {flag && <p>Email: {vlasnikOglasa && vlasnikOglasa.email}</p>}
@@ -114,7 +161,7 @@ const UserProfile = () => {
                     icon={"boy"}
                     text={
                       (vlasnikOglasa &&
-                        vlasnikOglasa.name + " "+  vlasnikOglasa?.lastName) ||
+                        vlasnikOglasa.name + " " + vlasnikOglasa?.lastName) ||
                       ""
                     }
                   />
@@ -199,16 +246,17 @@ const UserProfile = () => {
           )}
         </div>
         <div className={style.OglasiKartice}>
-          {flag ?
-            MojiOglasi?.map((oglas) => (
-              <div key={oglas.id}>
-                <OglasKartica oglas={oglas} onClick={() => {}} />
-              </div>
-            )) :   tudjiOglasi?.map((oglas) => (
-              <div key={oglas.id}>
-                <OglasKartica oglas={oglas} onClick={() => {}} />
-              </div>
-            ))}
+          {flag
+            ? MojiOglasi?.map((oglas) => (
+                <div key={oglas.id}>
+                  <OglasKartica oglas={oglas} onClick={() => {}} />
+                </div>
+              ))
+            : tudjiOglasi?.map((oglas) => (
+                <div key={oglas.id}>
+                  <OglasKartica oglas={oglas} onClick={() => {}} />
+                </div>
+              ))}
         </div>
         <div className={style.Dugmenajjace}>
           <div className={style.Dugme2}>
@@ -225,7 +273,27 @@ const UserProfile = () => {
           </div>
         </div>
       </div>
+      <Dialog
+        open={openDialog}
+        onClose={() => handleDialogClose(false)}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">{"Da li ste sigurni da želite da obrišete nalog?"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Brisanje naloga je trajna akcija i ne može se poništiti. Da li ste sigurni da želite da nastavite?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => handleDialogClose(false)}>Ne</Button>
+          <Button onClick={() => handleDialogClose(true)} autoFocus>
+            Da
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
+    
   );
 };
 export default UserProfile;
