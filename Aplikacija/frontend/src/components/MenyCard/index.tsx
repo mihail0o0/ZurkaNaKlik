@@ -19,7 +19,7 @@ const MenyCard= ({oglas}:MenyCardProps)=>{
                 <h3>Burger king</h3>
                 <p>Opis menija neki mali.</p>
                 <div className={style.InfoOglas}>
-                    <DisplayCard text={"Trg 14. oktobra 6"} icon={"location_on"}/>
+                    <DisplayCard text={"Trg 14. oktobra 6"} icon={"location_on"} />
                     <DisplayCard text={"Vila ramonda"} icon={"house"}/>
                     <DisplayCard text={"Mihailo Petrovic"} icon={"edit"}/>
                 </div>

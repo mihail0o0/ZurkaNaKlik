@@ -30,15 +30,20 @@
     display: flex;
     flex-direction: row;
     align-items: center;
+    width: 100%;
+    gap:5px;
 }
 .acceptDecline{
     display: flex;
     flex-direction: column;
-    gap:10px;
-    padding: 10px;
+    padding: 1px;
     align-items: center;
     justify-content: space-around;
+    
+
 }
 .ButtonParentDiv{
     width: 100%;
+    gap:5px;
+    
 }
