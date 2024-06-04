@@ -14,5 +14,10 @@ namespace backend.Models
         public required string repeatPassword { get; set; }
         public Roles role { get; set; } = Roles.Korisnik;
         public required string location { get; set; }
+
+        public static implicit operator RegistrationKorisnik(Korisnik v)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
