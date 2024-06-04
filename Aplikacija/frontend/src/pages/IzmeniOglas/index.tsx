@@ -46,6 +46,16 @@ import { skipToken } from "@reduxjs/toolkit/query";
 import { useSelector } from "react-redux";
 import { selectUser } from "@/store/auth";
 import PageSpacer from "@/components/lib/page-spacer";
+import UploadComponent from "@/components/UploadComponent";
+import {
+  useLazyGetImageQuery,
+  useUploadKorisnikMutation,
+  useUploadOglasMutation,
+} from "@/store/api/endpoints/images";
+import { ResultType } from "@/types";
+import { UploadOglasDTO } from "@/store/api/endpoints/images/types";
+import { getRawLocation } from "@/utils/handleQueries";
+import ImageGallery from "@/components/ImageGallery";
 
 const IzmeniOglas = () => {
   const user = useSelector(selectUser);
@@ -63,6 +73,8 @@ const IzmeniOglas = () => {
   const [brojKupatila, setBrojKupatila] = useState("Broj kupatila");
   const [openDialog, setOpenDialog] = useState(false);
 
+  const [images, setImages] = useState<(string | undefined | null)[]>([]);
+
   const [selectedTipoviProslava, setSelectedTipoviProslava] = useState<
     number[]
   >([]);
@@ -75,8 +87,36 @@ const IzmeniOglas = () => {
 
   const { id } = useParams();
   const idOglasa = id ? parseInt(id) : undefined;
-
   const { data: oglas } = useGetOglasQuery(idOglasa || skipToken);
+
+  const [getImageAction] = useLazyGetImageQuery();
+
+  useEffect(() => {
+    if (!oglas) return;
+    console.log("Izvrsim se");
+
+    const fetchImages = async () => {
+      const results = await Promise.all(
+        oglas.slike.map(async (slikaLocation) => {
+          if (!slikaLocation) return undefined;
+          const { data, error } = await getImageAction(
+            getRawLocation(slikaLocation)!
+          );
+          if (error) {
+            console.error(error);
+            return null;
+          }
+          return data;
+        })
+      );
+
+      setImages(results);
+    };
+
+    fetchImages();
+  }, [oglas?.slike, getImageAction]);
+
+  console.log(images);
 
   useEffect(() => {
     if (!oglas) return;
@@ -206,28 +246,26 @@ const IzmeniOglas = () => {
     return true;
   }
   const handleDelete = () => {
-    setOpenDialog(true); 
+    setOpenDialog(true);
   };
 
   const handleDialogClose = async (agree: boolean) => {
-    setOpenDialog(false); 
+    setOpenDialog(false);
 
     if (agree) {
-       if (!oglas) return;
-       const response = await deleteOglas(oglas.id);
+      if (!oglas) return;
+      const response = await deleteOglas(oglas.id);
 
-    if ("error" in response) {
-      toast.error("Neuspesno brisanje oglasa");
+      if ("error" in response) {
+        toast.error("Neuspesno brisanje oglasa");
+        navigate(`/user/profile/${user?.id}`);
+        return;
+      }
+
+      toast.success("Oglas uspesno obrisan");
       navigate(`/user/profile/${user?.id}`);
-      return;
-    }
-
-    toast.success("Oglas uspesno obrisan");
-    navigate(`/user/profile/${user?.id}`);
-     
     }
   };
- 
 
   const submit = async () => {
     if (!oglas) return;
@@ -277,106 +315,123 @@ const IzmeniOglas = () => {
     }
   };
 
+  const [uploadAgencija] = useUploadOglasMutation();
+
+  const uploadFn = async (formData: FormData): Promise<ResultType> => {
+    if (!oglas) return;
+    const uploadData: UploadOglasDTO = {
+      id: oglas.id,
+      formData,
+    };
+    const result = await uploadAgencija(uploadData);
+    return result;
+  };
+
   return (
-    <div className={`containerWrapper ${style.Glavni}`}>
-      <div className={style.Heading}>
-        <div className={style.Txt}>
-          <h2>Izmenite oglašeni prostor</h2>
-          <p className={style.TxtDodaj}>
-            Dodajte sve validne podatke za Vaš prostor, kako bi korisnicima dali
-            sto širu sliku prostora kojeg izdajete.
-          </p>
+    <>
+      <PageSpacer variant="xs" />
+      <div className={`containerWrapper ${style.Glavni}`}>
+        <div className={style.Heading}>
+          <div className={style.Txt}>
+            <h2>Izmenite oglašeni prostor</h2>
+            <p className={style.TxtDodaj}>
+              Dodajte sve validne podatke za Vaš prostor, kako bi korisnicima
+              dali sto širu sliku prostora kojeg izdajete.
+            </p>
+          </div>
+          <div className={style.DeleteIcon} onClick={handleDelete}>
+            <Icon icon="delete" classes={"cursorPointer"} iconMargin="0px" />
+          </div>
         </div>
-        <div className={style.DeleteIcon} onClick={handleDelete}>
-          <Icon
-            icon="delete"
-            classes={"cursorPointer"}
-            iconMargin="0px"
-          />
+        <h2>Slike prostora</h2>
+        <ImageGallery images={images} />
+        <div className={style.NAJJACEDUGME}>
+          <div className={style.DodajSLikuDugme}>
+            <UploadComponent uploadFn={uploadFn}>
+              <MojButton
+                text="Dodaj sliku"
+                icon="add_photo_alternate"
+                backgroundColor="lightgrey"
+                color="black"
+                wide={true}
+                center={true}
+              />
+            </UploadComponent>
+          </div>
         </div>
-      </div>
-      <div>{/* ovde idu slike  */}</div>
-      <div className={style.NAJJACEDUGME}>
-        <div className={style.DodajSLikuDugme}>
-          <MojButton
-            text="Dodaj sliku"
-            icon="add_photo_alternate"
-            backgroundColor="lightgrey"
-            color="black"
-            wide={true}
-            center={true}
-          />
-        </div>
-      </div>
-      <div className={style.OpisiProstora}>
-        {/* opisi */}
-        <div className={style.KolonaTxtArea}>
-          <textarea
-            placeholder="Opis prostora"
-            className={style.TxtArea}
-            onChange={updateOpisProstora}
-            value={opisProstora}
-          />
-        </div>
-        <div className={style.KolonaTxtArea}>
-          <div>
-            <Input text={naziv} icon="house" onChange={setNaziv} />
-          </div>
-          <div>
-            <Input text={brojTelefona} icon="call" onChange={setBrojTelefona} />
-          </div>
-          <div>
-            <Input text={grad} icon="location_on" onChange={setGrad} />
-          </div>
-          <div>
-            <Input text={adresa} icon="location_on" onChange={setAdresa} />
-          </div>
-          <div>
-            <Input text={cenaDan} icon="payments" onChange={setCenaDan} />
-          </div>
-          <div>
-            <Input
-              text={kvadratura}
-              icon="view_in_ar"
-              onChange={setKvadratura}
+        <div className={style.OpisiProstora}>
+          {/* opisi */}
+          <div className={style.KolonaTxtArea}>
+            <textarea
+              placeholder="Opis prostora"
+              className={style.TxtArea}
+              onChange={updateOpisProstora}
+              value={opisProstora}
             />
           </div>
-          <div>
-            <Input text={brojSoba} icon="chair" onChange={setBrojSoba} />
-          </div>
-          <div>
-            <Input text={brojKreveta} icon="bed" onChange={setBrojKreveta} />
-          </div>
-          <div>
-            <Input
-              text={brojKupatila}
-              icon="bathroom"
-              onChange={setBrojKupatila}
-            />
-          </div>
-          <div>
-            {/* // TODO stavi label na ovaj mrtvi select */}
-            <Select
-              id="select-tip-grejanja"
-              value={grejanje ?? ""}
-              onChange={handleChangeGrejanje}
-              sx={{
-                width: "100%",
-                borderRadius: "12px",
-                color: "black",
-              }}
-            >
-              {Object.values(tipGrejanjaMap).map((value) => {
-                return (
-                  <MenuItem key={`Select-${value}`} value={value}>
-                    {value}
-                  </MenuItem>
-                );
-              })}
-            </Select>
+          <div className={style.KolonaTxtArea}>
+            <div>
+              <Input text={naziv} icon="house" onChange={setNaziv} />
+            </div>
+            <div>
+              <Input
+                text={brojTelefona}
+                icon="call"
+                onChange={setBrojTelefona}
+              />
+            </div>
+            <div>
+              <Input text={grad} icon="location_on" onChange={setGrad} />
+            </div>
+            <div>
+              <Input text={adresa} icon="location_on" onChange={setAdresa} />
+            </div>
+            <div>
+              <Input text={cenaDan} icon="payments" onChange={setCenaDan} />
+            </div>
+            <div>
+              <Input
+                text={kvadratura}
+                icon="view_in_ar"
+                onChange={setKvadratura}
+              />
+            </div>
+            <div>
+              <Input text={brojSoba} icon="chair" onChange={setBrojSoba} />
+            </div>
+            <div>
+              <Input text={brojKreveta} icon="bed" onChange={setBrojKreveta} />
+            </div>
+            <div>
+              <Input
+                text={brojKupatila}
+                icon="bathroom"
+                onChange={setBrojKupatila}
+              />
+            </div>
+            <div>
+              {/* // TODO stavi label na ovaj mrtvi select */}
+              <Select
+                id="select-tip-grejanja"
+                value={grejanje ?? ""}
+                onChange={handleChangeGrejanje}
+                sx={{
+                  width: "100%",
+                  borderRadius: "12px",
+                  color: "black",
+                }}
+              >
+                {Object.values(tipGrejanjaMap).map((value) => {
+                  return (
+                    <MenuItem key={`Select-${value}`} value={value}>
+                      {value}
+                    </MenuItem>
+                  );
+                })}
+              </Select>
+            </div>
           </div>
         </div>
-      </div>
 
         <div className={style.TipoviProslava}>
           <div>
@@ -490,36 +545,40 @@ const IzmeniOglas = () => {
           </div>
         </div>
 
-      <div className={style.NAJJACEDUGME}>
-        <div className={style.dodajOglasDugme}>
-          <MojButton
-            text="Izmenite oglas"
-            center={true}
-            wide={true}
-            onClick={submit}
-          />
+        <div className={style.NAJJACEDUGME}>
+          <div className={style.dodajOglasDugme}>
+            <MojButton
+              text="Izmenite oglas"
+              center={true}
+              wide={true}
+              onClick={submit}
+            />
+          </div>
         </div>
+        <Dialog
+          open={openDialog}
+          onClose={() => handleDialogClose(false)}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">
+            {"Da li ste sigurni da želite da obrišete oglas?"}
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              Brisanje oglasa je trajna akcija i ne može se poništiti. Da li ste
+              sigurni da želite da nastavite?
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => handleDialogClose(false)}>Ne</Button>
+            <Button onClick={() => handleDialogClose(true)} autoFocus>
+              Da
+            </Button>
+          </DialogActions>
+        </Dialog>
       </div>
-      <Dialog
-        open={openDialog}
-        onClose={() => handleDialogClose(false)}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">{"Da li ste sigurni da želite da obrišete oglas?"}</DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            Brisanje oglasa je trajna akcija i ne može se poništiti. Da li ste sigurni da želite da nastavite?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => handleDialogClose(false)}>Ne</Button>
-          <Button onClick={() => handleDialogClose(true)} autoFocus>
-            Da
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </div>
+    </>
   );
 };
 export default IzmeniOglas;

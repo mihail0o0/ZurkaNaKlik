@@ -32,6 +32,14 @@ import { updateUserSchema } from "@/utils/validators";
 import { getValidationMessage } from "@/utils/validationMessage";
 import { toast } from "react-toastify";
 import Icon from "@/components/lib/icon";
+import {
+  useGetImageQuery,
+  useUploadKorisnikMutation,
+} from "@/store/api/endpoints/images";
+import { getRawLocation } from "@/utils/handleQueries";
+import UploadComponent from "@/components/UploadComponent";
+import { ResultType } from "@/types";
+import { url } from "inspector";
 
 const UserProfile = () => {
   const navigate = useNavigate();
@@ -50,6 +58,10 @@ const UserProfile = () => {
     skip: !userCurr,
   });
   const { data: MojiOglasi } = useGetUserOglasiQuery();
+
+  const { data: imageUrl } = useGetImageQuery(
+    getRawLocation(user?.profilePhoto) ?? skipToken
+  );
 
   const [updateUserAction] = useUpdateUserMutation();
   const [deleteUserAction] = useDeleteUserMutation();
@@ -117,9 +129,11 @@ const UserProfile = () => {
 
     if (agree) {
       if (!userCurr) return;
-      const response = await deleteUser(userCurr.id);
+      const response = await deleteUser();
 
       if ("error" in response) {
+        toast.error("Neuspesno brisanje naloga");
+        navigate(`/user/profile/${userCurr.id}`);
         return;
       }
 
@@ -131,6 +145,13 @@ const UserProfile = () => {
     return null;
   }
 
+  const [uploadKorisnikAction] = useUploadKorisnikMutation();
+
+  const uploadKorisnik = async (formData: FormData): Promise<ResultType> => {
+    const result = await uploadKorisnikAction(formData);
+    return result;
+  };
+
   return (
     <div className={`containerWrapper ${style.Container}`}>
       <div className={style.PostavkeProfila}>
@@ -139,11 +160,14 @@ const UserProfile = () => {
           {/* odje ide slika od kad je clan broj oglasa i prosecna ocena */}
           <div className={style.KarticaSaSlikom}>
             <div className={style.SlikaImeIPrezime}>
-              <UserAvatar
-                size={100}
-                letter={vlasnikOglasa && vlasnikOglasa.name[0]}
-                src={slikaProfila}
-              />
+              <UploadComponent uploadFn={uploadKorisnik}>
+                <UserAvatar
+                  uploadable={true}
+                  size={100}
+                  letter={user.name[0]}
+                  src={imageUrl}
+                />
+              </UploadComponent>
               <p>
                 {vlasnikOglasa && vlasnikOglasa.name}{" "}
                 {vlasnikOglasa && vlasnikOglasa.lastName}
