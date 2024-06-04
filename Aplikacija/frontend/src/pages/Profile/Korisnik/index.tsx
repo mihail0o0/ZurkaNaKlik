@@ -90,9 +90,6 @@ const UserProfile = () => {
     setLokacija(vlasnikOglasa.location);
   }, [user]);
 
-  // function handleOpis(event: ChangeEvent<HTMLTextAreaElement>)) {
-  //   setOpis(event.target.value);
-  // }
   const handleDelete = () => {
     setOpenDialog(true);
   };

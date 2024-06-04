@@ -127,7 +127,7 @@ p {
 
 /* TESTING */
 .testingPageWrapper {
-  background-color: white;
+  background-color: var(--lightGrey);
   padding: 60px;
   border-radius: var(--borderRadiusBig);
   margin-top: 70px;
