@@ -5,9 +5,6 @@ import MojButton from "@/components/lib/button";
 import { useSelector } from "react-redux";
 import { selectUser } from "@/store/auth";
 import OglasKartica from "@/components/OglasKartica";
-<<<<<<< HEAD
-import { useDeleteUserMutation, useGetUserDataQuery } from "@/store/api/endpoints/korisnik";
-import UserAvatar from "@/components/UserAvatar";
 import * as React from 'react';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
@@ -15,8 +12,6 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-=======
->>>>>>> e766c6ac33ba00e2467a7eca49304020ab80416f
 import {
   useDeleteUserMutation,
   useGetUserDataQuery,
@@ -24,31 +19,20 @@ import {
 } from "@/store/api/endpoints/korisnik";
 import UserAvatar from "@/components/UserAvatar";
 import { useNavigate, useParams } from "react-router-dom";
-
-<<<<<<< HEAD
 import { Alert } from "@mui/material";
-=======
->>>>>>> e766c6ac33ba00e2467a7eca49304020ab80416f
 import {
   useGetKorisnikOglasiQuery,
   useGetUserOglasiQuery,
 } from "@/store/api/endpoints/oglas";
-<<<<<<< HEAD
 import { EnumTipProslava } from "@/store/api/endpoints/oglas/types";
-=======
->>>>>>> e766c6ac33ba00e2467a7eca49304020ab80416f
 import { skipToken } from "@reduxjs/toolkit/query";
 import DisplayCard from "@/components/DisplayCard";
-<<<<<<< HEAD
-import { toast } from "react-toastify";
-
-
-=======
 import { UpdateUserDTO } from "@/store/api/endpoints/korisnik/types";
 import { updateUserSchema } from "@/utils/validators";
 import { getValidationMessage } from "@/utils/validationMessage";
 import { toast } from "react-toastify";
->>>>>>> e766c6ac33ba00e2467a7eca49304020ab80416f
+import Icon from "@/components/lib/icon";
+
 
 const UserProfile = () => {
   const navigate = useNavigate();
@@ -61,11 +45,8 @@ const UserProfile = () => {
   const { data: tudjiOglasi } = useGetKorisnikOglasiQuery(
     idKorisnika ?? skipToken
   );
-<<<<<<< HEAD
- 
-=======
->>>>>>> e766c6ac33ba00e2467a7eca49304020ab80416f
 
+ 
   // nece da se pozove ako ne postoji user, zbog skip
   const { data: user } = useGetUserDataQuery(userCurr?.id!, {
     skip: !userCurr,
@@ -84,12 +65,12 @@ const UserProfile = () => {
   const [brTel, setBrTel] = useState("");
   const [slikaProfila, setSlikaProfila] = useState<string | undefined>("");
   const [lokacija, setLokacija] = useState("");
-<<<<<<< HEAD
+
   const [opis, setOpis] = useState("");
   const [openDialog, setOpenDialog] = useState(false);
   const[deleteUser]=useDeleteUserMutation();
-=======
->>>>>>> e766c6ac33ba00e2467a7eca49304020ab80416f
+
+
 
   useEffect(() => {
     if (!vlasnikOglasa) return;
@@ -102,13 +83,13 @@ const UserProfile = () => {
     setLokacija(vlasnikOglasa.location);
   }, [user]);
 
-<<<<<<< HEAD
-  function handleOpis(event: ChangeEvent<HTMLTextAreaElement>) {
-    setOpis(event.target.value);
-  }
+
+  // function handleOpis(event: ChangeEvent<HTMLTextAreaElement>)) {
+  //   setOpis(event.target.value);
+  // }
   const handleDelete = () => {
     setOpenDialog(true); 
-=======
+  }
   const submit = async () => {
     if (!user) return;
     if(!flag) return;
@@ -135,7 +116,7 @@ const UserProfile = () => {
     if ("error" in result) return;
 
     toast.success("Uspesno izmenjeni podaci");
->>>>>>> e766c6ac33ba00e2467a7eca49304020ab80416f
+
   };
 
   const handleDialogClose = async (agree: boolean) => {
@@ -346,5 +327,7 @@ const UserProfile = () => {
     </div>
     
   );
+  
 };
+
 export default UserProfile;

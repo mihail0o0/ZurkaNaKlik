@@ -22,17 +22,6 @@ const authApiSlice = api.injectEndpoints({
         { type: "User", id: "LISTUSER" },
       ],
     }),
-    deleteUser: builder.mutation<AllUserData, UpdateUserDTO>({
-      query: (body) => ({
-        url: "Korisnik/IzmeniPodatkeOKorisniku",
-        method: "PUT",
-        body,
-      }),
-      invalidatesTags: (result, err, arg) => [
-        { type: "User", id: result?.id },
-        { type: "User", id: "LISTUSER" },
-      ],
-    }),
     getFavourites: builder.query<OglasObjekata[], void>({
       query: () => ({
         url: "Pregled/PrikaziSveOmiljeneOglase",
@@ -66,7 +55,7 @@ const authApiSlice = api.injectEndpoints({
       }),
       invalidatesTags: (result, err, arg) => [
         { type: "User", id: arg },
-        { type: "User", id: "LISTAUSER" },
+        { type: "User", id: "LISTUSER" },
       ],
     }),
   }),
@@ -75,7 +64,6 @@ const authApiSlice = api.injectEndpoints({
 export const {
   useGetUserDataQuery,
   useUpdateUserMutation,
-  useDeleteUserMutation,
   useGetFavouritesQuery,
   useAddFavouriteMutation,
   useDeleteFavouriteMutation,
