@@ -9,9 +9,11 @@ import {
 } from "@/store/api/endpoints/oglas/types";
 import { enumToString } from "@/utils/enumMappings";
 import { useSelector } from "react-redux";
-import { useGetUserDataQuery } from "@/store/api/endpoints/korisnik";
+import { useAddFavouriteMutation, useDeleteFavouriteMutation, useGetUserDataQuery, useIsFavoriteQuery } from "@/store/api/endpoints/korisnik";
 import { selectUser } from "@/store/auth";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { skipToken } from "@reduxjs/toolkit/query";
 
 // type Props = {
 //   nazivProstora: string;
@@ -33,16 +35,40 @@ type Props = {
 
 const OglasKartica = ({ oglas, onClick }: Props) => {
   const navigate = useNavigate();
-  const [favorite, setFavorite] = useState(false);
-
-  const userCurr = useSelector(selectUser);
+  //const [favorite, setFavorite] = useState(false);
+  const[addFavorite]=useAddFavouriteMutation();
+  const[deleteFavorite]=useDeleteFavouriteMutation();
+  const{data : isFavorite}=useIsFavoriteQuery(oglas.id);
+  const userCurr = useSelector(selectUser ?? skipToken);
   const { data: user } = useGetUserDataQuery(userCurr?.id!, {
     skip: !userCurr,
   });
+  console.log(oglas.id);
+  console.log(isFavorite);
 
-  function updateFavorite() {
-    setFavorite((prevFavorite) => !prevFavorite);
-  }
+  const updateFavorite = async () => {
+    console.log(isFavorite);
+    if (!isFavorite) {
+      const response = await addFavorite(oglas.id);
+      if ("error" in response) {
+        toast.error("Oglas nije dodat u omiljene");
+        return;
+      }
+
+     // setFavorite(true);
+      toast.success("Oglas uspesno dodat u omiljene");
+    } else {
+      const response = await deleteFavorite(oglas.id);
+      if ("error" in response) {
+        toast.error("Neuspesno brisanje oglasa iz omiljenih");
+        console.log(isFavorite);
+        return;
+      }
+
+      //setFavorite(false);
+      toast.success("Oglas uspesno obrisan iz omiljenih");
+    }
+  };
 
   const defaultImage = "/images/imageNotFound.jpg";
 
@@ -92,11 +118,11 @@ const OglasKartica = ({ oglas, onClick }: Props) => {
             <img
               onClick={updateFavorite}
               src={
-                favorite
+                isFavorite
                   ? "/images/favorite.png"
                   : "/images/not_favorite.png"
               }
-              alt={favorite ? "Favorite" : "Not Favorite"}
+              alt={isFavorite ? "Favorite" : "Not Favorite"}
               className="cursorPointer"
             />
           ) : (
@@ -121,7 +147,7 @@ const OglasKartica = ({ oglas, onClick }: Props) => {
               {oglas.naziv}
             </h2>
             <div className={style.Ocena}>
-              <Icon icon="grade" />
+              <Icon icon="grade"  />
               <p>{oglas.ocena}</p>
             </div>
           </div>

@@ -248,13 +248,16 @@ namespace backend.Controllers
                     return BadRequest("Ti nisi vlasnik oglasa bato");
                 }
 
-                if(oglas.ListaZakupkjenihOglasa != null){
-                    foreach(var zakupljen in oglas.ListaZakupkjenihOglasa){
+                if (oglas.ListaZakupkjenihOglasa != null)
+                {
+                    foreach (var zakupljen in oglas.ListaZakupkjenihOglasa)
+                    {
 
-                        if(zakupljen!.ZahtevZaKetering != null){
+                        if (zakupljen!.ZahtevZaKetering != null)
+                        {
                             Context.ZahteviZaKetering.Remove(zakupljen!.ZahtevZaKetering);
                         }
-                        
+
                         Context.ZakupljeniOglasi.Remove(zakupljen);
 
                     }
@@ -824,36 +827,34 @@ namespace backend.Controllers
         // Izmena podataka (idKorisnika)
         #region IzmeniPodatkeOKorisniku
         [HttpPut("IzmeniPodatkeOKorisniku")]
-        public async Task<ActionResult> IzmeniPodatkeOKorisniku([FromBody] Korisnik korisnik)
+        public async Task<ActionResult> IzmeniPodatkeOKorisniku([FromBody] KorisnikBasic korisnik)
         {
             try
             {
                 int idKorisnika = int.Parse((HttpContext.Items["idKorisnika"] as string)!);
 
-                if(idKorisnika != korisnik.Id){
+                if (idKorisnika != korisnik.id)
+                {
                     return BadRequest("nema");
                 }
 
-                Korisnik? korisnikk = await Context.Korisnici.FindAsync(idKorisnika);
-                
-                if(korisnikk == null){
+                Korisnik? dboKorisnik = await Context.Korisnici.FindAsync(idKorisnika);
+
+                if (dboKorisnik == null)
+                {
                     return BadRequest("nema");
                 }
 
-                    korisnikk.Ime = korisnik.Ime;
-                    korisnikk.Email = korisnik.Email;
-                    korisnikk.BrTel = korisnik.BrTel;
-                    korisnikk.LozinkaHash = korisnik.LozinkaHash;
-                    korisnikk.Lokacija = korisnik.Lokacija;
-                    korisnikk.Prezime = korisnik.Prezime;
+                dboKorisnik.Ime = korisnik.name;
+                dboKorisnik.Email = korisnik.email;
+                dboKorisnik.BrTel = korisnik.phoneNumber;
+                dboKorisnik.Lokacija = korisnik.location;
+                dboKorisnik.Prezime = korisnik.lastName;
 
                 await Context.SaveChangesAsync();
 
-
-                
-                return Ok(new { korisnik });
-
-
+                GetKorisnikResult result = ObjectCreatorSingleton.Instance.ToKorisnikResult(dboKorisnik);
+                return Ok(result);
             }
             catch (Exception ex)
             {
@@ -1032,7 +1033,7 @@ namespace backend.Controllers
             korisnik.SlikaProfila = relativePath;
             await Context.SaveChangesAsync();
 
-            return Ok(new { Putanja = relativePath });
+            return Ok(new { relativePath });
         }
 
         [HttpPut("AzurirajSlikuKorisnika")]
@@ -1288,7 +1289,7 @@ namespace backend.Controllers
 
             var korisnik = await Context.Korisnici.Include(i => i.ListaOmiljenihOglasaObjekata).FirstOrDefaultAsync(f => f.Id == korisnikid);
 
-            if (korisnik == null )
+            if (korisnik == null)
             {
                 return NotFound("Korisnik nije pronađen.");
             }

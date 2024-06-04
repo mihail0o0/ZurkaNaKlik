@@ -1,28 +1,38 @@
 import Input from "@/components/lib/inputs/text-input";
 import style from "./style.module.css";
-import { ChangeEvent, useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import MojButton from "@/components/lib/button";
-import LabeledAvatar from "@/components/LabeledAvatar";
 import { useSelector } from "react-redux";
 import { selectUser } from "@/store/auth";
 import OglasKartica from "@/components/OglasKartica";
-import { useGetUserDataQuery } from "@/store/api/endpoints/korisnik";
-import UserAvatar from "@/components/UserAvatar";
+import * as React from 'react';
+import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
 import {
-  NavLink,
-  Outlet,
-  useLocation,
-  useNavigate,
-  BrowserRouter,
-  useParams,
-} from "react-router-dom";
-
+  useDeleteUserMutation,
+  useGetUserDataQuery,
+  useUpdateUserMutation,
+} from "@/store/api/endpoints/korisnik";
+import UserAvatar from "@/components/UserAvatar";
+import { useNavigate, useParams } from "react-router-dom";
 import { Alert } from "@mui/material";
-import { useGetKorisnikOglasiQuery, useGetUserOglasiQuery } from "@/store/api/endpoints/oglas";
+import {
+  useGetKorisnikOglasiQuery,
+  useGetUserOglasiQuery,
+} from "@/store/api/endpoints/oglas";
 import { EnumTipProslava } from "@/store/api/endpoints/oglas/types";
 import { skipToken } from "@reduxjs/toolkit/query";
-import Icon from "@/components/lib/icon";
 import DisplayCard from "@/components/DisplayCard";
+import { UpdateUserDTO } from "@/store/api/endpoints/korisnik/types";
+import { updateUserSchema } from "@/utils/validators";
+import { getValidationMessage } from "@/utils/validationMessage";
+import { toast } from "react-toastify";
+import Icon from "@/components/lib/icon";
+
 
 const UserProfile = () => {
   const navigate = useNavigate();
@@ -32,38 +42,101 @@ const UserProfile = () => {
   //znaci ovo je ako nisu isti
   const { data: vlasnikOglasa } = useGetUserDataQuery(idKorisnika ?? skipToken);
   const flag = idKorisnika === userCurr?.id;
-  const {data : tudjiOglasi}=useGetKorisnikOglasiQuery(idKorisnika ?? skipToken);
+  const { data: tudjiOglasi } = useGetKorisnikOglasiQuery(
+    idKorisnika ?? skipToken
+  );
 
+ 
   // nece da se pozove ako ne postoji user, zbog skip
   const { data: user } = useGetUserDataQuery(userCurr?.id!, {
     skip: !userCurr,
   });
   const { data: MojiOglasi } = useGetUserOglasiQuery();
 
+  const [updateUserAction] = useUpdateUserMutation();
+  const [deleteUserAction] = useDeleteUserMutation();
+
   console.log(user);
   console.log(tudjiOglasi);
 
   const [ime, setIme] = useState("");
   const [prezime, setPrezime] = useState("");
+  const [email, setEmail] = useState("");
   const [brTel, setBrTel] = useState("");
   const [slikaProfila, setSlikaProfila] = useState<string | undefined>("");
   const [lokacija, setLokacija] = useState("");
+
   const [opis, setOpis] = useState("");
+  const [openDialog, setOpenDialog] = useState(false);
+  const[deleteUser]=useDeleteUserMutation();
+
+
 
   useEffect(() => {
     if (!vlasnikOglasa) return;
 
     setIme(vlasnikOglasa.name);
     setPrezime(vlasnikOglasa.lastName);
+    setEmail(vlasnikOglasa.email);
     setBrTel(vlasnikOglasa.phoneNumber);
     setSlikaProfila(vlasnikOglasa.profilePhoto);
     setLokacija(vlasnikOglasa.location);
   }, [user]);
 
-  function handleOpis(event: ChangeEvent<HTMLTextAreaElement>) {
-    setOpis(event.target.value);
-  }
 
+  // function handleOpis(event: ChangeEvent<HTMLTextAreaElement>)) {
+  //   setOpis(event.target.value);
+  // }
+  const handleDelete = () => {
+    setOpenDialog(true); 
+  }
+  const submit = async () => {
+    if (!user) return;
+    if(!flag) return;
+
+    const updateUser: UpdateUserDTO = {
+      id: user.id,
+      name: ime,
+      lastName: prezime,
+      email: email,
+      phoneNumber: brTel,
+      location: lokacija,
+    };
+
+    const valResult = updateUserSchema.validate(updateUser);
+
+    if (valResult.error) {
+      const [type, msg] = getValidationMessage(valResult);
+
+      toast.error(msg);
+      return;
+    }
+
+    const result = await updateUserAction(updateUser);
+    if ("error" in result) return;
+
+    toast.success("Uspesno izmenjeni podaci");
+
+  };
+
+  const handleDialogClose = async (agree: boolean) => {
+    setOpenDialog(false); 
+
+    if (agree) {
+       if (!userCurr) return;
+    const response = await deleteUser(userCurr.id);
+
+    if ("error" in response) {
+      toast.error("Neuspesno brisanje naloga");
+      navigate(`/user/profile/${userCurr.id}`);
+      return;
+    }
+
+    toast.success("Uspesno obrisan nalog");
+    navigate("user/signup");
+     
+    }
+  };
   if (!user) {
     return null;
   }
@@ -71,25 +144,27 @@ const UserProfile = () => {
   return (
     <div className={`containerWrapper ${style.Container}`}>
       <div className={style.PostavkeProfila}>
-        <div>
-         {flag &&  <h2>Postavke profila</h2>}
-        </div>
+        <div>{flag && <h2>Postavke profila</h2>}</div>
         <div className={style.Postavke2}>
           {/* odje ide slika od kad je clan broj oglasa i prosecna ocena */}
           <div className={style.KarticaSaSlikom}>
             <div className={style.SlikaImeIPrezime}>
               <UserAvatar size={100} letter={user.name[0]} src={slikaProfila} />
-
               <p>
                 {vlasnikOglasa && vlasnikOglasa.name}{" "}
-                {vlasnikOglasa &&  vlasnikOglasa.lastName}
+                {vlasnikOglasa && vlasnikOglasa.lastName}
               </p>
+            {flag && <div className={style.obrrrisibhrate}>
+            <div className={style.DeleteIcon} onClick={handleDelete}>
+              <Icon
+                icon="delete"
+                classes={"cursorPointer"}
+                iconMargin="0px"
+              />
+              </div>
+              <label>Izbrisi nalog</label>
+            </div>}
             </div>
-            {/* <div className={style.InfoOClanu}>
-              {flag && <p>Email: {vlasnikOglasa && vlasnikOglasa.email}</p>}
-             {flag && <p>Broj telefona: {vlasnikOglasa && vlasnikOglasa.phoneNumber}</p>}
-             {flag &&<p>{vlasnikOglasa && vlasnikOglasa.location}</p>}
-            </div> */}
           </div>
           <div className={style.OsnovnePostavkeProfila}>
             <div className={style.PostavkeProfilaTXT}>
@@ -114,7 +189,7 @@ const UserProfile = () => {
                     icon={"boy"}
                     text={
                       (vlasnikOglasa &&
-                        vlasnikOglasa.name + " "+  vlasnikOglasa?.lastName) ||
+                        vlasnikOglasa.name + " " + vlasnikOglasa?.lastName) ||
                       ""
                     }
                   />
@@ -122,26 +197,24 @@ const UserProfile = () => {
                 {flag ? (
                   <Input
                     disabled={!flag}
-                    text={lokacija}
-                    placeholder="Grad"
-                    icon="location_on"
-                    onChange={setLokacija}
+                    text={prezime}
+                    icon="boy"
+                    onChange={setPrezime}
                   />
                 ) : (
                   <DisplayCard
-                    icon={"location_on"}
-                    text={(vlasnikOglasa && vlasnikOglasa.location) || ""}
+                    icon={"boy"}
+                    text={(vlasnikOglasa && vlasnikOglasa.lastName) || ""}
                   />
                 )}
               </div>
               <div className={style.Red}>
                 {flag ? (
                   <Input
-                    disabled
-                    text={(vlasnikOglasa && vlasnikOglasa.email) || ""}
+                    text={email}
                     placeholder="Email"
                     icon="mail"
-                    onChange={() => {}}
+                    onChange={setEmail}
                   />
                 ) : (
                   <DisplayCard
@@ -163,16 +236,22 @@ const UserProfile = () => {
                   />
                 )}
               </div>
-            </div>
-
-            <div className={style.TekstArea}>
-              <textarea
-                disabled={!flag}
-                placeholder={flag ? "Recite nesto vise o sebi" : ""}
-                className={style.TxtArea}
-                onChange={handleOpis}
-                value={opis}
-              />
+              <div className={style.Red}>
+                {flag ? (
+                  <Input
+                    disabled={!flag}
+                    text={lokacija}
+                    placeholder="Grad"
+                    icon="location_on"
+                    onChange={setLokacija}
+                  />
+                ) : (
+                  <DisplayCard
+                    icon={"location_on"}
+                    text={(vlasnikOglasa && vlasnikOglasa.location) || ""}
+                  />
+                )}
+              </div>
             </div>
             <div className={style.Dugmenajjace}>
               <div className={style.Dugme2}>
@@ -180,7 +259,7 @@ const UserProfile = () => {
                 {flag && (
                   <MojButton
                     text="Sacuvaj"
-                    onClick={() => {}}
+                    onClick={submit}
                     wide={true}
                     center={true}
                   />
@@ -199,16 +278,17 @@ const UserProfile = () => {
           )}
         </div>
         <div className={style.OglasiKartice}>
-          {flag ?
-            MojiOglasi?.map((oglas) => (
-              <div key={oglas.id}>
-                <OglasKartica oglas={oglas} onClick={() => {}} />
-              </div>
-            )) :   tudjiOglasi?.map((oglas) => (
-              <div key={oglas.id}>
-                <OglasKartica oglas={oglas} onClick={() => {}} />
-              </div>
-            ))}
+          {flag
+            ? MojiOglasi?.map((oglas) => (
+                <div key={oglas.id}>
+                  <OglasKartica oglas={oglas} onClick={() => {}} />
+                </div>
+              ))
+            : tudjiOglasi?.map((oglas) => (
+                <div key={oglas.id}>
+                  <OglasKartica oglas={oglas} onClick={() => {}} />
+                </div>
+              ))}
         </div>
         <div className={style.Dugmenajjace}>
           <div className={style.Dugme2}>
@@ -225,7 +305,29 @@ const UserProfile = () => {
           </div>
         </div>
       </div>
+      <Dialog
+        open={openDialog}
+        onClose={() => handleDialogClose(false)}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">{"Da li ste sigurni da želite da obrišete nalog?"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Brisanje naloga je trajna akcija i ne može se poništiti. Da li ste sigurni da želite da nastavite?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => handleDialogClose(false)}>Ne</Button>
+          <Button onClick={() => handleDialogClose(true)} autoFocus>
+            Da
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
+    
   );
+  
 };
+
 export default UserProfile;

@@ -2,7 +2,7 @@
   display: flex;
   flex-direction: column;
   background-color: white;
-  border-radius: 10px;
+  border-radius: var(--borderRadiusBig);
   padding: 16px;
   width: 100%;
   margin-top: 16px;
