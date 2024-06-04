@@ -17,17 +17,33 @@
   border-radius: var(--borderRadiusBig);
   background-size: cover;
   background-position: center;
+  background-repeat: no-repeat;
+  overflow: hidden;
+  /* transition: all 2s; */
+}
+
+.image:hover {
+  /* transform: scale(1.1); */
+}
+
+.image:hover .Delete {
+  visibility: visible;
+  opacity: 1;
+  transition: all 200ms;
 }
 
 .Delete {
+  visibility: hidden;
   position: absolute;
   border-radius: var(--borderRadiusSmall);
   right: 20px;
   top: 20px;
   padding: 10px;
   background-color: var(--delete);
-  transition: all 200ms;
   cursor: pointer;
+  opacity: 0;
+
+  transition: all 200ms;
 }
 
 .Delete:hover {

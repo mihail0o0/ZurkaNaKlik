@@ -39,6 +39,7 @@ import {
 import { getRawLocation } from "@/utils/handleQueries";
 import UploadComponent from "@/components/UploadComponent";
 import { ResultType } from "@/types";
+import { url } from "inspector";
 
 const UserProfile = () => {
   const navigate = useNavigate();
@@ -129,7 +130,7 @@ const UserProfile = () => {
 
     if (agree) {
       if (!userCurr) return;
-      const response = await deleteUser(userCurr.id);
+      const response = await deleteUser();
 
       if ("error" in response) {
         toast.error("Neuspesno brisanje naloga");

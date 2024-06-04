@@ -32,7 +32,10 @@ const authApiSlice = api.injectEndpoints({
         method: "POST",
         body: body.formData,
       }),
-      invalidatesTags: () => [{ type: "Image", id: "IMAGEOGLAS" }],
+      invalidatesTags: (result, err, args) => [
+        { type: "Oglas", id: args.id },
+        { type: "Image", id: "IMAGEOGLAS" },
+      ],
     }),
   }),
 });

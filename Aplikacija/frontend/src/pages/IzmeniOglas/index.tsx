@@ -93,6 +93,7 @@ const IzmeniOglas = () => {
 
   useEffect(() => {
     if (!oglas) return;
+    console.log("Izvrsim se");
 
     const fetchImages = async () => {
       const results = await Promise.all(
@@ -113,7 +114,9 @@ const IzmeniOglas = () => {
     };
 
     fetchImages();
-  }, [oglas, getImageAction]);
+  }, [oglas?.slike, getImageAction]);
+
+  console.log(images);
 
   useEffect(() => {
     if (!oglas) return;
@@ -340,6 +343,7 @@ const IzmeniOglas = () => {
             <Icon icon="delete" classes={"cursorPointer"} iconMargin="0px" />
           </div>
         </div>
+        <h2>Slike prostora</h2>
         <ImageGallery images={images} />
         <div className={style.NAJJACEDUGME}>
           <div className={style.DodajSLikuDugme}>
