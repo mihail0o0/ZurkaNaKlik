@@ -1,7 +1,7 @@
 import api from "../..";
 import { providesList, providesSingle } from "../../utils";
 import { OglasObjekata } from "../oglas/types";
-import { AllUserData } from "./types";
+import { AllUserData, UpdateUserDTO } from "./types";
 
 const authApiSlice = api.injectEndpoints({
   endpoints: (builder) => ({
@@ -10,6 +10,28 @@ const authApiSlice = api.injectEndpoints({
         url: `Pregled/GetKorisnik/${id}`,
       }),
       providesTags: (result) => providesSingle("User", result?.id),
+    }),
+    updateUser: builder.mutation<AllUserData, UpdateUserDTO>({
+      query: (body) => ({
+        url: "Korisnik/IzmeniPodatkeOKorisniku",
+        method: "PUT",
+        body,
+      }),
+      invalidatesTags: (result, err, arg) => [
+        { type: "User", id: result?.id },
+        { type: "User", id: "LISTUSER" },
+      ],
+    }),
+    deleteUser: builder.mutation<AllUserData, UpdateUserDTO>({
+      query: (body) => ({
+        url: "Korisnik/IzmeniPodatkeOKorisniku",
+        method: "PUT",
+        body,
+      }),
+      invalidatesTags: (result, err, arg) => [
+        { type: "User", id: result?.id },
+        { type: "User", id: "LISTUSER" },
+      ],
     }),
     getFavourites: builder.query<OglasObjekata[], void>({
       query: () => ({
@@ -52,6 +74,8 @@ const authApiSlice = api.injectEndpoints({
 
 export const {
   useGetUserDataQuery,
+  useUpdateUserMutation,
+  useDeleteUserMutation,
   useGetFavouritesQuery,
   useAddFavouriteMutation,
   useDeleteFavouriteMutation,

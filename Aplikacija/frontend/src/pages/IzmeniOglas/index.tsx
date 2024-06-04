@@ -45,6 +45,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { skipToken } from "@reduxjs/toolkit/query";
 import { useSelector } from "react-redux";
 import { selectUser } from "@/store/auth";
+import PageSpacer from "@/components/lib/page-spacer";
 
 const IzmeniOglas = () => {
   const user = useSelector(selectUser);
@@ -271,7 +272,9 @@ const IzmeniOglas = () => {
     }
 
     toast.success("Oglas uspesno izmenjen");
-    {user && navigate(`/user/profile/${user.id}`);}
+    {
+      user && navigate(`/user/profile/${user.id}`);
+    }
   };
 
   return (
@@ -375,57 +378,24 @@ const IzmeniOglas = () => {
         </div>
       </div>
 
-      <div className={style.TipoviProslava}>
-        <div>
-          <h3>Tipovi proslava koje dozvoljavate</h3>
-        </div>
-        <div className={style.ChipProslave}>
-          {Object.values(tipProslavaMap).map((value) => {
-            return (
-              <div className={style.JedanChip}>
-                <Chip
-                  label={value}
-                  variant="outlined"
-                  onClick={() => handleTipProslavaChange(value)}
-                  onDelete={() => handleTipProslavaChange(value)}
-                  deleteIcon={
-                    isSelected(
-                      value,
-                      tipProslavaMap,
-                      selectedTipoviProslava
-                    ) ? undefined : (
-                      <Icon
-                        classes={style.addIcon}
-                        fontSize="23px"
-                        icon="add_circle"
-                      />
-                    )
-                  }
-                  sx={getChipSx(value, tipProslavaMap, selectedTipoviProslava)}
-                />
-              </div>
-            );
-          })}
-        </div>
-      </div>
-
-      <div>
         <div className={style.TipoviProslava}>
-          <h3>Tipovi prostora u koje Vas oglas pripada</h3>
+          <div>
+            <h3>Tipovi proslava koje dozvoljavate</h3>
+          </div>
           <div className={style.ChipProslave}>
-            {Object.values(tipProstoraMap).map((value) => {
+            {Object.values(tipProslavaMap).map((value) => {
               return (
                 <div className={style.JedanChip}>
                   <Chip
                     label={value}
                     variant="outlined"
-                    onClick={() => handleTipProstoraChange(value)}
-                    onDelete={() => handleTipProstoraChange(value)}
+                    onClick={() => handleTipProslavaChange(value)}
+                    onDelete={() => handleTipProslavaChange(value)}
                     deleteIcon={
                       isSelected(
                         value,
-                        tipProstoraMap,
-                        selectedTipoviProstora
+                        tipProslavaMap,
+                        selectedTipoviProslava
                       ) ? undefined : (
                         <Icon
                           classes={style.addIcon}
@@ -436,8 +406,8 @@ const IzmeniOglas = () => {
                     }
                     sx={getChipSx(
                       value,
-                      tipProstoraMap,
-                      selectedTipoviProstora
+                      tipProslavaMap,
+                      selectedTipoviProslava
                     )}
                   />
                 </div>
@@ -445,39 +415,80 @@ const IzmeniOglas = () => {
             })}
           </div>
         </div>
-      </div>
 
-      <div>
-        <div className={style.TipoviProslava}>
-          <h3>Dodatna oprema koju poseduje Vas prostor</h3>
-          <div className={style.ChipProslave}>
-            {Object.values(dodatnaOpremaMap).map((value) => (
-              <div className={style.JedanChip}>
-                <Chip
-                  label={value}
-                  variant="outlined"
-                  onClick={() => handleDodatnaOpremaChange(value)}
-                  onDelete={() => handleDodatnaOpremaChange(value)}
-                  deleteIcon={
-                    isSelected(
+        <div>
+          <div className={style.TipoviProslava}>
+            <h3>Tipovi prostora u koje Vas oglas pripada</h3>
+            <div className={style.ChipProslave}>
+              {Object.values(tipProstoraMap).map((value) => {
+                return (
+                  <div className={style.JedanChip}>
+                    <Chip
+                      label={value}
+                      variant="outlined"
+                      onClick={() => handleTipProstoraChange(value)}
+                      onDelete={() => handleTipProstoraChange(value)}
+                      deleteIcon={
+                        isSelected(
+                          value,
+                          tipProstoraMap,
+                          selectedTipoviProstora
+                        ) ? undefined : (
+                          <Icon
+                            classes={style.addIcon}
+                            fontSize="23px"
+                            icon="add_circle"
+                          />
+                        )
+                      }
+                      sx={getChipSx(
+                        value,
+                        tipProstoraMap,
+                        selectedTipoviProstora
+                      )}
+                    />
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div className={style.TipoviProslava}>
+            <h3>Dodatna oprema koju poseduje Vas prostor</h3>
+            <div className={style.ChipProslave}>
+              {Object.values(dodatnaOpremaMap).map((value) => (
+                <div className={style.JedanChip}>
+                  <Chip
+                    label={value}
+                    variant="outlined"
+                    onClick={() => handleDodatnaOpremaChange(value)}
+                    onDelete={() => handleDodatnaOpremaChange(value)}
+                    deleteIcon={
+                      isSelected(
+                        value,
+                        dodatnaOpremaMap,
+                        selectedDodatnaOprema
+                      ) ? undefined : (
+                        <Icon
+                          classes={style.addIcon}
+                          fontSize="23px"
+                          icon="add_circle"
+                        />
+                      )
+                    }
+                    sx={getChipSx(
                       value,
                       dodatnaOpremaMap,
                       selectedDodatnaOprema
-                    ) ? undefined : (
-                      <Icon
-                        classes={style.addIcon}
-                        fontSize="23px"
-                        icon="add_circle"
-                      />
-                    )
-                  }
-                  sx={getChipSx(value, dodatnaOpremaMap, selectedDodatnaOprema)}
-                />
-              </div>
-            ))}
+                    )}
+                  />
+                </div>
+              ))}
+            </div>
           </div>
         </div>
-      </div>
 
       <div className={style.NAJJACEDUGME}>
         <div className={style.dodajOglasDugme}>

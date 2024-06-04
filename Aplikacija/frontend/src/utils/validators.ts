@@ -3,6 +3,7 @@ import {
   CreateUserDTO,
   LoginPayload,
 } from "@/store/api/endpoints/auth/types";
+import { UpdateUserDTO } from "@/store/api/endpoints/korisnik/types";
 import Joi from "joi";
 
 const customTlds = ["com", "net", "org"];
@@ -149,6 +150,15 @@ export const userSignUpSchema = Joi.object<CreateUserDTO>({
   password: passwordVal,
   repeatPassword: passwordVal,
   role: roleVal,
+});
+
+export const updateUserSchema = Joi.object<UpdateUserDTO>({
+  id: Joi.number(),
+  name: userNameVal,
+  lastName: lastNameVal,
+  phoneNumber: phoneNumberVal,
+  email: emailVal,
+  location: cityValReq,
 });
 
 export const agencySignUpSchema = Joi.object<CreateAgencyDTO>({

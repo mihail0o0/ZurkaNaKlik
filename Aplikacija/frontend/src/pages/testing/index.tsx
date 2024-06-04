@@ -13,13 +13,14 @@ import { selectUser } from "@/store/auth";
 import { Avatar } from "@mui/material";
 import { useMemo, useState } from "react";
 import { useSelector } from "react-redux";
+import UploadComponent from "@/components/UploadComponent";
+import { useUploadKorisnikMutation } from "@/store/api/endpoints/images";
 
 const TestingPage = () => {
   const user = useSelector(selectUser);
   const { data: allCategories } = useGetAllCategoriesQuery();
   const [deleteCategory] = useDeleteCategoryMutation();
   const [addCategory] = useAddCategoryMutation();
-
 
   console.log("ALL CATEGORIES");
   console.log(allCategories);
@@ -37,35 +38,7 @@ const TestingPage = () => {
   return (
     <>
       <div className="containerWrapper testingPageWrapper">
-        <h1>Test awdhkj ad wakuh</h1>
-        {/* <Button text={"Testing button"} onClick={() => {}} /> */}
-        {/* <Input onChange={handleChange} icon={"mail"} text={"Email"} /> */}
-        <LabeledAvatar avatarSize={100} text="Mihailo" />
-        <MojButton
-          text="delete"
-          onClick={() => {
-            console.log(allCategories);
-            if (allCategories) {
-              console.log("Mjau");
-              console.log(allCategories[0].id);
-              deleteCategory(allCategories[0].id);
-            }
-          }}
-        ></MojButton>
-        <MojButton
-          text="Add"
-          onClick={() => {
-            console.log(allCategories);
-            if (allCategories) {
-              console.log("Mjau");
-
-              const category: AddCategoryDTO = {
-                naziv: "Test bggge1",
-              };
-              addCategory(category);
-            }
-          }}
-        ></MojButton>
+        <UploadComponent useMutationHook={useUploadKorisnikMutation} />
       </div>
       <PageSpacer />
     </>

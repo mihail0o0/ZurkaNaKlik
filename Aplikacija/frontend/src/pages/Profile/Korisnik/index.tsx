@@ -1,11 +1,11 @@
 import Input from "@/components/lib/inputs/text-input";
 import style from "./style.module.css";
-import { ChangeEvent, useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import MojButton from "@/components/lib/button";
-import LabeledAvatar from "@/components/LabeledAvatar";
 import { useSelector } from "react-redux";
 import { selectUser } from "@/store/auth";
 import OglasKartica from "@/components/OglasKartica";
+<<<<<<< HEAD
 import { useDeleteUserMutation, useGetUserDataQuery } from "@/store/api/endpoints/korisnik";
 import UserAvatar from "@/components/UserAvatar";
 import * as React from 'react';
@@ -15,27 +15,40 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+=======
+>>>>>>> e766c6ac33ba00e2467a7eca49304020ab80416f
 import {
-  NavLink,
-  Outlet,
-  useLocation,
-  useNavigate,
-  BrowserRouter,
-  useParams,
-} from "react-router-dom";
+  useDeleteUserMutation,
+  useGetUserDataQuery,
+  useUpdateUserMutation,
+} from "@/store/api/endpoints/korisnik";
+import UserAvatar from "@/components/UserAvatar";
+import { useNavigate, useParams } from "react-router-dom";
 
+<<<<<<< HEAD
 import { Alert } from "@mui/material";
+=======
+>>>>>>> e766c6ac33ba00e2467a7eca49304020ab80416f
 import {
   useGetKorisnikOglasiQuery,
   useGetUserOglasiQuery,
 } from "@/store/api/endpoints/oglas";
+<<<<<<< HEAD
 import { EnumTipProslava } from "@/store/api/endpoints/oglas/types";
+=======
+>>>>>>> e766c6ac33ba00e2467a7eca49304020ab80416f
 import { skipToken } from "@reduxjs/toolkit/query";
-import Icon from "@/components/lib/icon";
 import DisplayCard from "@/components/DisplayCard";
+<<<<<<< HEAD
 import { toast } from "react-toastify";
 
 
+=======
+import { UpdateUserDTO } from "@/store/api/endpoints/korisnik/types";
+import { updateUserSchema } from "@/utils/validators";
+import { getValidationMessage } from "@/utils/validationMessage";
+import { toast } from "react-toastify";
+>>>>>>> e766c6ac33ba00e2467a7eca49304020ab80416f
 
 const UserProfile = () => {
   const navigate = useNavigate();
@@ -48,7 +61,10 @@ const UserProfile = () => {
   const { data: tudjiOglasi } = useGetKorisnikOglasiQuery(
     idKorisnika ?? skipToken
   );
+<<<<<<< HEAD
  
+=======
+>>>>>>> e766c6ac33ba00e2467a7eca49304020ab80416f
 
   // nece da se pozove ako ne postoji user, zbog skip
   const { data: user } = useGetUserDataQuery(userCurr?.id!, {
@@ -56,33 +72,70 @@ const UserProfile = () => {
   });
   const { data: MojiOglasi } = useGetUserOglasiQuery();
 
+  const [updateUserAction] = useUpdateUserMutation();
+  const [deleteUserAction] = useDeleteUserMutation();
+
   console.log(user);
   console.log(tudjiOglasi);
 
   const [ime, setIme] = useState("");
   const [prezime, setPrezime] = useState("");
+  const [email, setEmail] = useState("");
   const [brTel, setBrTel] = useState("");
   const [slikaProfila, setSlikaProfila] = useState<string | undefined>("");
   const [lokacija, setLokacija] = useState("");
+<<<<<<< HEAD
   const [opis, setOpis] = useState("");
   const [openDialog, setOpenDialog] = useState(false);
   const[deleteUser]=useDeleteUserMutation();
+=======
+>>>>>>> e766c6ac33ba00e2467a7eca49304020ab80416f
 
   useEffect(() => {
     if (!vlasnikOglasa) return;
 
     setIme(vlasnikOglasa.name);
     setPrezime(vlasnikOglasa.lastName);
+    setEmail(vlasnikOglasa.email);
     setBrTel(vlasnikOglasa.phoneNumber);
     setSlikaProfila(vlasnikOglasa.profilePhoto);
     setLokacija(vlasnikOglasa.location);
   }, [user]);
 
+<<<<<<< HEAD
   function handleOpis(event: ChangeEvent<HTMLTextAreaElement>) {
     setOpis(event.target.value);
   }
   const handleDelete = () => {
     setOpenDialog(true); 
+=======
+  const submit = async () => {
+    if (!user) return;
+    if(!flag) return;
+
+    const updateUser: UpdateUserDTO = {
+      id: user.id,
+      name: ime,
+      lastName: prezime,
+      email: email,
+      phoneNumber: brTel,
+      location: lokacija,
+    };
+
+    const valResult = updateUserSchema.validate(updateUser);
+
+    if (valResult.error) {
+      const [type, msg] = getValidationMessage(valResult);
+
+      toast.error(msg);
+      return;
+    }
+
+    const result = await updateUserAction(updateUser);
+    if ("error" in result) return;
+
+    toast.success("Uspesno izmenjeni podaci");
+>>>>>>> e766c6ac33ba00e2467a7eca49304020ab80416f
   };
 
   const handleDialogClose = async (agree: boolean) => {
@@ -116,7 +169,6 @@ const UserProfile = () => {
           <div className={style.KarticaSaSlikom}>
             <div className={style.SlikaImeIPrezime}>
               <UserAvatar size={100} letter={user.name[0]} src={slikaProfila} />
-
               <p>
                 {vlasnikOglasa && vlasnikOglasa.name}{" "}
                 {vlasnikOglasa && vlasnikOglasa.lastName}
@@ -132,11 +184,6 @@ const UserProfile = () => {
                 <label>Izbrisi nalog</label>
               </div>
             </div>
-            {/* <div className={style.InfoOClanu}>
-              {flag && <p>Email: {vlasnikOglasa && vlasnikOglasa.email}</p>}
-             {flag && <p>Broj telefona: {vlasnikOglasa && vlasnikOglasa.phoneNumber}</p>}
-             {flag &&<p>{vlasnikOglasa && vlasnikOglasa.location}</p>}
-            </div> */}
           </div>
           <div className={style.OsnovnePostavkeProfila}>
             <div className={style.PostavkeProfilaTXT}>
@@ -169,26 +216,24 @@ const UserProfile = () => {
                 {flag ? (
                   <Input
                     disabled={!flag}
-                    text={lokacija}
-                    placeholder="Grad"
-                    icon="location_on"
-                    onChange={setLokacija}
+                    text={prezime}
+                    icon="boy"
+                    onChange={setPrezime}
                   />
                 ) : (
                   <DisplayCard
-                    icon={"location_on"}
-                    text={(vlasnikOglasa && vlasnikOglasa.location) || ""}
+                    icon={"boy"}
+                    text={(vlasnikOglasa && vlasnikOglasa.lastName) || ""}
                   />
                 )}
               </div>
               <div className={style.Red}>
                 {flag ? (
                   <Input
-                    disabled
-                    text={(vlasnikOglasa && vlasnikOglasa.email) || ""}
+                    text={email}
                     placeholder="Email"
                     icon="mail"
-                    onChange={() => {}}
+                    onChange={setEmail}
                   />
                 ) : (
                   <DisplayCard
@@ -210,16 +255,22 @@ const UserProfile = () => {
                   />
                 )}
               </div>
-            </div>
-
-            <div className={style.TekstArea}>
-              <textarea
-                disabled={!flag}
-                placeholder={flag ? "Recite nesto vise o sebi" : ""}
-                className={style.TxtArea}
-                onChange={handleOpis}
-                value={opis}
-              />
+              <div className={style.Red}>
+                {flag ? (
+                  <Input
+                    disabled={!flag}
+                    text={lokacija}
+                    placeholder="Grad"
+                    icon="location_on"
+                    onChange={setLokacija}
+                  />
+                ) : (
+                  <DisplayCard
+                    icon={"location_on"}
+                    text={(vlasnikOglasa && vlasnikOglasa.location) || ""}
+                  />
+                )}
+              </div>
             </div>
             <div className={style.Dugmenajjace}>
               <div className={style.Dugme2}>
@@ -227,7 +278,7 @@ const UserProfile = () => {
                 {flag && (
                   <MojButton
                     text="Sacuvaj"
-                    onClick={() => {}}
+                    onClick={submit}
                     wide={true}
                     center={true}
                   />

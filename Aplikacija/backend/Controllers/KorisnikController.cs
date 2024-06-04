@@ -232,7 +232,7 @@ namespace backend.Controllers
                     return BadRequest("Korisnik ne postoji");
                 }
 
-                OglasObjekta? oglas = await Context.OglasiObjekta.Include(i => i.VlasnikOglasa).Include(i => i.ListaZakupkjenihOglasa).FirstOrDefaultAsync(f => f.Id == idOglasa);
+                OglasObjekta? oglas = await Context.OglasiObjekta.Include(i => i.VlasnikOglasa).Include(i => i.ListaZakupkjenihOglasa!).ThenInclude(t => t.ZahtevZaKetering).FirstOrDefaultAsync(f => f.Id == idOglasa);
 
                 if (oglas == null)
                 {
@@ -248,7 +248,14 @@ namespace backend.Controllers
                 {
                     foreach (var zakupljen in oglas.ListaZakupkjenihOglasa)
                     {
+
+                        if (zakupljen!.ZahtevZaKetering != null)
+                        {
+                            Context.ZahteviZaKetering.Remove(zakupljen!.ZahtevZaKetering);
+                        }
+
                         Context.ZakupljeniOglasi.Remove(zakupljen);
+
                     }
                 }
 
@@ -816,26 +823,34 @@ namespace backend.Controllers
         // Izmena podataka (idKorisnika)
         #region IzmeniPodatkeOKorisniku
         [HttpPut("IzmeniPodatkeOKorisniku")]
-        public async Task<ActionResult> IzmeniPodatkeOKorisniku([FromBody] Korisnik korisnik)
+        public async Task<ActionResult> IzmeniPodatkeOKorisniku([FromBody] KorisnikBasic korisnik)
         {
             try
             {
                 int idKorisnika = int.Parse((HttpContext.Items["idKorisnika"] as string)!);
 
-                var k = new
+                if (idKorisnika != korisnik.id)
                 {
-                    Ime = korisnik.Ime,
-                    Email = korisnik.Email,
-                    BrTel = korisnik.BrTel,
-                    LozinkaHash = korisnik.LozinkaHash,
-                    Lokacija = korisnik.Lokacija,
-                    Prezime = korisnik.Prezime
-                };
+                    return BadRequest("nema");
+                }
+
+                Korisnik? dboKorisnik = await Context.Korisnici.FindAsync(idKorisnika);
+
+                if (dboKorisnik == null)
+                {
+                    return BadRequest("nema");
+                }
+
+                dboKorisnik.Ime = korisnik.name;
+                dboKorisnik.Email = korisnik.email;
+                dboKorisnik.BrTel = korisnik.phoneNumber;
+                dboKorisnik.Lokacija = korisnik.location;
+                dboKorisnik.Prezime = korisnik.lastName;
 
                 await Context.SaveChangesAsync();
-                return Ok(new { k });
 
-
+                GetKorisnikResult result = ObjectCreatorSingleton.Instance.ToKorisnikResult(dboKorisnik);
+                return Ok(result);
             }
             catch (Exception ex)
             {
@@ -978,7 +993,7 @@ namespace backend.Controllers
             var korisnik = await Context.Korisnici.FindAsync(korisnikid);
             if (korisnik == null)
             {
-                return NotFound("Oglas nije pronađen.");
+                return NotFound("Korisnik nije pronađen.");
             }
 
             if (file == null || file.Length == 0)
@@ -1003,13 +1018,12 @@ namespace backend.Controllers
                 await file.CopyToAsync(stream);
             }
 
-            var relativePath = Path.Combine("images", "Oglasi", korisnikid.ToString(), fileName).Replace("\\", "/");
-
+            var relativePath = Path.Combine("images", "Korisnik", korisnikid.ToString(), fileName).Replace("\\", "/");
 
             korisnik.SlikaProfila = (relativePath);
             await Context.SaveChangesAsync();
 
-            return Ok(new { Putanja = relativePath });
+            return Ok(new { relativePath });
         }
 
         [HttpPut("AzurirajSlikuKorisnika")]
@@ -1051,7 +1065,7 @@ namespace backend.Controllers
                     await file.CopyToAsync(stream);
                 }
 
-                var relativePath = Path.Combine("images", "Oglasi", korisnikid.ToString(), fileName).Replace("\\", "/");
+                var relativePath = Path.Combine("images", "Korisnik", korisnikid.ToString(), fileName).Replace("\\", "/");
 
                 korisnik.SlikaProfila = relativePath;
                 await Context.SaveChangesAsync();
@@ -1064,9 +1078,70 @@ namespace backend.Controllers
             }
         }
 
+        #region UploadujSlikuOglasa
+
+        [HttpPost("uploadOglas/{oglasId}")]
+        public async Task<IActionResult> UploadSlikaOglas(int oglasId, IFormFile file)
+        {
+            // TODO: Proveri da li je oglas od logovanog korisnika
+            var oglas = await Context.OglasiObjekta.FindAsync(oglasId);
+            if (oglas == null)
+            {
+                return NotFound("Oglas nije pronađen.");
+            }
+
+            if (file == null || file.Length == 0)
+            {
+                return BadRequest("Nijedna slika nije poslata.");
+            }
+
+            var folderPath = Path.Combine("wwwroot", "images", "Oglasi", oglasId.ToString());
+            if (!Directory.Exists(folderPath))
+            {
+                Directory.CreateDirectory(folderPath);
+            }
+
+            var files = Directory.GetFiles(folderPath);
+            var fileCount = files.Length;
+
+            var fileName = $"s{fileCount + 1}{Path.GetExtension(file.FileName)}";
+            var filePath = Path.Combine(folderPath, fileName);
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await file.CopyToAsync(stream);
+            }
+
+            var relativePath = Path.Combine("images", "Oglasi", oglasId.ToString(), fileName).Replace("\\", "/");
 
 
+            oglas.Slike.Add(relativePath);
+            await Context.SaveChangesAsync();
 
+            return Ok(new { Putanja = relativePath });
+        }
+
+        #endregion
+
+        #region DaLisamOmiljeni
+        [HttpGet("DaLiOmiljen/{oglasId}")]
+        public async Task<IActionResult> DaLiOmiljen(int oglasId)
+        {
+            int korisnikid = int.Parse((HttpContext.Items["idKorisnika"] as string)!);
+
+            var korisnik = await Context.Korisnici.Include(i => i.ListaOmiljenihOglasaObjekata).FirstOrDefaultAsync(f => f.Id == korisnikid);
+
+            if (korisnik == null)
+            {
+                return NotFound("Korisnik nije pronađen.");
+            }
+
+            bool dalije = korisnik.ListaOmiljenihOglasaObjekata!.Any(o => o.Id == oglasId);
+
+            return Ok(new { dalije });
+        }
+
+        #endregion
 
 
 

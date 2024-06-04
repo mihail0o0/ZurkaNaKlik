@@ -30,7 +30,6 @@ const baseQuery = fetchBaseQuery({
   prepareHeaders: (headers, { getState }) => {
     const token = (getState() as RootState).authSlice.accessToken;
     headers.set("authorization", `Bearer ${token}`);
-    headers.set("Content-Type", "application/json");
     return headers;
   },
 });
@@ -109,7 +108,8 @@ export const api = createApi({
     "AgencyMenu",
     "Location",
     "Oglas",
-    "OmiljeniOglasi"
+    "OmiljeniOglasi",
+    "Image",
   ],
   baseQuery: baseQueryWithAuth,
   endpoints: () => ({}),
