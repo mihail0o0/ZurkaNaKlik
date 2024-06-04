@@ -1,0 +1,36 @@
+.container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  gap: 30px;
+  width: 100%;
+  height: fit-content;
+  overflow-x: auto;
+  padding-bottom: 20px;
+}
+
+.image {
+  flex: 0 0 auto;
+  position: relative;
+  height: 200px;
+  width: 300px;
+  border-radius: var(--borderRadiusBig);
+  background-size: cover;
+  background-position: center;
+}
+
+.Delete {
+  position: absolute;
+  border-radius: var(--borderRadiusSmall);
+  right: 20px;
+  top: 20px;
+  padding: 10px;
+  background-color: var(--delete);
+  transition: all 200ms;
+  cursor: pointer;
+}
+
+.Delete:hover {
+  background-color: var(--deleteHover);
+  transition: all 200ms;
+}

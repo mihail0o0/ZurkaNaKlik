@@ -39,6 +39,7 @@ const authApiSlice = api.injectEndpoints({
 
 export const {
   useGetImageQuery,
+  useLazyGetImageQuery,
   useUploadKorisnikMutation,
   useUploadOglasMutation,
 } = authApiSlice;

@@ -7,28 +7,15 @@ import {
   MutationDefinition,
 } from "@reduxjs/toolkit/query";
 import { BaseQueryFn } from "@reduxjs/toolkit/query";
-
-type UseMutationHook = () => readonly [
-  MutationTrigger<
-    MutationDefinition<
-      FormData,
-      BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError>,
-      string,
-      void,
-      "api"
-    >
-  >,
-  any
-];
+import { ResultType } from "@/types";
 
 type Props = {
-  useMutationHook: UseMutationHook;
+  uploadFn: (formData: FormData) => Promise<ResultType>;
   children: ReactNode;
 };
 
-const UploadComponent = ({ useMutationHook, children }: Props) => {
+const UploadComponent = ({ uploadFn, children }: Props) => {
   const inputRef = useRef<HTMLInputElement>(null);
-  const [uploadAction] = useMutationHook();
 
   const handleClick = () => {
     if (!inputRef.current) return;
@@ -44,9 +31,8 @@ const UploadComponent = ({ useMutationHook, children }: Props) => {
     const fD = new FormData();
     fD.append("file", file);
 
-    const result = await uploadAction(fD);
-    if ("error" in result) {
-      console.log(result.error);
+    const result = await uploadFn(fD);
+    if (!result || "error" in result) {
       return;
     }
 

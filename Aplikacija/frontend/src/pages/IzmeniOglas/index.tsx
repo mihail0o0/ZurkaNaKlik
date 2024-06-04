@@ -47,7 +47,15 @@ import { useSelector } from "react-redux";
 import { selectUser } from "@/store/auth";
 import PageSpacer from "@/components/lib/page-spacer";
 import UploadComponent from "@/components/UploadComponent";
-import { useUploadKorisnikMutation } from "@/store/api/endpoints/images";
+import {
+  useLazyGetImageQuery,
+  useUploadKorisnikMutation,
+  useUploadOglasMutation,
+} from "@/store/api/endpoints/images";
+import { ResultType } from "@/types";
+import { UploadOglasDTO } from "@/store/api/endpoints/images/types";
+import { getRawLocation } from "@/utils/handleQueries";
+import ImageGallery from "@/components/ImageGallery";
 
 const IzmeniOglas = () => {
   const user = useSelector(selectUser);
@@ -65,6 +73,8 @@ const IzmeniOglas = () => {
   const [brojKupatila, setBrojKupatila] = useState("Broj kupatila");
   const [openDialog, setOpenDialog] = useState(false);
 
+  const [images, setImages] = useState<(string | undefined | null)[]>([]);
+
   const [selectedTipoviProslava, setSelectedTipoviProslava] = useState<
     number[]
   >([]);
@@ -77,8 +87,33 @@ const IzmeniOglas = () => {
 
   const { id } = useParams();
   const idOglasa = id ? parseInt(id) : undefined;
-
   const { data: oglas } = useGetOglasQuery(idOglasa || skipToken);
+
+  const [getImageAction] = useLazyGetImageQuery();
+
+  useEffect(() => {
+    if (!oglas) return;
+
+    const fetchImages = async () => {
+      const results = await Promise.all(
+        oglas.slike.map(async (slikaLocation) => {
+          if (!slikaLocation) return undefined;
+          const { data, error } = await getImageAction(
+            getRawLocation(slikaLocation)!
+          );
+          if (error) {
+            console.error(error);
+            return null;
+          }
+          return data;
+        })
+      );
+
+      setImages(results);
+    };
+
+    fetchImages();
+  }, [oglas, getImageAction]);
 
   useEffect(() => {
     if (!oglas) return;
@@ -277,6 +312,18 @@ const IzmeniOglas = () => {
     }
   };
 
+  const [uploadAgencija] = useUploadOglasMutation();
+
+  const uploadFn = async (formData: FormData): Promise<ResultType> => {
+    if (!oglas) return;
+    const uploadData: UploadOglasDTO = {
+      id: oglas.id,
+      formData,
+    };
+    const result = await uploadAgencija(uploadData);
+    return result;
+  };
+
   return (
     <>
       <PageSpacer variant="xs" />
@@ -293,10 +340,10 @@ const IzmeniOglas = () => {
             <Icon icon="delete" classes={"cursorPointer"} iconMargin="0px" />
           </div>
         </div>
-        <div>{/* ovde idu slike  */}</div>
+        <ImageGallery images={images} />
         <div className={style.NAJJACEDUGME}>
           <div className={style.DodajSLikuDugme}>
-            <UploadComponent useMutationHook={useUploadKorisnikMutation}>
+            <UploadComponent uploadFn={uploadFn}>
               <MojButton
                 text="Dodaj sliku"
                 icon="add_photo_alternate"

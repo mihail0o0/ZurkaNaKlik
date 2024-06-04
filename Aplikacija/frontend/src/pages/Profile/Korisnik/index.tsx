@@ -38,6 +38,7 @@ import {
 } from "@/store/api/endpoints/images";
 import { getRawLocation } from "@/utils/handleQueries";
 import UploadComponent from "@/components/UploadComponent";
+import { ResultType } from "@/types";
 
 const UserProfile = () => {
   const navigate = useNavigate();
@@ -144,6 +145,13 @@ const UserProfile = () => {
     return null;
   }
 
+  const [uploadKorisnikAction] = useUploadKorisnikMutation();
+
+  const uploadKorisnik = async (formData: FormData): Promise<ResultType> => {
+    const result = await uploadKorisnikAction(formData);
+    return result;
+  };
+
   return (
     <div className={`containerWrapper ${style.Container}`}>
       <div className={style.PostavkeProfila}>
@@ -152,8 +160,13 @@ const UserProfile = () => {
           {/* odje ide slika od kad je clan broj oglasa i prosecna ocena */}
           <div className={style.KarticaSaSlikom}>
             <div className={style.SlikaImeIPrezime}>
-              <UploadComponent useMutationHook={useUploadKorisnikMutation}>
-                <UserAvatar uploadable={true} size={100} letter={user.name[0]} src={imageUrl} />
+              <UploadComponent uploadFn={uploadKorisnik}>
+                <UserAvatar
+                  uploadable={true}
+                  size={100}
+                  letter={user.name[0]}
+                  src={imageUrl}
+                />
               </UploadComponent>
               <p>
                 {vlasnikOglasa && vlasnikOglasa.name}{" "}

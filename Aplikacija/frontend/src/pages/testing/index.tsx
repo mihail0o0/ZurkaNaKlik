@@ -44,7 +44,7 @@ const TestingPage = () => {
   return (
     <>
       <div className="containerWrapper testingPageWrapper">
-        <UploadComponent useMutationHook={useUploadKorisnikMutation} />
+        <UploadComponent uploadFn={useUploadKorisnikMutation} />
       </div>
       <PageSpacer />
     </>
