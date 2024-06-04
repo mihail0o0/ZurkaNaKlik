@@ -129,7 +129,7 @@ const OglasKartica = ({ oglas, onClick }: Props) => {
             <Icon
               icon="edit"
               onClick={() => navigate(`/prostor/izmeniProstor/${oglas.id}`)}
-              classes="cursorPointer"
+              classes="cursorPointer colorWhite"
             />
           )}
         </div>

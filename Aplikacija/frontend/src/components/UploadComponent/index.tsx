@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import { MutationTrigger } from "@reduxjs/toolkit/dist/query/react/buildHooks";
 import { toast } from "react-toastify";
 import {
@@ -23,25 +23,28 @@ type UseMutationHook = () => readonly [
 
 type Props = {
   useMutationHook: UseMutationHook;
+  children: ReactNode;
 };
 
-const UploadComponent = ({ useMutationHook }: Props) => {
-  const [formData, setFormData] = useState<FormData | null>(null);
+const UploadComponent = ({ useMutationHook, children }: Props) => {
+  const inputRef = useRef<HTMLInputElement>(null);
   const [uploadAction] = useMutationHook();
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleClick = () => {
+    if (!inputRef.current) return;
+    inputRef.current.click();
+  };
+
+  const handleFileChange = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     if (!event.target.files || event.target.files.length < 0) return;
 
     const file = event.target.files[0];
     const fD = new FormData();
     fD.append("file", file);
-    setFormData(fD);
-  };
 
-  const handleSubmit = async () => {
-    if (!formData) return;
-
-    const result = await uploadAction(formData);
+    const result = await uploadAction(fD);
     if ("error" in result) {
       console.log(result.error);
       return;
@@ -51,9 +54,14 @@ const UploadComponent = ({ useMutationHook }: Props) => {
   };
 
   return (
-    <div>
-      <input type="file" onChange={handleFileChange} />
-      <button onClick={handleSubmit}>Upload</button>
+    <div onClick={handleClick} className="cursorPointer">
+      <input
+        type="file"
+        ref={inputRef}
+        onChange={handleFileChange}
+        style={{ display: "none" }}
+      />
+      {children}
     </div>
   );
 };

@@ -44,6 +44,10 @@ p {
 }
 
 /* OTHER */
+.colorWhite {
+  color: white;
+}
+
 .page-spacer-xs {
   width: 100%;
   height: 75px;

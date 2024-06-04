@@ -1,14 +1,19 @@
 import api from "../..";
 import { providesSingle } from "../../utils";
+import { UploadOglasDTO } from "./types";
 
 const authApiSlice = api.injectEndpoints({
   endpoints: (builder) => ({
     getImage: builder.query<string, string>({
       query: (location) => ({
         url: `Pregled/get-sliku/${location}`,
+        responseHandler: (response) => response.blob(),
       }),
       transformResponse: (response) => URL.createObjectURL(response as Blob),
-      //   invalidatesTags: (result) => [{ type: "Image", id: "IMAGEKORISNIK" }],
+      providesTags: () => [
+        { type: "Image", id: "IMAGEOGLAS" },
+        { type: "Image", id: "IMAGEKORISNIK" },
+      ],
     }),
     uploadKorisnik: builder.mutation<void, FormData>({
       query: (formData) => ({
@@ -16,9 +21,24 @@ const authApiSlice = api.injectEndpoints({
         method: "POST",
         body: formData,
       }),
-      invalidatesTags: (result) => [{ type: "Image", id: "IMAGEKORISNIK" }],
+      invalidatesTags: () => [
+        { type: "User", id: "LISTUSER" },
+        { type: "Image", id: "IMAGEKORISNIK" },
+      ],
+    }),
+    uploadOglas: builder.mutation<void, UploadOglasDTO>({
+      query: (body) => ({
+        url: `Korisnik/uploadOglas/${body.id}`,
+        method: "POST",
+        body: body.formData,
+      }),
+      invalidatesTags: () => [{ type: "Image", id: "IMAGEOGLAS" }],
     }),
   }),
 });
 
-export const { useGetImageQuery, useUploadKorisnikMutation } = authApiSlice;
+export const {
+  useGetImageQuery,
+  useUploadKorisnikMutation,
+  useUploadOglasMutation,
+} = authApiSlice;
