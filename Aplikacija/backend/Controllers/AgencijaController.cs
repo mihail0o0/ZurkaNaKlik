@@ -8,6 +8,10 @@ using backend.Utilities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Formats.Jpeg;
+using SixLabors.ImageSharp.Processing;
+
 
 namespace backend.Controllers
 {
@@ -527,47 +531,48 @@ namespace backend.Controllers
 
         #endregion
 
-        [HttpPost("uploadAgencije")]
-        public async Task<IActionResult> UploadSlikaAgencije(IFormFile file)
-        {
-            int idAgencije = int.Parse((HttpContext.Items["idAgencije"] as string)!);
+        // [HttpPost("uploadAgencije")]
+        // public async Task<IActionResult> UploadSlikaAgencije(IFormFile file)
+        // {
+        //     int idAgencije = int.Parse((HttpContext.Items["idAgencije"] as string)!);
 
-            var agencija = await Context.Agencije.FindAsync(idAgencije);
-            if (agencija == null)
-            {
-                return NotFound("Agencija nije pronađen.");
-            }
+        //     var agencija = await Context.Agencije.FindAsync(idAgencije);
+        //     if (agencija == null)
+        //     {
+        //         return NotFound("Agencija nije pronađen.");
+        //     }
 
-            if (file == null || file.Length == 0)
-            {
-                return BadRequest("Nijedna slika nije poslata.");
-            }
+        //     if (file == null || file.Length == 0)
+        //     {
+        //         return BadRequest("Nijedna slika nije poslata.");
+        //     }
 
-            var folderPath = Path.Combine("wwwroot", "images", "Agencija", idAgencije.ToString());
-            if (!Directory.Exists(folderPath))
-            {
-                Directory.CreateDirectory(folderPath);
-            }
+        //     var folderPath = Path.Combine("wwwroot", "images", "Agencija", idAgencije.ToString());
+        //     if (!Directory.Exists(folderPath))
+        //     {
+        //         Directory.CreateDirectory(folderPath);
+        //     }
 
-            var files = Directory.GetFiles(folderPath);
-            var fileCount = files.Length;
+        //     var files = Directory.GetFiles(folderPath);
+        //     var fileCount = files.Length;
 
-            var fileName = $"s{fileCount + 1}{Path.GetExtension(file.FileName)}";
-            var filePath = Path.Combine(folderPath, fileName);
+        //     var fileName = $"s{fileCount + 1}{Path.GetExtension(file.FileName)}";
+        //     var filePath = Path.Combine(folderPath, fileName);
 
-            using (var stream = new FileStream(filePath, FileMode.Create))
-            {
-                await file.CopyToAsync(stream);
-            }
+        //     using (var image = Image.Load(file.OpenReadStream()))
+        //     {
+        //         // Konvertuj sliku u JPG format
+        //         image.Save(filePath, new JpegEncoder());
+        //     }
 
-            var relativePath = Path.Combine("images", "Agencija", idAgencije.ToString(), fileName).Replace("\\", "/");
+        //     var relativePath = Path.Combine("images", "Agencija", idAgencije.ToString(), fileName).Replace("\\", "/");
 
 
-            agencija.SlikaProfila = (relativePath);
-            await Context.SaveChangesAsync();
+        //     agencija.SlikaProfila = (relativePath);
+        //     await Context.SaveChangesAsync();
 
-            return Ok(new { Putanja = relativePath });
-        }
+        //     return Ok(new { Putanja = relativePath });
+        // }
 
         [HttpPut("AzurirajSlikuAgencije")]
         public async Task<ActionResult> AzurirajSlikuAgencije(IFormFile file)
@@ -603,9 +608,10 @@ namespace backend.Controllers
                 var fileName = $"s1{Path.GetExtension(file.FileName)}"; // Uvek koristi isto ime za sliku (s1.jpg) kako bi se izbegao konflikt sa prethodnim slikama
                 var filePath = Path.Combine(folderPath, fileName);
 
-                using (var stream = new FileStream(filePath, FileMode.Create))
+                using (var image = Image.Load(file.OpenReadStream()))
                 {
-                    await file.CopyToAsync(stream);
+                    // Konvertuj sliku u JPG format
+                    image.Save(filePath, new JpegEncoder());
                 }
 
                 var relativePath = Path.Combine("images", "Agencija", idAgencije.ToString(), fileName).Replace("\\", "/");
@@ -628,10 +634,20 @@ namespace backend.Controllers
         {
 
             // TODO: proveri da li je oglas od logovane agencije
-            var oglas = await Context.OglasiObjekta.FindAsync(idmenija);
-            if (oglas == null)
+            int idAgencije = int.Parse((HttpContext.Items["idAgencije"] as string)!);
+
+            var agencija = await Context.Agencije.FindAsync(idAgencije);
+            if (agencija == null)
             {
-                return NotFound("Oglas nije pronađen.");
+                return NotFound("Agencija nije pronađen.");
+            }
+
+
+            var meni = await Context.MenijiKeteringa.Include(i => i.Kategorija).ThenInclude(t => t!.Agencija).Where(w => w.Kategorija!.Agencija!.Id == idAgencije).FirstOrDefaultAsync(f => f.Id == idmenija);
+            
+            if (meni == null)
+            {
+                return NotFound("Meni nije pronađen.");
             }
 
             if (file == null || file.Length == 0)
@@ -651,15 +667,16 @@ namespace backend.Controllers
             var fileName = $"s{fileCount + 1}{Path.GetExtension(file.FileName)}";
             var filePath = Path.Combine(folderPath, fileName);
 
-            using (var stream = new FileStream(filePath, FileMode.Create))
+            using (var image = Image.Load(file.OpenReadStream()))
             {
-                await file.CopyToAsync(stream);
+                // Konvertuj sliku u JPG format
+                image.Save(filePath, new JpegEncoder());
             }
 
             var relativePath = Path.Combine("images", "Meniji", idmenija.ToString(), fileName).Replace("\\", "/");
 
 
-            oglas.Slike.Add(relativePath);
+            meni.Slika = relativePath;
             await Context.SaveChangesAsync();
 
             return Ok(new { Putanja = relativePath });

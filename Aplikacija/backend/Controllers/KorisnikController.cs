@@ -9,6 +9,10 @@ using backend.Services;
 using backend.Utilities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Formats.Jpeg;
+using SixLabors.ImageSharp.Processing;
+
 
 namespace backend.Controllers
 {
@@ -845,6 +849,8 @@ namespace backend.Controllers
 
                 await Context.SaveChangesAsync();
 
+
+                
                 return Ok(new { korisnik });
 
 
@@ -985,6 +991,7 @@ namespace backend.Controllers
         [HttpPost("uploadKorisnik")]
         public async Task<IActionResult> UploadSlikaKorisnik(IFormFile file)
         {
+            // TODO: popravi da se dodaje samo jedna slika u folderu bez obzira na format slike
             int korisnikid = int.Parse((HttpContext.Items["idKorisnika"] as string)!);
 
             var korisnik = await Context.Korisnici.FindAsync(korisnikid);
@@ -1004,21 +1011,25 @@ namespace backend.Controllers
                 Directory.CreateDirectory(folderPath);
             }
 
+            // Obrisi sve postojeće slike u folderu
             var files = Directory.GetFiles(folderPath);
-            var fileCount = files.Length;
+            foreach (var existingFile in files)
+            {
+                System.IO.File.Delete(existingFile);
+            }
 
-            var fileName = $"s{fileCount + 1}{Path.GetExtension(file.FileName)}";
+            var fileName = "s1.jpg"; // Uvek čuvamo sliku kao s1.jpg
             var filePath = Path.Combine(folderPath, fileName);
 
-            using (var stream = new FileStream(filePath, FileMode.Create))
+            using (var image = Image.Load(file.OpenReadStream()))
             {
-                await file.CopyToAsync(stream);
+                // Konvertuj sliku u JPG format
+                image.Save(filePath, new JpegEncoder());
             }
 
             var relativePath = Path.Combine("images", "Korisnik", korisnikid.ToString(), fileName).Replace("\\", "/");
 
-
-            korisnik.SlikaProfila = (relativePath);
+            korisnik.SlikaProfila = relativePath;
             await Context.SaveChangesAsync();
 
             return Ok(new { Putanja = relativePath });
@@ -1058,9 +1069,10 @@ namespace backend.Controllers
                 var fileName = $"s1{Path.GetExtension(file.FileName)}"; // Uvek koristi isto ime za sliku (s1.jpg) kako bi se izbegao konflikt sa prethodnim slikama
                 var filePath = Path.Combine(folderPath, fileName);
 
-                using (var stream = new FileStream(filePath, FileMode.Create))
+                using (var image = Image.Load(file.OpenReadStream()))
                 {
-                    await file.CopyToAsync(stream);
+                    // Konvertuj sliku u JPG format
+                    image.Save(filePath, new JpegEncoder());
                 }
 
                 var relativePath = Path.Combine("images", "Korisnik", korisnikid.ToString(), fileName).Replace("\\", "/");
@@ -1077,12 +1089,21 @@ namespace backend.Controllers
         }
 
         #region UploadujSlikuOglasa
-
         [HttpPost("uploadOglas/{oglasId}")]
         public async Task<IActionResult> UploadSlikaOglas(int oglasId, IFormFile file)
         {
             // TODO: Proveri da li je oglas od logovanog korisnika
-            var oglas = await Context.OglasiObjekta.FindAsync(oglasId);
+            // Dodato
+            int korisnikid = int.Parse((HttpContext.Items["idKorisnika"] as string)!);
+
+            var korisnik = await Context.Korisnici.FindAsync(korisnikid);
+            if (korisnik == null)
+            {
+                return NotFound("Korisnik nije pronađen.");
+            }
+
+            var oglas = await Context.OglasiObjekta.Include(i => i.VlasnikOglasa).Where(w => w.VlasnikOglasa!.Id == korisnikid).FirstOrDefaultAsync(f => f.Id == oglasId);
+
             if (oglas == null)
             {
                 return NotFound("Oglas nije pronađen.");
@@ -1105,9 +1126,10 @@ namespace backend.Controllers
             var fileName = $"s{fileCount + 1}{Path.GetExtension(file.FileName)}";
             var filePath = Path.Combine(folderPath, fileName);
 
-            using (var stream = new FileStream(filePath, FileMode.Create))
+            using (var image = Image.Load(file.OpenReadStream()))
             {
-                await file.CopyToAsync(stream);
+                // Konvertuj sliku u JPG format
+                image.Save(filePath, new JpegEncoder());
             }
 
             var relativePath = Path.Combine("images", "Oglasi", oglasId.ToString(), fileName).Replace("\\", "/");
@@ -1118,8 +1140,145 @@ namespace backend.Controllers
 
             return Ok(new { Putanja = relativePath });
         }
-
         #endregion
+
+        // #region UpdateSlikeOglasa - ListaSlika
+        // [HttpPost("updateSlikeOglasListaSlika/{oglasId}")]
+        // public async Task<IActionResult> UpdateSlikeOglas(int oglasId, [FromBody]List<string> slikeZaBrisanje, [FromBody]List<IFormFile> noveSlike)
+        // {
+        //     // TODO: Proveri da li je oglas od logovanog korisnika
+        //     // Dodato
+        //     int korisnikid = int.Parse((HttpContext.Items["idKorisnika"] as string)!);
+
+        //     var korisnik = await Context.Korisnici.FindAsync(korisnikid);
+        //     if (korisnik == null)
+        //     {
+        //         return NotFound("Korisnik nije pronađen.");
+        //     }
+
+        //     var oglas = await Context.OglasiObjekta.Include(i => i.VlasnikOglasa).Where(w => w.VlasnikOglasa!.Id == korisnikid).FirstOrDefaultAsync(f => f.Id == oglasId);
+        //     if (oglas == null)
+        //     {
+        //         return NotFound("Oglas nije pronađen.");
+        //     }
+
+        //     var folderPath = Path.Combine("wwwroot", "images", "Oglasi", oglasId.ToString());
+        //     if (!Directory.Exists(folderPath))
+        //     {
+        //         Directory.CreateDirectory(folderPath);
+        //     }
+
+        //     // Obrisi slike koje su specificirane za brisanje
+        //     foreach (var slikaPath in slikeZaBrisanje)
+        //     {
+        //         var filePath = Path.Combine("wwwroot", slikaPath.Replace("/", "\\"));
+        //         if (System.IO.File.Exists(filePath))
+        //         {
+        //             System.IO.File.Delete(filePath);
+        //         }
+
+        //         oglas.Slike.Remove(slikaPath);
+        //     }
+
+        //     var existingFiles = Directory.GetFiles(folderPath);
+        //     var fileCount = existingFiles.Length;
+
+        //     // Dodaj nove slike
+        //     var uploadedPaths = new List<string>();
+
+        //     foreach (var file in noveSlike)
+        //     {
+        //         if (file.Length > 0)
+        //         {
+        //             var fileName = $"s{fileCount + 1}{Path.GetExtension(file.FileName)}";
+        //             var filePath = Path.Combine(folderPath, fileName);
+
+        //             using (var image = Image.Load(file.OpenReadStream()))
+        //             {
+        //                 // Konvertuj sliku u JPG format
+        //                 image.Save(filePath, new JpegEncoder());
+        //             }
+
+        //             var relativePath = Path.Combine("images", "Oglasi", oglasId.ToString(), fileName).Replace("\\", "/");
+        //             oglas.Slike.Add(relativePath);
+        //             uploadedPaths.Add(relativePath);
+
+        //             fileCount++;
+        //         }
+        //     }
+
+        //     await Context.SaveChangesAsync();
+
+        //     return Ok(new { Putanje = uploadedPaths });
+        // }
+        // #endregion
+
+
+        #region UploadujSlikuOglasa-ListaSlika
+
+        [HttpPost("uploadOglasListaSlika/{oglasId}")]
+        public async Task<IActionResult> UploadSlikeOglas(int oglasId, List<IFormFile> files)
+        {
+            // TODO: Proveri da li je oglas od logovanog korisnika
+            // Dodato
+            int korisnikid = int.Parse((HttpContext.Items["idKorisnika"] as string)!);
+
+            var korisnik = await Context.Korisnici.FindAsync(korisnikid);
+            if (korisnik == null)
+            {
+                return NotFound("Korisnik nije pronađen.");
+            }
+
+            var oglas = await Context.OglasiObjekta.Include(i => i.VlasnikOglasa).Where(w => w.VlasnikOglasa!.Id == korisnikid).FirstOrDefaultAsync(f => f.Id == oglasId);
+            
+            if (oglas == null)
+            {
+                return NotFound("Oglas nije pronađen.");
+            }
+
+            if (files == null || files.Count == 0)
+            {
+                return BadRequest("Nijedna slika nije poslata.");
+            }
+
+            var folderPath = Path.Combine("wwwroot", "images", "Oglasi", oglasId.ToString());
+            if (!Directory.Exists(folderPath))
+            {
+                Directory.CreateDirectory(folderPath);
+            }
+
+            var existingFiles = Directory.GetFiles(folderPath);
+            var fileCount = existingFiles.Length;
+
+            var uploadedPaths = new List<string>();
+
+            foreach (var file in files)
+            {
+                if (file.Length > 0)
+                {
+                    var fileName = $"s{fileCount + 1}{Path.GetExtension(file.FileName)}";
+                    var filePath = Path.Combine(folderPath, fileName);
+
+                    using (var image = Image.Load(file.OpenReadStream()))
+                    {
+                        // Konvertuj sliku u JPG format
+                        image.Save(filePath, new JpegEncoder());
+                    }
+
+                    var relativePath = Path.Combine("images", "Oglasi", oglasId.ToString(), fileName).Replace("\\", "/");
+                    oglas.Slike.Add(relativePath);
+                    uploadedPaths.Add(relativePath);
+
+                    fileCount++;
+                }
+            }
+
+            await Context.SaveChangesAsync();
+
+            return Ok(new { Putanje = uploadedPaths });
+        }
+        #endregion
+
 
         #region DaLisamOmiljeni
         [HttpGet("DaLiOmiljen/{oglasId}")]
@@ -1140,6 +1299,45 @@ namespace backend.Controllers
         }
 
         #endregion
+
+        #region ObrisiSlikuOglasa
+        [HttpDelete("obrisiSlikuOglasa/{oglasId}")]
+        public async Task<IActionResult> ObrisiSlikuOglasa(int oglasId, [FromQuery] string slikaPath)
+        {
+            // TODO: Proveri da li je oglas od logovanog korisnika
+            int korisnikid = int.Parse((HttpContext.Items["idKorisnika"] as string)!);
+
+            var korisnik = await Context.Korisnici.FindAsync(korisnikid);
+            if (korisnik == null)
+            {
+                return NotFound("Korisnik nije pronađen.");
+            }
+
+            var oglas = await Context.OglasiObjekta.Include(i => i.VlasnikOglasa).Where(w => w.VlasnikOglasa!.Id == korisnikid).FirstOrDefaultAsync(f => f.Id == oglasId);
+            if (oglas == null)
+            {
+                return NotFound("Oglas nije pronađen.");
+            }
+
+            // Obrisi sliku koja je specificirana
+            var filePath = Path.Combine("wwwroot", slikaPath.Replace("/", "\\"));
+            if (System.IO.File.Exists(filePath))
+            {
+                System.IO.File.Delete(filePath);
+            }
+            else
+            {
+                return NotFound("Slika nije pronađena.");
+            }
+
+            oglas.Slike.Remove(slikaPath);
+
+            await Context.SaveChangesAsync();
+
+            return Ok(new { Poruka = "Slika je uspešno obrisana." });
+        }
+        #endregion
+
 
         
 

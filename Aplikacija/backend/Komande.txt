@@ -51,3 +51,12 @@ dotnet ef migrations remove
 
 
 bearer "token"
+
+
+za konverziju slika
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Formats.Jpeg;
+using SixLabors.ImageSharp.Processing;
+
+dotnet add package SixLabors.ImageSharp
+
