@@ -75,7 +75,6 @@ const UserProfile = () => {
   const [brTel, setBrTel] = useState("");
   const [slikaProfila, setSlikaProfila] = useState<string | undefined>("");
   const [lokacija, setLokacija] = useState("");
-
   const [opis, setOpis] = useState("");
   const [openDialog, setOpenDialog] = useState(false);
   const [deleteUser] = useDeleteUserMutation();

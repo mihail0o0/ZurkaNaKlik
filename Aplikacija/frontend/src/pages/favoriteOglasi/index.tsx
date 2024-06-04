@@ -1,7 +1,11 @@
 import MojButton from "@/components/lib/button";
 import style from "./style.module.css";
 import { useNavigate } from "react-router-dom";
+import { useGetFavouritesQuery } from "@/store/api/endpoints/korisnik";
+import OglasKartica from "@/components/OglasKartica";
 const FavoriteOglasi=()=>{
+
+    const {data: omiljeniOglasi}=useGetFavouritesQuery();
     const navigate = useNavigate();
     return(
         <div className={`containerWrapper ${style.Glavni}`}>
@@ -12,7 +16,13 @@ const FavoriteOglasi=()=>{
            </div>
            {/* odje idu kartice sa omiljenim oglasima */}
            <div className={style.OmiljeniOglasi}>
-                <p>da se dodaju omiljeniiiii</p>
+           {omiljeniOglasi && 
+             omiljeniOglasi.map((oglas) => (
+                <div key={oglas.id}>
+                  <OglasKartica oglas={oglas} onClick={() => {}} />
+                </div>
+              ))
+           }
            </div>
            <div  className={style.Div222}>
             <div className={style.TxtDiv}>
