@@ -51,10 +51,12 @@ namespace backend.Controllers
                 Roles rolic = request.role;
                 Korisnik korisnik = ObjectCreatorSingleton.Instance.FromRegistrationKorisnik(request, lozinkaHash);
 
-                string accessToken = prijava(korisnik);
 
                 await Context.Korisnici.AddAsync(korisnik);
                 await Context.SaveChangesAsync();
+
+                var kor = Context.Korisnici.FirstOrDefaultAsync(f => f.Email == request.email);
+                string accessToken = prijava(korisnik);
 
                 LoginResult loginResult = ObjectCreatorSingleton.Instance.ToLoginResult(korisnik);
 
@@ -87,10 +89,12 @@ namespace backend.Controllers
 
                 LoginResult loginResult = ObjectCreatorSingleton.Instance.ToLoginResult(agencija);
 
-                string accessToken = prijava(agencija);
                 await Context.Agencije.AddAsync(agencija);
                 await Context.SaveChangesAsync();
 
+                var kor = Context.Agencije.FirstOrDefaultAsync(f => f.Email == request.email);
+                string accessToken = prijava(agencija);
+                
                 return Ok(new { accessToken, loginResult });
             }
             catch (Exception e)
