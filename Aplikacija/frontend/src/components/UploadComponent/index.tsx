@@ -12,10 +12,9 @@ import { ResultType } from "@/types";
 type Props = {
   uploadFn: (formData: FormData) => Promise<ResultType>;
   children: ReactNode;
-  callbackHandler: () => any;
-}
+};
 
-const UploadComponent = ({ uploadFn, callbackHandler, children }: Props) => {
+const UploadComponent = ({ uploadFn, children }: Props) => {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleClick = () => {

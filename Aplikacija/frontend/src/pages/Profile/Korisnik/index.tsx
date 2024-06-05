@@ -138,9 +138,6 @@ const UserProfile = () => {
       navigate("user/signup");
     }
   };
-  if (!user) {
-    return null;
-  }
 
   const [uploadKorisnikAction] = useUploadKorisnikMutation();
 
@@ -148,6 +145,10 @@ const UserProfile = () => {
     const result = await uploadKorisnikAction(formData);
     return result;
   };
+
+  if (!user) {
+    return null;
+  }
 
   return (
     <div className={`containerWrapper ${style.Container}`}>

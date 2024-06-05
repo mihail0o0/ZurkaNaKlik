@@ -331,6 +331,7 @@ namespace backend.Controllers
         [HttpGet("get-sliku/{putanja}")]
         public IActionResult VratiSliku(string putanja)
         {
+            // if(putanja == null) return Ok("ESCAPESEQEUENCE");
 
             putanja = Uri.UnescapeDataString(putanja);
 
@@ -364,19 +365,5 @@ namespace backend.Controllers
                 _ => "application/octet-stream",
             };
         }
-
-        
-
-
-        
-
-        
-
-       
     }
-
-
-
-
-
 }
