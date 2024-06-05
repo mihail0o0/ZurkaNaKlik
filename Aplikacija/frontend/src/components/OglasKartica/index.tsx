@@ -14,6 +14,8 @@ import { selectUser } from "@/store/auth";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { skipToken } from "@reduxjs/toolkit/query";
+import { useGetImageQuery } from "@/store/api/endpoints/images";
+import { getRawLocation } from "@/utils/handleQueries";
 
 // type Props = {
 //   nazivProstora: string;
@@ -44,6 +46,9 @@ const OglasKartica = ({ oglas, onClick }: Props) => {
     skip: !userCurr,
   });
   const [localFavorite, setLocalFavorite] = useState(false);
+  const { data: imageUrl } = useGetImageQuery(
+    getRawLocation(oglas.slike[0]) ?? skipToken
+  );
 
   console.log(oglas.id);
   console.log(isFavorite);
@@ -62,13 +67,13 @@ const OglasKartica = ({ oglas, onClick }: Props) => {
 
     try {
       if (localFavorite) {
-        const response = await deleteFavorite(oglas.id).unwrap();
+        const response = await deleteFavorite(oglas.id);
         toast.success('Oglas uspešno uklonjen iz omiljenih.');
-        setLocalFavorite(false);
+        setLocalFavorite(prevFavorite => !prevFavorite);
       } else {
-        const response = await addFavorite(oglas.id).unwrap();
+        const response = await addFavorite(oglas.id);
         toast.success('Oglas uspešno dodat u omiljene.');
-        setLocalFavorite(true);
+        setLocalFavorite(prevFavorite => !prevFavorite);
       }
     } catch (error) {
       console.error('Error updating favorite status:', error);
@@ -85,7 +90,7 @@ const OglasKartica = ({ oglas, onClick }: Props) => {
   const SlikaKartica: CSSProperties = {
     backgroundImage:
       oglas.slike?.length > 0
-        ? `url(${oglas.slike[0]})`
+        ? `url(${imageUrl})`
         : `url(${defaultImage})`,
   };
 

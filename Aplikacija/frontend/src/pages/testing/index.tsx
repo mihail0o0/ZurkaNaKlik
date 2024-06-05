@@ -20,6 +20,7 @@ import {
 } from "@/store/api/endpoints/images";
 import { getRawLocation } from "@/utils/handleQueries";
 import { skipToken } from "@reduxjs/toolkit/query";
+import MenyCard from "@/components/MenyCard";
 
 const TestingPage = () => {
   const user = useSelector(selectUser);
@@ -44,7 +45,8 @@ const TestingPage = () => {
   return (
     <>
       <div className="containerWrapper testingPageWrapper">
-        <UploadComponent uploadFn={useUploadKorisnikMutation} />
+        {/* <UploadComponent uploadFn={useUploadKorisnikMutation} /> */}
+        <MenyCard  />
       </div>
       <PageSpacer />
     </>
