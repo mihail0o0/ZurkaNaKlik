@@ -26,6 +26,7 @@ import OglasiProstor from "./oglasiProstor";
 import FavoriteOglasi from "./favoriteOglasi";
 import Oglas from "./Oglas";
 import IzmeniOglas from "./IzmeniOglas";
+import Porudzbine from "./Porudzbine";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -53,6 +54,7 @@ const router = createBrowserRouter(
         {/* Agencija */}
         <Route path="catering">
           <Route path="profile" element={<AgencyProfile />} />
+          <Route path="porudzbine" element={<Porudzbine />} />
         </Route>
       </Route>
 

@@ -3,19 +3,24 @@ import style from "./style.module.css";
 import DisplayCard from "../DisplayCard";
 import MojButton from "../lib/button";
 import Icon from "../lib/icon";
+import { useGetMenuesQuery } from "@/store/api/endpoints/agencija";
 
 type MenyCardProps = {
-  oglas?: OglasObjekata;
+  order: CateringOrder;
   //meny
 };
-const MenyCard = ({ oglas }: MenyCardProps) => {
+const MenyCard = ({ order }: MenyCardProps) => {
+    const { data : sviMeniji } = useGetMenuesQuery();
+    
+
+
   return (
     <div className={`containerWrapper ${style.Container}`}>
       <div className={style.MenyPicture}>
         <img src="/public/images/burger.jpg" />
       </div>
       <div className={style.MenyTxt}>
-        <h3>Burger king,Meg burger,Mali pomgfrit</h3>
+        <h3>{}</h3>
         {/* <p>Opis menija neki mali.</p> */}
         <div className={style.InfoOglas}>
           <div className={style.DisplayMenyInfo}>
