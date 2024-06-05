@@ -320,6 +320,8 @@ const IzmeniOglas = () => {
       id: oglas.id,
       formData,
     };
+    console.log("ULOPADOBJECT");
+    console.log(uploadData);
     const result = await uploadAgencija(uploadData);
     return result;
   };

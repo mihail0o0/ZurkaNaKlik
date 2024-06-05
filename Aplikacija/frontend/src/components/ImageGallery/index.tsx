@@ -33,6 +33,7 @@ const ImageGallery = ({
       idOglasa,
       slikaPath: getRawLocation(image)!,
     };
+    console.log(actionData);
 
     const result = await deleteImageAction(actionData);
     if ("error" in result) {

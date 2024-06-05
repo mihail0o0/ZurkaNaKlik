@@ -37,11 +37,15 @@ import ImageGallery from "@/components/ImageGallery";
 import PageSpacer from "@/components/lib/page-spacer";
 import UploadMultiple from "@/components/UploadMultiple";
 import { count } from "console";
-import { useUploadMultipleOglasMutation } from "@/store/api/endpoints/images";
+import {
+  useUploadMultipleOglasMutation,
+  useUploadOglasMutation,
+} from "@/store/api/endpoints/images";
 import {
   UploadMultipleOglasDTO,
   UploadOglasDTO,
 } from "@/store/api/endpoints/images/types";
+import { resourceUsage } from "process";
 
 const OglasiProstor = () => {
   const [opisProstora, setOpisProstora] = useState("");
@@ -72,7 +76,8 @@ const OglasiProstor = () => {
   const [images, setImages] = useState<(string | null | undefined)[]>([]);
   const [imagePaths, setImagePaths] = useState<string[]>([]);
 
-  const [uploadMultipleAction] = useUploadMultipleOglasMutation();
+  // const [uploadMultipleAction] = useUploadMultipleOglasMutation();
+  const [uploadOglasAction] = useUploadOglasMutation();
 
   const handleDelete = (index: number) => {
     if (!formData) return;
@@ -294,34 +299,16 @@ const OglasiProstor = () => {
       return;
     }
 
-    const listFormData: FormData[] = [];
-
-    console.log(formData);
     for (let [key, value] of formData) {
       let newFormData = new FormData();
-      newFormData.append(key, value);
+      newFormData.append("file", value);
 
-      listFormData.push(newFormData);
-    }
+      const uploadObject: UploadOglasDTO = {
+        id: response.data.id,
+        formData: newFormData,
+      };
 
-    console.log("LISTFORMDATA");
-    console.log(listFormData);
-
-    const uploadTest: UploadOglasDTO = {
-      id: response.data.id,
-      formData: formData,
-    };
-
-    const uploadObject: UploadMultipleOglasDTO = {
-      id: response.data.id,
-      files: listFormData,
-    };
-
-    const uploadResult = await uploadMultipleAction(uploadObject);
-
-    if ("error" in uploadResult) {
-      toast.warn("Oglas uspesno dodat, ali postoji neki problem sa slikama");
-      return;
+      let result = await uploadOglasAction(uploadObject);
     }
 
     toast.success("Oglas kao i slike oglasa dodat");
