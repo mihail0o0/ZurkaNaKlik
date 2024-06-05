@@ -327,6 +327,10 @@ const IzmeniOglas = () => {
     return result;
   };
 
+  if (idOglasa == undefined || !oglas) {
+    return null;
+  }
+
   return (
     <>
       <PageSpacer variant="xs" />
@@ -344,7 +348,7 @@ const IzmeniOglas = () => {
           </div>
         </div>
         <h2>Slike prostora</h2>
-        <ImageGallery images={images} />
+        <ImageGallery idOglasa={idOglasa} imagePaths={oglas.slike} images={images} />
         <div className={style.NAJJACEDUGME}>
           <div className={style.DodajSLikuDugme}>
             <UploadComponent uploadFn={uploadFn}>

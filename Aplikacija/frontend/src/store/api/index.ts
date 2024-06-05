@@ -106,6 +106,7 @@ export const api = createApi({
     "Agency",
     "AgencyCategory",
     "AgencyMenu",
+    "CateringOrder",
     "Location",
     "Oglas",
     "OmiljeniOglasi",

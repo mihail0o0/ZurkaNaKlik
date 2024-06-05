@@ -1,6 +1,6 @@
 import api from "../..";
 import { providesSingle } from "../../utils";
-import { UploadOglasDTO } from "./types";
+import { DeleteOglasImageDTO, UploadOglasDTO } from "./types";
 
 const authApiSlice = api.injectEndpoints({
   endpoints: (builder) => ({
@@ -37,6 +37,17 @@ const authApiSlice = api.injectEndpoints({
         { type: "Image", id: "IMAGEOGLAS" },
       ],
     }),
+    deleteOglasImage: builder.mutation<void, DeleteOglasImageDTO>({
+      query: (body) => ({
+        url: `Korisnik/ObrisiSlikuOglasa/${body.idOglasa}`,
+        method: "DELETE",
+        body: body.slikaPath,
+      }),
+      invalidatesTags: (result, err, args) => [
+        { type: "Oglas", id: args.idOglasa },
+        { type: "Image", id: "IMAGEOGLAS" },
+      ],
+    }),
   }),
 });
 
@@ -45,4 +56,5 @@ export const {
   useLazyGetImageQuery,
   useUploadKorisnikMutation,
   useUploadOglasMutation,
+  useDeleteOglasImageMutation,
 } = authApiSlice;

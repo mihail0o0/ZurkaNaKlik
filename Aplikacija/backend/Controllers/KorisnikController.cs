@@ -87,13 +87,12 @@ namespace backend.Controllers
 
         #region ObrisiOmiljeniOglas
         [HttpDelete("ObrisiOmiljeniOglas/{idOglasa}")]
-
         public async Task<ActionResult> ObrisiOmiljeniOglas(int idOglasa)
         {
             try
             {
                 int idKorisnika = int.Parse((HttpContext.Items["idKorisnika"] as string)!);
-                Korisnik? korisnik = await Context.Korisnici.FindAsync(idKorisnika);
+                Korisnik? korisnik = await Context.Korisnici.Include(i => i.ListaOmiljenihOglasaObjekata).FirstOrDefaultAsync(f => f.Id == idKorisnika);
 
                 if (korisnik == null)
                 {
@@ -1231,7 +1230,7 @@ namespace backend.Controllers
             }
 
             var oglas = await Context.OglasiObjekta.Include(i => i.VlasnikOglasa).Where(w => w.VlasnikOglasa!.Id == korisnikid).FirstOrDefaultAsync(f => f.Id == oglasId);
-            
+
             if (oglas == null)
             {
                 return NotFound("Oglas nije pronađen.");
@@ -1335,14 +1334,8 @@ namespace backend.Controllers
 
             await Context.SaveChangesAsync();
 
-            return Ok(new { Poruka = "Slika je uspešno obrisana." });
+            return Ok();
         }
         #endregion
-
-
-        
-
-
-
     }
 }

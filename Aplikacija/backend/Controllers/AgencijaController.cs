@@ -250,7 +250,8 @@ namespace backend.Controllers
                     return BadRequest("Pogresno unet meni");
                 }
 
-                if(meni.Kategorija?.Agencija?.Id != idAgencije){
+                if (meni.Kategorija?.Agencija?.Id != idAgencije)
+                {
                     return BadRequest("nisi ti taj bebo");
                 }
 
@@ -395,7 +396,14 @@ namespace backend.Controllers
                 }
 
 
-                return Ok(new { zahtevizaketering });
+                List<ZahtevZaKeteringResult> result = new();
+
+                foreach (ZahtevZaKetering zahtev in zahtevizaketering)
+                {
+                    result.Add(ObjectCreatorSingleton.Instance.ToZahtevZaKeteringResult(zahtev));
+                }
+
+                return Ok(result);
             }
             catch (Exception e)
             {
@@ -408,23 +416,24 @@ namespace backend.Controllers
         #region  OdobriPorudzbinu
         [HttpPut("OdobriPorudzbinu/{idZahteva}")]
         public async Task<IActionResult> OdobriPorudzbinu(int idZahteva)
-
         {
             try
             {
                 var zahtevizaketering = await Context.ZahteviZaKetering.FirstOrDefaultAsync(x => x.Id == idZahteva);
-
-                if (zahtevizaketering != null && zahtevizaketering.StatusRezervacije == false)
-                {
-                    zahtevizaketering.StatusRezervacije = !zahtevizaketering.StatusRezervacije;
-                }
 
                 if (zahtevizaketering == null)
                 {
                     return BadRequest("Ovaj zahtev nija validan");
                 }
 
-                return Ok(new { zahtevizaketering!.StatusRezervacije });
+                if (zahtevizaketering.StatusRezervacije == false)
+                {
+                    zahtevizaketering.StatusRezervacije = true;
+                }
+
+                await Context.SaveChangesAsync();
+
+                return Ok(zahtevizaketering.StatusRezervacije);
             }
             catch (Exception e)
             {
@@ -433,13 +442,12 @@ namespace backend.Controllers
         }
         #endregion
 
-        #region  OdbijanjePoridzbine
-        [HttpGet("OdbijanjePoridzbine/{idZahteva}")]
+        #region  OdbijanjePorudzbine
+        [HttpGet("OdbijanjePorudzbine/{idZahteva}")]
         public async Task<IActionResult> OdbijanjePoridzbine(int idZahteva)
         {
             try
             {
-
                 var zahtevizaketering = await Context.ZahteviZaKetering.Include(i => i.ZakupljeniOglas).IgnoreQueryFilters().FirstOrDefaultAsync(x => x.Id == idZahteva);
 
                 if (zahtevizaketering == null)
@@ -455,7 +463,7 @@ namespace backend.Controllers
                 await Context.SaveChangesAsync();
 
 
-                return Ok(new { zahtevizaketering.StatusRezervacije });
+                return Ok(zahtevizaketering.StatusRezervacije);
             }
             catch (Exception e)
             {
@@ -512,7 +520,8 @@ namespace backend.Controllers
 
                 var kategorijaMenija = await Context.Kategorije.Where(w => w.Agencija!.Id == idAgencije).FirstOrDefaultAsync(f => f.Id == kategorija.Id);
 
-                if(kategorijaMenija == null){
+                if (kategorijaMenija == null)
+                {
                     return NotFound("ne postoji ta kategorija ili ti nisi vlasnik kategorije");
                 }
 
@@ -644,7 +653,7 @@ namespace backend.Controllers
 
 
             var meni = await Context.MenijiKeteringa.Include(i => i.Kategorija).ThenInclude(t => t!.Agencija).Where(w => w.Kategorija!.Agencija!.Id == idAgencije).FirstOrDefaultAsync(f => f.Id == idmenija);
-            
+
             if (meni == null)
             {
                 return NotFound("Meni nije pronađen.");

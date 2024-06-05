@@ -42,3 +42,13 @@ type AddMenuDTO = {
 };
 
 type AddCategoryDTO = Omit<Category, "id">;
+
+type CateringOrder = {
+  id: number;
+  konacnaCena: number;
+  statusRezervacije: boolean;
+  datumRezervacije: Date;
+  idOglasa?: number;
+  idAgencije?: number;
+  idMenija?: number[];
+};
