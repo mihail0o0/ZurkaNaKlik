@@ -6,14 +6,11 @@ import Icon from "../lib/icon";
 import { useGetMenuesQuery } from "@/store/api/endpoints/agencija";
 
 type MenyCardProps = {
-  order: CateringOrder;
+  order?: CateringOrder;
+  meni?: Menu;
   //meny
 };
-const MenyCard = ({ order }: MenyCardProps) => {
-    
-
-
-
+const MenyCard = ({ order, meni }: MenyCardProps) => {
   return (
     <div className={`containerWrapper ${style.Container}`}>
       <div className={style.MenyPicture}>
@@ -24,22 +21,59 @@ const MenyCard = ({ order }: MenyCardProps) => {
         {/* <p>Opis menija neki mali.</p> */}
         <div className={style.InfoOglas}>
           <div className={style.DisplayMenyInfo}>
-            <Icon icon={"location_on"} />
-            <label>{"Trg 14. oktobra 6"}</label>
+            {order && (
+              <>
+                <Icon icon={"location_on"} />
+                <label>{"Trg 14. oktobra 6"}</label>
+              </>
+            )}
+            {meni && (
+              <>
+                <Icon icon={"edit"} />
+                <label>{meni.naziv}</label>{" "}
+              </>
+            )}
           </div>
           <div className={style.DisplayMenyInfo}>
-            <Icon icon={"calendar_month"} />
-            <label>{"14.5.2024."}</label>
+            {order && (
+              <>
+                <Icon icon={"calendar_month"} />
+                <label>{"14.5.2024."}</label>{" "}
+              </>
+            )}
+            {meni && (
+              <>
+                <Icon icon={"edit"} />
+                <label>{meni.opis}</label>{" "}
+              </>
+            )}
           </div>
         </div>
         <div className={style.InfoOglas}>
           <div className={style.DisplayMenyInfo}>
-            <Icon icon={"house"} />
-            <label>{"Vila ramonda"}</label>
+            {order && (
+              <>
+                {" "}
+                <Icon icon={"house"} />
+                <label>{"Vila ramonda"}</label>{" "}
+              </>
+            )}
+            {meni && (
+              <>
+                {" "}
+                <Icon icon={"payments"} />
+                <label>{meni.cenaMenija}</label>{" "}
+              </>
+            )}
           </div>
           <div className={style.DisplayMenyInfo}>
-            <Icon icon={"payments"} />
-            <label>{"200"}</label>
+            {order && (
+              <>
+                {" "}
+                <Icon icon={"payments"} />
+                <label>{"200"}</label>{" "}
+              </>
+            )}
           </div>
         </div>
       </div>
