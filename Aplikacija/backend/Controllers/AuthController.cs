@@ -51,10 +51,12 @@ namespace backend.Controllers
                 Roles rolic = request.role;
                 Korisnik korisnik = ObjectCreatorSingleton.Instance.FromRegistrationKorisnik(request, lozinkaHash);
 
-                string accessToken = prijava(korisnik);
 
                 await Context.Korisnici.AddAsync(korisnik);
                 await Context.SaveChangesAsync();
+
+                var kor = Context.Korisnici.FirstOrDefaultAsync(f => f.Email == request.email);
+                string accessToken = prijava(korisnik);
 
                 LoginResult loginResult = ObjectCreatorSingleton.Instance.ToLoginResult(korisnik);
 
@@ -84,13 +86,15 @@ namespace backend.Controllers
 
                 string lozinkaHash = BCrypt.Net.BCrypt.HashPassword(request.password);
                 var agencija = ObjectCreatorSingleton.Instance.FromRegistrationAgencija(request, lozinkaHash);
-                
+
                 LoginResult loginResult = ObjectCreatorSingleton.Instance.ToLoginResult(agencija);
 
-                string accessToken = prijava(agencija);
                 await Context.Agencije.AddAsync(agencija);
                 await Context.SaveChangesAsync();
 
+                var kor = Context.Agencije.FirstOrDefaultAsync(f => f.Email == request.email);
+                string accessToken = prijava(agencija);
+                
                 return Ok(new { accessToken, loginResult });
             }
             catch (Exception e)
@@ -135,10 +139,11 @@ namespace backend.Controllers
             }
         }
 
-        private string prijava(KorisnikAgencija korisnikagencija){
+        private string prijava(KorisnikAgencija korisnikagencija)
+        {
             string accessToken = CreateToken(korisnikagencija!);
 
-            var refreshToken = GenerateRefreshToken();
+            var refreshToken = GenerateRefreshToken(korisnikagencija.Id);
             var cookieOptions = new CookieOptions
             {
                 HttpOnly = true,
@@ -146,7 +151,9 @@ namespace backend.Controllers
             };
 
             Response.Cookies.Append("refreshToken", refreshToken.Token, cookieOptions); //postavlja cookie
+            Response.Cookies.Append("refreshTokenid", refreshToken.id.ToString(), cookieOptions); //postavlja cookie
 
+            korisnikagencija!.RefreshToken = refreshToken.id.ToString();
             korisnikagencija!.RefreshToken = refreshToken.Token;
             korisnikagencija!.TokenCreated = refreshToken.Created;
             korisnikagencija!.TokenExpires = refreshToken.Expires;
@@ -156,22 +163,26 @@ namespace backend.Controllers
 
         //usera vec imas u cookie samo g auzmi odatle
 
-
-        [Authorize]
         [HttpGet("RefreshToken")]
         public async Task<ActionResult> RefreshToken()
         {
             try
             {
                 string? refreshTokenValue = Request.Cookies["refreshToken"];
+                string? userId = Request.Cookies["refreshTokenid"];
 
                 if (refreshTokenValue == null)
                 {
                     return BadRequest("Nema refresh tokena");
                 }
 
-                int userId = int.Parse(_userService.GetMyId());
-                KorisnikAgencija? user = await Context.KorisniciAgencije.FirstOrDefaultAsync(k => k.Id == userId);
+                //int userId = int.Parse(_userService.GetMyId());
+                if (userId == null)
+                {
+                    return BadRequest("izvini miks ako je ovde greska kazi");
+                }
+
+                KorisnikAgencija? user = await Context.KorisniciAgencije.FirstOrDefaultAsync(k => k.Id == int.Parse(userId!));
 
                 if (user == null)
                 {
@@ -187,8 +198,8 @@ namespace backend.Controllers
                     return Unauthorized("Token expired.");
                 }
 
-                string token = CreateToken(user);
-                var newRefreshToken = GenerateRefreshToken();
+                string accessToken = CreateToken(user);
+                var newRefreshToken = GenerateRefreshToken(int.Parse(userId));
 
                 var cookieOptions = new CookieOptions
                 {
@@ -202,9 +213,11 @@ namespace backend.Controllers
                 user.TokenCreated = newRefreshToken.Created;
                 user.TokenExpires = newRefreshToken.Expires;
 
+                LoginResult loginResult = ObjectCreatorSingleton.Instance.ToLoginResult(user);
+
                 await Context.SaveChangesAsync();
 
-                return Ok(new { token });
+                return Ok(new { accessToken, loginResult });
             }
             catch (Exception e)
             {
@@ -212,11 +225,12 @@ namespace backend.Controllers
             }
         }
 
-        private RefreshToken GenerateRefreshToken()
+        private RefreshToken GenerateRefreshToken(int id)
         {
 
             var refreshToken = new RefreshToken
             {
+                id = id,
                 Token = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64)),
                 Expires = DateTime.Now.AddDays(2)
             };
@@ -254,29 +268,33 @@ namespace backend.Controllers
 
 
         #region Logout
-        [HttpPut("Logout")]
-        public async Task<IActionResult> Logout(){
-            try{
+        [HttpGet("Logout")]
+        public async Task<IActionResult> Logout()
+        {
+            try
+            {
 
                 int idKorisnika = int.Parse((HttpContext.Items["idKorisnika"] as string)!);
 
 
-                Korisnik? k  = await Context.Korisnici.FindAsync(idKorisnika);
+                Korisnik? k = await Context.Korisnici.FindAsync(idKorisnika);
 
-                if (k == null){
+                if (k == null)
+                {
                     return BadRequest("nema korisnika");
                 }
 
-                k.RefreshToken= String.Empty;
-                
+                k.RefreshToken = String.Empty;
 
-                await Context.SaveChangesAsync(); 
+
+                await Context.SaveChangesAsync();
 
                 return Ok("Obrisan je korisnik");
 
 
             }
-            catch(Exception ex){
+            catch (Exception ex)
+            {
                 return BadRequest(ex.Message);
             }
         }

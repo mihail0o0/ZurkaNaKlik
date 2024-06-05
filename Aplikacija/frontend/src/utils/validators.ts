@@ -1,4 +1,9 @@
-import { CreateAgencyDTO, CreateUserDTO, LoginPayload } from "@/store/api/endpoints/auth/types";
+import {
+  CreateAgencyDTO,
+  CreateUserDTO,
+  LoginPayload,
+} from "@/store/api/endpoints/auth/types";
+import { UpdateUserDTO } from "@/store/api/endpoints/korisnik/types";
 import Joi from "joi";
 
 const customTlds = ["com", "net", "org"];
@@ -25,7 +30,14 @@ const passwordVal = Joi.string()
     "string.max": "{{#label}} mora imati najmanje {{#limit}} karaktera.",
   });
 
-const nameVal = Joi.string()
+const nameVal = Joi.string().required().min(4).max(40).label("Naziv").messages({
+  "string.base": "{{#label}} mora biti niz karaktera",
+  "string.empty": "{{#label}} ne može biti prazno.",
+  "string.min": "{{#label}} mora imati najmanje {{#limit}} karaktera.",
+  "string.max": "{{#label}} mora imati najmanje {{#limit}} karaktera.",
+});
+
+const userNameVal = Joi.string()
   .required()
   .min(4)
   .max(40)
@@ -130,7 +142,7 @@ export const userLoginSchema = Joi.object<LoginPayload>({
 });
 
 export const userSignUpSchema = Joi.object<CreateUserDTO>({
-  name: nameVal,
+  name: userNameVal,
   lastName: lastNameVal,
   phoneNumber: phoneNumberVal,
   email: emailVal,
@@ -140,8 +152,17 @@ export const userSignUpSchema = Joi.object<CreateUserDTO>({
   role: roleVal,
 });
 
+export const updateUserSchema = Joi.object<UpdateUserDTO>({
+  id: Joi.number(),
+  name: userNameVal,
+  lastName: lastNameVal,
+  phoneNumber: phoneNumberVal,
+  email: emailVal,
+  location: cityValReq,
+});
+
 export const agencySignUpSchema = Joi.object<CreateAgencyDTO>({
-  name: nameVal,
+  name: userNameVal,
   phoneNumber: phoneNumberVal,
   email: emailVal,
   location: cityValReq,
@@ -150,9 +171,8 @@ export const agencySignUpSchema = Joi.object<CreateAgencyDTO>({
   role: roleVal,
 });
 
-
 export const agencyRegisterSchema = Joi.object({
-  name: nameVal,
+  name: userNameVal,
   email: emailVal,
   phoneNumberVal: phoneNumberVal,
   password: passwordVal,
@@ -161,4 +181,59 @@ export const agencyRegisterSchema = Joi.object({
 export const agencyLoginSchema = Joi.object({
   email: emailVal,
   password: passwordVal,
+});
+
+export const addUserOglasSchema = Joi.object({
+  listaTipProslava: Joi.array(),
+  listaTipProstora: Joi.array(),
+  listDodatneOpreme: Joi.array(),
+  naziv: nameVal,
+  brTel: phoneNumberVal.label("Broj Telefona"),
+  grad: cityVal,
+  lokacija: cityVal.label("Adresa"),
+  cenaPoDanu: Joi.number().label("Cena po danu"),
+  brojSoba: Joi.number().label("Broj Soba"),
+  kvadratura: Joi.number().label("Kvadratura"),
+  brojKreveta: Joi.number().label("Broj Kreveta"),
+  brojKupatila: Joi.number().label("Broj Kupatila"),
+  opis: Joi.string().label("Opis"),
+  slike: Joi.array().label("Slike"),
+  ocena: Joi.number().label("Ocena"),
+  brojOcena: Joi.number().label("Broj Ocena"),
+  grejanje: Joi.number().label("Grejanje"),
+});
+
+export const updateUserOglasSchema = Joi.object({
+  id: Joi.any(),
+  listaTipProslava: Joi.array(),
+  listaTipProstora: Joi.array(),
+  listDodatneOpreme: Joi.array(),
+  naziv: nameVal,
+  brTel: phoneNumberVal.label("Broj Telefona"),
+  grad: cityVal,
+  lokacija: cityVal.label("Adresa"),
+  cenaPoDanu: Joi.number().label("Cena po danu"),
+  brojSoba: Joi.number().label("Broj Soba"),
+  kvadratura: Joi.number().label("Kvadratura"),
+  brojKreveta: Joi.number().label("Broj Kreveta"),
+  brojKupatila: Joi.number().label("Broj Kupatila"),
+  opis: Joi.string().label("Opis"),
+  slike: Joi.array().label("Slike"),
+  ocena: Joi.number().label("Ocena"),
+  brojOcena: Joi.number().label("Broj Ocena"),
+  grejanje: Joi.number().label("Grejanje"),
+});
+
+export const updateAgencySchema = Joi.object<UpdateAgencyDTO>({
+  id: Joi.number(),
+  brojOcena: Joi.number(),
+  cenaDostave: Joi.number(),
+  email: emailVal,
+  ime: nameVal,
+  brTel: phoneNumberVal,
+  lokacija: cityValReq,
+  opis: Joi.string().label("Opis"),
+  mogucnostDostave: Joi.boolean().label("Mogucnost dostave"),
+  ocena: Joi.any(),
+  slikaProfila: Joi.any(),
 });

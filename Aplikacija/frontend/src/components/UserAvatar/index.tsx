@@ -1,4 +1,8 @@
+import styled from "@emotion/styled";
 import { Avatar } from "@mui/material";
+import { CSSProperties } from "react";
+import Icon from "../lib/icon";
+import style from "./style.module.css";
 
 type Props = {
   src?: string;
@@ -6,23 +10,66 @@ type Props = {
   size?: number;
   color?: string;
   bgColor?: string;
+  uploadable?: boolean;
 };
 
-const UserAvatar = ({ src, letter, size, color, bgColor }: Props) => {
-  
-  if (!letter){
-    letter = 'a';
+const UserAvatar = ({
+  src,
+  letter,
+  size,
+  color,
+  bgColor,
+  uploadable,
+}: Props) => {
+  if (!letter) {
+    letter = "a";
   }
 
   bgColor ??= avatarColors[letter.charCodeAt(0) % avatarColors?.length];
 
+  if (!uploadable) {
+    return (
+      <Avatar
+        src={src}
+        sx={{
+          position: "relative",
+          fontSize: size ? size / 2 : undefined,
+          width: size,
+          height: size,
+          color: color,
+          backgroundColor: bgColor,
+        }}
+      ></Avatar>
+    );
+  }
+
   return (
-    <Avatar
-      src={src}
-      sx={{ width: size, height: size, color: color, backgroundColor: bgColor }}
+    <div
+      className={style.wrapper}
+      style={{ width: `${size ?? "50"}px`, height: `${size ?? "50"}px` }}
     >
-      {letter}
-    </Avatar>
+      <Avatar
+        src={src}
+        sx={{
+          position: "relative",
+          fontSize: size ? size / 2 : undefined,
+          width: "100%",
+          height: "100%",
+          color: color,
+          backgroundColor: bgColor,
+        }}
+      >
+        {letter}
+      </Avatar>
+      <div className={style.hoverOverlay}>
+        <Icon
+          icon="photo_camera"
+          classes="cursorPointer"
+          fontSize="30px"
+          iconMargin="0"
+        ></Icon>
+      </div>
+    </div>
   );
 };
 

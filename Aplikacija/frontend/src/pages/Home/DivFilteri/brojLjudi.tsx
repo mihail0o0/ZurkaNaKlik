@@ -4,9 +4,13 @@ import { Popover, Typography } from "@mui/material";
 import { useState } from "react";
 import style from "./style.module.css";
 
-const BrojLjudi = () => {
+type Props = {
+  broj: string;
+  setBroj: React.Dispatch<React.SetStateAction<string>>;
+};
+
+const BrojLjudi = ({ broj, setBroj }: Props) => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
-  const [broj, setBroj] = useState("");
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -18,6 +22,7 @@ const BrojLjudi = () => {
 
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
+
   const handleBroj = (event: React.ChangeEvent<HTMLInputElement>) => {
     setBroj(event.target.value);
   };
@@ -27,11 +32,11 @@ const BrojLjudi = () => {
       <MojButton
         text="Broj ljudi"
         onClick={handleClick}
-        paddingX="13px"
-        paddingY="8px"
+        paddingX="80px"
+        paddingY="14px"
         fontSize="15px"
         icon="boy"
-        backgroundColor="#d3d3d3"
+        grey={true}
         color="black"
         wide={true}
       />
@@ -55,17 +60,20 @@ const BrojLjudi = () => {
         }}
       >
         {/* <Typography sx={{ p: 2 }}>The content of the Popover.</Typography> */}
-        <div className={style.CenaOd}>
-          <Typography sx={{ p: 2 }}>Broj ljudi :</Typography>
+        <div className={style.CenaVelikiDiv}>
+         
+          <div className={style.CenaOd}>
+            <Typography sx={{ p: 2 }}>Broj ljudi :</Typography>
 
-          <Icon icon="boy" />
-          <input
-            type="number"
-            id="textInput"
-            value={broj}
-            onChange={handleBroj}
-            min="1"
-          />
+            <Icon icon="boy" />
+            <input
+              type="number"
+              id="textInput"
+              value={broj}
+              onChange={handleBroj}
+              min="1"
+            />
+          </div>
         </div>
       </Popover>
     </div>

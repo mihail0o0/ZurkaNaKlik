@@ -74,13 +74,15 @@ const UserLoginForm = () => {
         <Input
           onChange={setMailText}
           icon={"mail"}
-          text={"Email"}
+          placeholder={"Email"}
+          text={emailText}
           error={emailError}
         />
         <Input
           onChange={setPasswordText}
           icon={"lock"}
-          text={"Password"}
+          text={passwordText}
+          placeholder={"Password"}
           suffixIcon={true}
           error={passwordError}
         />

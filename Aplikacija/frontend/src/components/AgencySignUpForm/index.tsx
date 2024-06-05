@@ -109,38 +109,44 @@ const AgencySignUpForm = () => {
         <Input
           onChange={setNameText}
           icon={"edit"}
-          text={"Naziv"}
+          text={nameText}
+          placeholder={"Ime"}
           error={nameError}
         />
         <Input
           onChange={setMailText}
           icon={"mail"}
-          text={"Email"}
+          text={emailText}
+          placeholder={"Email"}
           error={emailError}
         />
         <Input
           onChange={setPhoneNumberText}
           icon={"phone"}
-          text={"Broj telefona"}
+          text={phoneNumberText}
+          placeholder={"Broj telefona"}
           error={phoneNumberError}
         />
         <Input
           onChange={setLocationText}
           icon={"location_on"}
-          text={"Grad"}
+          text={locationText}
+          placeholder={"Grad"}
           error={locationError}
         />
         <Input
           onChange={setPasswordText}
           icon={"lock"}
-          text={"Lozinka"}
+          text={passwordText}
+          placeholder={"Lozinka"}
           suffixIcon={true}
           error={passwordError}
         />
         <Input
           onChange={setRepeatPasswordText}
           icon={"lock"}
-          text={"Ponovi Lozinku"}
+          text={repeatPasswordText}
+          placeholder={"Ponovi Lozinku"}
           suffixIcon={true}
           error={repeatPasswordError}
         />

@@ -2,7 +2,6 @@ import MojButton from "@/components/lib/button";
 import { Autocomplete, Popover, TextField } from "@mui/material";
 import { useMemo, useState } from "react";
 import style from "./style.module.css";
-import Input from "@/components/lib/inputs/text-input";
 import { useGetAllCitiesQuery } from "@/store/api/endpoints/oglas";
 
 // type autocompleteOptions = {
@@ -29,9 +28,9 @@ const Grad = ({ value, setValue }: Props) => {
   // };
 
   // TODO ODKOMENTARISI, RN NEMAM GRADOVE
-  // const { data: gradovi } = useGetAllCitiesQuery();
+   const { data: gradovi } = useGetAllCitiesQuery();
 
-  const gradovi = ["Nis", "Beograd", "Sombor"];
+  //const gradovi = ["Nis", "Beograd", "Sombor"];
 
   return (
     <>
@@ -47,7 +46,14 @@ const Grad = ({ value, setValue }: Props) => {
           setInputValue(newInputValue);
         }}
         options={gradovi ?? []}
-        sx={{ width: 300 }}
+        sx={{
+          width: 300,
+         
+          ".css-154xyx0-MuiInputBase-root-MuiOutlinedInput-root": {
+            borderRadius: "var(--borderRadiusMedium)",
+            backgroundColor: "var(--lightGrey)",
+          },
+        }}
         renderInput={(params) => <TextField {...params} label="Grad" />}
       />
     </>

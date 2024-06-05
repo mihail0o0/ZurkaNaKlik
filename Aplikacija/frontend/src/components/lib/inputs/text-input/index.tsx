@@ -1,5 +1,5 @@
 import Icon from "@/components/lib/icon";
-import { useRef, useState } from "react";
+import { CSSProperties, useRef, useState } from "react";
 
 type Props = {
   text: string;
@@ -7,9 +7,19 @@ type Props = {
   suffixIcon?: boolean;
   onChange: (arg0: string) => void;
   error?: string | null;
+  disabled?: boolean;
+  placeholder?: string;
 };
 
-const Input = ({ icon, text, suffixIcon = false, onChange, error }: Props) => {
+const Input = ({
+  icon,
+  text,
+  suffixIcon = false,
+  onChange,
+  error,
+  disabled,
+  placeholder,
+}: Props) => {
   const divRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const [visibilityIcon, setVisibilityIcon] = useState("visibility_off");
@@ -48,10 +58,13 @@ const Input = ({ icon, text, suffixIcon = false, onChange, error }: Props) => {
                 : "text"
             }
             className="formTextInput"
-            placeholder={text}
+            value={text}
+            placeholder={placeholder}
             onFocus={handleFocusChange}
             onBlur={handleBlurChange}
-            onChange={handleTextChange}
+            onChange={(event) => {
+              disabled ? () => {} : handleTextChange(event);
+            }}
           />
         </div>
 

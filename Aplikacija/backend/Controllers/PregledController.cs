@@ -6,6 +6,7 @@ using backend.DTOs;
 using backend.Utilities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Extensions.Hosting;
 
 namespace backend.Controllers
 {
@@ -13,13 +14,15 @@ namespace backend.Controllers
     [Route("api/[controller]")]
     public class PregledController : ControllerBase
     {
+        private readonly IWebHostEnvironment _hostEnvironment;
         public ZurkaNaKlikDbContext Context { get; set; }
         private readonly IConfiguration _configuration;
 
-        public PregledController(ZurkaNaKlikDbContext context, IConfiguration configuration)
+        public PregledController(ZurkaNaKlikDbContext context, IConfiguration configuration, IWebHostEnvironment hostEnvironment)
         {
             Context = context;
             _configuration = configuration;
+            _hostEnvironment = hostEnvironment;
         }
 
         #region GetKorisnik
@@ -150,7 +153,7 @@ namespace backend.Controllers
         {
             try
             {
-                var agencija = await Context.Agencije.Include(x => x.KategorijeMenija).Where(x => x.Id == idAgencije).FirstOrDefaultAsync();
+                Agencija? agencija = await Context.Agencije.Include(x => x.KategorijeMenija).Where(x => x.Id == idAgencije).FirstOrDefaultAsync();
 
                 if (agencija == null)
                 {
@@ -158,54 +161,49 @@ namespace backend.Controllers
                 }
 
                 return Ok(agencija);
-
-
             }
             catch (Exception e)
             {
                 return BadRequest(e.Message);
-
             }
         }
 
         #endregion
 
-        #region VratiMenijeSaKategorijama
-        [HttpGet("VratiMenijeSaKategorijama/{idagencije}")]
-        public async Task<ActionResult> VratiMenije(int idagencije)
-        {
-            try
-            {
+        // TODO Dupla, ne koristi se, izbrisi je
+        // #region VratiMenijeSaKategorijama
+        // [HttpGet("VratiMenijeSaKategorijama/{idagencije}")]
+        // public async Task<ActionResult> VratiMenije(int idagencije)
+        // {
+        //     try
+        //     {
                 
-                List<Kategorija>? kategorije = await Context.Kategorije.Where(k => k.Agencija!.Id == idagencije).ToListAsync();
+        //         List<Kategorija>? kategorije = await Context.Kategorije.Where(k => k.Agencija!.Id == idagencije).ToListAsync();
 
-                List<VratiMenijeResultElement>? meniKeteringa = new();
+        //         List<VratiMenijeResultElement>? meniKeteringa = new();
 
-                if (kategorije == null)
-                {
-                    return Ok(meniKeteringa);
-                }
+        //         if (kategorije == null)
+        //         {
+        //             return Ok(meniKeteringa);
+        //         }
 
-                foreach (Kategorija kat in kategorije)
-                {
-                    VratiMenijeResultElement element = new(kat.Id, kat.Naziv);
-                    List<MeniKeteringa>? meniji = await Context.MenijiKeteringa.Where(m => m.Kategorija!.Id == kat.Id).ToListAsync();
-                    element.meniKeteringa = meniji;
+        //         foreach (Kategorija kat in kategorije)
+        //         {
+        //             VratiMenijeResultElement element = new(kat.Id, kat.Naziv);
+        //             List<MeniKeteringa>? meniji = await Context.MenijiKeteringa.Where(m => m.Kategorija!.Id == kat.Id).ToListAsync();
+        //             element.meniKeteringa = meniji;
 
-                    meniKeteringa.Add(element);
-                }
+        //             meniKeteringa.Add(element);
+        //         }
 
-                return Ok(meniKeteringa);
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
-
-
-        }
-
-        #endregion
+        //         return Ok(meniKeteringa);
+        //     }
+        //     catch (Exception e)
+        //     {
+        //         return BadRequest(e.Message);
+        //     }
+        // }
+        // #endregion
    
         #region  PrikaziSveMenijeKategorije
         [HttpGet("PrikaziSveMenijeKategorije/{idKategorije}")]
@@ -232,38 +230,58 @@ namespace backend.Controllers
 
         #region VratiSveKategorijeIMenijeAgencije
         [HttpGet("VratiSveKategorijeIMenijeAgencije/{idagencije}")]
-public async Task<ActionResult> VratiSveKategorijeIMenijeAgencije(int idagencije) {
-    try {
-        var sveinfoagencije = await Context.Kategorije
-                                           .Include(x => x.Agencija)
-                                           .Include(x => x.ListaMenija)
-                                           .Where(x => x.Agencija!.Id == idagencije)
-                                           .ToListAsync();
+        public async Task<ActionResult> VratiSveKategorijeIMenijeAgencije(int idagencije) {
+            try {
+                var sveinfoagencije = await Context.Kategorije
+                                                .Include(x => x.Agencija)
+                                                .Include(x => x.ListaMenija)
+                                                .Where(x => x.Agencija!.Id == idagencije)
+                                                .ToListAsync();
 
-        if (sveinfoagencije == null || !sveinfoagencije.Any()) {
-            return BadRequest("Nema agencije sa tim id-jem");
-        }
+                if (sveinfoagencije == null || !sveinfoagencije.Any()) {
+                    return BadRequest("Nema agencije sa tim id-jem");
+                }
 
-        var result = sveinfoagencije.Select(k => new {
-            k.Id,
-            k.Naziv,
-            ListaMenija = k.ListaMenija!.Select(m => new {
-                m.Id,
-                m.Naziv,
-                m.SastavMenija,
-                m.CenaMenija,
-                m.Slika,
-                m.Opis
-
+                // var result = sveinfoagencije.Select(k => new {
+                //     k.Id,
+                //     k.Naziv,
+                //     ListaMenija = k.ListaMenija!.Select(m => new {
+                //         m.Id,
+                //         m.Naziv,
+                //         m.SastavMenija,
+                //         m.CenaMenija,
+                //         m.Slika,
+                //         m.Opis
+                //     })
+                // });
                 
-            })
-        });
+                List<VratiMenijeResultElement>? meniKeteringa = new();
 
-        return Ok(result);
-    } catch (Exception e) {
-        return BadRequest(e.Message);
-    }
-}
+                if (sveinfoagencije == null)
+                {
+                    return Ok(meniKeteringa);
+                }
+
+                foreach (Kategorija kat in sveinfoagencije)
+                {
+                    VratiMenijeResultElement element = new(kat.Id, kat.Naziv);
+                    List<MeniKeteringa>? meniji = await Context.MenijiKeteringa.Where(m => m.Kategorija!.Id == kat.Id).ToListAsync();
+
+                    List<MeniKeteringaResult> menijiResult = new();
+                    foreach (MeniKeteringa meni in meniji)
+                    {
+                        menijiResult.Add(ObjectCreatorSingleton.Instance.ToMeniKeteringaResult(meni));
+                    }
+
+                    element.meniKeteringa = menijiResult;
+                    meniKeteringa.Add(element);
+                }
+
+                return Ok(meniKeteringa);
+            } catch (Exception e) {
+                return BadRequest(e.Message);
+            }
+        }
 
 
         #endregion
@@ -274,20 +292,7 @@ public async Task<ActionResult> VratiSveKategorijeIMenijeAgencije(int idagencije
         { //dodaj sortiranje
             try
             {
-                // public class Filters
-                // {
-                //     public List<EnumTipProslava>? TipProslava { get; set; }
-                //     public List<EnumTipProstora>? TipProstora { get; set; }
-                //     public string? Grad { get; set; }
-                //     public int CenaOd { get; set; }
-                //     public int CenaDo { get; set; }
-                //     public int KvadraturaOd { get; set; }
-                //     public int KvadraturaDo { get; set; }
-                //     public List<EnumGrejanje>? Grejanje { get; set; }
-                //     public List<EnumDodatnaOprema>? DodatnaOprema { get; set; }
-                //     public DateTime DatumOd { get; set; }
-                //     public DateTime DatumDo { get; set; }
-                // }
+                
                 List<Agencija> agencije = await Context.Agencije.IgnoreQueryFilters().Include(i => i.KategorijeMenija).ToListAsync();
 
                 switch (filteri.sort)
@@ -342,11 +347,68 @@ public async Task<ActionResult> VratiSveKategorijeIMenijeAgencije(int idagencije
         }
         #endregion
      
-       
+        #region VratiSliku
+        [HttpGet("get-sliku/{putanja}")]
+        public IActionResult VratiSliku(string putanja)
+        {
+            // if(putanja == null) return Ok("ESCAPESEQEUENCE");
+
+            putanja = Uri.UnescapeDataString(putanja);
+
+            var webRootPath = _hostEnvironment.WebRootPath;
+            var absolutePath = Path.Combine(webRootPath, putanja);
+
+            //return Ok(absolutePath);
+
+            if (System.IO.File.Exists(absolutePath))
+            {
+                var fileBytes = System.IO.File.ReadAllBytes(absolutePath);
+                var contentType = GetContentType(absolutePath);
+                var fileName = Path.GetFileName(absolutePath);
+
+                return File(fileBytes, contentType, fileName);
+            }
+
+            return NotFound("Slika nije pronađena.");
+        }
+        #endregion
+
+        private string GetContentType(string path)
+        {
+            var ext = Path.GetExtension(path).ToLowerInvariant();
+            return ext switch
+            {
+                ".jpg" => "image/jpeg",
+                ".jpeg" => "image/jpeg",
+                ".png" => "image/png",
+                ".gif" => "image/gif",
+                _ => "application/octet-stream",
+            };
+        }
+
+        #region VartiMenijeLista
+        [HttpGet("VartiMenijeLista/listaMenija")]
+        public async Task<ActionResult> VartiMenijeLista([FromQuery]List<int> menijiId)
+        {
+            try {
+                if (menijiId == null || menijiId.Count == 0)
+                {
+                    return BadRequest("Lista ID-ova menija ne može biti prazna.");
+                }
+
+                // Dobavi menije iz baze na osnovu liste ID-ova
+                var result = await Context.MenijiKeteringa
+                    .Where(m => menijiId.Contains(m.Id))
+                    .ToListAsync();
+
+                return Ok(new { result });
+
+            } catch (Exception e) {
+                return BadRequest(e.Message);
+            }
+
+            
+        }
+        #endregion
     }
-
-
-
-
-
 }

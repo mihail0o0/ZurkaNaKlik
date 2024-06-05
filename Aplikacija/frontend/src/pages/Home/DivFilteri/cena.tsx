@@ -4,10 +4,15 @@ import { SyntheticEvent, useState } from "react";
 import style from "./style.module.css";
 import Icon from "@/components/lib/icon";
 
-const Cena = () => {
+type Props = {
+  cenaOd: string;
+  cenaDo: string;
+  setCenaOd: React.Dispatch<React.SetStateAction<string>>;
+  setCenaDo: React.Dispatch<React.SetStateAction<string>>;
+};
+
+const Cena = ({ cenaOd, cenaDo, setCenaOd, setCenaDo }: Props) => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
-  const [cenaOd, setCenaOd] = useState("");
-  const [cenaDo, setCenaDo] = useState("");
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -19,10 +24,10 @@ const Cena = () => {
 
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
-  const handleCenaOd = (event : React.ChangeEvent<HTMLInputElement>) => {
+  const handleCenaOd = (event: React.ChangeEvent<HTMLInputElement>) => {
     setCenaOd(event.target.value);
   };
-  const handleCenaDo = (event : React.ChangeEvent<HTMLInputElement>) => {
+  const handleCenaDo = (event: React.ChangeEvent<HTMLInputElement>) => {
     setCenaDo(event.target.value);
   };
 
@@ -31,11 +36,11 @@ const Cena = () => {
       <MojButton
         text="Cena"
         onClick={handleClick}
-        paddingX="13px"
-        paddingY="8px"
+        paddingX="80px"
+        paddingY="14px"
         fontSize="15px"
-        icon="euro_symbol"
-        backgroundColor="#d3d3d3"
+        icon="payments"
+        grey={true}
         color="black"
         wide={true}
       />
@@ -45,10 +50,9 @@ const Cena = () => {
         anchorEl={anchorEl}
         onClose={handleClose}
         sx={{
-            "& .css-3bmhjh-MuiPaper-root-MuiPopover-paper": {
-                borderRadius: "30px",
-            
-              },
+          "& .css-3bmhjh-MuiPaper-root-MuiPopover-paper": {
+            borderRadius: "30px",
+          },
         }}
         anchorOrigin={{
           vertical: "bottom",
@@ -61,35 +65,29 @@ const Cena = () => {
       >
         {/* <Typography sx={{ p: 2 }}>The content of the Popover.</Typography> */}
         <div className={style.CenaVelikiDiv}>
-          <div>
-            {" "}
-            <Typography sx={{ p: 2 }}>Cena :</Typography>{" "}
-          </div>
+      
           <div className={style.CenaOd}>
             <Typography sx={{ p: 2 }}>Od :</Typography>
-            
-              <Icon icon="euro_symbol" />
-              <input
-                type="number"
-                id="textInput"
-                value={cenaOd}
-                onChange={handleCenaOd}
-              />
-            
+
+            <Icon icon="payments" />
+
+            <input
+              type="number"
+              id="textInput"
+              value={cenaOd}
+              onChange={handleCenaOd}
+            />
           </div>
           <div className={style.CenaOd}>
             <Typography sx={{ p: 2 }}>Do :</Typography>
-           
-              <Icon icon="euro_symbol" />
-              <input
-              
-                type="number"
-                id="textInput"
-                value={cenaDo}
-                onChange={handleCenaDo}
-                
-              />
-            
+
+            <Icon icon="payments" />
+            <input
+              type="number"
+              id="textInput"
+              value={cenaDo}
+              onChange={handleCenaDo}
+            />
           </div>
         </div>
       </Popover>

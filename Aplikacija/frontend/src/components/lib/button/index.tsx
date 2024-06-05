@@ -14,7 +14,7 @@ type Props = {
   color?: string;
   backgroundColor?: string;
   classes?: string;
-  fontSize?:string;
+  fontSize?: string;
   small?: boolean;
 };
 
@@ -35,8 +35,8 @@ const MojButton = ({
   small,
 }: Props) => {
   color ??= grey ? "black" : "white";
-  backgroundColor ??= grey ?"var(--lightGrey)" : "var(--mainColor)"; 
-  
+  backgroundColor ??= grey ? "var(--lightGrey)" : "var(--mainColor)";
+
   const buttonStyle: CSSProperties = {
     position: "relative",
     display: "flex",
@@ -47,10 +47,12 @@ const MojButton = ({
     paddingLeft: paddingX ?? (small ? "14px" : "28px"),
     paddingRight: paddingX ?? (small ? "14px" : "28px"),
     border: "none",
-    borderRadius: small ? "var(--borderRadiusSmall)" : "var(--borderRadiusMedium)",
+    borderRadius: small
+      ? "var(--borderRadiusSmall)"
+      : "var(--borderRadiusMedium)",
     backgroundColor: backgroundColor,
     color: color,
-    fontSize:  fontSize ?? "18px",
+    fontSize: fontSize ?? "18px",
     fontWeight: "500",
     width: wide ? "100%" : "fit-content",
     transition: "150ms all",
@@ -61,10 +63,16 @@ const MojButton = ({
     marginRight: "auto",
   };
 
+  if (!text) iconMargin = "0px";
+
   return icon ? (
-    <button className={`mainButton ${classes}`} style={buttonStyle} onClick={onClick}>
+    <button
+      className={`mainButton ${classes}`}
+      style={buttonStyle}
+      onClick={onClick}
+    >
       <Icon iconMargin={iconMargin} icon={icon} />
-      
+
       <span style={textStyle}>{text}</span>
     </button>
   ) : (

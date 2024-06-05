@@ -5,15 +5,20 @@
 }
 
 :root {
+  /* colors */
   --mainColor: #d45a6b;
   --lightText: #a9a9a9;
+  --mediumText: #737373;
   --lightGrey: #eeeeee;
   --mediumGrey: #d2d2d2;
+  --delete: rgb(214, 46, 46);
+  --deleteHover: rgb(171, 22, 22);
   --golden: #ffc700;
+  /* other */
   --blur: 8px;
   --borderRadiusBig: 35px;
   --borderRadiusMedium: 20px;
-  --borderRadiusSmall: 12px;
+  --borderRadiusSmall: 14px;
   --boxShadowSoft: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
@@ -39,6 +44,10 @@ p {
 }
 
 /* OTHER */
+.colorWhite {
+  color: white;
+}
+
 .page-spacer-xs {
   width: 100%;
   height: 75px;
@@ -118,7 +127,7 @@ p {
 
 /* TESTING */
 .testingPageWrapper {
-  background-color: white;
+  background-color: var(--lightGrey);
   padding: 60px;
   border-radius: var(--borderRadiusBig);
   margin-top: 70px;
