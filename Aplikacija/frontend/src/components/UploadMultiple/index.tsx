@@ -1,4 +1,11 @@
-import React, { ReactNode, useEffect, useMemo, useRef, useState } from "react";
+import React, {
+  ReactNode,
+  SetStateAction,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { MutationTrigger } from "@reduxjs/toolkit/dist/query/react/buildHooks";
 import { toast } from "react-toastify";
 import {
@@ -8,13 +15,19 @@ import {
 } from "@reduxjs/toolkit/query";
 import { BaseQueryFn } from "@reduxjs/toolkit/query";
 import { ResultType } from "@/types";
+import { Dispatch } from "@reduxjs/toolkit";
 
 type Props = {
-  uploadFn: (formData: FormData) => Promise<ResultType>;
+  formData: FormData | null;
+  setFormData: (arg0: FormData) => void;
   children: ReactNode;
 };
 
-const UploadComponent = ({ uploadFn, children }: Props) => {
+const UploadMultiple = ({
+  formData,
+  setFormData,
+  children,
+}: Props) => {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleClick = () => {
@@ -25,18 +38,16 @@ const UploadComponent = ({ uploadFn, children }: Props) => {
   const handleFileChange = async (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    if (!event.target.files || event.target.files.length < 0) return;
+    const files = event.target.files;
+    if (!files || files.length < 0) return;
 
-    const file = event.target.files[0];
-    const fD = new FormData();
-    fD.append("file", file);
+    const fD = formData ?? new FormData();
 
-    const result = await uploadFn(fD);
-    if (!result || "error" in result) {
-      return;
+    for (let i = 0; i < files.length; i++) {
+      fD.append("file", files[i]);
     }
 
-    toast.success("Uspesno uplodana slika");
+    setFormData(fD);
   };
 
   return (
@@ -52,4 +63,4 @@ const UploadComponent = ({ uploadFn, children }: Props) => {
   );
 };
 
-export default UploadComponent;
+export default UploadMultiple;

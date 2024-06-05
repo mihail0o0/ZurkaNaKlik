@@ -32,6 +32,7 @@ import { getValidationMessage } from "@/utils/validationMessage";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { selectUser } from "@/store/auth";
+import ImageGallery from "@/components/ImageGallery";
 
 const OglasiProstor = () => {
   const [opisProstora, setOpisProstora] = useState("");
@@ -56,6 +57,12 @@ const OglasiProstor = () => {
   const [selectedDodatnaOprema, setSelectedDodatnaOprema] = useState<number[]>(
     []
   );
+
+  const [formData, setFormData] = useState<FormData | null>(null);
+  const [images, setImages] = useState<string[]>([]);
+
+   
+
   const user = useSelector(selectUser);
   const [addOglas] = useAddUserOglasMutation();
   const navigate = useNavigate();
@@ -200,13 +207,15 @@ const OglasiProstor = () => {
     }
 
     const response = await addOglas(oglasObject);
-    
+
     if ("error" in response) {
       return;
     }
 
     toast.success("Oglas uspesno dodat");
-    {user && navigate(`/user/profile/${user.id}`);}
+    {
+      user && navigate(`/user/profile/${user.id}`);
+    }
   };
 
   return (
@@ -222,7 +231,7 @@ const OglasiProstor = () => {
           </p>
         </div>
       </div>
-      <div>{/* ovde idu slike  */}</div>
+      {/* <ImageGallery images={images} /> */}
       <div className={style.NAJJACEDUGME}>
         <div className={style.DodajSLikuDugme}>
           <MojButton
@@ -246,98 +255,78 @@ const OglasiProstor = () => {
           />
         </div>
         <div className={style.KolonaTxtArea}>
-          <div>
-            <Input
-              text={naziv}
-              placeholder="Naziv prostora"
-              icon="house"
-              onChange={setNaziv}
-            />
-          </div>
-          <div>
-            <Input
-              text={brojTelefona}
-              placeholder="Broj Telefona"
-              icon="call"
-              onChange={setBrojTelefona}
-            />
-          </div>
-          <div>
-            <Input
-              text={grad}
-              placeholder="Grad"
-              icon="location_on"
-              onChange={setGrad}
-            />
-          </div>
-          <div>
-            <Input
-              text={adresa}
-              placeholder="Adresa"
-              icon="location_on"
-              onChange={setAdresa}
-            />
-          </div>
-          <div>
-            <Input
-              text={cenaDan}
-              placeholder="Cena po danu"
-              icon="payments"
-              onChange={setCenaDan}
-            />
-          </div>
-          <div>
-            <Input
-              text={kvadratura}
-              placeholder="Kvadratura"
-              icon="view_in_ar"
-              onChange={setKvadratura}
-            />
-          </div>
-          <div>
-            <Input
-              text={brojSoba}
-              placeholder="Broj soba"
-              icon="chair"
-              onChange={setBrojSoba}
-            />
-          </div>
-          <div>
-            <Input
-              text={brojKreveta}
-              placeholder="Broj kreveta"
-              icon="bed"
-              onChange={setBrojKreveta}
-            />
-          </div>
-          <div>
-            <Input
-              text={brojKupatila}
-              placeholder="Broj kupatila"
-              icon="bathroom"
-              onChange={setBrojKupatila}
-            />
-          </div>
-          <div>
-            <Select
-              id="select-tip-grejanja"
-              value={grejanje ?? ""}
-              onChange={handleChangeGrejanje}
-              sx={{
-                width: "100%",
-                borderRadius: "12px",
-                color: "black",
-              }}
-            >
-              {Object.values(tipGrejanjaMap).map((value) => {
-                return (
-                  <MenuItem key={`Select-${value}`} value={value}>
-                    {value}
-                  </MenuItem>
-                );
-              })}
-            </Select>
-          </div>
+          <Input
+            text={naziv}
+            placeholder="Naziv prostora"
+            icon="house"
+            onChange={setNaziv}
+          />
+          <Input
+            text={brojTelefona}
+            placeholder="Broj Telefona"
+            icon="call"
+            onChange={setBrojTelefona}
+          />
+          <Input
+            text={grad}
+            placeholder="Grad"
+            icon="location_on"
+            onChange={setGrad}
+          />
+          <Input
+            text={adresa}
+            placeholder="Adresa"
+            icon="location_on"
+            onChange={setAdresa}
+          />
+          <Input
+            text={cenaDan}
+            placeholder="Cena po danu"
+            icon="payments"
+            onChange={setCenaDan}
+          />
+          <Input
+            text={kvadratura}
+            placeholder="Kvadratura"
+            icon="view_in_ar"
+            onChange={setKvadratura}
+          />
+          <Input
+            text={brojSoba}
+            placeholder="Broj soba"
+            icon="chair"
+            onChange={setBrojSoba}
+          />
+          <Input
+            text={brojKreveta}
+            placeholder="Broj kreveta"
+            icon="bed"
+            onChange={setBrojKreveta}
+          />
+          <Input
+            text={brojKupatila}
+            placeholder="Broj kupatila"
+            icon="bathroom"
+            onChange={setBrojKupatila}
+          />
+          <Select
+            id="select-tip-grejanja"
+            value={grejanje ?? ""}
+            onChange={handleChangeGrejanje}
+            sx={{
+              width: "100%",
+              borderRadius: "12px",
+              color: "black",
+            }}
+          >
+            {Object.values(tipGrejanjaMap).map((value) => {
+              return (
+                <MenuItem key={`Select-${value}`} value={value}>
+                  {value}
+                </MenuItem>
+              );
+            })}
+          </Select>
         </div>
       </div>
 

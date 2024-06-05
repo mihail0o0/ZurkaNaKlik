@@ -1298,7 +1298,7 @@ namespace backend.Controllers
 
             bool dalije = korisnik.ListaOmiljenihOglasaObjekata!.Any(o => o.Id == oglasId);
 
-            return Ok(new { dalije });
+            return Ok(dalije);
         }
 
         #endregion

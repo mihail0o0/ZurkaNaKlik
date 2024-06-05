@@ -7,7 +7,7 @@ import { useDeleteOglasImageMutation } from "@/store/api/endpoints/images";
 
 type Props = {
   idOglasa: number;
-  imagePaths: string[];
+  imagePaths?: string[];
   images: (string | undefined | null)[];
 };
 
@@ -15,15 +15,15 @@ const ImageGallery = ({ idOglasa, imagePaths, images }: Props) => {
   const [deleteImageAction] = useDeleteOglasImageMutation();
 
   const handleDelete = async (index: number) => {
+    if (!imagePaths) return;
+
     const image = imagePaths[index];
-    console.log(image);
 
     if (!image) return;
     const actionData: DeleteOglasImageDTO = {
       idOglasa,
       slikaPath: getRawLocation(image)!,
     };
-    console.log(actionData);
 
     const result = await deleteImageAction(actionData);
     if ("error" in result) {
