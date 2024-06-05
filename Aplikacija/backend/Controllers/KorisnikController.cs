@@ -92,23 +92,24 @@ namespace backend.Controllers
             try
             {
                 int idKorisnika = int.Parse((HttpContext.Items["idKorisnika"] as string)!);
-                Korisnik? korisnik = await Context.Korisnici.Include(i => i.ListaOmiljenihOglasaObjekata).FirstOrDefaultAsync(f => f.Id == idKorisnika);
+                Korisnik? korisnik = await Context.Korisnici.IgnoreQueryFilters().Include(i => i.ListaOmiljenihOglasaObjekata).FirstOrDefaultAsync(f => f.Id == idKorisnika);
 
                 if (korisnik == null)
                 {
                     return BadRequest("Korisnik ne postoji");
                 }
 
-                OglasObjekta? oglas = await Context.OglasiObjekta.FindAsync(idOglasa);
+                
+                OglasObjekta? oglas = await Context.OglasiObjekta.FirstOrDefaultAsync(f => f.Id == idOglasa);
 
                 if (oglas == null)
                 {
                     return BadRequest("Oglas ne postoji");
                 }
 
-                korisnik!.ListaOmiljenihOglasaObjekata!.Remove(oglas);
+                korisnik.ListaOmiljenihOglasaObjekata!.Remove(oglas);
 
-
+                
                 await Context.SaveChangesAsync();
 
                 OglasObjektaResponse result = ObjectCreatorSingleton.Instance.ToOglasResult(oglas);
