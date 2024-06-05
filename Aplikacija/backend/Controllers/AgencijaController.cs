@@ -614,7 +614,7 @@ namespace backend.Controllers
                     System.IO.File.Delete(existingFile);
                 }
 
-                var fileName = $"s1{Path.GetExtension(file.FileName)}"; // Uvek koristi isto ime za sliku (s1.jpg) kako bi se izbegao konflikt sa prethodnim slikama
+                var fileName = $"s1.jpg"; // Uvek koristi isto ime za sliku (s1.jpg) kako bi se izbegao konflikt sa prethodnim slikama
                 var filePath = Path.Combine(folderPath, fileName);
 
                 using (var image = Image.Load(file.OpenReadStream()))
@@ -673,7 +673,7 @@ namespace backend.Controllers
             var files = Directory.GetFiles(folderPath);
             var fileCount = files.Length;
 
-            var fileName = $"s{fileCount + 1}{Path.GetExtension(file.FileName)}";
+            var fileName = $"s{fileCount + 1}.jpg";
             var filePath = Path.Combine(folderPath, fileName);
 
             using (var image = Image.Load(file.OpenReadStream()))

@@ -385,5 +385,30 @@ namespace backend.Controllers
                 _ => "application/octet-stream",
             };
         }
+
+        #region VartiMenijeLista
+        [HttpGet("VartiMenijeLista/listaMenija")]
+        public async Task<ActionResult> VartiMenijeLista([FromQuery]List<int> menijiId)
+        {
+            try {
+                if (menijiId == null || menijiId.Count == 0)
+                {
+                    return BadRequest("Lista ID-ova menija ne može biti prazna.");
+                }
+
+                // Dobavi menije iz baze na osnovu liste ID-ova
+                var result = await Context.MenijiKeteringa
+                    .Where(m => menijiId.Contains(m.Id))
+                    .ToListAsync();
+
+                return Ok(new { result });
+
+            } catch (Exception e) {
+                return BadRequest(e.Message);
+            }
+
+            
+        }
+        #endregion
     }
 }
