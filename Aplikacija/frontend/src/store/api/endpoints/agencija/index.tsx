@@ -137,5 +137,5 @@ export const {
   useDeleteMenuMutation,
   useGetCateringOrdersQuery,
   useAcceptOrderMutation,
-  useDeclineOrderMutation
+  useDeclineOrderMutation,
 } = authApiSlice;

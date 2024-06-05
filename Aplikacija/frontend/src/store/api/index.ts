@@ -111,6 +111,7 @@ export const api = createApi({
     "Oglas",
     "OmiljeniOglasi",
     "Image",
+    "PregledMenu",
   ],
   baseQuery: baseQueryWithAuth,
   endpoints: () => ({}),

@@ -93,7 +93,6 @@ const IzmeniOglas = () => {
 
   useEffect(() => {
     if (!oglas) return;
-    console.log("Izvrsim se");
 
     const fetchImages = async () => {
       const results = await Promise.all(
@@ -257,8 +256,6 @@ const IzmeniOglas = () => {
       const response = await deleteOglas(oglas.id);
 
       if ("error" in response) {
-        toast.error("Neuspesno brisanje oglasa");
-        navigate(`/user/profile/${user?.id}`);
         return;
       }
 
@@ -444,7 +441,7 @@ const IzmeniOglas = () => {
           <div className={style.ChipProslave}>
             {Object.values(tipProslavaMap).map((value) => {
               return (
-                <div className={style.JedanChip}>
+                <div key={value} className={style.JedanChip}>
                   <Chip
                     label={value}
                     variant="outlined"
@@ -481,7 +478,7 @@ const IzmeniOglas = () => {
             <div className={style.ChipProslave}>
               {Object.values(tipProstoraMap).map((value) => {
                 return (
-                  <div className={style.JedanChip}>
+                  <div key={value} className={style.JedanChip}>
                     <Chip
                       label={value}
                       variant="outlined"
@@ -518,7 +515,7 @@ const IzmeniOglas = () => {
             <h3>Dodatna oprema koju poseduje Vas prostor</h3>
             <div className={style.ChipProslave}>
               {Object.values(dodatnaOpremaMap).map((value) => (
-                <div className={style.JedanChip}>
+                <div key={value} className={style.JedanChip}>
                   <Chip
                     label={value}
                     variant="outlined"

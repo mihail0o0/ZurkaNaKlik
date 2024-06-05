@@ -242,22 +242,42 @@ namespace backend.Controllers
                     return BadRequest("Nema agencije sa tim id-jem");
                 }
 
-                var result = sveinfoagencije.Select(k => new {
-                    k.Id,
-                    k.Naziv,
-                    ListaMenija = k.ListaMenija!.Select(m => new {
-                        m.Id,
-                        m.Naziv,
-                        m.SastavMenija,
-                        m.CenaMenija,
-                        m.Slika,
-                        m.Opis
+                // var result = sveinfoagencije.Select(k => new {
+                //     k.Id,
+                //     k.Naziv,
+                //     ListaMenija = k.ListaMenija!.Select(m => new {
+                //         m.Id,
+                //         m.Naziv,
+                //         m.SastavMenija,
+                //         m.CenaMenija,
+                //         m.Slika,
+                //         m.Opis
+                //     })
+                // });
+                
+                List<VratiMenijeResultElement>? meniKeteringa = new();
 
-                        
-                    })
-                });
+                if (sveinfoagencije == null)
+                {
+                    return Ok(meniKeteringa);
+                }
 
-                return Ok(result);
+                foreach (Kategorija kat in sveinfoagencije)
+                {
+                    VratiMenijeResultElement element = new(kat.Id, kat.Naziv);
+                    List<MeniKeteringa>? meniji = await Context.MenijiKeteringa.Where(m => m.Kategorija!.Id == kat.Id).ToListAsync();
+
+                    List<MeniKeteringaResult> menijiResult = new();
+                    foreach (MeniKeteringa meni in meniji)
+                    {
+                        menijiResult.Add(ObjectCreatorSingleton.Instance.ToMeniKeteringaResult(meni));
+                    }
+
+                    element.meniKeteringa = menijiResult;
+                    meniKeteringa.Add(element);
+                }
+
+                return Ok(meniKeteringa);
             } catch (Exception e) {
                 return BadRequest(e.Message);
             }

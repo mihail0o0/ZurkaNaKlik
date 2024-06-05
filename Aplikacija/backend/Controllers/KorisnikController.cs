@@ -94,13 +94,13 @@ namespace backend.Controllers
                 int idKorisnika = int.Parse((HttpContext.Items["idKorisnika"] as string)!);
                 Korisnik? korisnik = await Context.Korisnici.IgnoreQueryFilters().Include(i => i.ListaOmiljenihOglasaObjekata).FirstOrDefaultAsync(f => f.Id == idKorisnika);
 
-                
+
                 if (korisnik == null)
                 {
                     return BadRequest("Korisnik ne postoji");
                 }
 
-                
+
                 OglasObjekta? oglas = await Context.OglasiObjekta.FirstOrDefaultAsync(f => f.Id == idOglasa);
 
                 if (oglas == null)
@@ -110,7 +110,7 @@ namespace backend.Controllers
 
                 korisnik.ListaOmiljenihOglasaObjekata!.Remove(oglas);
 
-                
+
                 await Context.SaveChangesAsync();
 
                 OglasObjektaResponse result = ObjectCreatorSingleton.Instance.ToOglasResult(oglas);
@@ -814,7 +814,7 @@ namespace backend.Controllers
                 Context.Korisnici.Remove(korisnik);
                 await Context.SaveChangesAsync();
 
-                return Ok("Korisnik je uspešno obrisan.");
+                return Ok();
             }
             catch (Exception ex)
             {
@@ -1220,7 +1220,7 @@ namespace backend.Controllers
         #region UploadujSlikuOglasa-ListaSlika
 
         [HttpPost("uploadOglasListaSlika/{oglasId}")]
-        public async Task<IActionResult> UploadSlikeOglas(int oglasId, List<IFormFile> files)
+        public async Task<IActionResult> UploadSlikeOglas(int oglasId, [FromBody] List<IFormFile> files)
         {
             // TODO: Proveri da li je oglas od logovanog korisnika
             // Dodato

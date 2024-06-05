@@ -18,14 +18,12 @@ import { ResultType } from "@/types";
 import { Dispatch } from "@reduxjs/toolkit";
 
 type Props = {
-  formData: FormData | null;
-  setFormData: (arg0: FormData) => void;
+  handleUpload: (arg0: FormData) => void;
   children: ReactNode;
 };
 
 const UploadMultiple = ({
-  formData,
-  setFormData,
+  handleUpload,
   children,
 }: Props) => {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -41,19 +39,20 @@ const UploadMultiple = ({
     const files = event.target.files;
     if (!files || files.length < 0) return;
 
-    const fD = formData ?? new FormData();
+    const fD = new FormData();
 
     for (let i = 0; i < files.length; i++) {
-      fD.append("file", files[i]);
+      fD.append(`file-${i}`, files[i]);
     }
 
-    setFormData(fD);
+    handleUpload(fD);
   };
 
   return (
     <div onClick={handleClick} className="cursorPointer">
       <input
         type="file"
+        multiple={true}
         ref={inputRef}
         onChange={handleFileChange}
         style={{ display: "none" }}

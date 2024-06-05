@@ -3,7 +3,7 @@ import style from "./style.module.css";
 import { useEffect, useState } from "react";
 import MojButton from "@/components/lib/button";
 import { useSelector } from "react-redux";
-import { selectUser } from "@/store/auth";
+import { logOut, selectUser } from "@/store/auth";
 import OglasKartica from "@/components/OglasKartica";
 import * as React from "react";
 import Button from "@mui/material/Button";
@@ -40,6 +40,7 @@ import { getRawLocation } from "@/utils/handleQueries";
 import UploadComponent from "@/components/UploadComponent";
 import { ResultType } from "@/types";
 import { url } from "inspector";
+import { useAppDispatch } from "@/store";
 
 const UserProfile = () => {
   const navigate = useNavigate();
@@ -52,6 +53,8 @@ const UserProfile = () => {
   const { data: tudjiOglasi } = useGetKorisnikOglasiQuery(
     idKorisnika ?? skipToken
   );
+
+  const dispatch = useAppDispatch();
 
   // nece da se pozove ako ne postoji user, zbog skip
   const { data: user } = useGetUserDataQuery(userCurr?.id!, {
@@ -129,13 +132,12 @@ const UserProfile = () => {
       const response = await deleteUser();
 
       if ("error" in response) {
-        toast.error("Neuspesno brisanje naloga");
         navigate(`/user/profile/${userCurr.id}`);
         return;
       }
 
       toast.success("Uspesno obrisan nalog");
-      navigate("user/signup");
+      dispatch(logOut());
     }
   };
 
