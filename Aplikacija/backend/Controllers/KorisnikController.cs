@@ -1304,8 +1304,8 @@ namespace backend.Controllers
         #endregion
 
         #region ObrisiSlikuOglasa
-        [HttpDelete("obrisiSlikuOglasa/{oglasId}")]
-        public async Task<IActionResult> ObrisiSlikuOglasa(int oglasId, [FromQuery] string slikaPath)
+        [HttpDelete("obrisiSlikuOglasa/{oglasId}/{slikaPath}")]
+        public async Task<IActionResult> ObrisiSlikuOglasa(int oglasId, string slikaPath)
         {
             // TODO: Proveri da li je oglas od logovanog korisnika
             slikaPath = Uri.UnescapeDataString(slikaPath);
@@ -1324,7 +1324,8 @@ namespace backend.Controllers
             }
 
             // Obrisi sliku koja je specificirana
-            var filePath = Path.Combine("wwwroot", slikaPath.Replace("/", "\\"));
+            // var filePath = Path.Combine("wwwroot", slikaPath.Replace("/", "\\"));
+            var filePath = Path.Combine("wwwroot", slikaPath);
             if (System.IO.File.Exists(filePath))
             {
                 System.IO.File.Delete(filePath);
