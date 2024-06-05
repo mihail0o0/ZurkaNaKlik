@@ -1,4 +1,4 @@
-import { CSSProperties, useMemo, useState } from "react";
+import { CSSProperties, useEffect, useMemo, useState } from "react";
 import style from "./style.module.css";
 import Icon from "../lib/icon";
 import { Typography, useMediaQuery } from "@mui/material";
@@ -14,6 +14,8 @@ import { selectUser } from "@/store/auth";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { skipToken } from "@reduxjs/toolkit/query";
+import { useGetImageQuery } from "@/store/api/endpoints/images";
+import { getRawLocation } from "@/utils/handleQueries";
 
 // type Props = {
 //   nazivProstora: string;
@@ -38,37 +40,47 @@ const OglasKartica = ({ oglas, onClick }: Props) => {
   //const [favorite, setFavorite] = useState(false);
   const[addFavorite]=useAddFavouriteMutation();
   const[deleteFavorite]=useDeleteFavouriteMutation();
-  const{data : isFavorite}=useIsFavoriteQuery(oglas.id);
+  const{data : isFavorite}=useIsFavoriteQuery(oglas.id ?? skipToken);
   const userCurr = useSelector(selectUser ?? skipToken);
   const { data: user } = useGetUserDataQuery(userCurr?.id!, {
     skip: !userCurr,
   });
+  const [localFavorite, setLocalFavorite] = useState(false);
+  const { data: imageUrl } = useGetImageQuery(
+    getRawLocation(oglas.slike[0]) ?? skipToken
+  );
+
   console.log(oglas.id);
   console.log(isFavorite);
 
-  const updateFavorite = async () => {
-    console.log(isFavorite);
-    if (!isFavorite) {
-      const response = await addFavorite(oglas.id);
-      if ("error" in response) {
-        toast.error("Oglas nije dodat u omiljene");
-        return;
-      }
+  useEffect(() => {
+    if (isFavorite !== undefined) {
+      setLocalFavorite(isFavorite);
+    }
+  }, [isFavorite]);
 
-     // setFavorite(true);
-      toast.success("Oglas uspesno dodat u omiljene");
-    } else {
-      const response = await deleteFavorite(oglas.id);
-      if ("error" in response) {
-        toast.error("Neuspesno brisanje oglasa iz omiljenih");
-        console.log(isFavorite);
-        return;
-      }
+  const handleFavoriteClick = async () => {
+    if (!user) {
+      toast.error('Morate biti prijavljeni da biste dodali oglas u omiljene.');
+      return;
+    }
 
-      //setFavorite(false);
-      toast.success("Oglas uspesno obrisan iz omiljenih");
+    try {
+      if (localFavorite) {
+        const response = await deleteFavorite(oglas.id);
+        toast.success('Oglas uspešno uklonjen iz omiljenih.');
+        setLocalFavorite(prevFavorite => !prevFavorite);
+      } else {
+        const response = await addFavorite(oglas.id);
+        toast.success('Oglas uspešno dodat u omiljene.');
+        setLocalFavorite(prevFavorite => !prevFavorite);
+      }
+    } catch (error) {
+      console.error('Error updating favorite status:', error);
+      toast.error('Greška pri ažuriranju omiljenih.');
     }
   };
+
 
   const defaultImage = "/images/imageNotFound.jpg";
 
@@ -78,7 +90,7 @@ const OglasKartica = ({ oglas, onClick }: Props) => {
   const SlikaKartica: CSSProperties = {
     backgroundImage:
       oglas.slike?.length > 0
-        ? `url(${oglas.slike[0]})`
+        ? `url(${imageUrl})`
         : `url(${defaultImage})`,
   };
 
@@ -115,21 +127,17 @@ const OglasKartica = ({ oglas, onClick }: Props) => {
           {/* // TODO izmeni u icon */}
           {/* ovde treba da ide u zavisnosti od toga da li je svoj oglas ikonica za izmeni */}
           {user && user.id !== oglas.idVlasnika ? (
-            <img
-              onClick={updateFavorite}
-              src={
-                isFavorite
-                  ? "/images/favorite.png"
-                  : "/images/not_favorite.png"
-              }
-              alt={isFavorite ? "Favorite" : "Not Favorite"}
+              <img
+              onClick={handleFavoriteClick}
+              src={localFavorite ? '/images/favorite.png' : '/images/not_favorite.png'}
+              alt={localFavorite ? 'Favorite' : 'Not Favorite'}
               className="cursorPointer"
             />
           ) : (
             <Icon
               icon="edit"
               onClick={() => navigate(`/prostor/izmeniProstor/${oglas.id}`)}
-              classes="cursorPointer"
+              classes="cursorPointer colorWhite"
             />
           )}
         </div>

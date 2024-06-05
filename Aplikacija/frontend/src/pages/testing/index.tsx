@@ -14,7 +14,13 @@ import { Avatar } from "@mui/material";
 import { useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import UploadComponent from "@/components/UploadComponent";
-import { useUploadKorisnikMutation } from "@/store/api/endpoints/images";
+import {
+  useGetImageQuery,
+  useUploadKorisnikMutation,
+} from "@/store/api/endpoints/images";
+import { getRawLocation } from "@/utils/handleQueries";
+import { skipToken } from "@reduxjs/toolkit/query";
+import MenyCard from "@/components/MenyCard";
 
 const TestingPage = () => {
   const user = useSelector(selectUser);
@@ -30,6 +36,7 @@ const TestingPage = () => {
   //   return getAllCategories();
   // }, [])
 
+
   const [text, setText] = useState("Email");
   const handleChange = (newText: string) => {
     setText(newText);
@@ -38,7 +45,8 @@ const TestingPage = () => {
   return (
     <>
       <div className="containerWrapper testingPageWrapper">
-        <UploadComponent useMutationHook={useUploadKorisnikMutation} />
+        {/* <UploadComponent uploadFn={useUploadKorisnikMutation} /> */}
+        <MenyCard  />
       </div>
       <PageSpacer />
     </>

@@ -5,13 +5,13 @@ import MojButton from "@/components/lib/button";
 import { useSelector } from "react-redux";
 import { selectUser } from "@/store/auth";
 import OglasKartica from "@/components/OglasKartica";
-import * as React from 'react';
-import Button from '@mui/material/Button';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
+import * as React from "react";
+import Button from "@mui/material/Button";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
 import {
   useDeleteUserMutation,
   useGetUserDataQuery,
@@ -32,7 +32,14 @@ import { updateUserSchema } from "@/utils/validators";
 import { getValidationMessage } from "@/utils/validationMessage";
 import { toast } from "react-toastify";
 import Icon from "@/components/lib/icon";
-
+import {
+  useGetImageQuery,
+  useUploadKorisnikMutation,
+} from "@/store/api/endpoints/images";
+import { getRawLocation } from "@/utils/handleQueries";
+import UploadComponent from "@/components/UploadComponent";
+import { ResultType } from "@/types";
+import { url } from "inspector";
 
 const UserProfile = () => {
   const navigate = useNavigate();
@@ -46,12 +53,15 @@ const UserProfile = () => {
     idKorisnika ?? skipToken
   );
 
- 
   // nece da se pozove ako ne postoji user, zbog skip
   const { data: user } = useGetUserDataQuery(userCurr?.id!, {
     skip: !userCurr,
   });
   const { data: MojiOglasi } = useGetUserOglasiQuery();
+
+  const { data: imageUrl } = useGetImageQuery(
+    getRawLocation(user?.profilePhoto) ?? skipToken
+  );
 
   const [updateUserAction] = useUpdateUserMutation();
   const [deleteUserAction] = useDeleteUserMutation();
@@ -65,12 +75,9 @@ const UserProfile = () => {
   const [brTel, setBrTel] = useState("");
   const [slikaProfila, setSlikaProfila] = useState<string | undefined>("");
   const [lokacija, setLokacija] = useState("");
-
   const [opis, setOpis] = useState("");
   const [openDialog, setOpenDialog] = useState(false);
-  const[deleteUser]=useDeleteUserMutation();
-
-
+  const [deleteUser] = useDeleteUserMutation();
 
   useEffect(() => {
     if (!vlasnikOglasa) return;
@@ -83,16 +90,12 @@ const UserProfile = () => {
     setLokacija(vlasnikOglasa.location);
   }, [user]);
 
-
-  // function handleOpis(event: ChangeEvent<HTMLTextAreaElement>)) {
-  //   setOpis(event.target.value);
-  // }
   const handleDelete = () => {
-    setOpenDialog(true); 
-  }
+    setOpenDialog(true);
+  };
   const submit = async () => {
     if (!user) return;
-    if(!flag) return;
+    if (!flag) return;
 
     const updateUser: UpdateUserDTO = {
       id: user.id,
@@ -116,30 +119,35 @@ const UserProfile = () => {
     if ("error" in result) return;
 
     toast.success("Uspesno izmenjeni podaci");
-
   };
 
   const handleDialogClose = async (agree: boolean) => {
-    setOpenDialog(false); 
+    setOpenDialog(false);
 
     if (agree) {
-       if (!userCurr) return;
-    const response = await deleteUser(userCurr.id);
+      if (!userCurr) return;
+      const response = await deleteUser();
 
-    if ("error" in response) {
-      toast.error("Neuspesno brisanje naloga");
-      navigate(`/user/profile/${userCurr.id}`);
-      return;
-    }
+      if ("error" in response) {
+        toast.error("Neuspesno brisanje naloga");
+        navigate(`/user/profile/${userCurr.id}`);
+        return;
+      }
 
-    toast.success("Uspesno obrisan nalog");
-    navigate("user/signup");
-     
+      toast.success("Uspesno obrisan nalog");
+      navigate("user/signup");
     }
   };
   if (!user) {
     return null;
   }
+
+  const [uploadKorisnikAction] = useUploadKorisnikMutation();
+
+  const uploadKorisnik = async (formData: FormData): Promise<ResultType> => {
+    const result = await uploadKorisnikAction(formData);
+    return result;
+  };
 
   return (
     <div className={`containerWrapper ${style.Container}`}>
@@ -149,21 +157,30 @@ const UserProfile = () => {
           {/* odje ide slika od kad je clan broj oglasa i prosecna ocena */}
           <div className={style.KarticaSaSlikom}>
             <div className={style.SlikaImeIPrezime}>
-              <UserAvatar size={100} letter={user.name[0]} src={slikaProfila} />
+              <UploadComponent uploadFn={uploadKorisnik}>
+                <UserAvatar
+                  uploadable={true}
+                  size={100}
+                  letter={user.name[0]}
+                  src={imageUrl}
+                />
+              </UploadComponent>
               <p>
                 {vlasnikOglasa && vlasnikOglasa.name}{" "}
                 {vlasnikOglasa && vlasnikOglasa.lastName}
               </p>
-            {flag && <div className={style.obrrrisibhrate}>
-            <div className={style.DeleteIcon} onClick={handleDelete}>
-              <Icon
-                icon="delete"
-                classes={"cursorPointer"}
-                iconMargin="0px"
-              />
-              </div>
-              <label>Izbrisi nalog</label>
-            </div>}
+              {flag && (
+                <div className={style.obrrrisibhrate}>
+                  <div className={style.DeleteIcon} onClick={handleDelete}>
+                    <Icon
+                      icon="delete"
+                      classes={"cursorPointer"}
+                      iconMargin="0px"
+                    />
+                  </div>
+                  <label>Izbrisi nalog</label>
+                </div>
+              )}
             </div>
           </div>
           <div className={style.OsnovnePostavkeProfila}>
@@ -311,10 +328,13 @@ const UserProfile = () => {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">{"Da li ste sigurni da želite da obrišete nalog?"}</DialogTitle>
+        <DialogTitle id="alert-dialog-title">
+          {"Da li ste sigurni da želite da obrišete nalog?"}
+        </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Brisanje naloga je trajna akcija i ne može se poništiti. Da li ste sigurni da želite da nastavite?
+            Brisanje naloga je trajna akcija i ne može se poništiti. Da li ste
+            sigurni da želite da nastavite?
           </DialogContentText>
         </DialogContent>
         <DialogActions>
@@ -325,9 +345,7 @@ const UserProfile = () => {
         </DialogActions>
       </Dialog>
     </div>
-    
   );
-  
 };
 
 export default UserProfile;

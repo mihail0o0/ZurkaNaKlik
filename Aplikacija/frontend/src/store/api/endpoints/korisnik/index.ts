@@ -48,26 +48,20 @@ const authApiSlice = api.injectEndpoints({
         { type: "OmiljeniOglasi", id: "LISTOMILJENIOGLASI" },
       ],
     }),
-    deleteUser: builder.mutation<void, number>({
+    deleteUser: builder.mutation<void, void>({
       query: () => ({
         url: `Korisnik/ObrisiKorisnika`,
         method: "DELETE",
       }),
-      invalidatesTags: (result, err, arg) => [
-        { type: "User", id: arg },
-        { type: "User", id: "LISTUSER" },
-      ],
+      invalidatesTags: (result, err, arg) => [{ type: "User", id: "LISTUSER" }],
     }),
     isFavorite: builder.query<boolean, number>({
       query: (id) => ({
         url: `Korisnik/DaLiOmiljen/${id}`,
       }),
-      providesTags: (result, error, id) => {
-        if (error) {
-          return [{ type: 'User' }, { type: 'OmiljeniOglasi', id }];
-        }
-        return [{ type: 'OmiljeniOglasi', id }];
-      },
+      providesTags: (result, error, id) => [
+        { type: 'OmiljeniOglasi', id },
+      ],
     }),
   }),
 });
