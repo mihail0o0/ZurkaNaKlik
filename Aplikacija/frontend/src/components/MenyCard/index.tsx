@@ -10,8 +10,8 @@ type MenyCardProps = {
   //meny
 };
 const MenyCard = ({ order }: MenyCardProps) => {
-    const { data : sviMeniji } = useGetMenuesQuery();
     
+
 
 
   return (
