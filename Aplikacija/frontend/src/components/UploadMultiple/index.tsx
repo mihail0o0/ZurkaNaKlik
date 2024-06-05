@@ -23,7 +23,7 @@ type Props = {
   children: ReactNode;
 };
 
-const UploadMultipleManualComponent = ({
+const UploadMultiple = ({
   formData,
   setFormData,
   children,
@@ -63,4 +63,4 @@ const UploadMultipleManualComponent = ({
   );
 };
 
-export default UploadMultipleManualComponent;
+export default UploadMultiple;
