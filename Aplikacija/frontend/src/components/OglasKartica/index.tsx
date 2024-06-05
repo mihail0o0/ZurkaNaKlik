@@ -46,6 +46,7 @@ const OglasKartica = ({ oglas, onClick }: Props) => {
     skip: !userCurr,
   });
   const [localFavorite, setLocalFavorite] = useState(false);
+
   const { data: imageUrl } = useGetImageQuery(
     getRawLocation(oglas.slike[0]) ?? skipToken
   );
