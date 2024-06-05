@@ -94,6 +94,7 @@ namespace backend.Controllers
                 int idKorisnika = int.Parse((HttpContext.Items["idKorisnika"] as string)!);
                 Korisnik? korisnik = await Context.Korisnici.IgnoreQueryFilters().Include(i => i.ListaOmiljenihOglasaObjekata).FirstOrDefaultAsync(f => f.Id == idKorisnika);
 
+                
                 if (korisnik == null)
                 {
                     return BadRequest("Korisnik ne postoji");
@@ -777,16 +778,17 @@ namespace backend.Controllers
             {
                 int idKorisnika = int.Parse((HttpContext.Items["idKorisnika"] as string)!);
 
-                Korisnik? korisnik = await Context.Korisnici.FindAsync(idKorisnika);
+                //Korisnik? korisnik = await Context.Korisnici.FindAsync(idKorisnika);
 
-                // Korisnik? korisnik = await Context.Korisnici
-                //     .Include(k => k.ListaZakupljenihOglasa) // Pretpostavljam da korisnik ima kolekciju oglasa
-                //     .FirstOrDefaultAsync(k => k.Id == idKorisnika);
+                Korisnik? korisnik = await Context.Korisnici
+                    .Include(i => i.ListaObjavljenihOglasaObjekta)// Pretpostavljam da korisnik ima kolekciju oglasa
+                    .FirstOrDefaultAsync(k => k.Id == idKorisnika);
 
                 if (korisnik == null)
                 {
-                    return BadRequest("Korisnik ne postoji");
+                    return BadRequest(idKorisnika);
                 }
+
 
                 if (!string.IsNullOrEmpty(korisnik.SlikaProfila))
                 {
@@ -876,7 +878,7 @@ namespace backend.Controllers
 
                 if (korisnik == null)
                 {
-                    return BadRequest("Korisnik nema objavljene oglase");
+                    return BadRequest("Korisnik ne postoji");
                 }
 
                 // TODO WHY
@@ -1306,6 +1308,7 @@ namespace backend.Controllers
         public async Task<IActionResult> ObrisiSlikuOglasa(int oglasId, [FromQuery] string slikaPath)
         {
             // TODO: Proveri da li je oglas od logovanog korisnika
+            slikaPath = Uri.UnescapeDataString(slikaPath);
             int korisnikid = int.Parse((HttpContext.Items["idKorisnika"] as string)!);
 
             var korisnik = await Context.Korisnici.FindAsync(korisnikid);
