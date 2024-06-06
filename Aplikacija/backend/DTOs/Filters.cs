@@ -16,7 +16,7 @@ namespace backend.DTOs
         public int? kvadraturaDo { get; set; }
         public List<EnumGrejanje>? grejanje { get; set; }
         public List<EnumDodatnaOprema>? dodatnaOprema { get; set; }
-        public DateTime? datumOd { get; set; }
-        public DateTime? datumDo { get; set; }
+        public DateTime datumOd { get; set; }
+        public DateTime datumDo { get; set; }
     }
 }

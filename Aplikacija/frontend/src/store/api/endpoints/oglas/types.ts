@@ -1,3 +1,5 @@
+import { Filters, FiltersData, PaginationData, Sort } from "@/store/filters/types";
+
 export enum EnumDodatnaOprema {
   net,
   tv,
@@ -131,5 +133,22 @@ export type OglasObjekata = {
   idVlasnika: number;
 };
 
-export type AddOglasObjektaDTO = Omit<OglasObjekata, "id" | "zauzetiDani" | "idVlasnika">;
-export type UpdateOglasObjektaDTO = Omit<OglasObjekata, "zauzetiDani" | "idVlasnika">;
+export type AddOglasObjektaDTO = Omit<
+  OglasObjekata,
+  "id" | "zauzetiDani" | "idVlasnika"
+>;
+export type UpdateOglasObjektaDTO = Omit<
+  OglasObjekata,
+  "zauzetiDani" | "idVlasnika"
+>;
+
+export type FilteredOglasObjektaRequest = {
+  filtersData: Partial<Pick<FiltersData, "grejanje" | "tipProstora" | "tipProslava" | "dodatnaOprema">>,
+  sort: Sort,
+  paginationData: PaginationData,
+}
+
+export type FilteredOglasObjektaResponse = {
+  brojOglasa: number;
+  response: OglasObjekata[];
+};

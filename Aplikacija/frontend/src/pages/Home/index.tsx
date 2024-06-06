@@ -17,8 +17,8 @@ import {
   SelectChangeEvent,
 } from "@mui/material";
 import { stringToEnum } from "@/utils/enumMappings";
-import { tipProslavaMap } from "@/store/api/endpoints/oglas/types";
-import { Sort, mapStringToSort } from "@/store/filters/types";
+import { FilteredOglasObjektaRequest, tipProslavaMap } from "@/store/api/endpoints/oglas/types";
+import { Filters, Sort, mapStringToSort } from "@/store/filters/types";
 import { useGetFilteredOglasesQuery } from "@/store/api/endpoints/oglas";
 import OglasKartica from "@/components/OglasKartica";
 
@@ -36,6 +36,7 @@ const Home = () => {
     filtersPagination.pageSize
   );
 
+
   const paginationValues = [12, 20, 30, 40, 50, 100];
 
   const handleSortChange = (event: SelectChangeEvent) => {
@@ -46,7 +47,18 @@ const Home = () => {
     setSelectedSort(str);
   };
 
-  const { data: oglasi } = useGetFilteredOglasesQuery(filters);
+  const requestFilters: FilteredOglasObjektaRequest = {
+    ...filters,
+    filtersData: {
+      ...filters.filtersData,
+      dodatnaOprema: (filters.filtersData.dodatnaOprema.length > 0) ? filters.filtersData.dodatnaOprema : undefined,
+      grejanje: (filters.filtersData.grejanje.length > 0) ? filters.filtersData.grejanje : undefined,
+      tipProslava: (filters.filtersData.tipProslava.length > 0) ? filters.filtersData.tipProslava : undefined,
+      tipProstora: (filters.filtersData.tipProstora.length > 0) ? filters.filtersData.tipProstora : undefined,
+    }
+  };
+
+  const { data: oglasi } = useGetFilteredOglasesQuery(requestFilters);
 
   return (
     <>
@@ -88,9 +100,9 @@ const Home = () => {
             })}
           </Select>
         </div>
-        <div className={style.resultContainer}>
+        <div  className={style.resultContainer}>
           {oglasi &&
-            oglasi.map((oglas) => {
+            oglasi.response.map((oglas) => {
               return (
                 <OglasKartica key={oglas.id} oglas={oglas} onClick={() => {}} />
               );

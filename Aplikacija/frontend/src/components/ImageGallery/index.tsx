@@ -5,6 +5,7 @@ import { getRawLocation } from "@/utils/handleQueries";
 import { DeleteOglasImageDTO } from "@/store/api/endpoints/images/types";
 import { useDeleteOglasImageMutation } from "@/store/api/endpoints/images";
 import PageSpacer from "../lib/page-spacer";
+import { useEffect } from "react";
 
 type Props = {
   images: (string | undefined | null)[];
@@ -69,7 +70,9 @@ const ImageGallery = ({
             <div
               key={image}
               style={{ backgroundImage: `url(${image})` }}
-              className={style.image}
+              className={`${style.image} ${
+                onClick != undefined ? "cursorPointer" : ""
+              }`}
               onClick={() => handleClick(image)}
             >
               {deletable && (

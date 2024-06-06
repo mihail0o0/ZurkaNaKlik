@@ -47,10 +47,11 @@ namespace backend.Controllers
         }
         #endregion
 
+
         #region VratiOglaseSaFilterimaISortiranjem
-        [HttpPost("VratiOglase/{pageNumber}/{pageSize}/{sort}")]
-        public async Task<ActionResult> VratiOglase([FromBody] Filters filteri, int pageNumber, int pageSize, string sort)
-        { 
+        [HttpPost("MixVratiOglase/{pageNumber}/{pageSize}/{sort}")]
+        public async Task<ActionResult> MixVratiOglase([FromBody] Filters filteri, int pageNumber, int pageSize, string sort)
+        {
             try
             {
 
@@ -69,7 +70,7 @@ namespace backend.Controllers
                 //     public DateTime DatumDo { get; set; }
                 // }
 
-                List<OglasObjekta> oglasi = await Context.OglasiObjekta.ToListAsync();
+                List<OglasObjekta> oglasi = await Context.OglasiObjekta.Include(i => i.VlasnikOglasa).ToListAsync();
 
                 switch (sort)
                 {
@@ -89,15 +90,20 @@ namespace backend.Controllers
                         return BadRequest("Ne postoji sort");
                 }
 
-                if (filteri.tipProslava != null && filteri.tipProslava!.Count != 0)
+                if (filteri.tipProslava != null && filteri.tipProslava.Count != 0)
                 {
                     oglasi = oglasi.Where(oglas => oglas.ListaTipProslava.Any(tip => filteri.tipProslava!.Contains(tip))).ToList();
+                    //return Ok("radim nesto 1");
+
                 }
 
-                if (filteri.tipProstora != null && filteri.tipProstora!.Count != 0)
+                if (filteri.tipProstora != null && filteri.tipProstora.Count != 0)
                 {
                     oglasi = oglasi.Where(oglas => oglas.ListaTipProstora.Any(tip => filteri.tipProstora!.Contains(tip))).ToList();
+                    //return Ok("radim nesto 2");
                 }
+
+                //return Ok(oglasi);
 
                 if (filteri.grad != null)
                 {
@@ -105,14 +111,15 @@ namespace backend.Controllers
                 }
 
 
+
                 if (filteri.cenaOd != null && filteri.cenaOd >= 0 && (filteri.cenaDo == null || filteri.cenaOd < filteri.cenaDo))
                 {
-                    oglasi = oglasi.Where(oglas => oglas.CenaPoDanu >= filteri.cenaOd).ToList();
+                    oglasi = oglasi.Where(oglas => oglas.CenaPoDanu >= filteri?.cenaOd).ToList();
                 }
 
                 if (filteri.cenaDo != null && filteri.cenaDo <= Int32.MaxValue && (filteri.cenaOd == null || filteri.cenaOd < filteri.cenaDo))
                 {
-                    oglasi = oglasi.Where(oglas => oglas.CenaPoDanu <= filteri.cenaDo).ToList();
+                    oglasi = oglasi.Where(oglas => oglas.CenaPoDanu <= filteri?.cenaDo).ToList();
                 }
 
                 if (filteri.kvadraturaOd != null && filteri.kvadraturaOd >= 0 && (filteri.kvadraturaDo == null || filteri.kvadraturaOd < filteri.kvadraturaDo))
@@ -122,7 +129,7 @@ namespace backend.Controllers
 
                 if (filteri.kvadraturaDo != null && filteri.kvadraturaDo <= Int32.MaxValue && (filteri.kvadraturaOd == null || filteri.kvadraturaOd < filteri.kvadraturaDo))
                 {
-                    oglasi = oglasi.Where(oglas => oglas.Kvadratura <= filteri.kvadraturaDo).ToList();
+                    oglasi = oglasi.Where(oglas => oglas.Kvadratura <= filteri?.kvadraturaDo).ToList();
                 }
 
                 if (filteri.grejanje != null)
@@ -135,18 +142,31 @@ namespace backend.Controllers
                     oglasi = oglasi.Where(oglas => oglas.ListDodatneOpreme.Any(tip => filteri.dodatnaOprema!.Contains(tip))).ToList();
                 }
 
-                DateTime datumOd = filteri.datumOd ?? DateTime.MinValue;
-                DateTime datumDo = filteri.datumDo ?? DateTime.MaxValue;
-                List<DateTime> sviDaniUOpsegu = Enumerable.Range(0, (datumOd - datumDo).Days + 1)
-                                            .Select(offset => datumOd.AddDays(offset))
-                                            .ToList();
+                List<DateTime> sviDaniUOpsegu = new List<DateTime>();
 
-                oglasi = oglasi.Where(oglas => !oglas.ZauzetiDani!.Any(zauzetDan => sviDaniUOpsegu.Contains(zauzetDan)))
-                            .ToList();
+                if (filteri.datumDo != null && filteri.datumOd != null)
+                {
+                    if (filteri.datumDo.Date < filteri.datumDo.Date)
+                    {
+                        return BadRequest("Datum do je manji od datuma od");
+                    }
+                    sviDaniUOpsegu = Enumerable.Range(0, (filteri.datumDo.Date - filteri.datumOd.Date).Days + 1)
+                                                .Select(offset => filteri.datumOd.Date.AddDays(offset))
+                                                .ToList();
+
+                    if (sviDaniUOpsegu.Count != 0)
+                    {
+                        oglasi = oglasi.Where(oglas => !oglas.ZauzetiDani!.Any(zauzetDan => sviDaniUOpsegu.Contains(zauzetDan)))
+                                    .ToList();
+                    }
+                }
+
+                int brojOglasa = oglasi.Count();
 
                 oglasi = oglasi.Skip((pageNumber - 1) * pageSize)
                              .Take(pageSize).ToList();
 
+                //return Ok(oglasi);
                 List<OglasObjektaResponse> response = new List<OglasObjektaResponse>();
 
                 foreach (OglasObjekta oglas in oglasi)
@@ -154,7 +174,7 @@ namespace backend.Controllers
                     response.Add(ObjectCreatorSingleton.Instance.ToOglasResult(oglas));
                 }
 
-                return Ok(response);
+                return Ok(new { response, brojOglasa });
             }
             catch (Exception e)
             {
@@ -162,6 +182,7 @@ namespace backend.Controllers
             }
         }
         #endregion
+
 
         #region VratiSveGradove
         [HttpGet("VratiSveGradove")]

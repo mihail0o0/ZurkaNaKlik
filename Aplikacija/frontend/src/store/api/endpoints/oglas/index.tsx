@@ -3,6 +3,8 @@ import api from "../..";
 import { providesList, providesSingle } from "../../utils";
 import {
   AddOglasObjektaDTO,
+  FilteredOglasObjektaRequest,
+  FilteredOglasObjektaResponse,
   OglasObjekata,
   UpdateOglasObjektaDTO,
 } from "./types";
@@ -15,13 +17,14 @@ const authApiSlice = api.injectEndpoints({
       }),
       providesTags: () => providesList("Location"),
     }),
-    getFilteredOglases: builder.query<OglasObjekata[], Filters>({
+    getFilteredOglases: builder.query<FilteredOglasObjektaResponse, FilteredOglasObjektaRequest>({
       query: (body) => ({
-        url: `Oglas/VratiOglase/${body.paginationData.pageNumber}/${body.paginationData.pageSize}/${body.sort}`,
+        url: `Oglas/MixVratiOglase/${body.paginationData.pageNumber}/${body.paginationData.pageSize}/${body.sort}`,
         method: "POST",
         body: body.filtersData,
       }),
-      providesTags: (result) => providesList("Oglas", result),
+      providesTags: (result) =>
+        providesList("Oglas", result ? result.response : undefined),
     }),
     getOglas: builder.query<OglasObjekata, number>({
       query: (id) => ({
@@ -74,7 +77,6 @@ const authApiSlice = api.injectEndpoints({
       }),
       providesTags: (result) => providesList("Oglas", result),
     }),
-    
   }),
 });
 

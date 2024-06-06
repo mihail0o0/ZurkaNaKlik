@@ -2,21 +2,28 @@ import { useNavigate, useParams } from "react-router-dom";
 import style from "./style.module.css";
 import { useGetOglasQuery } from "@/store/api/endpoints/oglas";
 import Icon from "@/components/lib/icon";
-import { useGetUserDataQuery } from "@/store/api/endpoints/korisnik";
+import {
+  useAddFavouriteMutation,
+  useDeleteFavouriteMutation,
+  useGetUserDataQuery,
+  useIsFavoriteQuery,
+} from "@/store/api/endpoints/korisnik";
 import UserAvatar from "@/components/UserAvatar";
 import MojButton from "@/components/lib/button";
 import BrojLjudi from "../Home/DivFilteri/brojLjudi";
 import { skipToken } from "@reduxjs/toolkit/query";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   dodatnaOpremaIkoniceMap,
   dodatnaOpremaMap,
+  tipProslavaMap,
 } from "@/store/api/endpoints/oglas/types";
 import ImageGallery from "@/components/ImageGallery";
 import { useLazyGetImageQuery } from "@/store/api/endpoints/images";
 import { getRawLocation } from "@/utils/handleQueries";
 import PageSpacer from "@/components/lib/page-spacer";
 import ImageOverview from "@/components/ImageOverview";
+import { enumToString } from "@/utils/enumMappings";
 
 const Oglas = () => {
   const [brojLjudi, SetBrojLjudi] = useState("");
@@ -24,15 +31,54 @@ const Oglas = () => {
   const idOglasa = id ? parseInt(id) : undefined;
   const navigate = useNavigate();
 
-  const { data: currentOglas } = useGetOglasQuery(idOglasa || skipToken);
+  const { data: currentOglas } = useGetOglasQuery(idOglasa ?? skipToken);
   const { data: VlasnikOglasa } = useGetUserDataQuery(
-    currentOglas?.idVlasnika || skipToken
+    currentOglas?.idVlasnika ?? skipToken
   );
 
+  const { data: isFavorite } = useIsFavoriteQuery(
+    currentOglas?.idVlasnika ?? skipToken
+  );
+  const [addFavouriteAction] = useAddFavouriteMutation();
+  const [removeFavouriteAction] = useDeleteFavouriteMutation();
+
+  const [localFavorite, setLocalFavorite] = useState(isFavorite ?? false);
   const [bigImage, setBigImage] = useState<string | null>(null);
   const [images, setImages] = useState<(string | null | undefined)[]>([]);
 
   const [getImageAction] = useLazyGetImageQuery();
+
+  const handleFavourite = async () => {
+    if (!currentOglas) return;
+
+    if (localFavorite) {
+      setLocalFavorite(false);
+      await addFavouriteAction(currentOglas.id);
+    } else {
+      setLocalFavorite(true);
+      await removeFavouriteAction(currentOglas.id);
+    }
+  };
+
+  const tipoviProslave: string[] = useMemo(() => {
+    if (!currentOglas) return [];
+    return currentOglas.listaTipProslava.map((tip) => {
+      return enumToString(tip, tipProslavaMap);
+    });
+  }, [currentOglas]);
+
+  const textTipProslave: string = useMemo(() => {
+    let finalString = "";
+
+    for (let i = 0; i < tipoviProslave.length; i++) {
+      finalString += tipoviProslave[i];
+      if (i < tipoviProslave.length - 1) {
+        finalString += ", ";
+      }
+    }
+
+    return finalString;
+  }, [currentOglas]);
 
   useEffect(() => {
     if (!currentOglas) return;
@@ -58,6 +104,11 @@ const Oglas = () => {
     fetchImages();
   }, [currentOglas?.slike, getImageAction]);
 
+  useEffect(() => {
+    if (!images[0]) return;
+    setBigImage(images[0]);
+  }, [images]);
+
   console.log(currentOglas?.listaTipProslava);
   return (
     <>
@@ -68,14 +119,21 @@ const Oglas = () => {
             <Icon icon="ios_share" />
             <label>Podelite</label>
           </div>
-          {/* ovde da se doda u omiljeni */}
-          <div onClick={() => {}} className={style.Podelite}>
-            <Icon icon="favorite" />
+          <div onClick={handleFavourite} className={style.Podelite}>
+            <img
+              src={
+                localFavorite
+                  ? "/images/favorite.png"
+                  : "/images/not_favorite.png"
+              }
+              alt={localFavorite ? "Favorite" : "Not Favorite"}
+              className="cursorPointer"
+            />
             <label>Dodajte oglas u omiljene</label>
           </div>
         </div>
         <div className={style.container}>
-          <ImageOverview image={bigImage} />
+          <ImageOverview tipoviProslava={textTipProslave} image={bigImage} />
           <ImageGallery
             onClick={setBigImage}
             deletable={false}
