@@ -38,7 +38,7 @@ type GetMenuDTO = {
 
 type AddMenuDTO = {
   id: number;
-  menu: Omit<Menu, "id">;
+  menu: Omit<Menu, "id" | "idKategorije">;
 };
 
 type AddCategoryDTO = Omit<Category, "id">;

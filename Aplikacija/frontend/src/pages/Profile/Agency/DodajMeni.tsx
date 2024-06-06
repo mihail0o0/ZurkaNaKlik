@@ -56,30 +56,34 @@ const DodajIzmeniMeni = ({ kategorije, menuData }: Props) => {
   const [addMenu] = useAddMenuMutation();
 
   const submit = async () => {
-    if (!menuData) return;
-    if (!menuData.idKategorije) return;
+    let cena:number=parseInt(cenaMeni);
+    let idKategorije:number=parseInt(kategorija);
 
-    const newMenu: Omit<Menu, "id"> = {
-      naziv: menuData?.naziv,
+    const newMenu: Omit<Menu, "id" | "idKategorije"> = {
+      naziv: imeMenija,
       slika: "",
-      opis: menuData.opis,
-      cenaMenija: menuData.cenaMenija,
+      opis: opisMenija,
+      cenaMenija: cena,
       sastavMenija: [""],
-      idKategorije: menuData.idKategorije,
     };
 
     const addMenuDTO: AddMenuDTO = {
-      id: menuData.idKategorije,
+      id: idKategorije,
       menu: newMenu,
     };
 
-    const result = await addMenu(addMenuDTO);
+   const result = await addMenu(addMenuDTO);
+
     if ("error" in result) {
       return;
-      console.log("nece");
     }
 
-    toast.success("Meni je uspesno dodat!");
+    toast.success("Oglas je uspesno dodat!");
+    
+    setOpisMenija("");
+    setImeMenija("");
+    setCenaMeni("");
+    setkategorija("");
   };
 
   return (
