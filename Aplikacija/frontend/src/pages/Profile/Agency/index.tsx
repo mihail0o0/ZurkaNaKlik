@@ -47,10 +47,7 @@ const AgencyProfile = () => {
     SetChecked(agencyData.mogucnostDostave);
   }, [agencyData]);
   useEffect(() => {
-
     <MenuList getMenuDTO={meniDTO} />;
-    
-    
   }, [meniDTO]);
 
   const [imeAgencije, setImeAgencije] = useState("");
