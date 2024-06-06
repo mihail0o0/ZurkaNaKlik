@@ -88,25 +88,25 @@ export const tipGrejanjaMap: { [key in EnumGrejanje]: string } = {
   [EnumGrejanje.Nema]: "Nema",
 };
 
-export type Filters = {
-  sort?: string;
-  tipProslava?: EnumTipProslava[];
-  tipProstora?: EnumTipProstora[];
-  grad?: string;
-  cenaOd: number;
-  cenaDo: number;
-  kvadraturaOd: number;
-  kvadraturaDo: number;
-  grejanje?: EnumGrejanje[];
-  dodatnaOprema?: EnumDodatnaOprema[];
-  datumOd: Date;
-  datumDo: Date;
-};
+// export type Filters = {
+//   sort?: string;
+//   tipProslava?: EnumTipProslava[];
+//   tipProstora?: EnumTipProstora[];
+//   grad?: string;
+//   cenaOd: number;
+//   cenaDo: number;
+//   kvadraturaOd: number;
+//   kvadraturaDo: number;
+//   grejanje?: EnumGrejanje[];
+//   dodatnaOprema?: EnumDodatnaOprema[];
+//   datumOd: Date;
+//   datumDo: Date;
+// };
 
-export type FiltersPaginationData = {
-  pageNumber: number;
-  pageSize: number;
-};
+// export type FiltersPaginationData = {
+//   pageNumber: number;
+//   pageSize: number;
+// };
 
 export type OglasObjekata = {
   id: number;
@@ -133,8 +133,3 @@ export type OglasObjekata = {
 
 export type AddOglasObjektaDTO = Omit<OglasObjekata, "id" | "zauzetiDani" | "idVlasnika">;
 export type UpdateOglasObjektaDTO = Omit<OglasObjekata, "zauzetiDani" | "idVlasnika">;
-
-export type GetOglasData = {
-  filters: Filters;
-  pageData: FiltersPaginationData;
-};

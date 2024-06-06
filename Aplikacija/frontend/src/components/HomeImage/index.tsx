@@ -7,13 +7,50 @@ import { useGetAllCitiesQuery } from "@/store/api/endpoints/oglas";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { tipProslave } from "@/types";
+import { selectFiltersData, setFiltersData } from "@/store/filters";
+import {
+  EnumTipProslava,
+  tipProslavaMap,
+} from "@/store/api/endpoints/oglas/types";
+import { enumToString, stringToEnum } from "@/utils/enumMappings";
+import { useAppDispatch } from "@/store";
+import { FiltersData } from "@/store/filters/types";
 
-type Props = {
-  tipoviProslave: tipProslave[];
-  setTipoviProslave: (arg0: tipProslave[]) => void;
-};
+const HomeImage = () => {
+  const filters = useSelector(selectFiltersData);
+  const dispatch = useAppDispatch();
 
-const HomeImage = ({ tipoviProslave, setTipoviProslave }: Props) => {
+  const [tipoviProslave, setTipoviProslave] = useState<tipProslave[]>([
+    {
+      value: enumToString(EnumTipProslava.Sve, tipProslavaMap),
+      selected: filters.tipProslava.includes(EnumTipProslava.Sve),
+    },
+    {
+      value: enumToString(EnumTipProslava.Rodjendan, tipProslavaMap),
+      selected: filters.tipProslava.includes(EnumTipProslava.Rodjendan),
+    },
+    {
+      value: enumToString(EnumTipProslava.Zurka, tipProslavaMap),
+      selected: filters.tipProslava.includes(EnumTipProslava.Zurka),
+    },
+    {
+      value: enumToString(EnumTipProslava.Teambuilding, tipProslavaMap),
+      selected: filters.tipProslava.includes(EnumTipProslava.Teambuilding),
+    },
+    {
+      value: enumToString(EnumTipProslava.Momacko, tipProslavaMap),
+      selected: filters.tipProslava.includes(EnumTipProslava.Momacko),
+    },
+    {
+      value: enumToString(EnumTipProslava.Devojacko, tipProslavaMap),
+      selected: filters.tipProslava.includes(EnumTipProslava.Devojacko),
+    },
+    {
+      value: enumToString(EnumTipProslava.Ostalo, tipProslavaMap),
+      selected: filters.tipProslava.includes(EnumTipProslava.Ostalo),
+    },
+  ]);
+
   const navigate = useNavigate();
   const user = useSelector(selectUser);
   const cities = useGetAllCitiesQuery();
@@ -38,6 +75,22 @@ const HomeImage = ({ tipoviProslave, setTipoviProslave }: Props) => {
     }
 
     setTipoviProslave(sel);
+
+    const selectedValues: number[] = [];
+    sel.forEach((element) => {
+      if (!element.selected) return;
+      const str = stringToEnum(element.value, tipProslavaMap);
+      if (str == undefined) return;
+
+      selectedValues.push(str);
+    });
+
+    const newFiltersData: FiltersData = {
+      ...filters,
+      tipProslava: selectedValues,
+    };
+
+    dispatch(setFiltersData(newFiltersData));
   };
 
   return (

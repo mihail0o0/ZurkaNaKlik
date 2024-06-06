@@ -14,7 +14,7 @@ export interface AuthState {
 
 export type Filters = {
   filtersData: FiltersData;
-  sort?: Sort;
+  sort: Sort;
   paginationData: PaginationData;
 };
 
@@ -24,12 +24,12 @@ export type FiltersData = {
   grejanje: EnumGrejanje[];
   dodatnaOprema: EnumDodatnaOprema[];
   grad: string | null;
-  cenaOd: number | null;
-  cenaDo: number | null;
-  kvadraturaOd: number | null;
-  kvadraturaDo: number | null;
-  datumOd: Date | null;
-  datumDo: Date | null;
+  cenaOd?: number;
+  cenaDo?: number;
+  kvadraturaOd?: number;
+  kvadraturaDo?: number;
+  datumOd?: Date;
+  datumDo?: Date;
 };
 
 export type PaginationData = {
@@ -43,6 +43,21 @@ export enum Sort {
   OcenaRastuce = "OcenaRastuce",
   OcenaOpadajuce = "OcenaOpadajuce",
 }
+
+export const mapStringToSort = (value: string): Sort | undefined => {
+  switch (value) {
+    case "CenaRastuca":
+      return Sort.CenaRastuca;
+    case "CenaOpadajuce":
+      return Sort.CenaOpadajuce;
+    case "OcenaRastuce":
+      return Sort.OcenaRastuce;
+    case "OcenaOpadajuce":
+      return Sort.OcenaOpadajuce;
+    default:
+      return undefined;
+  }
+};
 
 // public string? sort { get; set; }
 // public List<EnumTipProslava>? tipProslava { get; set; }

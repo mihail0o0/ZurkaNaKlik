@@ -8,3 +8,25 @@
   flex-wrap: wrap;
 }
 
+.resultWrapper{
+  width: 90%;
+  margin: 50px auto;
+}
+
+
+.filtersTop {
+  display: flex;
+  gap: 30px;
+  margin-bottom: 30px;
+}
+
+.resultContainer{
+  width: 100%;
+  height: 1000px;
+}
+
+.pagination {
+  width: 100%;
+  display: flex;
+  gap: 40px;
+}

@@ -52,8 +52,6 @@ function SimpleDialog(props: SimpleDialogProps) {
     onClose(value);
   };
 
-  console.log(selectedDodatnaOprema);
-
   return (
     <Dialog
       onClose={handleClose}
@@ -160,7 +158,6 @@ const JosFiltera = (props: JosFilteraProps) => {
   };
 
   const handleClose = (value: string) => {
-    console.log(value);
     setOpen(false);
   };
   return (

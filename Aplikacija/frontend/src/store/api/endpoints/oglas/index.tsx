@@ -1,9 +1,8 @@
+import { Filters, FiltersData } from "@/store/filters/types";
 import api from "../..";
 import { providesList, providesSingle } from "../../utils";
 import {
   AddOglasObjektaDTO,
-  FiltersPaginationData,
-  GetOglasData,
   OglasObjekata,
   UpdateOglasObjektaDTO,
 } from "./types";
@@ -16,11 +15,11 @@ const authApiSlice = api.injectEndpoints({
       }),
       providesTags: () => providesList("Location"),
     }),
-    getFilteredOglases: builder.query<OglasObjekata[], GetOglasData>({
+    getFilteredOglases: builder.query<OglasObjekata[], Filters>({
       query: (body) => ({
-        url: `Oglas/VratiOglase/${body.pageData.pageNumber}/${body.pageData.pageSize}`,
+        url: `Oglas/VratiOglase/${body.paginationData.pageNumber}/${body.paginationData.pageSize}/${body.sort}`,
         method: "POST",
-        body: body.filters,
+        body: body.filtersData,
       }),
       providesTags: (result) => providesList("Oglas", result),
     }),

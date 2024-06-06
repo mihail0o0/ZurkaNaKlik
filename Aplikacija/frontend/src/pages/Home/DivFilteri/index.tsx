@@ -1,7 +1,7 @@
 import MojButton from "@/components/lib/button";
 import style from "./style.module.css";
 import BrojLjudi from "./brojLjudi";
-import Cena from "./cena";
+import PopupRange from "./popupRange";
 import Datum from "./datum";
 import Grad from "./grad";
 import { useState } from "react";
@@ -14,23 +14,58 @@ import {
 } from "@/store/api/endpoints/oglas/types";
 import { DateRange } from "react-day-picker";
 import { addDays } from "date-fns";
+import { useSelector } from "react-redux";
+import { selectFiltersData, setFiltersData } from "@/store/filters";
+import { useAppDispatch } from "@/store";
+import { FiltersData } from "@/store/filters/types";
 
 const DivFilteri = () => {
-  const [gradValue, setGradValue] = useState<string | null>(null);
-  const [cenaOd, setCenaOd] = useState("");
-  const [cenaDo, setCenaDo] = useState("");
-  const [broj, setBroj] = useState("");
+  const dispatch = useAppDispatch();
+  const filtersState = useSelector(selectFiltersData);
+
+  const [gradValue, setGradValue] = useState<string | null>(filtersState.grad);
+
+  const [broj, setBroj] = useState(`${filtersState ?? ""}`);
+  const [cenaOd, setCenaOd] = useState(`${filtersState.cenaOd ?? ""}`);
+  const [cenaDo, setCenaDo] = useState(`${filtersState.cenaOd ?? ""}`);
+  const [kvadraturaOd, setKvadraturaOd] = useState(
+    `${filtersState.kvadraturaOd ?? ""}`
+  );
+  const [kvadraturaDo, setKvadraturaDo] = useState(
+    `${filtersState.kvadraturaDo ?? ""}`
+  );
+
   const [selectedDodatnaOprema, setSelectedDodatnaOprema] = useState<number[]>(
-    []
+    filtersState.dodatnaOprema
   );
   const [selectedTipoviProstora, setSelectedTipoviProslava] = useState<
     number[]
-  >([]);
+  >(filtersState.tipProstora);
   const [selectedTipoviGrejanja, setSelectedTipoviGrejanja] = useState<
     number[]
-  >([]);
+  >(filtersState.grejanje);
 
-  const [date, setDate] = useState<DateRange | undefined>();
+  const [date, setDate] = useState<DateRange | undefined>({
+    from: filtersState.datumOd,
+    to: filtersState.datumDo,
+  });
+
+  const handleSubmit = async () => {
+    const newFilterData: FiltersData = {
+      ...filtersState,
+      dodatnaOprema: selectedDodatnaOprema,
+      grejanje: selectedTipoviGrejanja,
+      cenaOd: cenaOd != "" ? parseInt(cenaOd) : undefined,
+      cenaDo: cenaDo != "" ? parseInt(cenaDo) : undefined,
+      datumOd: date?.from,
+      datumDo: date?.to,
+      grad: gradValue != "" ? gradValue : null,
+      kvadraturaOd: kvadraturaOd != "" ? parseInt(kvadraturaOd) : undefined,
+      kvadraturaDo: kvadraturaDo != "" ? parseInt(kvadraturaDo) : undefined,
+    };
+
+    dispatch(setFiltersData(newFilterData));
+  };
 
   const handleChangeDodatnaOprema = (value: string) => {
     const type = stringToEnum(value, dodatnaOpremaMap);
@@ -81,18 +116,27 @@ const DivFilteri = () => {
 
         <Datum date={date} setDate={setDate} />
 
-        <Cena
-          cenaOd={cenaOd}
-          cenaDo={cenaDo}
-          setCenaOd={setCenaOd}
-          setCenaDo={setCenaDo}
+        <PopupRange
+          icon="payments"
+          inputText="Cena"
+          from={cenaOd}
+          to={cenaDo}
+          setFrom={setCenaOd}
+          setTo={setCenaDo}
         />
 
-        <BrojLjudi broj={broj} setBroj={setBroj} />
+        <PopupRange
+          icon="view_in_ar"
+          inputText="Kvadratura"
+          from={kvadraturaOd}
+          to={kvadraturaDo}
+          setFrom={setKvadraturaOd}
+          setTo={setKvadraturaDo}
+        />
 
         <MojButton
-          text="Pretrazi "
-          onClick={() => {}}
+          text="Pretraži"
+          onClick={handleSubmit}
           paddingX="80px"
           paddingY="18px"
           fontSize="15px"

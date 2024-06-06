@@ -3,15 +3,19 @@ import { Popover, Typography } from "@mui/material";
 import { SyntheticEvent, useEffect, useMemo, useState } from "react";
 import style from "./style.module.css";
 import Icon from "@/components/lib/icon";
+import { selectFiltersData } from "@/store/filters";
+import { useSelector } from "react-redux";
 
 type Props = {
-  cenaOd: string;
-  cenaDo: string;
-  setCenaOd: React.Dispatch<React.SetStateAction<string>>;
-  setCenaDo: React.Dispatch<React.SetStateAction<string>>;
+  icon: string;
+  inputText: string;
+  from: string;
+  to: string;
+  setFrom: React.Dispatch<React.SetStateAction<string>>;
+  setTo: React.Dispatch<React.SetStateAction<string>>;
 };
 
-const Cena = ({ cenaOd, cenaDo, setCenaOd, setCenaDo }: Props) => {
+const PopupRange = ({ icon, inputText, from, to, setFrom, setTo }: Props) => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -25,17 +29,17 @@ const Cena = ({ cenaOd, cenaDo, setCenaOd, setCenaDo }: Props) => {
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
   const handleCenaOd = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setCenaOd(event.target.value);
+    setFrom(event.target.value);
   };
   const handleCenaDo = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setCenaDo(event.target.value);
+    setTo(event.target.value);
   };
 
   const text: string = useMemo(() => {
-    if(cenaOd != "" && cenaDo != "") return `${cenaOd} - ${cenaDo}`
-    if(cenaOd != "") return `${cenaOd} - `; 
-    return "Cena";
-  }, [cenaOd, cenaDo]);
+    if (from != "" && to != "") return `${from} - ${to}`;
+    if (from != "") return `${from} - `;
+    return inputText;
+  }, [from, to]);
 
   return (
     <div>
@@ -45,7 +49,7 @@ const Cena = ({ cenaOd, cenaDo, setCenaOd, setCenaDo }: Props) => {
         paddingX="80px"
         paddingY="14px"
         fontSize="15px"
-        icon="payments"
+        icon={icon}
         grey={true}
         color="black"
         wide={true}
@@ -74,23 +78,23 @@ const Cena = ({ cenaOd, cenaDo, setCenaOd, setCenaDo }: Props) => {
           <div className={style.CenaOd}>
             <Typography sx={{ p: 2 }}>Od :</Typography>
 
-            <Icon icon="payments" />
+            <Icon icon={icon} />
 
             <input
               type="number"
               id="textInput"
-              value={cenaOd}
+              value={from}
               onChange={handleCenaOd}
             />
           </div>
           <div className={style.CenaOd}>
             <Typography sx={{ p: 2 }}>Do :</Typography>
 
-            <Icon icon="payments" />
+            <Icon icon={icon} />
             <input
               type="number"
               id="textInput"
-              value={cenaDo}
+              value={to}
               onChange={handleCenaDo}
             />
           </div>
@@ -99,4 +103,4 @@ const Cena = ({ cenaOd, cenaDo, setCenaOd, setCenaDo }: Props) => {
     </div>
   );
 };
-export default Cena;
+export default PopupRange;

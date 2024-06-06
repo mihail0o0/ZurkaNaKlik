@@ -48,11 +48,12 @@ namespace backend.Controllers
         #endregion
 
         #region VratiOglaseSaFilterimaISortiranjem
-        [HttpPost("VratiOglase/{pageNumber}/{pageSize}")]
-        public async Task<ActionResult> VratiOglase([FromBody] Filters filteri, int pageNumber, int pageSize)
-        { //dodaj sortiranje
+        [HttpPost("VratiOglase/{pageNumber}/{pageSize}/{sort}")]
+        public async Task<ActionResult> VratiOglase([FromBody] Filters filteri, int pageNumber, int pageSize, string sort)
+        { 
             try
             {
+
                 // public class Filters
                 // {
                 //     public List<EnumTipProslava>? TipProslava { get; set; }
@@ -67,9 +68,10 @@ namespace backend.Controllers
                 //     public DateTime DatumOd { get; set; }
                 //     public DateTime DatumDo { get; set; }
                 // }
+
                 List<OglasObjekta> oglasi = await Context.OglasiObjekta.ToListAsync();
 
-                switch (filteri.sort)
+                switch (sort)
                 {
                     case "CenaRastuca":
                         oglasi = oglasi.OrderBy(o => o.CenaPoDanu).ToList();
@@ -78,10 +80,10 @@ namespace backend.Controllers
                         oglasi = oglasi.OrderByDescending(o => o.CenaPoDanu).ToList();
                         break;
                     case "OcenaRastuce":
-                        oglasi = oglasi.OrderBy(o => ((double)(o.Ocena ?? 0))).ToList();
+                        oglasi = oglasi.OrderBy(o => (double)(o.Ocena ?? 0)).ToList();
                         break;
                     case "OcenaOpadajuce":
-                        oglasi = oglasi.OrderByDescending(o => ((double)(o.Ocena ?? 0))).ToList();
+                        oglasi = oglasi.OrderByDescending(o => (double)(o.Ocena ?? 0)).ToList();
                         break;
                     default:
                         return BadRequest("Ne postoji sort");

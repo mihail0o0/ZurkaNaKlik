@@ -347,11 +347,16 @@ const IzmeniOglas = () => {
           </div>
         </div>
         <h2>Slike prostora</h2>
-        <ImageGallery idOglasa={idOglasa} imagePaths={oglas.slike} images={images} />
+        <ImageGallery
+          idOglasa={idOglasa}
+          imagePaths={oglas.slike}
+          images={images}
+        />
         <div className={style.NAJJACEDUGME}>
           <div className={style.DodajSLikuDugme}>
             <UploadComponent uploadFn={uploadFn}>
               <MojButton
+                onClick={() => {}}
                 text="Dodaj sliku"
                 icon="add_photo_alternate"
                 backgroundColor="lightgrey"

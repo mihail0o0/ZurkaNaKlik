@@ -1,32 +1,103 @@
+import { ChangeEvent, useState } from "react";
 import style from "./style.module.css";
-import OglasKartica from "@/components/OglasKartica";
 import HomeImage from "@/components/HomeImage";
-import { useState } from "react";
-import { tipProslave } from "@/types";
+import { useSelector } from "react-redux";
+import {
+  selectFilters,
+  selectFiltersData,
+  selectPaginationData,
+  selectSortData,
+} from "@/store/filters";
+import { useAppDispatch } from "@/store";
+import {
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+} from "@mui/material";
+import { stringToEnum } from "@/utils/enumMappings";
+import { tipProslavaMap } from "@/store/api/endpoints/oglas/types";
+import { Sort, mapStringToSort } from "@/store/filters/types";
+import { useGetFilteredOglasesQuery } from "@/store/api/endpoints/oglas";
+import OglasKartica from "@/components/OglasKartica";
 
 const Home = () => {
-  const [tipoviProslave, setTipoviProslave] = useState<tipProslave[]>([
-    { value: "Sve", selected: false },
-    { value: "Rođendan", selected: false },
-    { value: "Žurka", selected: false },
-    { value: "Team building", selected: false },
-    { value: "Momačko veče", selected: false },
-    { value: "Devojačko veče", selected: false },
-    { value: "Ostalo", selected: false },
-  ]);
+  const filters = useSelector(selectFilters);
+  const filtersSort = useSelector(selectSortData);
+  const filtersPagination = useSelector(selectPaginationData);
+  const dispatch = useAppDispatch();
+
+  const [selectedSort, setSelectedSort] = useState(filtersSort);
+  const [selectedPageNumber, setSelectedPageNumber] = useState(
+    filtersPagination.pageNumber
+  );
+  const [selectedPageSize, setSelectedPageSize] = useState(
+    filtersPagination.pageSize
+  );
+
+  const paginationValues = [12, 20, 30, 40, 50, 100];
+
+  const handleSortChange = (event: SelectChangeEvent) => {
+    if (!event) return;
+    const str = mapStringToSort(event.target.value);
+    if (str == undefined) return;
+
+    setSelectedSort(str);
+  };
+
+  const { data: oglasi } = useGetFilteredOglasesQuery(filters);
 
   return (
-    <div className={style.SearchGlavni}>
-      <HomeImage
-        tipoviProslave={tipoviProslave}
-        setTipoviProslave={setTipoviProslave}
-      />
-
-      <div className={style.SearchKartice}>
-        {/* <OglasKartica
-        /> */}
+    <>
+      <HomeImage />
+      <div className={style.resultWrapper}>
+        <div className={style.filtersTop}>
+          <Select
+            id="selectSorting"
+            value={selectedSort}
+            onChange={handleSortChange}
+            sx={{
+              borderRadius: "12px",
+              color: "black",
+            }}
+          >
+            {Object.values(Sort).map((value) => {
+              return (
+                <MenuItem key={`Select-${value}`} value={value}>
+                  {value}
+                </MenuItem>
+              );
+            })}
+          </Select>
+          <Select
+            id="selectSize"
+            value={String(selectedPageSize)}
+            onChange={handleSortChange}
+            sx={{
+              borderRadius: "12px",
+              color: "black",
+            }}
+          >
+            {paginationValues.map((value) => {
+              return (
+                <MenuItem key={`Select-${value}`} value={value}>
+                  {value}
+                </MenuItem>
+              );
+            })}
+          </Select>
+        </div>
+        <div className={style.resultContainer}>
+          {oglasi &&
+            oglasi.map((oglas) => {
+              return (
+                <OglasKartica key={oglas.id} oglas={oglas} onClick={() => {}} />
+              );
+            })}
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
