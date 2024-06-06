@@ -6,30 +6,32 @@ import Icon from "../lib/icon";
 import { useGetMenuesQuery } from "@/store/api/endpoints/agencija";
 
 type MenyCardProps = {
-  order: CateringOrder;
+  order?: CateringOrder;
+  meni?: Menu;
   //meny
 };
-const MenyCard = ({ order }: MenyCardProps) => {
-    
-
-
-
+const MenyCardPorudzbine = ({ order, meni }: MenyCardProps) => {
   return (
     <div className={`containerWrapper ${style.Container}`}>
       <div className={style.MenyPicture}>
         <img src="/public/images/burger.jpg" />
       </div>
       <div className={style.MenyTxt}>
-        <h3>{}</h3>
+        <h3>{meni && meni.naziv}</h3>
         {/* <p>Opis menija neki mali.</p> */}
         <div className={style.InfoOglas}>
           <div className={style.DisplayMenyInfo}>
-            <Icon icon={"location_on"} />
-            <label>{"Trg 14. oktobra 6"}</label>
+            <>
+              <Icon icon={"location_on"} />
+              <label>{"Trg 14. oktobra 6"}</label>
+              
+            </>
           </div>
           <div className={style.DisplayMenyInfo}>
-            <Icon icon={"calendar_month"} />
-            <label>{"14.5.2024."}</label>
+            <>
+              <Icon icon={"calendar_month"} />
+              <label>{"14.5.2024."}</label>{" "}
+            </>
           </div>
         </div>
         <div className={style.InfoOglas}>
@@ -39,7 +41,7 @@ const MenyCard = ({ order }: MenyCardProps) => {
           </div>
           <div className={style.DisplayMenyInfo}>
             <Icon icon={"payments"} />
-            <label>{"200"}</label>
+            <label>{"200"}</label>{" "}
           </div>
         </div>
       </div>
@@ -64,4 +66,4 @@ const MenyCard = ({ order }: MenyCardProps) => {
     </div>
   );
 };
-export default MenyCard;
+export default MenyCardPorudzbine;

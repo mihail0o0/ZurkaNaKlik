@@ -27,6 +27,7 @@ import FavoriteOglasi from "./favoriteOglasi";
 import Oglas from "./Oglas";
 import IzmeniOglas from "./IzmeniOglas";
 import Porudzbine from "./Porudzbine";
+import AgencyView from "./Profile/AgencyView";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -55,6 +56,7 @@ const router = createBrowserRouter(
         <Route path="catering">
           <Route path="profile" element={<AgencyProfile />} />
           <Route path="porudzbine" element={<Porudzbine />} />
+          <Route path="viewAgency/:id" element={<AgencyView />}/>
         </Route>
       </Route>
 

@@ -11,7 +11,7 @@ import { enumToString } from "@/utils/enumMappings";
 import { useSelector } from "react-redux";
 import { selectUser } from "@/store/auth";
 import DisplayCard from "@/components/DisplayCard";
-
+import { toast } from "react-toastify";
 
 type Props = {
   kategorije?: Category[];
@@ -30,9 +30,9 @@ const DodajIzmeniMeni = ({ kategorije, menuData }: Props) => {
     if (!menuData) return;
 
     let selectedKategorija = "";
-    if(kategorije){
-      for(let i = 0; i < kategorije?.length; i++){
-        if(kategorije[i].id === menuData.idKategorije){
+    if (kategorije) {
+      for (let i = 0; i < kategorije?.length; i++) {
+        if (kategorije[i].id === menuData.idKategorije) {
           selectedKategorija = kategorije[i].naziv;
         }
       }
@@ -54,9 +54,37 @@ const DodajIzmeniMeni = ({ kategorije, menuData }: Props) => {
   }
 
   const [addMenu] = useAddMenuMutation();
-  const [deleteMenu] = useDeleteMenuMutation();
 
-  const submit = async () => {};
+  const submit = async () => {
+    let cena:number=parseInt(cenaMeni);
+    let idKategorije:number=parseInt(kategorija);
+
+    const newMenu: Omit<Menu, "id" | "idKategorije"> = {
+      naziv: imeMenija,
+      slika: "",
+      opis: opisMenija,
+      cenaMenija: cena,
+      sastavMenija: [""],
+    };
+
+    const addMenuDTO: AddMenuDTO = {
+      id: idKategorije,
+      menu: newMenu,
+    };
+
+   const result = await addMenu(addMenuDTO);
+
+    if ("error" in result) {
+      return;
+    }
+
+    toast.success("Oglas je uspesno dodat!");
+    
+    setOpisMenija("");
+    setImeMenija("");
+    setCenaMeni("");
+    setkategorija("");
+  };
 
   return (
     <div className={style.menijji}>
@@ -65,14 +93,11 @@ const DodajIzmeniMeni = ({ kategorije, menuData }: Props) => {
         <div className={style.Kocka}>
           <div className={style.Red}>
             <div className={style.Inputsredi}>
-            {/* <DisplayCard></DisplayCard> */}
-              
-              {/* <DisplayCard /> */}
-              {/* <Input
+              <Input
                 text={imeMenija}
                 placeholder="Ime menija"
                 onChange={setImeMenija}
-              /> */}
+              />
             </div>
 
             <div className={style.Inputsredi}>

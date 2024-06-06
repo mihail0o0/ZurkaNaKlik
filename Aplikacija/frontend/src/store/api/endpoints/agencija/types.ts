@@ -38,7 +38,7 @@ type GetMenuDTO = {
 
 type AddMenuDTO = {
   id: number;
-  menu: Omit<Menu, "id">;
+  menu: Omit<Menu, "id" | "idKategorije">;
 };
 
 type AddCategoryDTO = Omit<Category, "id">;
@@ -52,3 +52,12 @@ type CateringOrder = {
   idAgencije?: number;
   idMenija?: number[];
 };
+type MenuForList={
+  id: number;
+  naziv:string;
+  cenaMenija: number;
+  slika:string;
+  opis:string;
+  sastavMenija:string[];
+}
+
