@@ -2,8 +2,8 @@ import React, { CSSProperties } from "react";
 import Icon from "../icon";
 
 type Props = {
-  text?: string;
-  onClick?: React.MouseEventHandler<HTMLButtonElement> | (() => void);
+  text: string;
+  onClick: React.MouseEventHandler<HTMLButtonElement> | (() => void);
   grey?: boolean;
   icon?: string;
   wide?: boolean;

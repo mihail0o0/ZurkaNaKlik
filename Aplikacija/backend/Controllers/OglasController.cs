@@ -102,14 +102,25 @@ namespace backend.Controllers
                     oglasi = oglasi.Where(oglas => oglas.Grad.Equals(filteri.grad)).ToList();
                 }
 
-                if (filteri.cenaOd >= 0 && filteri.cenaDo <= Int32.MaxValue && filteri.cenaOd < filteri.cenaDo)
+
+                if (filteri.cenaOd != null && filteri.cenaOd >= 0 && (filteri.cenaDo == null || filteri.cenaOd < filteri.cenaDo))
                 {
-                    oglasi = oglasi.Where(oglas => oglas.CenaPoDanu >= filteri.cenaOd && oglas.CenaPoDanu <= filteri.cenaDo).ToList();
+                    oglasi = oglasi.Where(oglas => oglas.CenaPoDanu >= filteri.cenaOd).ToList();
                 }
 
-                if (filteri.kvadraturaOd >= 0 && filteri.kvadraturaDo <= Int32.MaxValue && filteri.kvadraturaOd < filteri.kvadraturaDo)
+                if (filteri.cenaDo != null && filteri.cenaDo <= Int32.MaxValue && (filteri.cenaOd == null || filteri.cenaOd < filteri.cenaDo))
                 {
-                    oglasi = oglasi.Where(oglas => oglas.Kvadratura >= filteri.kvadraturaOd && oglas.Kvadratura <= filteri.kvadraturaDo).ToList();
+                    oglasi = oglasi.Where(oglas => oglas.CenaPoDanu <= filteri.cenaDo).ToList();
+                }
+
+                if (filteri.kvadraturaOd != null && filteri.kvadraturaOd >= 0 && (filteri.kvadraturaDo == null || filteri.kvadraturaOd < filteri.kvadraturaDo))
+                {
+                    oglasi = oglasi.Where(oglas => oglas.Kvadratura >= filteri.kvadraturaOd).ToList();
+                }
+
+                if (filteri.kvadraturaDo != null && filteri.kvadraturaDo <= Int32.MaxValue && (filteri.kvadraturaOd == null || filteri.kvadraturaOd < filteri.kvadraturaDo))
+                {
+                    oglasi = oglasi.Where(oglas => oglas.Kvadratura <= filteri.kvadraturaDo).ToList();
                 }
 
                 if (filteri.grejanje != null)
@@ -122,8 +133,10 @@ namespace backend.Controllers
                     oglasi = oglasi.Where(oglas => oglas.ListDodatneOpreme.Any(tip => filteri.dodatnaOprema!.Contains(tip))).ToList();
                 }
 
-                List<DateTime> sviDaniUOpsegu = Enumerable.Range(0, (filteri.datumDo.Date - filteri.datumOd.Date).Days + 1)
-                                            .Select(offset => filteri.datumOd.AddDays(offset))
+                DateTime datumOd = filteri.datumOd ?? DateTime.MinValue;
+                DateTime datumDo = filteri.datumDo ?? DateTime.MaxValue;
+                List<DateTime> sviDaniUOpsegu = Enumerable.Range(0, (datumOd - datumDo).Days + 1)
+                                            .Select(offset => datumOd.AddDays(offset))
                                             .ToList();
 
                 oglasi = oglasi.Where(oglas => !oglas.ZauzetiDani!.Any(zauzetDan => sviDaniUOpsegu.Contains(zauzetDan)))
@@ -220,9 +233,9 @@ namespace backend.Controllers
             try
             {
 
-                var vlasnik = await Context.OglasiObjekta.Where(x =>x.Id == idoglasa).Select(x => 
+                var vlasnik = await Context.OglasiObjekta.Where(x => x.Id == idoglasa).Select(x =>
                     x.VlasnikOglasa).FirstOrDefaultAsync();
-            
+
 
                 if (vlasnik == null)
                 {

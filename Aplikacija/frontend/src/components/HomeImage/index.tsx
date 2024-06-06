@@ -6,27 +6,17 @@ import DivFilteri from "@/pages/Home/DivFilteri";
 import { useGetAllCitiesQuery } from "@/store/api/endpoints/oglas";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { tipProslave } from "@/types";
 
-type tipProslave = {
-  value: string;
-  selected: boolean;
+type Props = {
+  tipoviProslave: tipProslave[];
+  setTipoviProslave: (arg0: tipProslave[]) => void;
 };
 
-const HomeImage = () => {
-  const [tipoviProslave, setTipoviProslave] = useState<tipProslave[]>([
-    { value: "Sve", selected: false },
-    { value: "Rođendan", selected: false },
-    { value: "Žurka", selected: false },
-    { value: "Team building", selected: false },
-    { value: "Momačko veče", selected: false },
-    { value: "Devojačko veče", selected: false },
-    { value: "Ostalo", selected: false },
-  ]);
-
+const HomeImage = ({ tipoviProslave, setTipoviProslave }: Props) => {
   const navigate = useNavigate();
   const user = useSelector(selectUser);
   const cities = useGetAllCitiesQuery();
-  
 
   const selectTipProslave = (index: number) => {
     let sel = [...tipoviProslave];
@@ -56,7 +46,9 @@ const HomeImage = () => {
         <div className={style.GoreDiv}>
           <h1>Pronađite svoj savršeni prostor!</h1>
           <p>
-          Oglašavajte i iznajmljujte savršen prostor za žurke. Na našoj platformi lako pronađite ili ponudite prostor za događaje i naručite vrhunski ketering za vašu žurku.{" "}
+            Oglašavajte i iznajmljujte savršen prostor za žurke. Na našoj
+            platformi lako pronađite ili ponudite prostor za događaje i naručite
+            vrhunski ketering za vašu žurku.{" "}
           </p>
         </div>
 

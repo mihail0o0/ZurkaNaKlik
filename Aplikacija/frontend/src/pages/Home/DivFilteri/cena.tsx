@@ -1,6 +1,6 @@
 import MojButton from "@/components/lib/button";
 import { Popover, Typography } from "@mui/material";
-import { SyntheticEvent, useState } from "react";
+import { SyntheticEvent, useEffect, useMemo, useState } from "react";
 import style from "./style.module.css";
 import Icon from "@/components/lib/icon";
 
@@ -31,10 +31,16 @@ const Cena = ({ cenaOd, cenaDo, setCenaOd, setCenaDo }: Props) => {
     setCenaDo(event.target.value);
   };
 
+  const text: string = useMemo(() => {
+    if(cenaOd != "" && cenaDo != "") return `${cenaOd} - ${cenaDo}`
+    if(cenaOd != "") return `${cenaOd} - `; 
+    return "Cena";
+  }, [cenaOd, cenaDo]);
+
   return (
     <div>
       <MojButton
-        text="Cena"
+        text={text}
         onClick={handleClick}
         paddingX="80px"
         paddingY="14px"
@@ -65,7 +71,6 @@ const Cena = ({ cenaOd, cenaDo, setCenaOd, setCenaDo }: Props) => {
       >
         {/* <Typography sx={{ p: 2 }}>The content of the Popover.</Typography> */}
         <div className={style.CenaVelikiDiv}>
-      
           <div className={style.CenaOd}>
             <Typography sx={{ p: 2 }}>Od :</Typography>
 

@@ -12,6 +12,8 @@ import {
   tipGrejanjaMap,
   tipProstoraMap,
 } from "@/store/api/endpoints/oglas/types";
+import { DateRange } from "react-day-picker";
+import { addDays } from "date-fns";
 
 const DivFilteri = () => {
   const [gradValue, setGradValue] = useState<string | null>(null);
@@ -28,6 +30,8 @@ const DivFilteri = () => {
     number[]
   >([]);
 
+  const [date, setDate] = useState<DateRange | undefined>();
+
   const handleChangeDodatnaOprema = (value: string) => {
     const type = stringToEnum(value, dodatnaOpremaMap);
     if (type == undefined || type == null) return;
@@ -41,6 +45,7 @@ const DivFilteri = () => {
 
     setSelectedDodatnaOprema(Array.from(set));
   };
+
   const handleChangeTipProstora = (value: string) => {
     const type = stringToEnum(value, tipProstoraMap);
     if (type == undefined || type == null) return;
@@ -54,6 +59,7 @@ const DivFilteri = () => {
 
     setSelectedTipoviProslava(Array.from(set));
   };
+
   const handleChangeTipGrejanja = (value: string) => {
     const type = stringToEnum(value, tipGrejanjaMap);
     if (type == undefined || type == null) return;
@@ -68,15 +74,12 @@ const DivFilteri = () => {
     setSelectedTipoviGrejanja(Array.from(set));
   };
 
-
   return (
     <div className={style.DivZaPretragu}>
-      {/* ovde idu filteri */}
-      {/* prvo div za ikonice i unos teksta */}
       <div className={style.DugmeFilter}>
         <Grad value={gradValue} setValue={setGradValue} />
 
-        <Datum />
+        <Datum date={date} setDate={setDate} />
 
         <Cena
           cenaOd={cenaOd}
