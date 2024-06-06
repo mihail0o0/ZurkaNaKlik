@@ -22,7 +22,7 @@ namespace backend.Models
         public required List<EnumDodatnaOprema> listDodatneOpreme { get; set; }
         public required string brTel { get; set; }
         public required string opis { get; set; }
-        public required List<string> slike { get; set; }
+        public List<string>? slike { get; set; }
         public double? ocena { get; set; }
         public int brojOcena { get; set; }
         public List<DateTime>? zauzetiDani { get; set; }

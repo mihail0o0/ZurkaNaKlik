@@ -7,7 +7,7 @@ import {
 } from "@reduxjs/toolkit/query/react";
 import { RootState } from "..";
 import * as config from "../../../config.json";
-import { logOut, setToken, setUser } from "../auth";
+import { logOut, setAuthState, setToken, setUser } from "../auth";
 import { LoginResponse } from "./endpoints/auth/types";
 import { Mutex } from "async-mutex";
 import {
@@ -25,12 +25,11 @@ const mutex = new Mutex();
 
 const baseQuery = fetchBaseQuery({
   baseUrl: config.publicApi,
-  credentials: "include",
   mode: "cors",
+  credentials: "include",
   prepareHeaders: (headers, { getState }) => {
     const token = (getState() as RootState).authSlice.accessToken;
     headers.set("authorization", `Bearer ${token}`);
-    headers.set("Content-Type", "application/json");
     return headers;
   },
 });
@@ -42,35 +41,31 @@ const baseQueryWithAuth: BaseQueryFn<
 > = async (args, api, extraOptions) => {
   await mutex.waitForUnlock();
   let result = await baseQuery(args, api, extraOptions);
-  console.log(result);
 
   if (
     (result.error?.status === 401 || result.error?.status === 403) &&
-    !result.meta?.request.url.includes("/login")
+    !result.meta?.request.url.includes("/login") &&
+    !result.meta?.request.url.includes("/RefreshToken")
   ) {
-    await mutex.waitForUnlock();
-    console.log("second result");
-    console.log(result);
-
     if (mutex.isLocked() == false) {
       const release = await mutex.acquire();
-
+      console.log("AQUIRED");
       try {
+        console.log("tried");
         const refreshResult = await baseQuery(
           "/auth/RefreshToken",
           api,
           extraOptions
         );
-        console.log("Refresh Result");
-        console.log(refreshResult);
         if (refreshResult.data) {
           const refreshResultData = refreshResult.data as LoginResponse;
 
-          api.dispatch(setToken(refreshResultData.accessToken));
-          api.dispatch(setUser(refreshResultData.loginResult));
+          api.dispatch(setAuthState(refreshResultData));
 
-          result = await baseQuery(args, api, extraOptions);
-        } else {
+          if (result.error?.status === 401) {
+            result = await baseQuery(args, api, extraOptions);
+          }
+        } else if (refreshResult.error?.status === 401) {
           api.dispatch(logOut());
         }
       } finally {
@@ -79,6 +74,7 @@ const baseQueryWithAuth: BaseQueryFn<
     }
   } else {
     await mutex.waitForUnlock();
+    //result = await baseQuery(args, api, extraOptions);
   }
 
   return result;
@@ -91,14 +87,14 @@ export const rtkErrorLogger: Middleware =
 
       if (
         !errorObject ||
-        errorObject.originalStatus == 401 ||
-        errorObject.originalStatus == 403
+        errorObject.status == "401" ||
+        errorObject.status == "403"
       ) {
         return next(action);
+      } else {
+        toast.error(errorObject.data || "Unknown error");
+        console.error("Error occured: ", errorObject);
       }
-
-      toast.error(errorObject.data || "Unknown error");
-      console.error("Error occured: ", errorObject);
     }
     return next(action);
   };
@@ -110,8 +106,12 @@ export const api = createApi({
     "Agency",
     "AgencyCategory",
     "AgencyMenu",
+    "CateringOrder",
     "Location",
     "Oglas",
+    "OmiljeniOglasi",
+    "Image",
+    "PregledMenu",
   ],
   baseQuery: baseQueryWithAuth,
   endpoints: () => ({}),

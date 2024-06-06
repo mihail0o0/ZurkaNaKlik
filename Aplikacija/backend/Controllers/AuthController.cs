@@ -51,10 +51,15 @@ namespace backend.Controllers
                 Roles rolic = request.role;
                 Korisnik korisnik = ObjectCreatorSingleton.Instance.FromRegistrationKorisnik(request, lozinkaHash);
 
-                string accessToken = prijava(korisnik);
 
                 await Context.Korisnici.AddAsync(korisnik);
                 await Context.SaveChangesAsync();
+
+                var kor = Context.Korisnici.FirstOrDefaultAsync(f => f.Email == request.email);
+                string accessToken = prijava(korisnik);
+
+                await Context.SaveChangesAsync();
+
 
                 LoginResult loginResult = ObjectCreatorSingleton.Instance.ToLoginResult(korisnik);
 
@@ -87,10 +92,17 @@ namespace backend.Controllers
 
                 LoginResult loginResult = ObjectCreatorSingleton.Instance.ToLoginResult(agencija);
 
-                string accessToken = prijava(agencija);
                 await Context.Agencije.AddAsync(agencija);
                 await Context.SaveChangesAsync();
 
+                var kor = Context.Agencije.FirstOrDefaultAsync(f => f.Email == request.email);
+                
+                
+                string accessToken = prijava(agencija);
+
+                await Context.SaveChangesAsync();
+
+                
                 return Ok(new { accessToken, loginResult });
             }
             catch (Exception e)
@@ -125,6 +137,7 @@ namespace backend.Controllers
                 // };
 
                 string accessToken = prijava(korisnikagencija);
+                
                 await Context.SaveChangesAsync();
 
                 return Ok(new { accessToken, loginResult });
@@ -154,6 +167,8 @@ namespace backend.Controllers
             korisnikagencija!.TokenCreated = refreshToken.Created;
             korisnikagencija!.TokenExpires = refreshToken.Expires;
 
+            
+
             return accessToken;
         }
 
@@ -172,9 +187,9 @@ namespace backend.Controllers
                     return BadRequest("Nema refresh tokena");
                 }
 
-                // TODO ne mozes ovako i guess, vadi iz token id
                 //int userId = int.Parse(_userService.GetMyId());
-                if(userId == null){
+                if (userId == null)
+                {
                     return BadRequest("izvini miks ako je ovde greska kazi");
                 }
 
@@ -194,7 +209,7 @@ namespace backend.Controllers
                     return Unauthorized("Token expired.");
                 }
 
-                string token = CreateToken(user);
+                string accessToken = CreateToken(user);
                 var newRefreshToken = GenerateRefreshToken(int.Parse(userId));
 
                 var cookieOptions = new CookieOptions
@@ -209,9 +224,11 @@ namespace backend.Controllers
                 user.TokenCreated = newRefreshToken.Created;
                 user.TokenExpires = newRefreshToken.Expires;
 
+                LoginResult loginResult = ObjectCreatorSingleton.Instance.ToLoginResult(user);
+
                 await Context.SaveChangesAsync();
 
-                return Ok(token);
+                return Ok(new { accessToken, loginResult });
             }
             catch (Exception e)
             {
@@ -251,7 +268,7 @@ namespace backend.Controllers
 
             var token = new JwtSecurityToken(
                     claims: claims,
-                    expires: DateTime.Now.AddMinutes(1),
+                    expires: DateTime.Now.AddDays(1),
                     signingCredentials: creds
                 );
 

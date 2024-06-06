@@ -6,6 +6,10 @@ import Icon from "@/components/lib/icon";
 import { NavLink } from "react-router-dom";
 import { User } from "@/models/user";
 import { Role } from "@/models/role";
+import { useGetImageQuery } from "@/store/api/endpoints/images";
+import { useGetUserDataQuery } from "@/store/api/endpoints/korisnik";
+import { skipToken } from "@reduxjs/toolkit/query";
+import { getRawLocation } from "@/utils/handleQueries";
 
 type Props = {
   user: User;
@@ -21,6 +25,12 @@ const Navbar = ({ user }: Props) => {
   const [anchor, setAnchor] = useState<HTMLDivElement | null>();
   const [open, setOpen] = useState(false);
 
+  const { data: allUserData } = useGetUserDataQuery(user.id);
+
+  const { data: imageUrl } = useGetImageQuery(
+    getRawLocation(allUserData?.profilePhoto) ?? skipToken
+  );
+
   const onClick = (event: React.MouseEvent<HTMLDivElement>) => {
     setAnchor(event.currentTarget);
     setOpen((prevOpen) => !prevOpen);
@@ -32,20 +42,43 @@ const Navbar = ({ user }: Props) => {
   }, [user]);
 
   const zaPrikaz: ZaPrikaz[] = useMemo(() => {
-    return ([
-    { icon: "account_circle", text: "Profil", link: isUser ? "/user/profile" : "/catering/profile" },
-    isUser ? { icon: "favorite", text: "Omiljeno", link: "/omiljeno" } : {icon: "shopping_bag", text: "Porudzbine", link: "/catering/porudzbine"},
-    { icon: "forum", text: "Čet", link: "/chat" },
-    isUser ?{ icon: "schedule", text: "Već posećeno", link: "/poseceno" } : null,
-    isUser ? { icon: "add", text: "Oglasi Prostor", link: "/prostor/oglasiprostor" } : null,
-    { icon: "logout", text: "Odjavi se", link: "/logout" },
-  ].filter((item): item is ZaPrikaz => item !== null));
+    return [
+      {
+        icon: "account_circle",
+        text: "Profil",
+        link: isUser ? `/user/profile/${user.id}` : "/catering/profile",
+      },
+      isUser
+        ? { icon: "favorite", text: "Omiljeno", link: "/omiljeno" }
+        : {
+            icon: "shopping_bag",
+            text: "Porudzbine",
+            link: "/catering/porudzbine",
+          },
+      { icon: "forum", text: "Čet", link: "/chat" },
+      isUser
+        ? { icon: "schedule", text: "Već posećeno", link: "/poseceno" }
+        : null,
+      isUser
+        ? {
+            icon: "add",
+            text: "Oglasi Prostor",
+            link: "/prostor/oglasiprostor",
+          }
+        : null,
+      { icon: "logout", text: "Odjavi se", link: "/logout" },
+    ].filter((item): item is ZaPrikaz => item !== null);
   }, [isUser]);
 
   return (
     <div>
       <div onClick={onClick}>
-        <LabeledAvatar classes="cursorPointer" heading text={user.name} />
+        <LabeledAvatar
+          src={imageUrl}
+          classes="cursorPointer"
+          heading
+          text={user.name}
+        />
       </div>
       <Popover
         anchorEl={anchor}

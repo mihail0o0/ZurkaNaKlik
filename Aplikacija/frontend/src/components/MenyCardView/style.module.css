@@ -1,0 +1,29 @@
+.Container{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    background-color: white;
+    border-radius: var(--borderRadiusMedium);
+    box-shadow: var(--boxShadowSoft);
+    width: 60%;
+    
+
+ 
+}
+.MenyPicture{
+  
+    margin:20px;
+}
+.MenyTxt{
+    display: flex;
+    flex-direction: column;
+ 
+    height: 100%;
+    align-items: center;
+    
+    
+
+
+    
+}
+

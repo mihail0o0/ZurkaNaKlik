@@ -44,7 +44,7 @@ const authApiSlice = api.injectEndpoints({
       }),
       invalidatesTags: (result, err, arg) => [
         { type: "AgencyCategory", id: result?.id },
-        { type: "AgencyCategory", id: "LISTAGENCY" },
+        { type: "AgencyCategory", id: "LISTAGENCYCATEGORY" },
       ],
     }),
     deleteCategory: builder.mutation<void, number>({
@@ -54,7 +54,7 @@ const authApiSlice = api.injectEndpoints({
       }),
       invalidatesTags: (result, err, arg) => [
         { type: "AgencyCategory", id: arg },
-        { type: "AgencyCategory", id: "LISTAGENCY" },
+        { type: "AgencyCategory", id: "LISTAGENCYCATEGORY" },
       ],
     }),
     // meniji
@@ -96,6 +96,32 @@ const authApiSlice = api.injectEndpoints({
         { type: "AgencyMenu", id: "LISTAGENCYMENU" },
       ],
     }),
+    getCateringOrders: builder.query<CateringOrder[], void>({
+      query: () => ({
+        url: "Agencija/PrikaziSvePorudzbine",
+      }),
+      providesTags: (result) => providesList("CateringOrder", result),
+    }),
+    acceptOrder: builder.mutation<boolean, number>({
+      query: (id) => ({
+        url: `Agencija/OdobriPorudzbinu/${id}`,
+        method: "PUT",
+      }),
+      invalidatesTags: (result, err, args) => [
+        { type: "CateringOrder", id: args },
+        { type: "CateringOrder", id: "LISTCATERINGORDER" },
+      ],
+    }),
+    declineOrder: builder.mutation<boolean, number>({
+      query: (id) => ({
+        url: `Agencija/OdbijanjePorudzbine/${id}`,
+        method: "PUT",
+      }),
+      invalidatesTags: (result, err, args) => [
+        { type: "CateringOrder", id: args },
+        { type: "CateringOrder", id: "LISTCATERINGORDER" },
+      ],
+    }),
   }),
 });
 
@@ -109,4 +135,7 @@ export const {
   useGetMenuesQuery,
   useAddMenuMutation,
   useDeleteMenuMutation,
+  useGetCateringOrdersQuery,
+  useAcceptOrderMutation,
+  useDeclineOrderMutation,
 } = authApiSlice;

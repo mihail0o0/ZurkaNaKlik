@@ -3,6 +3,7 @@ import {
   CreateUserDTO,
   LoginPayload,
 } from "@/store/api/endpoints/auth/types";
+import { UpdateUserDTO } from "@/store/api/endpoints/korisnik/types";
 import Joi from "joi";
 
 const customTlds = ["com", "net", "org"];
@@ -151,6 +152,15 @@ export const userSignUpSchema = Joi.object<CreateUserDTO>({
   role: roleVal,
 });
 
+export const updateUserSchema = Joi.object<UpdateUserDTO>({
+  id: Joi.number(),
+  name: userNameVal,
+  lastName: lastNameVal,
+  phoneNumber: phoneNumberVal,
+  email: emailVal,
+  location: cityValReq,
+});
+
 export const agencySignUpSchema = Joi.object<CreateAgencyDTO>({
   name: userNameVal,
   phoneNumber: phoneNumberVal,
@@ -193,10 +203,37 @@ export const addUserOglasSchema = Joi.object({
   grejanje: Joi.number().label("Grejanje"),
 });
 
+export const updateUserOglasSchema = Joi.object({
+  id: Joi.any(),
+  listaTipProslava: Joi.array(),
+  listaTipProstora: Joi.array(),
+  listDodatneOpreme: Joi.array(),
+  naziv: nameVal,
+  brTel: phoneNumberVal.label("Broj Telefona"),
+  grad: cityVal,
+  lokacija: cityVal.label("Adresa"),
+  cenaPoDanu: Joi.number().label("Cena po danu"),
+  brojSoba: Joi.number().label("Broj Soba"),
+  kvadratura: Joi.number().label("Kvadratura"),
+  brojKreveta: Joi.number().label("Broj Kreveta"),
+  brojKupatila: Joi.number().label("Broj Kupatila"),
+  opis: Joi.string().label("Opis"),
+  slike: Joi.array().label("Slike"),
+  ocena: Joi.number().label("Ocena"),
+  brojOcena: Joi.number().label("Broj Ocena"),
+  grejanje: Joi.number().label("Grejanje"),
+});
+
 export const updateAgencySchema = Joi.object<UpdateAgencyDTO>({
+  id: Joi.number(),
+  brojOcena: Joi.number(),
+  cenaDostave: Joi.number(),
+  email: emailVal,
+  ime: nameVal,
   brTel: phoneNumberVal,
   lokacija: cityValReq,
   opis: Joi.string().label("Opis"),
   mogucnostDostave: Joi.boolean().label("Mogucnost dostave"),
-  cenaDostave: Joi.number().label("Cena dostave"),
+  ocena: Joi.any(),
+  slikaProfila: Joi.any(),
 });

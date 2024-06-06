@@ -242,22 +242,42 @@ namespace backend.Controllers
                     return BadRequest("Nema agencije sa tim id-jem");
                 }
 
-                var result = sveinfoagencije.Select(k => new {
-                    k.Id,
-                    k.Naziv,
-                    ListaMenija = k.ListaMenija!.Select(m => new {
-                        m.Id,
-                        m.Naziv,
-                        m.SastavMenija,
-                        m.CenaMenija,
-                        m.Slika,
-                        m.Opis
+                // var result = sveinfoagencije.Select(k => new {
+                //     k.Id,
+                //     k.Naziv,
+                //     ListaMenija = k.ListaMenija!.Select(m => new {
+                //         m.Id,
+                //         m.Naziv,
+                //         m.SastavMenija,
+                //         m.CenaMenija,
+                //         m.Slika,
+                //         m.Opis
+                //     })
+                // });
+                
+                List<VratiMenijeResultElement>? meniKeteringa = new();
 
-                        
-                    })
-                });
+                if (sveinfoagencije == null)
+                {
+                    return Ok(meniKeteringa);
+                }
 
-                return Ok(result);
+                foreach (Kategorija kat in sveinfoagencije)
+                {
+                    VratiMenijeResultElement element = new(kat.Id, kat.Naziv);
+                    List<MeniKeteringa>? meniji = await Context.MenijiKeteringa.Where(m => m.Kategorija!.Id == kat.Id).ToListAsync();
+
+                    List<MeniKeteringaResult> menijiResult = new();
+                    foreach (MeniKeteringa meni in meniji)
+                    {
+                        menijiResult.Add(ObjectCreatorSingleton.Instance.ToMeniKeteringaResult(meni));
+                    }
+
+                    element.meniKeteringa = menijiResult;
+                    meniKeteringa.Add(element);
+                }
+
+                return Ok(meniKeteringa);
             } catch (Exception e) {
                 return BadRequest(e.Message);
             }
@@ -267,7 +287,7 @@ namespace backend.Controllers
         #endregion
 
         #region VratiAgencijeSaFilterimaISortiranjem
-        [HttpGet("VratiAgencije/{pageNumber}/{pageSize}")]
+        [HttpPost("VratiAgencije/{pageNumber}/{pageSize}")]
         public async Task<ActionResult> VratiOglase([FromBody] FilteriAgencije filteri, int pageNumber, int pageSize)
         { //dodaj sortiranje
             try
@@ -331,6 +351,7 @@ namespace backend.Controllers
         [HttpGet("get-sliku/{putanja}")]
         public IActionResult VratiSliku(string putanja)
         {
+            // if(putanja == null) return Ok("ESCAPESEQEUENCE");
 
             putanja = Uri.UnescapeDataString(putanja);
 
@@ -365,102 +386,32 @@ namespace backend.Controllers
             };
         }
 
-        #region UploadujSlikuOglasa
-
-        [HttpPost("uploadOglas/{oglasId}")]
-        public async Task<IActionResult> UploadSlikaOglas(int oglasId, IFormFile file)
+        #region VartiMenijeLista
+        [HttpGet("VartiMenijeLista/listaMenija")]
+        public async Task<ActionResult> VartiMenijeLista([FromQuery]List<int> menijiId)
         {
-            var oglas = await Context.OglasiObjekta.FindAsync(oglasId);
-            if (oglas == null)
-            {
-                return NotFound("Oglas nije pronađen.");
+            try {
+                if (menijiId == null || menijiId.Count == 0)
+                {
+                    return BadRequest("Lista ID-ova menija ne može biti prazna.");
+                }
+
+                // Dobavi menije iz baze na osnovu liste ID-ova
+                var result = await Context.MenijiKeteringa
+                    .Where(m => menijiId.Contains(m.Id))
+                    .ToListAsync();
+
+                var provera = await Context.ZahteviZaKetering.Include(i => i.ZakupljeniMeniji)
+                    .FirstOrDefaultAsync(m => m.Id == menijiId[0]);
+
+                return Ok(new { provera.ZakupljeniMeniji });
+
+            } catch (Exception e) {
+                return BadRequest(e.Message);
             }
 
-            if (file == null || file.Length == 0)
-            {
-                return BadRequest("Nijedna slika nije poslata.");
-            }
-
-            var folderPath = Path.Combine("wwwroot", "images", "Oglasi", oglasId.ToString());
-            if (!Directory.Exists(folderPath))
-            {
-                Directory.CreateDirectory(folderPath);
-            }
-
-            var files = Directory.GetFiles(folderPath);
-            var fileCount = files.Length;
-
-            var fileName = $"s{fileCount + 1}{Path.GetExtension(file.FileName)}";
-            var filePath = Path.Combine(folderPath, fileName);
-
-            using (var stream = new FileStream(filePath, FileMode.Create))
-            {
-                await file.CopyToAsync(stream);
-            }
-
-            var relativePath = Path.Combine("images", "Oglasi", oglasId.ToString(), fileName).Replace("\\", "/");
-
-
-            oglas.Slike.Add(relativePath);
-            await Context.SaveChangesAsync();
-
-            return Ok(new { Putanja = relativePath });
+            
         }
-
         #endregion
-
-
-        #region UploadujSlikuMenija
-
-        [HttpPost("UploadujSlikuMenija/{idmenija}")]
-        public async Task<IActionResult> UploadujSlikuMenija(int idmenija, IFormFile file)
-        {
-            var oglas = await Context.OglasiObjekta.FindAsync(idmenija);
-            if (oglas == null)
-            {
-                return NotFound("Oglas nije pronađen.");
-            }
-
-            if (file == null || file.Length == 0)
-            {
-                return BadRequest("Nijedna slika nije poslata.");
-            }
-
-            var folderPath = Path.Combine("wwwroot", "images", "Meni", idmenija.ToString());
-            if (!Directory.Exists(folderPath))
-            {
-                Directory.CreateDirectory(folderPath);
-            }
-
-            var files = Directory.GetFiles(folderPath);
-            var fileCount = files.Length;
-
-            var fileName = $"s{fileCount + 1}{Path.GetExtension(file.FileName)}";
-            var filePath = Path.Combine(folderPath, fileName);
-
-            using (var stream = new FileStream(filePath, FileMode.Create))
-            {
-                await file.CopyToAsync(stream);
-            }
-
-            var relativePath = Path.Combine("images", "Meniji", idmenija.ToString(), fileName).Replace("\\", "/");
-
-
-            oglas.Slike.Add(relativePath);
-            await Context.SaveChangesAsync();
-
-            return Ok(new { Putanja = relativePath });
-        }
-
-        #endregion
-
-        
-
-       
     }
-
-
-
-
-
 }

@@ -120,3 +120,27 @@
   flex-wrap: wrap;
   gap: 15px;
 }
+
+.DeleteIcon {
+  display: flex;
+  background-color: var(--delete);
+  color: white;
+  margin: 16px;
+  padding: 14px;
+  border-radius: var(--borderRadiusSmall);
+  cursor: pointer;
+  transition: all 250ms;
+  height: 40px;
+  align-items: center;
+}
+
+.DeleteIcon:hover {
+  background-color: var(--deleteHover);
+  transition: all 250ms;
+}
+.obrrrisibhrate{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding-top: 30px;
+}

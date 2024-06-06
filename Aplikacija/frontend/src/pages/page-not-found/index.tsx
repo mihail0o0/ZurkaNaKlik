@@ -26,7 +26,7 @@ function PageNotFound() {
           <MojButton text={"Nazad na pocetnu"} onClick={handleClick} />
         </div>
         {/* // TODO configure svgs correctly */}
-        {/* <PNF className={style.image}></PNF> */}
+        <img src="/public/images/not_found.png" />
       </div>
       <PageSpacer />
     </>

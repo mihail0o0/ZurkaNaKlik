@@ -26,6 +26,7 @@ const HomeImage = () => {
   const navigate = useNavigate();
   const user = useSelector(selectUser);
   const cities = useGetAllCitiesQuery();
+  
 
   const selectTipProslave = (index: number) => {
     let sel = [...tipoviProslave];
@@ -55,9 +56,7 @@ const HomeImage = () => {
         <div className={style.GoreDiv}>
           <h1>Pronađite svoj savršeni prostor!</h1>
           <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed mattis
-            ornare tortor sed dignissim. Nunc ac ipsum placerat, cursus arcu in,
-            facilisis purus.{" "}
+          Oglašavajte i iznajmljujte savršen prostor za žurke. Na našoj platformi lako pronađite ili ponudite prostor za događaje i naručite vrhunski ketering za vašu žurku.{" "}
           </p>
         </div>
 

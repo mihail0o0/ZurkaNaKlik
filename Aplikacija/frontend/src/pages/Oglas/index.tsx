@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import style from "./style.module.css";
 import { useGetOglasQuery } from "@/store/api/endpoints/oglas";
 import Icon from "@/components/lib/icon";
@@ -6,12 +6,29 @@ import { useGetUserDataQuery } from "@/store/api/endpoints/korisnik";
 import UserAvatar from "@/components/UserAvatar";
 import MojButton from "@/components/lib/button";
 import BrojLjudi from "../Home/DivFilteri/brojLjudi";
+import { skipToken } from "@reduxjs/toolkit/query";
+import { useState } from "react";
+import {
+  dodatnaOpremaIkoniceMap,
+  dodatnaOpremaMap,
+} from "@/store/api/endpoints/oglas/types";
+import { useSelector } from "react-redux";
+import { selectUser } from "@/store/auth";
+import { useGetImageQuery } from "@/store/api/endpoints/images";
+import { getRawLocation } from "@/utils/handleQueries";
 
 const Oglas = () => {
+  const [brojLjudi, SetBrojLjudi] = useState("");
   const { id } = useParams();
- 
-  const { data: currentOglas } = useGetOglasQuery(id);
-  const { data: VlasnikOglasa } = useGetUserDataQuery(currentOglas?.idVlasnika);
+  const idOglasa = id ? parseInt(id) : undefined;
+  const navigate = useNavigate();
+
+  const { data: currentOglas } = useGetOglasQuery(idOglasa || skipToken);
+  const { data: VlasnikOglasa } = useGetUserDataQuery(
+    currentOglas?.idVlasnika || skipToken
+  );
+
+
   console.log(currentOglas?.listaTipProslava);
   return (
     <div className={`containerWrapper ${style.Glavni}`}>
@@ -66,10 +83,14 @@ const Oglas = () => {
               </h2>
               <div>
                 <MojButton
-                  text="Posalji poruku"
+                  text="Prikazi profil"
                   wide={true}
                   center={true}
-                  onClick={() => {}}
+                  onClick={() =>
+                    navigate(
+                      `/user/profile/${VlasnikOglasa && VlasnikOglasa.id}`
+                    )
+                  }
                 />
               </div>
             </div>
@@ -84,7 +105,21 @@ const Oglas = () => {
             </div>
           </div>
           {/* ii opremljenost */}
-          <div className={style.Opremljenost}></div>
+          <div className={style.OpremljenostDIV}>
+            <h3>Opremljenost</h3>
+            <div className={style.Opremljenost}>
+              {/* ovde */}
+              {currentOglas &&
+                currentOglas?.listDodatneOpreme.map((oprema) => {
+                  return (
+                    <div className={style.JedanChk}>
+                      <Icon icon={dodatnaOpremaIkoniceMap[oprema]} />
+                      <label>{dodatnaOpremaMap[oprema]}</label>
+                    </div>
+                  );
+                })}
+            </div>
+          </div>
         </div>
         {/* ovde ide s desne strane sve sto treba */}
         <div className={style.InformacijeKolona}>
@@ -104,15 +139,20 @@ const Oglas = () => {
             </div>
           </div>
           <div className={style.DodajteKetering}>
-                <h4>Dodajte ketering: </h4>
-                <div>
-                    <MojButton text="Vidite opcije" onClick={()=>{}} wide={true} center={true} paddingY="10px"/>
-                </div>
+            <h4>Dodajte ketering: </h4>
+            <div>
+              <MojButton
+                text="Vidite opcije"
+                onClick={() => {}}
+                wide={true}
+                center={true}
+                paddingY="10px"
+              />
+            </div>
           </div>
           <div className={style.DodajteKetering}>
-                <h4>Unesite broj gostiju: </h4>
-                <BrojLjudi />
-                
+            <h4>Unesite broj gostiju: </h4>
+            {<BrojLjudi broj={brojLjudi} setBroj={SetBrojLjudi} />}
           </div>
         </div>
       </div>

@@ -7,7 +7,6 @@ namespace backend.DTOs
 {
     public class Filters
     {
-        public string? sort { get; set; }
         public List<EnumTipProslava>? tipProslava { get; set; }
         public List<EnumTipProstora>? tipProstora { get; set; }
         public string? grad { get; set; }

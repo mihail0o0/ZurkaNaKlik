@@ -12,10 +12,7 @@ type Agency = {
   brojOcena: number;
 };
 
-type UpdateAgencyDTO = Omit<
-  Agency,
-  "id" | "slikaProfila" | "ocena" | "brojOcena"
->;
+type UpdateAgencyDTO = Agency;
 
 type Category = {
   id: number;
@@ -41,7 +38,26 @@ type GetMenuDTO = {
 
 type AddMenuDTO = {
   id: number;
-  menu: Omit<Menu, "id">;
+  menu: Omit<Menu, "id" | "idKategorije">;
 };
 
 type AddCategoryDTO = Omit<Category, "id">;
+
+type CateringOrder = {
+  id: number;
+  konacnaCena: number;
+  statusRezervacije: boolean;
+  datumRezervacije: Date;
+  idOglasa?: number;
+  idAgencije?: number;
+  idMenija?: number[];
+};
+type MenuForList={
+  id: number;
+  naziv:string;
+  cenaMenija: number;
+  slika:string;
+  opis:string;
+  sastavMenija:string[];
+}
+

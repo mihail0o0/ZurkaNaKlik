@@ -10,6 +10,10 @@ using backend.Utilities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Formats.Jpeg;
+using SixLabors.ImageSharp.Processing;
+
 
 namespace backend.Controllers
 {
@@ -62,8 +66,17 @@ namespace backend.Controllers
                 korisnik.ListaOmiljenihOglasaObjekata?.Add(oglas);
                 await Context.SaveChangesAsync();
 
+                // List<OglasObjektaResponse> response = new();
 
-                return Ok(new { korisnik.ListaOmiljenihOglasaObjekata });
+                // if(korisnik.ListaOmiljenihOglasaObjekata == null) return Ok(response);
+
+                // foreach (OglasObjekta omiljenOglas in korisnik.ListaOmiljenihOglasaObjekata)
+                // {
+                //     response.Add(ObjectCreatorSingleton.Instance.ToOglasResult(omiljenOglas));
+                // }
+
+                OglasObjektaResponse result = ObjectCreatorSingleton.Instance.ToOglasResult(oglas);
+                return Ok(result);
             }
             catch (Exception e)
             {
@@ -75,32 +88,34 @@ namespace backend.Controllers
 
         #region ObrisiOmiljeniOglas
         [HttpDelete("ObrisiOmiljeniOglas/{idOglasa}")]
-
         public async Task<ActionResult> ObrisiOmiljeniOglas(int idOglasa)
         {
             try
             {
                 int idKorisnika = int.Parse((HttpContext.Items["idKorisnika"] as string)!);
-                Korisnik? korisnik = await Context.Korisnici.FindAsync(idKorisnika);
+                Korisnik? korisnik = await Context.Korisnici.IgnoreQueryFilters().Include(i => i.ListaOmiljenihOglasaObjekata).FirstOrDefaultAsync(f => f.Id == idKorisnika);
+
 
                 if (korisnik == null)
                 {
                     return BadRequest("Korisnik ne postoji");
                 }
 
-                OglasObjekta? oglas = await Context.OglasiObjekta.FindAsync(idOglasa);
+
+                OglasObjekta? oglas = await Context.OglasiObjekta.FirstOrDefaultAsync(f => f.Id == idOglasa);
 
                 if (oglas == null)
                 {
                     return BadRequest("Oglas ne postoji");
                 }
 
-                korisnik!.ListaOmiljenihOglasaObjekata!.Remove(oglas);
+                korisnik.ListaOmiljenihOglasaObjekata!.Remove(oglas);
 
 
                 await Context.SaveChangesAsync();
 
-                return Ok(new { Context.OglasiObjekta });
+                OglasObjektaResponse result = ObjectCreatorSingleton.Instance.ToOglasResult(oglas);
+                return Ok(result);
             }
             catch (Exception e)
             {
@@ -116,7 +131,7 @@ namespace backend.Controllers
         #endregion
 
 
-       
+
         //Da vrati sve zakupljene oglase jednog korisnika ako adminu to treba
 
         #region PrikaziSveZakupljeneOglase
@@ -209,100 +224,189 @@ namespace backend.Controllers
         }
         #endregion
 
-       #region ObrisiOglas
-[HttpDelete("ObrisiOglas/{idOglasa}")]
-public async Task<ActionResult> ObrisiOglas(int idOglasa)
-{
-    try
-    {
-        int idKorisnika = int.Parse((HttpContext.Items["idKorisnika"] as string)!);
-        Korisnik? korisnik = await Context.Korisnici.FindAsync(idKorisnika);
-
-        if (korisnik == null)
+        #region ObrisiOglas
+        [HttpDelete("ObrisiOglas/{idOglasa}")]
+        public async Task<ActionResult> ObrisiOglas(int idOglasa)
         {
-            return BadRequest("Korisnik ne postoji");
-        }
-
-        OglasObjekta? oglas = await Context.OglasiObjekta.FindAsync(idOglasa);
-
-        if (oglas == null)
-        {
-            return BadRequest("Oglas ne postoji");
-        }
-
-        if (oglas.VlasnikOglasa!.Id != korisnik.Id)
-        {
-            return BadRequest("Ti nisi vlasnik oglasa bato");
-        }
-
-        // Brisanje slika iz foldera oglasa
-        var folderPath = Path.Combine("wwwroot", "images", "Oglasi", oglas.Id.ToString());
-        if (Directory.Exists(folderPath))
-        {
-            Directory.Delete(folderPath, true); // true znači da će se obrisati i svi fajlovi i podfolderi
-        }
-
-        Context.OglasiObjekta.Remove(oglas);
-        await Context.SaveChangesAsync();
-
-        return Ok("Oglas je uspešno obrisan.");
-    }
-    catch (Exception e)
-    {
-        return BadRequest(e.Message);
-    }
-}
-#endregion
-
-
-        //ovde je sve odjednom ne mora svaki properti da ima posebno azuriranje
-        #region IzmeniOglas
-        [HttpPut("IzmeniOglas")]
-        public async Task<ActionResult> IzmeniOglas([FromBody] OglasObjekta o)
-        {
-
             try
             {
                 int idKorisnika = int.Parse((HttpContext.Items["idKorisnika"] as string)!);
+                Korisnik? korisnik = await Context.Korisnici.FindAsync(idKorisnika);
 
-                OglasObjekta? oglas = await Context.OglasiObjekta.Where(k => k.Id == o.Id)
-                                                            .IgnoreQueryFilters()
-                                                            .FirstOrDefaultAsync(o => o.VlasnikOglasa!.Id == idKorisnika);
+                if (korisnik == null)
+                {
+                    return BadRequest("Korisnik ne postoji");
+                }
 
+                OglasObjekta? oglas = await Context.OglasiObjekta.Include(i => i.VlasnikOglasa).Include(i => i.ListaZakupkjenihOglasa!).ThenInclude(t => t.ZahtevZaKetering).FirstOrDefaultAsync(f => f.Id == idOglasa);
 
                 if (oglas == null)
                 {
                     return BadRequest("Oglas ne postoji");
                 }
 
-                oglas.ListaTipProslava = o.ListaTipProslava;
-                oglas.ListaTipProstora = o.ListaTipProstora;
-                oglas.Naziv = o.Naziv;
-                oglas.Grad = o.Grad;
-                oglas.Lokacija = o.Lokacija;
-                oglas.CenaPoDanu = o.CenaPoDanu;
-                oglas.BrojSoba = o.BrojSoba;
-                oglas.Kvadratura = o.Kvadratura;
-                oglas.BrojKreveta = o.BrojKreveta;
-                oglas.BrojKupatila = o.BrojKupatila;
-                oglas.Grejanje = o.Grejanje;
-                oglas.ListDodatneOpreme = o.ListDodatneOpreme;
-                oglas.BrTel = o.BrTel;
-                oglas.Opis = o.Opis;
-                //oglas.Slike = o.Slike;
+                if (oglas.VlasnikOglasa!.Id != korisnik.Id)
+                {
+                    return BadRequest("Ti nisi vlasnik oglasa bato");
+                }
 
+                if (oglas.ListaZakupkjenihOglasa != null)
+                {
+                    foreach (var zakupljen in oglas.ListaZakupkjenihOglasa)
+                    {
 
+                        if (zakupljen!.ZahtevZaKetering != null)
+                        {
+                            Context.ZahteviZaKetering.Remove(zakupljen!.ZahtevZaKetering);
+                        }
 
+                        Context.ZakupljeniOglasi.Remove(zakupljen);
+
+                    }
+                }
+
+                //Brisanje slika iz foldera oglasa
+                var folderPath = Path.Combine("wwwroot", "images", "Oglasi", oglas.Id.ToString());
+                if (Directory.Exists(folderPath))
+                {
+                    Directory.Delete(folderPath, true); // true znači da će se obrisati i svi fajlovi i podfolderi
+                }
+
+                Context.OglasiObjekta.Remove(oglas);
                 await Context.SaveChangesAsync();
 
-                return Ok(new { oglas });
+                return Ok();
             }
             catch (Exception e)
             {
                 return BadRequest(e.Message);
             }
         }
-        #endregion 
+        #endregion
+
+
+        //ovde je sve odjednom ne mora svaki properti da ima posebno azuriranje
+        #region IzmeniOglas
+        [HttpPut("IzmeniOglas")]
+        public async Task<ActionResult> IzmeniOglas([FromBody] OglasObjektaResponse izmeniOglas)
+        {
+
+            try
+            {
+                int idKorisnika = int.Parse((HttpContext.Items["idKorisnika"] as string)!);
+
+                OglasObjekta? oglas = await Context.OglasiObjekta.Where(k => k.Id == izmeniOglas.id)
+                                                            .IgnoreQueryFilters()
+                                                            .FirstOrDefaultAsync(o => o.VlasnikOglasa!.Id == idKorisnika);
+
+                if (oglas == null)
+                {
+                    return BadRequest("Oglas ne postoji");
+                }
+
+                oglas.ListaTipProslava = izmeniOglas.listaTipProslava;
+                oglas.ListaTipProstora = izmeniOglas.listaTipProstora;
+                oglas.Naziv = izmeniOglas.naziv;
+                oglas.Grad = izmeniOglas.grad;
+                oglas.Lokacija = izmeniOglas.lokacija;
+                oglas.CenaPoDanu = izmeniOglas.cenaPoDanu;
+                oglas.BrojSoba = izmeniOglas.brojSoba;
+                oglas.Kvadratura = izmeniOglas.kvadratura;
+                oglas.BrojKreveta = izmeniOglas.brojKreveta;
+                oglas.BrojKupatila = izmeniOglas.brojKupatila;
+                oglas.Grejanje = izmeniOglas.grejanje;
+                oglas.ListDodatneOpreme = izmeniOglas.listDodatneOpreme;
+                oglas.BrTel = izmeniOglas.brTel;
+                oglas.Opis = izmeniOglas.opis;
+                oglas.ListaTipProslava = izmeniOglas.listaTipProslava;
+                oglas.ListaTipProstora = izmeniOglas.listaTipProstora;
+                oglas.Naziv = izmeniOglas.naziv;
+                oglas.Grad = izmeniOglas.grad;
+                oglas.Lokacija = izmeniOglas.lokacija;
+                oglas.CenaPoDanu = izmeniOglas.cenaPoDanu;
+                oglas.BrojSoba = izmeniOglas.brojSoba;
+                oglas.Kvadratura = izmeniOglas.kvadratura;
+                oglas.BrojKreveta = izmeniOglas.brojKreveta;
+                oglas.BrojKupatila = izmeniOglas.brojKupatila;
+                oglas.Grejanje = izmeniOglas.grejanje;
+                oglas.ListDodatneOpreme = izmeniOglas.listDodatneOpreme;
+                oglas.BrTel = izmeniOglas.brTel;
+                oglas.Opis = izmeniOglas.opis;
+
+                await Context.SaveChangesAsync();
+
+                OglasObjektaResponse response = ObjectCreatorSingleton.Instance.ToOglasResult(oglas);
+
+                return Ok(response);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+        #endregion
+
+        [HttpPut("IzmeniSlikuOglasa")]
+        public async Task<ActionResult> IzmeniSlikuOglasa(int oglasId, IFormFile file, string staraPutanja)
+        {
+            try
+            {
+
+                var oglas = await Context.OglasiObjekta.Include(i => i.VlasnikOglasa).FirstOrDefaultAsync(f => f.Id == oglasId);
+                if (oglas == null)
+                {
+                    return NotFound("Oglas nije pronađen.");
+                }
+
+                int idKorisnika = int.Parse((HttpContext.Items["idKorisnika"] as string)!);
+
+                if (oglas.VlasnikOglasa!.Id != idKorisnika)
+                {
+                    return BadRequest("nisi ti taj bebo");
+                }
+
+                var folderPath = Path.Combine("wwwroot", "images", "Oglasi", oglasId.ToString());
+                if (!Directory.Exists(folderPath))
+                {
+                    Directory.CreateDirectory(folderPath);
+                }
+
+                // Brišemo staru sliku ako je prosleđena putanja
+                if (!string.IsNullOrEmpty(staraPutanja))
+                {
+                    var staraPutanjaFajla = Path.Combine(folderPath, Path.GetFileName(staraPutanja));
+                    if (System.IO.File.Exists(staraPutanjaFajla))
+                    {
+                        System.IO.File.Delete(staraPutanjaFajla);
+
+                        oglas.Slike.Remove(staraPutanja);
+                    }
+                }
+
+                // Dodajemo novu sliku ako je prosleđena
+                if (file != null && file.Length > 0)
+                {
+                    var fileName = $"s1{Path.GetExtension(file.FileName)}";
+                    var filePath = Path.Combine(folderPath, fileName);
+
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await file.CopyToAsync(stream);
+                    }
+
+                    var relativePath = Path.Combine("images", "Oglasi", oglasId.ToString(), fileName).Replace("\\", "/");
+                    oglas.Slike.Clear(); // Brišemo sve postojeće slike oglasa
+                    oglas.Slike.Add(relativePath); // Dodajemo novu sliku
+                }
+
+                await Context.SaveChangesAsync();
+                return Ok("Slika uspešno izmenjena.");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
         #region OceniAgenciju
         [HttpPut("OceniAgenciju/{idAgencije}/{novaOcena}")]
@@ -440,14 +544,14 @@ public async Task<ActionResult> ObrisiOglas(int idOglasa)
 
         #region  PosaljiZahtevZaKetering
         [HttpPost("PosaljiZahtevZaKetering/{idZakupljenOglas}/{idAgencije}/{mogucnostDostave}/listamenija")]
-        public async Task<IActionResult> PosaljiZahtevZaKetering(bool mogucnostDostave, int idZakupljenOglas, int idAgencije, [FromBody]List<PorucenMeni> listamenija)
+        public async Task<IActionResult> PosaljiZahtevZaKetering(bool mogucnostDostave, int idZakupljenOglas, int idAgencije, [FromBody] List<PorucenMeni> listamenija)
         {
             try
             {
 
                 int idKorisnika = int.Parse((HttpContext.Items["idKorisnika"] as string)!);
 
-                var zakupljenioglas = await Context.ZakupljeniOglasi.Include(i => i.Korisnik).Include(i => i.ZahtevZaKetering).IgnoreQueryFilters().FirstOrDefaultAsync( f => f.Id == idZakupljenOglas);
+                var zakupljenioglas = await Context.ZakupljeniOglasi.Include(i => i.Korisnik).Include(i => i.ZahtevZaKetering).IgnoreQueryFilters().FirstOrDefaultAsync(f => f.Id == idZakupljenOglas);
 
 
                 if (zakupljenioglas == null)
@@ -461,7 +565,8 @@ public async Task<ActionResult> ObrisiOglas(int idOglasa)
                     return BadRequest("nisi ti taj bebo");
                 }
 
-                if(zakupljenioglas.ZahtevZaKetering != null){
+                if (zakupljenioglas.ZahtevZaKetering != null)
+                {
                     return BadRequest("Ovaj oglas vec ima zakupljen ketering");
                 }
 
@@ -482,31 +587,36 @@ public async Task<ActionResult> ObrisiOglas(int idOglasa)
                 {
                     ZakupljeniOglas = zakupljenioglas,
                     DatumRezervacije = zakupljenioglas.ZakupljenOd,
-                    StatusRezervacije = true,
-                    Agencija = agencija,
+                    StatusRezervacije = false,
+                    Agencija = agencija
                 };
 
-                
+
                 int ukupnaCena = 0;
-                foreach(var o in listamenija){
+                foreach (var o in listamenija)
+                {
 
                     MeniKeteringa? jedanMeni = await Context.MenijiKeteringa
                             .Include(i => i.Kategorija)
                             .ThenInclude(t => t!.Agencija)
+                            .Include(i => i.ListaZahetevaZaKetering)
                             .IgnoreQueryFilters()
                             .FirstOrDefaultAsync(f => f.Id == o.idMenija);
 
+
                     
-                    //
 
 
-                    if(jedanMeni == null){
+                    if (jedanMeni == null)
+                    {
                         return BadRequest("Taj meni ne postoji");
                     }
 
                     novizahtev.ZakupljeniMeniji?.Add(jedanMeni);
-                    
-                    if(jedanMeni?.Kategorija!.Agencija!.Id != idAgencije){
+                    jedanMeni.ListaZahetevaZaKetering?.Add(novizahtev);
+
+                    if (jedanMeni?.Kategorija!.Agencija!.Id != idAgencije)
+                    {
                         return BadRequest("nisu iz iste agencije meniji");
                     }
 
@@ -517,7 +627,7 @@ public async Task<ActionResult> ObrisiOglas(int idOglasa)
 
                 agencija!.ListaZahtevZaKetering!.Add(novizahtev);
 
-                if(mogucnostDostave == true)
+                if (mogucnostDostave == true)
                     ukupnaCena += agencija.CenaDostave;
 
                 novizahtev.KonacnaCena = ukupnaCena;
@@ -527,9 +637,9 @@ public async Task<ActionResult> ObrisiOglas(int idOglasa)
                 Context.ZahteviZaKetering.Add(novizahtev);
                 await Context.SaveChangesAsync();
 
-                return Ok(new { novizahtev });
+                return Ok(new { novizahtev.ZakupljeniMeniji });
 
-                
+
             }
             catch (Exception e)
             {
@@ -634,12 +744,24 @@ public async Task<ActionResult> ObrisiOglas(int idOglasa)
             {
                 int idKorisnika = int.Parse((HttpContext.Items["idKorisnika"] as string)!);
 
-                //Korisnik? korisnik = await Context.Korisnici.FindAsync(idKorisnika);
+                Korisnik? korisnik = await Context.Korisnici.Include(k => k.ListaOmiljenihOglasaObjekata).FirstOrDefaultAsync(k => k.Id == idKorisnika);
 
-                var omiljenioglasi = await Context.Korisnici.Where(x => x.Id == idKorisnika).Select(x => x.ListaOmiljenihOglasaObjekata).ToArrayAsync();
+                if (korisnik == null)
+                {
+                    return BadRequest("Korisnika tim id-jem ne postoji");
+                }
 
-                return Ok(omiljenioglasi);
+                List<OglasObjekta>? omiljenioglasi = korisnik.ListaOmiljenihOglasaObjekata;
+                List<OglasObjektaResponse> result = new();
 
+                if (omiljenioglasi == null) return Ok(result);
+
+                foreach (OglasObjekta oglas in omiljenioglasi)
+                {
+                    result.Add(ObjectCreatorSingleton.Instance.ToOglasResult(oglas));
+                }
+
+                return Ok(result);
             }
             catch (Exception e)
             {
@@ -650,96 +772,102 @@ public async Task<ActionResult> ObrisiOglas(int idOglasa)
         #endregion
 
 
-        
-      
-   #region ObrisiKorisnika
-[HttpDelete("ObrisiKorisnika")]
-public async Task<ActionResult> ObrisiKorisnika()
-{
-    try
-    {
-        int idKorisnika = int.Parse((HttpContext.Items["idKorisnika"] as string)!);
+        #region ObrisiKorisnika
 
-        Korisnik? korisnik = await Context.Korisnici
-            .Include(k => k.ListaOmiljenihOglasaObjekata) // Pretpostavljam da korisnik ima kolekciju oglasa
-            .FirstOrDefaultAsync(k => k.Id == idKorisnika);
-
-        if (korisnik == null)
+        [HttpDelete("ObrisiKorisnika")]
+        public async Task<ActionResult> ObrisiKorisnika()
         {
-            return BadRequest("Korisnik ne postoji");
-        }
-
-        // Brisanje profilne slike korisnika
-        var folderPath = Path.Combine("wwwroot", "images", "Korisnik", idKorisnika.ToString());
-        if (Directory.Exists(folderPath))
-        {
-            Directory.Delete(folderPath, true); // true znači da će se obrisati i svi fajlovi i podfolderi
-        }
-
-        // Brisanje svih oglasa korisnika i njihovih slika
-        foreach (var oglas in korisnik.ListaObjavljenihOglasaObjekta!)
-        {
-            var oglasFolderPath = Path.Combine("wwwroot", "images", "Oglasi", oglas.Id.ToString());
-            if (Directory.Exists(oglasFolderPath))
+            try
             {
-                Directory.Delete(oglasFolderPath, true); // true znači da će se obrisati i svi fajlovi i podfolderi
+                int idKorisnika = int.Parse((HttpContext.Items["idKorisnika"] as string)!);
+
+                //Korisnik? korisnik = await Context.Korisnici.FindAsync(idKorisnika);
+
+                Korisnik? korisnik = await Context.Korisnici
+                    .Include(i => i.ListaObjavljenihOglasaObjekta)// Pretpostavljam da korisnik ima kolekciju oglasa
+                    .FirstOrDefaultAsync(k => k.Id == idKorisnika);
+
+                if (korisnik == null)
+                {
+                    return BadRequest(idKorisnika);
+                }
+
+
+                if (!string.IsNullOrEmpty(korisnik.SlikaProfila))
+                {
+                    var profilnaSlikaPath = Path.Combine("wwwroot", korisnik.SlikaProfila);
+                    if (System.IO.File.Exists(profilnaSlikaPath))
+                    {
+                        System.IO.File.Delete(profilnaSlikaPath);
+                    }
+                }
+
+                // Brisanje svih oglasa korisnika i njihovih slika
+                foreach (var oglas in korisnik.ListaObjavljenihOglasaObjekta!)
+                {
+                    var folderPath = Path.Combine("wwwroot", "images", "Oglasi", oglas.Id.ToString());
+                    if (Directory.Exists(folderPath))
+                    {
+                        Directory.Delete(folderPath, true); // true znači da će se obrisati i svi fajlovi i podfolderi
+                    }
+
+                    Context.OglasiObjekta.Remove(oglas);
+                }
+
+                Context.Korisnici.Remove(korisnik);
+                await Context.SaveChangesAsync();
+
+                return Ok();
             }
-
-            Context.OglasiObjekta.Remove(oglas);
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
+        #endregion
 
-        Context.Korisnici.Remove(korisnik);
-        await Context.SaveChangesAsync();
-
-        return Ok("Korisnik je uspešno obrisan.");
-    }
-    catch (Exception ex)
-    {
-        return BadRequest(ex.Message);
-    }
-}
-
-
-
-    #endregion
 
 
 
         // Izmena podataka (idKorisnika)
         #region IzmeniPodatkeOKorisniku
         [HttpPut("IzmeniPodatkeOKorisniku")]
-        public async Task<ActionResult> IzmeniPodatkeOKorisniku([FromBody] Korisnik korisnik)
+        public async Task<ActionResult> IzmeniPodatkeOKorisniku([FromBody] KorisnikBasic korisnik)
         {
             try
             {
                 int idKorisnika = int.Parse((HttpContext.Items["idKorisnika"] as string)!);
 
-                var k = new
+                if (idKorisnika != korisnik.id)
                 {
-                    Ime = korisnik.Ime,
-                    Email = korisnik.Email,
-                    BrTel = korisnik.BrTel,
-                    LozinkaHash = korisnik.LozinkaHash,
-                    SlikaProfila = korisnik.SlikaProfila,
-                    Lokacija = korisnik.Lokacija,
-                    Prezime = korisnik.Prezime
-                };
+                    return BadRequest("nema");
+                }
+
+                Korisnik? dboKorisnik = await Context.Korisnici.FindAsync(idKorisnika);
+
+                if (dboKorisnik == null)
+                {
+                    return BadRequest("nema");
+                }
+
+                dboKorisnik.Ime = korisnik.name;
+                dboKorisnik.Email = korisnik.email;
+                dboKorisnik.BrTel = korisnik.phoneNumber;
+                dboKorisnik.Lokacija = korisnik.location;
+                dboKorisnik.Prezime = korisnik.lastName;
 
                 await Context.SaveChangesAsync();
-                return Ok(new { k });
 
-
+                GetKorisnikResult result = ObjectCreatorSingleton.Instance.ToKorisnikResult(dboKorisnik);
+                return Ok(result);
             }
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
-
-
         }
 
         #endregion
-
 
         #region PrikaziOglaseKorisnika
         [HttpGet("PrikaziOglaseKorisnika")]
@@ -753,7 +881,7 @@ public async Task<ActionResult> ObrisiKorisnika()
 
                 if (korisnik == null)
                 {
-                    return BadRequest("Korisnik nema objavljene oglase");
+                    return BadRequest("Korisnik ne postoji");
                 }
 
                 // TODO WHY
@@ -777,22 +905,20 @@ public async Task<ActionResult> ObrisiKorisnika()
             {
                 return BadRequest(ex.Message);
             }
-
-
         }
 
         #endregion
 
 
         // PRovera neka nije bitnooooo
-        
+
         // #region  PrikaziSveMenije
         // [HttpGet("PrikaziSveMenije/{idKategorije}")]
         // public async Task<IActionResult> PrikaziSveMenije(int idKategorije){
         //     try{
 
         //         var meniji = await Context.ZahteviZaKetering.Include(i => i.ZakupljeniMeniji).ToListAsync();
-                
+
 
 
         //     if (meniji == null){
@@ -814,12 +940,15 @@ public async Task<ActionResult> ObrisiKorisnika()
 
         #region PrikaziZakupljeniOglas
         [HttpGet("PrikaziZakupljeniOglas/{idzakupljenogobjekta}")]
-        public async Task<IActionResult> PrikaziZakupljeniOglas(int idzakupljenogobjekta){
-            try{
+        public async Task<IActionResult> PrikaziZakupljeniOglas(int idzakupljenogobjekta)
+        {
+            try
+            {
                 var zakupljenioglas = await Context.ZakupljeniOglasi
                                             .Include(x => x.ZahtevZaKetering)
-                                            .Where(x =>x.Id ==idzakupljenogobjekta)
-                                            .Select(x => new {
+                                            .Where(x => x.Id == idzakupljenogobjekta)
+                                            .Select(x => new
+                                            {
                                                 x.Id,
                                                 x.DatumZakupa,
                                                 x.ZakupljenOd,
@@ -829,8 +958,9 @@ public async Task<ActionResult> ObrisiKorisnika()
                                             })
                                             .FirstOrDefaultAsync();
 
-                if (zakupljenioglas == null){
-                    return  BadRequest("Nema takvog zakupljenog oglasa");
+                if (zakupljenioglas == null)
+                {
+                    return BadRequest("Nema takvog zakupljenog oglasa");
                 }
 
                 return Ok(zakupljenioglas);
@@ -847,12 +977,13 @@ public async Task<ActionResult> ObrisiKorisnika()
 
                 // });
 
-    
-               
+
+
 
 
             }
-            catch (Exception ex){
+            catch (Exception ex)
+            {
                 return BadRequest(ex.Message);
             }
         }
@@ -862,16 +993,17 @@ public async Task<ActionResult> ObrisiKorisnika()
 
         #endregion
 
-        
+
         [HttpPost("uploadKorisnik")]
         public async Task<IActionResult> UploadSlikaKorisnik(IFormFile file)
         {
+            // TODO: popravi da se dodaje samo jedna slika u folderu bez obzira na format slike
             int korisnikid = int.Parse((HttpContext.Items["idKorisnika"] as string)!);
 
             var korisnik = await Context.Korisnici.FindAsync(korisnikid);
             if (korisnik == null)
             {
-                return NotFound("Oglas nije pronađen.");
+                return NotFound("Korisnik nije pronađen.");
             }
 
             if (file == null || file.Length == 0)
@@ -885,33 +1017,332 @@ public async Task<ActionResult> ObrisiKorisnika()
                 Directory.CreateDirectory(folderPath);
             }
 
+            // Obrisi sve postojeće slike u folderu
+            var files = Directory.GetFiles(folderPath);
+            foreach (var existingFile in files)
+            {
+                System.IO.File.Delete(existingFile);
+            }
+
+            var fileName = "s1.jpg"; // Uvek čuvamo sliku kao s1.jpg
+            var filePath = Path.Combine(folderPath, fileName);
+
+            using (var image = Image.Load(file.OpenReadStream()))
+            {
+                // Konvertuj sliku u JPG format
+                image.Save(filePath, new JpegEncoder());
+            }
+
+            var relativePath = Path.Combine("images", "Korisnik", korisnikid.ToString(), fileName).Replace("\\", "/");
+
+            korisnik.SlikaProfila = relativePath;
+            await Context.SaveChangesAsync();
+
+            return Ok(new { relativePath });
+        }
+
+        [HttpPut("AzurirajSlikuKorisnika")]
+        public async Task<ActionResult> AzurirajSlikuKorisnika(IFormFile file)
+        {
+            try
+            {
+                int korisnikid = int.Parse((HttpContext.Items["idKorisnika"] as string)!);
+
+                var korisnik = await Context.Korisnici.FindAsync(korisnikid);
+                if (korisnik == null)
+                {
+                    return NotFound("Korisnik nije pronađen.");
+                }
+
+                if (file == null || file.Length == 0)
+                {
+                    return BadRequest("Nijedna slika nije poslata.");
+                }
+
+                var folderPath = Path.Combine("wwwroot", "images", "Korisnik", korisnikid.ToString());
+                if (!Directory.Exists(folderPath))
+                {
+                    Directory.CreateDirectory(folderPath);
+                }
+
+                // Obriši postojeću sliku korisnika ako postoji
+                var existingFiles = Directory.GetFiles(folderPath);
+                foreach (var existingFile in existingFiles)
+                {
+                    System.IO.File.Delete(existingFile);
+                }
+
+                var fileName = $"s1.jpg"; // Uvek koristi isto ime za sliku (s1.jpg) kako bi se izbegao konflikt sa prethodnim slikama
+                var filePath = Path.Combine(folderPath, fileName);
+
+                using (var image = Image.Load(file.OpenReadStream()))
+                {
+                    // Konvertuj sliku u JPG format
+                    image.Save(filePath, new JpegEncoder());
+                }
+
+                var relativePath = Path.Combine("images", "Korisnik", korisnikid.ToString(), fileName).Replace("\\", "/");
+
+                korisnik.SlikaProfila = relativePath;
+                await Context.SaveChangesAsync();
+
+                return Ok(new { Putanja = relativePath });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        #region UploadujSlikuOglasa
+        [HttpPost("uploadOglas/{oglasId}")]
+        public async Task<IActionResult> UploadSlikaOglas(int oglasId, IFormFile file)
+        {
+            // TODO: Proveri da li je oglas od logovanog korisnika
+            // Dodato
+            int korisnikid = int.Parse((HttpContext.Items["idKorisnika"] as string)!);
+
+            var korisnik = await Context.Korisnici.FindAsync(korisnikid);
+            if (korisnik == null)
+            {
+                return NotFound("Korisnik nije pronađen.");
+            }
+
+            var oglas = await Context.OglasiObjekta.Include(i => i.VlasnikOglasa).Where(w => w.VlasnikOglasa!.Id == korisnikid).FirstOrDefaultAsync(f => f.Id == oglasId);
+
+            if (oglas == null)
+            {
+                return NotFound("Oglas nije pronađen.");
+            }
+
+            if (file == null || file.Length == 0)
+            {
+                return BadRequest("Nijedna slika nije poslata.");
+            }
+
+            var folderPath = Path.Combine("wwwroot", "images", "Oglasi", oglasId.ToString());
+            if (!Directory.Exists(folderPath))
+            {
+                Directory.CreateDirectory(folderPath);
+            }
+
             var files = Directory.GetFiles(folderPath);
             var fileCount = files.Length;
 
-            var fileName = $"s{fileCount + 1}{Path.GetExtension(file.FileName)}";
+            var fileName = $"s{fileCount + 1}.jpg";
             var filePath = Path.Combine(folderPath, fileName);
 
-            using (var stream = new FileStream(filePath, FileMode.Create))
+            using (var image = Image.Load(file.OpenReadStream()))
             {
-                await file.CopyToAsync(stream);
+                // Konvertuj sliku u JPG format
+                image.Save(filePath, new JpegEncoder());
             }
 
-            var relativePath = Path.Combine("images", "Oglasi", korisnikid.ToString(), fileName).Replace("\\", "/");
+            var relativePath = Path.Combine("images", "Oglasi", oglasId.ToString(), fileName).Replace("\\", "/");
 
 
-            korisnik.SlikaProfila = (relativePath);
+            oglas.Slike.Add(relativePath);
             await Context.SaveChangesAsync();
 
             return Ok(new { Putanja = relativePath });
         }
+        #endregion
+
+        // #region UpdateSlikeOglasa - ListaSlika
+        // [HttpPost("updateSlikeOglasListaSlika/{oglasId}")]
+        // public async Task<IActionResult> UpdateSlikeOglas(int oglasId, [FromBody]List<string> slikeZaBrisanje, [FromBody]List<IFormFile> noveSlike)
+        // {
+        //     // TODO: Proveri da li je oglas od logovanog korisnika
+        //     // Dodato
+        //     int korisnikid = int.Parse((HttpContext.Items["idKorisnika"] as string)!);
+
+        //     var korisnik = await Context.Korisnici.FindAsync(korisnikid);
+        //     if (korisnik == null)
+        //     {
+        //         return NotFound("Korisnik nije pronađen.");
+        //     }
+
+        //     var oglas = await Context.OglasiObjekta.Include(i => i.VlasnikOglasa).Where(w => w.VlasnikOglasa!.Id == korisnikid).FirstOrDefaultAsync(f => f.Id == oglasId);
+        //     if (oglas == null)
+        //     {
+        //         return NotFound("Oglas nije pronađen.");
+        //     }
+
+        //     var folderPath = Path.Combine("wwwroot", "images", "Oglasi", oglasId.ToString());
+        //     if (!Directory.Exists(folderPath))
+        //     {
+        //         Directory.CreateDirectory(folderPath);
+        //     }
+
+        //     // Obrisi slike koje su specificirane za brisanje
+        //     foreach (var slikaPath in slikeZaBrisanje)
+        //     {
+        //         var filePath = Path.Combine("wwwroot", slikaPath.Replace("/", "\\"));
+        //         if (System.IO.File.Exists(filePath))
+        //         {
+        //             System.IO.File.Delete(filePath);
+        //         }
+
+        //         oglas.Slike.Remove(slikaPath);
+        //     }
+
+        //     var existingFiles = Directory.GetFiles(folderPath);
+        //     var fileCount = existingFiles.Length;
+
+        //     // Dodaj nove slike
+        //     var uploadedPaths = new List<string>();
+
+        //     foreach (var file in noveSlike)
+        //     {
+        //         if (file.Length > 0)
+        //         {
+        //             var fileName = $"s{fileCount + 1}.jpg";
+        //             var filePath = Path.Combine(folderPath, fileName);
+
+        //             using (var image = Image.Load(file.OpenReadStream()))
+        //             {
+        //                 // Konvertuj sliku u JPG format
+        //                 image.Save(filePath, new JpegEncoder());
+        //             }
+
+        //             var relativePath = Path.Combine("images", "Oglasi", oglasId.ToString(), fileName).Replace("\\", "/");
+        //             oglas.Slike.Add(relativePath);
+        //             uploadedPaths.Add(relativePath);
+
+        //             fileCount++;
+        //         }
+        //     }
+
+        //     await Context.SaveChangesAsync();
+
+        //     return Ok(new { Putanje = uploadedPaths });
+        // }
+        // #endregion
 
 
+        #region UploadujSlikuOglasa-ListaSlika
+
+        [HttpPost("uploadOglasListaSlika/{oglasId}")]
+        public async Task<IActionResult> UploadSlikeOglas(int oglasId, [FromBody] List<IFormFile> files)
+        {
+            // TODO: Proveri da li je oglas od logovanog korisnika
+            // Dodato
+            int korisnikid = int.Parse((HttpContext.Items["idKorisnika"] as string)!);
+
+            var korisnik = await Context.Korisnici.FindAsync(korisnikid);
+            if (korisnik == null)
+            {
+                return NotFound("Korisnik nije pronađen.");
+            }
+
+            var oglas = await Context.OglasiObjekta.Include(i => i.VlasnikOglasa).Where(w => w.VlasnikOglasa!.Id == korisnikid).FirstOrDefaultAsync(f => f.Id == oglasId);
+
+            if (oglas == null)
+            {
+                return NotFound("Oglas nije pronađen.");
+            }
+
+            if (files == null || files.Count == 0)
+            {
+                return BadRequest("Nijedna slika nije poslata.");
+            }
+
+            var folderPath = Path.Combine("wwwroot", "images", "Oglasi", oglasId.ToString());
+            if (!Directory.Exists(folderPath))
+            {
+                Directory.CreateDirectory(folderPath);
+            }
+
+            var existingFiles = Directory.GetFiles(folderPath);
+            var fileCount = existingFiles.Length;
+
+            var uploadedPaths = new List<string>();
+
+            foreach (var file in files)
+            {
+                if (file.Length > 0)
+                {
+                    var fileName = $"s{fileCount + 1}.jpg"; // Uvek koristi .jpg ekstenziju
+                    var filePath = Path.Combine(folderPath, fileName);
+
+                    using (var image = Image.Load(file.OpenReadStream()))
+                    {
+                        // Konvertuj sliku u JPG format
+                        image.Save(filePath, new JpegEncoder());
+                    }
+
+                    var relativePath = Path.Combine("images", "Oglasi", oglasId.ToString(), fileName).Replace("\\", "/");
+                    oglas.Slike.Add(relativePath);
+                    uploadedPaths.Add(relativePath);
+
+                    fileCount++;
+                }
+            }
+
+            await Context.SaveChangesAsync();
+
+            return Ok(new { Putanje = uploadedPaths });
+        }
+        #endregion
 
 
+        #region DaLisamOmiljeni
+        [HttpGet("DaLiOmiljen/{oglasId}")]
+        public async Task<IActionResult> DaLiOmiljen(int oglasId)
+        {
+            int korisnikid = int.Parse((HttpContext.Items["idKorisnika"] as string)!);
 
-        
+            var korisnik = await Context.Korisnici.Include(i => i.ListaOmiljenihOglasaObjekata).FirstOrDefaultAsync(f => f.Id == korisnikid);
 
+            if (korisnik == null)
+            {
+                return NotFound("Korisnik nije pronađen.");
+            }
 
+            bool dalije = korisnik.ListaOmiljenihOglasaObjekata!.Any(o => o.Id == oglasId);
 
+            return Ok(dalije);
+        }
+
+        #endregion
+
+        #region ObrisiSlikuOglasa
+        [HttpDelete("obrisiSlikuOglasa/{oglasId}")]
+        public async Task<IActionResult> ObrisiSlikuOglasa(int oglasId, [FromQuery] string slikaPath)
+        {
+            // TODO: Proveri da li je oglas od logovanog korisnika
+            slikaPath = Uri.UnescapeDataString(slikaPath);
+            int korisnikid = int.Parse((HttpContext.Items["idKorisnika"] as string)!);
+
+            var korisnik = await Context.Korisnici.FindAsync(korisnikid);
+            if (korisnik == null)
+            {
+                return NotFound("Korisnik nije pronađen.");
+            }
+
+            var oglas = await Context.OglasiObjekta.Include(i => i.VlasnikOglasa).Where(w => w.VlasnikOglasa!.Id == korisnikid).FirstOrDefaultAsync(f => f.Id == oglasId);
+            if (oglas == null)
+            {
+                return NotFound("Oglas nije pronađen.");
+            }
+
+            // Obrisi sliku koja je specificirana
+            var filePath = Path.Combine("wwwroot", slikaPath.Replace("/", "\\"));
+            if (System.IO.File.Exists(filePath))
+            {
+                System.IO.File.Delete(filePath);
+            }
+            else
+            {
+                return NotFound("Slika nije pronađena.");
+            }
+
+            oglas.Slike.Remove(slikaPath);
+
+            await Context.SaveChangesAsync();
+
+            return Ok();
+        }
+        #endregion
     }
 }
