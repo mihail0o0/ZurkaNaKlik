@@ -413,64 +413,63 @@ namespace backend.Controllers
         #endregion
 
         //odobri porudbinu
-        #region  OdobriPorudzbinu
-        [HttpPut("OdobriPorudzbinu/{idZahteva}")]
-        public async Task<IActionResult> OdobriPorudzbinu(int idZahteva)
+      #region  OdobriPorudzbinu
+[HttpPut("OdobriPorudzbinu/{idZahteva}")]
+public async Task<IActionResult> OdobriPorudzbinu(int idZahteva)
+{
+    try
+    {
+        var zahtevizaketering = await Context.ZahteviZaKetering.FirstOrDefaultAsync(x => x.Id == idZahteva);
+
+        if (zahtevizaketering == null)
         {
-            try
-            {
-                var zahtevizaketering = await Context.ZahteviZaKetering.FirstOrDefaultAsync(x => x.Id == idZahteva);
-
-                if (zahtevizaketering == null)
-                {
-                    return BadRequest("Ovaj zahtev nija validan");
-                }
-
-                if (zahtevizaketering.StatusRezervacije == false)
-                {
-                    zahtevizaketering.StatusRezervacije = true;
-                }
-
-                await Context.SaveChangesAsync();
-
-                return Ok(zahtevizaketering.StatusRezervacije);
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e);
-            }
+            return BadRequest("Ovaj zahtev nija validan");
         }
-        #endregion
 
-        #region  OdbijanjePorudzbine
-        [HttpGet("OdbijanjePorudzbine/{idZahteva}")]
-        public async Task<IActionResult> OdbijanjePoridzbine(int idZahteva)
+        if (zahtevizaketering.StatusRezervacije != true)
         {
-            try
-            {
-                var zahtevizaketering = await Context.ZahteviZaKetering.Include(i => i.ZakupljeniOglas).IgnoreQueryFilters().FirstOrDefaultAsync(x => x.Id == idZahteva);
-
-                if (zahtevizaketering == null)
-                {
-                    return BadRequest();
-                }
-
-                zahtevizaketering.ZakupljeniOglas = null;
-
-                //zahtevizaketering.ZakupljeniOglas.ZahtevZaKetering = null;
-
-                Context.ZahteviZaKetering.Remove(zahtevizaketering);
-                await Context.SaveChangesAsync();
-
-
-                return Ok(zahtevizaketering.StatusRezervacije);
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e);
-            }
+            zahtevizaketering.StatusRezervacije = true;
         }
-        #endregion
+        
+        await Context.SaveChangesAsync();
+
+        return Ok(zahtevizaketering.StatusRezervacije);
+    }
+    catch (Exception e)
+    {
+        return BadRequest(e.Message);
+    }
+}
+#endregion
+
+       #region  OdbijanjePorudzbine
+[HttpGet("OdbijanjePorudzbine/{idZahteva}")]
+public async Task<IActionResult> OdbijanjePorudzbine(int idZahteva)
+{
+    try
+    {
+        var zahtevizaketering = await Context.ZahteviZaKetering
+            .Include(i => i.ZakupljeniOglas)
+            .IgnoreQueryFilters()
+            .FirstOrDefaultAsync(x => x.Id == idZahteva);
+
+        if (zahtevizaketering == null)
+        {
+            return BadRequest("Zahtev nije validan");
+        }
+
+        zahtevizaketering.ZakupljeniOglas = null;
+        Context.ZahteviZaKetering.Remove(zahtevizaketering);
+        await Context.SaveChangesAsync();
+
+        return Ok(zahtevizaketering.StatusRezervacije);
+    }
+    catch (Exception e)
+    {
+        return BadRequest(e.Message);
+    }
+}
+#endregion
 
         #region AzurirajAgenciju
 

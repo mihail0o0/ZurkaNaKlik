@@ -12,7 +12,7 @@ namespace backend.Models
         [Key]
         public int Id { get; set; }
         public int KonacnaCena { get; set; }
-        public bool StatusRezervacije { get; set; }
+        public bool? StatusRezervacije { get; set; }
         public DateTime DatumRezervacije { get; set; }
         [JsonIgnore]
         public ZakupljeniOglas? ZakupljeniOglas { get; set; }
