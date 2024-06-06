@@ -10,70 +10,38 @@ type MenyCardProps = {
   meni?: Menu;
   //meny
 };
-const MenyCard = ({ order, meni }: MenyCardProps) => {
+const MenyCardPorudzbine = ({ order, meni }: MenyCardProps) => {
   return (
     <div className={`containerWrapper ${style.Container}`}>
       <div className={style.MenyPicture}>
         <img src="/public/images/burger.jpg" />
       </div>
       <div className={style.MenyTxt}>
-        <h3>{}</h3>
+        <h3>{meni && meni.naziv}</h3>
         {/* <p>Opis menija neki mali.</p> */}
         <div className={style.InfoOglas}>
           <div className={style.DisplayMenyInfo}>
-            {order && (
-              <>
-                <Icon icon={"location_on"} />
-                <label>{"Trg 14. oktobra 6"}</label>
-              </>
-            )}
-            {meni && (
-              <>
-                <Icon icon={"edit"} />
-                <label>{meni.naziv}</label>{" "}
-              </>
-            )}
+            <>
+              <Icon icon={"location_on"} />
+              <label>{"Trg 14. oktobra 6"}</label>
+              
+            </>
           </div>
           <div className={style.DisplayMenyInfo}>
-            {order && (
-              <>
-                <Icon icon={"calendar_month"} />
-                <label>{"14.5.2024."}</label>{" "}
-              </>
-            )}
-            {meni && (
-              <>
-                <Icon icon={"edit"} />
-                <label>{meni.opis}</label>{" "}
-              </>
-            )}
+            <>
+              <Icon icon={"calendar_month"} />
+              <label>{"14.5.2024."}</label>{" "}
+            </>
           </div>
         </div>
         <div className={style.InfoOglas}>
           <div className={style.DisplayMenyInfo}>
-            {order && (
-              <>
-                {" "}
-                <Icon icon={"house"} />
-                <label>{"Vila ramonda"}</label>{" "}
-              </>
-            )}
-            {meni && (
-              <>
-                {" "}
-                <Icon icon={"payments"} />
-                <label>{meni.cenaMenija}</label>{" "}
-              </>
-            )}
+            <Icon icon={"house"} />
+            <label>{"Vila ramonda"}</label>
           </div>
           <div className={style.DisplayMenyInfo}>
-            {order && (
-              <>
-                {" "}
-                <Icon icon={"payments"} />
-                <label>{"200"}</label>{" "}
-              </>
-            )}
+            <Icon icon={"payments"} />
+            <label>{"200"}</label>{" "}
           </div>
         </div>
       </div>
@@ -98,4 +66,4 @@ const MenyCard = ({ order, meni }: MenyCardProps) => {
     </div>
   );
 };
-export default MenyCard;
+export default MenyCardPorudzbine;

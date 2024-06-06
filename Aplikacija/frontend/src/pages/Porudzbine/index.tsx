@@ -7,6 +7,8 @@ const Porudzbine = () =>{
     const odobreneNarudzbine = narudzbine ? narudzbine.filter((narudzbina) => narudzbina.statusRezervacije === true) : [];
     const odbijeneNarudzbine = narudzbine ? narudzbine.filter((narudzbina) => narudzbina.statusRezervacije === false) : [];
     const narudzbineNaCekanju = narudzbine ? narudzbine.filter((narudzbina) => narudzbina.statusRezervacije === null) : [];
+
+    
     return(
           <div className={`containerWrapper ${style.Container}`}>
 

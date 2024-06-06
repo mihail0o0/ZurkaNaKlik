@@ -24,7 +24,8 @@ import PageSpacer from "@/components/lib/page-spacer";
 import { useParams } from "react-router-dom";
 import DisplayCard from "@/components/DisplayCard";
 import { useGetAgencyMenuesQuery } from "@/store/api/endpoints/pregled";
-import MenyCard from "@/components/MenyCard";
+import MenyCardPorudzbine from "@/components/MenyCardPorudzbine";
+import MenyCardView from "@/components/MenyCardView";
 
 const AgencyView = () => {
   const currUser = useSelector(selectUser);
@@ -36,17 +37,16 @@ const AgencyView = () => {
   const{data : meniDTO}=useGetAgencyMenuesQuery(idAgencije ?? skipToken );
   
  
-  // znaci ovde imam niz menija sa menijima ???????? ovo je matrica
   console.log(meniDTO);
   type MenuListProps={
     getMenuDTO:GetMenuDTO[],
   }
   const MenuList = ({ getMenuDTO}:MenuListProps) => (
-    <div className="menu-list">
+    <div className={style.MenyList}>
     {getMenuDTO.map((catering) =>
       Array.isArray(catering.meniKeteringa) ? (
         catering.meniKeteringa.map((menu) => (
-          <MenyCard meni={menu} />
+          <MenyCardView meni={menu} />
         ))
       ) : (
         <div >No menus available</div>
