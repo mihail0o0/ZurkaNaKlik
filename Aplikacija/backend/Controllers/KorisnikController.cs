@@ -587,7 +587,7 @@ namespace backend.Controllers
                     ZakupljeniOglas = zakupljenioglas,
                     DatumRezervacije = zakupljenioglas.ZakupljenOd,
                     StatusRezervacije = true,
-                    Agencija = agencija,
+                    Agencija = agencija
                 };
 
 
@@ -598,11 +598,12 @@ namespace backend.Controllers
                     MeniKeteringa? jedanMeni = await Context.MenijiKeteringa
                             .Include(i => i.Kategorija)
                             .ThenInclude(t => t!.Agencija)
+                            .Include(i => i.ListaZahetevaZaKetering)
                             .IgnoreQueryFilters()
                             .FirstOrDefaultAsync(f => f.Id == o.idMenija);
 
 
-                    //
+                    
 
 
                     if (jedanMeni == null)
@@ -611,6 +612,7 @@ namespace backend.Controllers
                     }
 
                     novizahtev.ZakupljeniMeniji?.Add(jedanMeni);
+                    jedanMeni.ListaZahetevaZaKetering?.Add(novizahtev);
 
                     if (jedanMeni?.Kategorija!.Agencija!.Id != idAgencije)
                     {
@@ -634,7 +636,7 @@ namespace backend.Controllers
                 Context.ZahteviZaKetering.Add(novizahtev);
                 await Context.SaveChangesAsync();
 
-                return Ok(new { novizahtev });
+                return Ok(new { novizahtev.ZakupljeniMeniji });
 
 
             }

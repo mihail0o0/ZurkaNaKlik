@@ -58,6 +58,9 @@ namespace backend.Controllers
                 var kor = Context.Korisnici.FirstOrDefaultAsync(f => f.Email == request.email);
                 string accessToken = prijava(korisnik);
 
+                await Context.SaveChangesAsync();
+
+
                 LoginResult loginResult = ObjectCreatorSingleton.Instance.ToLoginResult(korisnik);
 
                 return Ok(new { accessToken, loginResult });
@@ -93,7 +96,12 @@ namespace backend.Controllers
                 await Context.SaveChangesAsync();
 
                 var kor = Context.Agencije.FirstOrDefaultAsync(f => f.Email == request.email);
+                
+                
                 string accessToken = prijava(agencija);
+
+                await Context.SaveChangesAsync();
+
                 
                 return Ok(new { accessToken, loginResult });
             }
@@ -129,6 +137,7 @@ namespace backend.Controllers
                 // };
 
                 string accessToken = prijava(korisnikagencija);
+                
                 await Context.SaveChangesAsync();
 
                 return Ok(new { accessToken, loginResult });
@@ -157,6 +166,8 @@ namespace backend.Controllers
             korisnikagencija!.RefreshToken = refreshToken.Token;
             korisnikagencija!.TokenCreated = refreshToken.Created;
             korisnikagencija!.TokenExpires = refreshToken.Expires;
+
+            
 
             return accessToken;
         }

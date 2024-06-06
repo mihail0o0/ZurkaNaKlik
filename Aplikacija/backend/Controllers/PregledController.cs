@@ -401,7 +401,10 @@ namespace backend.Controllers
                     .Where(m => menijiId.Contains(m.Id))
                     .ToListAsync();
 
-                return Ok(new { result });
+                var provera = await Context.ZahteviZaKetering.Include(i => i.ZakupljeniMeniji)
+                    .FirstOrDefaultAsync(m => m.Id == menijiId[0]);
+
+                return Ok(new { provera.ZakupljeniMeniji });
 
             } catch (Exception e) {
                 return BadRequest(e.Message);
