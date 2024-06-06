@@ -21,13 +21,14 @@ import { toast } from "react-toastify";
 import { skipToken } from "@reduxjs/toolkit/query";
 import UserAvatar from "@/components/UserAvatar";
 import PageSpacer from "@/components/lib/page-spacer";
+import Meniji from "./Meniji";
 
 const AgencyProfile = () => {
   const currUser = useSelector(selectUser);
 
   const { data: agencyData } = useGetAgencyDataQuery(currUser?.id ?? skipToken);
 
-  const { data: menues } = useGetMenuesQuery();
+  const { data: meniDTO } = useGetMenuesQuery();
   const { data: kategorije } = useGetAllCategoriesQuery();
 
   const [updateAgency] = useUpdateAgencyDataMutation();
@@ -57,6 +58,24 @@ const AgencyProfile = () => {
 
   const [addCategory] = useAddCategoryMutation();
   const [deleteCategory] = useDeleteCategoryMutation();
+  console.log(meniDTO);
+  type MenuListProps={
+    getMenuDTO:GetMenuDTO[],
+  }
+  const MenuList = ({ getMenuDTO}:MenuListProps) => (
+    <div >
+    {getMenuDTO.map((catering) =>
+      Array.isArray(catering.meniKeteringa) ? (
+        catering.meniKeteringa.map((menu) => (
+         <Meniji menuData={menu} kategorija={kategorije} />
+        ))
+      ) : (
+        <div >No menus available</div>
+      )
+    )}
+  </div>
+  );
+
 
   const submit = async () => {
     if (!agencyData) {
@@ -225,6 +244,7 @@ const AgencyProfile = () => {
           </div>
           <div className={style.DodajMenije}>
             <h2>Dodaj menije</h2>
+            { meniDTO && <MenuList getMenuDTO={meniDTO}/>}
             <DodajIzmeniMeni kategorije={kategorije} />
           </div>
         </div>

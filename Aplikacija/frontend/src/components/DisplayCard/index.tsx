@@ -4,7 +4,7 @@ import Icon from "../lib/icon";
 import style from "./style.module.css";
 type DisplayKardProps = {
   text: string;
-  icon: string;
+  icon?: string;
  
 };
 

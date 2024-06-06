@@ -35,7 +35,7 @@ const AgencyView = () => {
   console.log(agencyData);
   const{data : meniDTO}=useGetAgencyMenuesQuery(idAgencije ?? skipToken );
   
-  const menijiMatrica=meniDTO?.map((meniDTO)=> meniDTO.meniKeteringa); 
+ 
   // znaci ovde imam niz menija sa menijima ???????? ovo je matrica
   console.log(meniDTO);
   type MenuListProps={
