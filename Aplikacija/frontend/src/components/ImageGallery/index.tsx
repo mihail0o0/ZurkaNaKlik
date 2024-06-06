@@ -8,9 +8,11 @@ import PageSpacer from "../lib/page-spacer";
 
 type Props = {
   images: (string | undefined | null)[];
-  deleteHandler?: (arg0: number) => void;
   imagePaths?: string[];
   idOglasa?: number;
+  deletable?: boolean;
+  deleteHandler?: (arg0: number) => void;
+  onClick?: (arg0: string) => void;
 };
 
 const ImageGallery = ({
@@ -18,11 +20,15 @@ const ImageGallery = ({
   deleteHandler,
   imagePaths,
   images,
+  deletable,
+  onClick,
 }: Props) => {
   const [deleteImageAction] = useDeleteOglasImageMutation();
 
   const handleDelete = async (index: number) => {
+    if (!deletable) return;
     if (deleteHandler) deleteHandler(index);
+
     if (!imagePaths) return;
     if (!idOglasa) return;
 
@@ -39,6 +45,11 @@ const ImageGallery = ({
     if ("error" in result) {
       return;
     }
+  };
+
+  const handleClick = (image: string) => {
+    if (!onClick) return;
+    onClick(image);
   };
 
   if (images.length < 1) {
@@ -59,15 +70,21 @@ const ImageGallery = ({
               key={image}
               style={{ backgroundImage: `url(${image})` }}
               className={style.image}
+              onClick={() => handleClick(image)}
             >
-              <div className={style.Delete} onClick={() => handleDelete(index)}>
-                <Icon
-                  icon="delete"
-                  classes="colorWhite cursorPointer"
-                  fontSize="24px"
-                  iconMargin="0"
-                />
-              </div>
+              {deletable && (
+                <div
+                  className={style.Delete}
+                  onClick={() => handleDelete(index)}
+                >
+                  <Icon
+                    icon="delete"
+                    classes="colorWhite cursorPointer"
+                    fontSize="24px"
+                    iconMargin="0"
+                  />
+                </div>
+              )}
             </div>
           );
         })}

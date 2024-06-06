@@ -115,7 +115,6 @@ const IzmeniOglas = () => {
     fetchImages();
   }, [oglas?.slike, getImageAction]);
 
-  console.log(images);
 
   useEffect(() => {
     if (!oglas) return;
