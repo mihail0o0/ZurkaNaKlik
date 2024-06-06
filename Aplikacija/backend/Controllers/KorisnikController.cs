@@ -8,6 +8,7 @@ using backend.DTOs;
 using backend.Services;
 using backend.Utilities;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace backend.Controllers
@@ -649,8 +650,9 @@ public async Task<ActionResult> ObrisiOglas(int idOglasa)
         #endregion
 
 
-        #region ObrisiKorisnika
+        
       
+   #region ObrisiKorisnika
 [HttpDelete("ObrisiKorisnika")]
 public async Task<ActionResult> ObrisiKorisnika()
 {
@@ -658,33 +660,29 @@ public async Task<ActionResult> ObrisiKorisnika()
     {
         int idKorisnika = int.Parse((HttpContext.Items["idKorisnika"] as string)!);
 
-        Korisnik? korisnik = await Context.Korisnici.FindAsync(idKorisnika);
-
-        // Korisnik? korisnik = await Context.Korisnici
-        //     .Include(k => k.ListaZakupljenihOglasa) // Pretpostavljam da korisnik ima kolekciju oglasa
-        //     .FirstOrDefaultAsync(k => k.Id == idKorisnika);
+        Korisnik? korisnik = await Context.Korisnici
+            .Include(k => k.ListaOmiljenihOglasaObjekata) // Pretpostavljam da korisnik ima kolekciju oglasa
+            .FirstOrDefaultAsync(k => k.Id == idKorisnika);
 
         if (korisnik == null)
         {
             return BadRequest("Korisnik ne postoji");
         }
 
-        if (!string.IsNullOrEmpty(korisnik.SlikaProfila))
+        // Brisanje profilne slike korisnika
+        var folderPath = Path.Combine("wwwroot", "images", "Korisnik", idKorisnika.ToString());
+        if (Directory.Exists(folderPath))
         {
-            var profilnaSlikaPath = Path.Combine("wwwroot", korisnik.SlikaProfila);
-            if (System.IO.File.Exists(profilnaSlikaPath))
-            {
-                System.IO.File.Delete(profilnaSlikaPath);
-            }
+            Directory.Delete(folderPath, true); // true znači da će se obrisati i svi fajlovi i podfolderi
         }
 
         // Brisanje svih oglasa korisnika i njihovih slika
         foreach (var oglas in korisnik.ListaObjavljenihOglasaObjekta!)
         {
-            var folderPath = Path.Combine("wwwroot", "images", "Oglasi", oglas.Id.ToString());
-            if (Directory.Exists(folderPath))
+            var oglasFolderPath = Path.Combine("wwwroot", "images", "Oglasi", oglas.Id.ToString());
+            if (Directory.Exists(oglasFolderPath))
             {
-                Directory.Delete(folderPath, true); // true znači da će se obrisati i svi fajlovi i podfolderi
+                Directory.Delete(oglasFolderPath, true); // true znači da će se obrisati i svi fajlovi i podfolderi
             }
 
             Context.OglasiObjekta.Remove(oglas);
@@ -700,10 +698,12 @@ public async Task<ActionResult> ObrisiKorisnika()
         return BadRequest(ex.Message);
     }
 }
-#endregion
 
 
-        #endregion
+
+    #endregion
+
+
 
         // Izmena podataka (idKorisnika)
         #region IzmeniPodatkeOKorisniku
