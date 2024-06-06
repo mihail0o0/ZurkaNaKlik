@@ -11,7 +11,7 @@ namespace backend.Models
     {
         public int id { get; set; }
         public int konacnaCena { get; set; }
-        public bool statusRezervacije { get; set; }
+        public bool? statusRezervacije { get; set; }
         public DateTime datumRezervacije { get; set; }
         public int? idOglasa { get; set; }
         public List<int>? idMenija { get; set; }

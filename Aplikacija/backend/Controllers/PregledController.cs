@@ -404,7 +404,7 @@ namespace backend.Controllers
                 var provera = await Context.ZahteviZaKetering.Include(i => i.ZakupljeniMeniji)
                     .FirstOrDefaultAsync(m => m.Id == menijiId[0]);
 
-                return Ok(new { provera.ZakupljeniMeniji });
+                return Ok(new { result });
 
             } catch (Exception e) {
                 return BadRequest(e.Message);

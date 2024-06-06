@@ -542,102 +542,102 @@ namespace backend.Controllers
         }
         #endregion
 
-       #region  PosaljiZahtevZaKetering
-[HttpPost("PosaljiZahtevZaKetering/{idZakupljenOglas}/{idAgencije}/{mogucnostDostave}/listamenija")]
-public async Task<IActionResult> PosaljiZahtevZaKetering(bool mogucnostDostave, int idZakupljenOglas, int idAgencije, [FromBody] List<PorucenMeni> listamenija)
-{
-    try
-    {
-        int idKorisnika = int.Parse((HttpContext.Items["idKorisnika"] as string)!);
-
-        var zakupljenioglas = await Context.ZakupljeniOglasi
-            .Include(i => i.Korisnik)
-            .Include(i => i.ZahtevZaKetering)
-            .IgnoreQueryFilters()
-            .FirstOrDefaultAsync(f => f.Id == idZakupljenOglas);
-
-        if (zakupljenioglas == null)
+        #region  PosaljiZahtevZaKetering
+        [HttpPost("PosaljiZahtevZaKetering/{idZakupljenOglas}/{idAgencije}/{mogucnostDostave}/listamenija")]
+        public async Task<IActionResult> PosaljiZahtevZaKetering(bool mogucnostDostave, int idZakupljenOglas, int idAgencije, [FromBody] List<PorucenMeni> listamenija)
         {
-            return BadRequest("Nema takvog zakupljenog oglasa");
-        }
-
-        if (zakupljenioglas.Korisnik!.Id != idKorisnika)
-        {
-            return BadRequest("Nisi ovlašćeni korisnik");
-        }
-
-        if (zakupljenioglas.ZahtevZaKetering != null)
-        {
-            return BadRequest("Ovaj oglas već ima zakupljen ketering");
-        }
-
-        var agencija = await Context.Agencije
-            .Include(i => i.ListaZahtevZaKetering)
-            .IgnoreQueryFilters()
-            .FirstOrDefaultAsync(f => f.Id == idAgencije);
-
-        if (agencija == null)
-        {
-            return BadRequest("Agencija ne postoji");
-        }
-
-        List<int> idMenija = listamenija.Select(o => o.idMenija).ToList();
-
-        var novizahtev = new ZahtevZaKetering
-        {
-            ZakupljeniOglas = zakupljenioglas,
-            DatumRezervacije = zakupljenioglas.ZakupljenOd,
-            StatusRezervacije = null,
-            Agencija = agencija
-        };
-
-        int ukupnaCena = 0;
-        foreach (var o in listamenija)
-        {
-            var jedanMeni = await Context.MenijiKeteringa
-                .Include(i => i.Kategorija)
-                .ThenInclude(t => t!.Agencija)
-                .Include(i => i.ListaZahetevaZaKetering)
-                .IgnoreQueryFilters()
-                .FirstOrDefaultAsync(f => f.Id == o.idMenija);
-
-            if (jedanMeni == null)
+            try
             {
-                return BadRequest("Taj meni ne postoji");
+                int idKorisnika = int.Parse((HttpContext.Items["idKorisnika"] as string)!);
+
+                var zakupljenioglas = await Context.ZakupljeniOglasi
+                    .Include(i => i.Korisnik)
+                    .Include(i => i.ZahtevZaKetering)
+                    .IgnoreQueryFilters()
+                    .FirstOrDefaultAsync(f => f.Id == idZakupljenOglas);
+
+                if (zakupljenioglas == null)
+                {
+                    return BadRequest("Nema takvog zakupljenog oglasa");
+                }
+
+                if (zakupljenioglas.Korisnik!.Id != idKorisnika)
+                {
+                    return BadRequest("Nisi ovlašćeni korisnik");
+                }
+
+                if (zakupljenioglas.ZahtevZaKetering != null)
+                {
+                    return BadRequest("Ovaj oglas već ima zakupljen ketering");
+                }
+
+                var agencija = await Context.Agencije
+                    .Include(i => i.ListaZahtevZaKetering)
+                    .IgnoreQueryFilters()
+                    .FirstOrDefaultAsync(f => f.Id == idAgencije);
+
+                if (agencija == null)
+                {
+                    return BadRequest("Agencija ne postoji");
+                }
+
+                List<int> idMenija = listamenija.Select(o => o.idMenija).ToList();
+
+                var novizahtev = new ZahtevZaKetering
+                {
+                    ZakupljeniOglas = zakupljenioglas,
+                    DatumRezervacije = zakupljenioglas.ZakupljenOd,
+                    StatusRezervacije = null,
+                    Agencija = agencija
+                };
+
+                int ukupnaCena = 0;
+                foreach (var o in listamenija)
+                {
+                    var jedanMeni = await Context.MenijiKeteringa
+                        .Include(i => i.Kategorija)
+                        .ThenInclude(t => t!.Agencija)
+                        .Include(i => i.ListaZahetevaZaKetering)
+                        .IgnoreQueryFilters()
+                        .FirstOrDefaultAsync(f => f.Id == o.idMenija);
+
+                    if (jedanMeni == null)
+                    {
+                        return BadRequest("Taj meni ne postoji");
+                    }
+
+                    novizahtev.ZakupljeniMeniji?.Add(jedanMeni);
+                    jedanMeni.ListaZahetevaZaKetering?.Add(novizahtev);
+
+                    if (jedanMeni.Kategorija!.Agencija!.Id != idAgencije)
+                    {
+                        return BadRequest("Meniji nisu iz iste agencije");
+                    }
+
+                    ukupnaCena += jedanMeni.CenaMenija * o.kg;
+                }
+
+                agencija!.ListaZahtevZaKetering!.Add(novizahtev);
+
+                if (mogucnostDostave)
+                {
+                    ukupnaCena += agencija.CenaDostave;
+                }
+
+                novizahtev.KonacnaCena = ukupnaCena;
+                zakupljenioglas.ZahtevZaKetering = novizahtev;
+
+                Context.ZahteviZaKetering.Add(novizahtev);
+                await Context.SaveChangesAsync();
+
+                return Ok(new { novizahtev.ZakupljeniMeniji });
             }
-
-            novizahtev.ZakupljeniMeniji?.Add(jedanMeni);
-            jedanMeni.ListaZahetevaZaKetering?.Add(novizahtev);
-
-            if (jedanMeni.Kategorija!.Agencija!.Id != idAgencije)
+            catch (Exception e)
             {
-                return BadRequest("Meniji nisu iz iste agencije");
+                return BadRequest(e.Message);
             }
-
-            ukupnaCena += jedanMeni.CenaMenija * o.kg;
         }
-
-        agencija!.ListaZahtevZaKetering!.Add(novizahtev);
-
-        if (mogucnostDostave)
-        {
-            ukupnaCena += agencija.CenaDostave;
-        }
-
-        novizahtev.KonacnaCena = ukupnaCena;
-        zakupljenioglas.ZahtevZaKetering = novizahtev;
-
-        Context.ZahteviZaKetering.Add(novizahtev);
-        await Context.SaveChangesAsync();
-
-        return Ok(new { novizahtev.ZakupljeniMeniji });
-    }
-    catch (Exception e)
-    {
-        return BadRequest(e.Message);
-    }
-}
-#endregion
+        #endregion
 
         #region OtkaziZahtevZaKetering
         [HttpDelete("OtkaziZahtevZaKetering/{idZakupljenogKeteringa}")]
@@ -672,8 +672,6 @@ public async Task<IActionResult> PosaljiZahtevZaKetering(bool mogucnostDostave, 
         #endregion
 
         #region Otkazi zakup objekta
-
-
         [HttpDelete("OtkaziRezervacijuObjekta/{idZakupljenogOglasa}")]
         public async Task<ActionResult> OtkaziRezervacijuObjekta(int idZakupljenogOglasa)
         {
