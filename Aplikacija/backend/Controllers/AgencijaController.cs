@@ -421,7 +421,11 @@ namespace backend.Controllers
         {
             try
             {
-                var zahtevizaketering = await Context.ZahteviZaKetering.FirstOrDefaultAsync(x => x.Id == idZahteva);
+                var zahtevizaketering = await Context.ZahteviZaKetering
+                                                                .Include(i => i.Agencija)
+                                                                .Include(i => i.ZakupljeniMeniji)
+                                                                .Include(i => i.ZakupljeniOglas)
+                                                                .FirstOrDefaultAsync(x => x.Id == idZahteva);
 
                 if (zahtevizaketering == null)
                 {
@@ -432,10 +436,17 @@ namespace backend.Controllers
                 {
                     zahtevizaketering.StatusRezervacije = true;
                 }
+                else if(zahtevizaketering.StatusRezervacije == false){
+                    return BadRequest("Porudzbina je vec odbijena");
+                }
                 
                 await Context.SaveChangesAsync();
 
-                return Ok(zahtevizaketering.StatusRezervacije);
+                ZahtevZaKeteringResult result = ObjectCreatorSingleton.Instance.ToZahtevZaKeteringResult(zahtevizaketering);
+
+                
+
+                return Ok(result);
             }
             catch (Exception e)
             {
@@ -451,9 +462,11 @@ namespace backend.Controllers
             try
             {
                 var zahtevizaketering = await Context.ZahteviZaKetering
-                    .Include(i => i.ZakupljeniOglas)
-                    .IgnoreQueryFilters()
-                    .FirstOrDefaultAsync(x => x.Id == idZahteva);
+                                                                .Include(i => i.Agencija)
+                                                                .Include(i => i.ZakupljeniOglas)
+                                                                .Include(i => i.ZakupljeniMeniji)
+                                                                .IgnoreQueryFilters()
+                                                                .FirstOrDefaultAsync(x => x.Id == idZahteva);
 
                 if (zahtevizaketering == null)
                 {
@@ -467,7 +480,11 @@ namespace backend.Controllers
                 //Context.ZahteviZaKetering.Remove(zahtevizaketering);
                 await Context.SaveChangesAsync();
 
-                return Ok(zahtevizaketering.StatusRezervacije);
+                ZahtevZaKeteringResult result = ObjectCreatorSingleton.Instance.ToZahtevZaKeteringResult(zahtevizaketering);
+
+                
+
+                return Ok(result);
             }
             catch (Exception e)
             {
