@@ -98,7 +98,7 @@ const MenyCardPorudzbine = ({ order, meni }: MenyCardProps) => {
           </div>
         </div>
       </div>
-     {!order?.statusRezervacije &&
+     {order?.statusRezervacije===null &&
      
      <div className={style.acceptDecline}>
         <div className={style.ButtonParentDiv}>
