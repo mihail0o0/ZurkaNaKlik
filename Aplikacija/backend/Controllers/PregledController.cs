@@ -333,12 +333,15 @@ namespace backend.Controllers
                     }
                 }
 
+                int brojAgencija = agencije.Count;
 
+                agencije = agencije.Skip((pageNumber - 1) * pageSize)
+                             .Take(pageSize).ToList();
                 //List<OglasObjektaResponse> response = new List<OglasObjektaResponse>();
 
                 
 
-                return Ok(new { agencije });
+                return Ok(new { agencije , brojAgencija});
             }
             catch (Exception e)
             {
