@@ -42,14 +42,6 @@ import { useAppDispatch } from "@/store";
 const UserProfile = () => {
   const navigate = useNavigate();
   const userCurr = useSelector(selectUser);
-  const { id } = useParams();
-  const idKorisnika = id ? parseInt(id) : undefined;
-  //znaci ovo je ako nisu isti
-  const { data: vlasnikOglasa } = useGetUserDataQuery(idKorisnika ?? skipToken);
-  const flag = idKorisnika === userCurr?.id;
-  const { data: tudjiOglasi } = useGetKorisnikOglasiQuery(
-    idKorisnika ?? skipToken
-  );
 
   const dispatch = useAppDispatch();
 
@@ -66,6 +58,9 @@ const UserProfile = () => {
   const [updateUserAction] = useUpdateUserMutation();
   const [deleteUserAction] = useDeleteUserMutation();
 
+  console.log(user);
+  console.log(tudjiOglasi);
+
   const [ime, setIme] = useState("");
   const [prezime, setPrezime] = useState("");
   const [email, setEmail] = useState("");
@@ -76,23 +71,22 @@ const UserProfile = () => {
   const [openDialog, setOpenDialog] = useState(false);
   const [deleteUser] = useDeleteUserMutation();
 
-  useEffect(() => {
-    if (!vlasnikOglasa) return;
+  // useEffect(() => {
+  //   if (!vlasnikOglasa) return;
 
-    setIme(vlasnikOglasa.name);
-    setPrezime(vlasnikOglasa.lastName);
-    setEmail(vlasnikOglasa.email);
-    setBrTel(vlasnikOglasa.phoneNumber);
-    setSlikaProfila(vlasnikOglasa.profilePhoto);
-    setLokacija(vlasnikOglasa.location);
-  }, [user]);
+  //   setIme(vlasnikOglasa.name);
+  //   setPrezime(vlasnikOglasa.lastName);
+  //   setEmail(vlasnikOglasa.email);
+  //   setBrTel(vlasnikOglasa.phoneNumber);
+  //   setSlikaProfila(vlasnikOglasa.profilePhoto);
+  //   setLokacija(vlasnikOglasa.location);
+  // }, [user]);
 
   const handleDelete = () => {
     setOpenDialog(true);
   };
   const submit = async () => {
     if (!user) return;
-    if (!flag) return;
 
     const updateUser: UpdateUserDTO = {
       id: user.id,
@@ -149,7 +143,7 @@ const UserProfile = () => {
   return (
     <div className={`containerWrapper ${style.Container}`}>
       <div className={style.PostavkeProfila}>
-        <div>{flag && <h2>Postavke profila</h2>}</div>
+        <div>{<h2>Postavke profila</h2>}</div>
         <div className={style.Postavke2}>
           {/* odje ide slika od kad je clan broj oglasa i prosecna ocena */}
           <div className={style.KarticaSaSlikom}>
@@ -162,11 +156,8 @@ const UserProfile = () => {
                   src={imageUrl}
                 />
               </UploadComponent>
-              <p>
-                {vlasnikOglasa && vlasnikOglasa.name}{" "}
-                {vlasnikOglasa && vlasnikOglasa.lastName}
-              </p>
-              {flag && (
+              <p></p>
+              {
                 <div className={style.obrrrisibhrate}>
                   <div className={style.DeleteIcon} onClick={handleDelete}>
                     <Icon
@@ -177,107 +168,58 @@ const UserProfile = () => {
                   </div>
                   <label>Izbrisi nalog</label>
                 </div>
-              )}
+              }
             </div>
           </div>
           <div className={style.OsnovnePostavkeProfila}>
             <div className={style.PostavkeProfilaTXT}>
-              {flag ? (
-                <h2>Osnovne postavke profila</h2>
-              ) : (
-                <h2>Osnovne informacije profila</h2>
-              )}
+              {<h2>Osnovne postavke profila</h2>}
             </div>
             <div className={style.Inputi}>
               <div className={style.Red}>
-                {flag ? (
+                {
                   <Input
-                    disabled={!flag}
                     text={ime}
                     placeholder="Ime"
                     icon="boy"
                     onChange={setIme}
                   />
-                ) : (
-                  <DisplayCard
-                    icon={"boy"}
-                    text={
-                      (vlasnikOglasa &&
-                        vlasnikOglasa.name + " " + vlasnikOglasa?.lastName) ||
-                      ""
-                    }
-                  />
-                )}
-                {flag ? (
-                  <Input
-                    disabled={!flag}
-                    text={prezime}
-                    icon="boy"
-                    onChange={setPrezime}
-                  />
-                ) : (
-                  <DisplayCard
-                    icon={"boy"}
-                    text={(vlasnikOglasa && vlasnikOglasa.lastName) || ""}
-                  />
-                )}
+                }
+                {<Input text={prezime} icon="boy" onChange={setPrezime} />}
               </div>
               <div className={style.Red}>
-                {flag ? (
+                {
                   <Input
                     text={email}
                     placeholder="Email"
                     icon="mail"
                     onChange={setEmail}
                   />
-                ) : (
-                  <DisplayCard
-                    icon={"mail"}
-                    text={(vlasnikOglasa && vlasnikOglasa.email) || ""}
-                  />
-                )}
-                {flag ? (
-                  <Input
-                    disabled={!flag}
-                    text={brTel}
-                    icon="call"
-                    onChange={setBrTel}
-                  />
-                ) : (
-                  <DisplayCard
-                    icon={"call"}
-                    text={(vlasnikOglasa && vlasnikOglasa.phoneNumber) || ""}
-                  />
-                )}
+                }
+                {<Input text={brTel} icon="call" onChange={setBrTel} />}
               </div>
               <div className={style.Red}>
-                {flag ? (
+                {
                   <Input
-                    disabled={!flag}
                     text={lokacija}
                     placeholder="Grad"
                     icon="location_on"
                     onChange={setLokacija}
                   />
-                ) : (
-                  <DisplayCard
-                    icon={"location_on"}
-                    text={(vlasnikOglasa && vlasnikOglasa.location) || ""}
-                  />
-                )}
+                }
               </div>
             </div>
             <div className={style.Dugmenajjace}>
               <div className={style.Dugme2}>
                 {/* da azuriram korisnika */}
-                {flag && (
+                {
                   <MojButton
                     text="Sacuvaj"
                     onClick={submit}
                     wide={true}
                     center={true}
                   />
-                )}
+                }
               </div>
             </div>
           </div>
@@ -285,28 +227,18 @@ const UserProfile = () => {
       </div>
       <div className={style.MojiOglasi}>
         <div>
-          {flag ? (
-            <h2>Moji oglasi</h2>
-          ) : (
-            <h2>Oglasi korisnika {vlasnikOglasa?.name}</h2>
-          )}
+          <h2>Moji oglasi</h2>
         </div>
         <div className={style.OglasiKartice}>
-          {flag
-            ? MojiOglasi?.map((oglas) => (
-                <div key={oglas.id}>
-                  <OglasKartica oglas={oglas} onClick={() => {}} />
-                </div>
-              ))
-            : tudjiOglasi?.map((oglas) => (
-                <div key={oglas.id}>
-                  <OglasKartica oglas={oglas} onClick={() => {}} />
-                </div>
-              ))}
+          {MojiOglasi?.map((oglas) => (
+            <div key={oglas.id}>
+              <OglasKartica oglas={oglas} onClick={() => {}} />
+            </div>
+          ))}
         </div>
         <div className={style.Dugmenajjace}>
           <div className={style.Dugme2}>
-            {flag && (
+            {
               <MojButton
                 text="Dodaj oglas"
                 onClick={() => {
@@ -315,7 +247,7 @@ const UserProfile = () => {
                 wide={true}
                 center={true}
               />
-            )}
+            }
           </div>
         </div>
       </div>

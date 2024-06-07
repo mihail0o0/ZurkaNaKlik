@@ -26,37 +26,33 @@ const Porudzbine = () => {
   const menijiOdbijeniID = odbijeneNarudzbine.flatMap(
     (order) => order.idMenija || []
   );
-  console.log(menijiOdobreniID + "id");
-  // console.log(menijiNaCekanjuID + "id meni");
-  //const { data: menuOdobreni } = useGetAgencyListMenuesQuery(menijiOdobreniID);
-  // console.log(menuOdobreni + "" + "odobreni meniji lista");
-  // const { data: menuNaCekanju } =
-  //   useGetAgencyListMenuesQuery(menijiNaCekanjuID);
+  
+  // const { data: menuOdobreni } = useGetAgencyListMenuesQuery(menijiOdobreniID);
+  // const { data: menuNaCekanju } = useGetAgencyListMenuesQuery(menijiNaCekanjuID);
   // const { data: menuOdbijeni } = useGetAgencyListMenuesQuery(menijiOdbijeniID);
-  // console.log(menuNaCekanju + "menijiodobreni");
+
   return (
     <div className={`containerWrapper ${style.Container}`}>
       <div className={style.OdobrenePorudzbine}>
         <h3>Nove porudzbine</h3>
         <div className={style.listPorudzbine}>
-          {narudzbineNaCekanju.map((narudzbina) => {
-            return <MenyCardPorudzbine order={narudzbina} />;
-          })}
-        </div>
-        
-      </div>
-      <div className={style.OdobrenePorudzbine}>
-      <h3>Odobrene porudzbine</h3>
-        <div className={style.listPorudzbine}>
-          {odobreneNarudzbine.map((narudzbina) => {
-            return <MenyCardPorudzbine order={narudzbina} />;
+          {narudzbineNaCekanju.map((narudzbina,index) => {
+            return <MenyCardPorudzbine order={narudzbina}  />;
           })}
         </div>
       </div>
       <div className={style.OdobrenePorudzbine}>
-      <h3>Odbijene porudzbine</h3>
+        <h3>Odobrene porudzbine</h3>
         <div className={style.listPorudzbine}>
-          {odbijeneNarudzbine.map((narudzbina) => {
+          {odobreneNarudzbine.map((narudzbina,index) => {
+            return <MenyCardPorudzbine order={narudzbina} />;
+          })}
+        </div>
+      </div>
+      <div className={style.OdobrenePorudzbine}>
+        <h3>Odbijene porudzbine</h3>
+        <div className={style.listPorudzbine}>
+          {odbijeneNarudzbine.map((narudzbina,index) => {
             return <MenyCardPorudzbine order={narudzbina} />;
           })}
         </div>

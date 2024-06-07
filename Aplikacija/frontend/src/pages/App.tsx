@@ -29,6 +29,7 @@ import IzmeniOglas from "./IzmeniOglas";
 import Porudzbine from "./Porudzbine";
 import AgencyView from "./Profile/AgencyView";
 import FindCateringPage from "./FindCatering";
+import UserViewProfile from "./Profile/UserView";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -40,7 +41,8 @@ const router = createBrowserRouter(
         <Route path="home" element={<Home />} />
         <Route path="testing" element={<TestingPage />} />
         <Route path="mix" element={<TestingPage />} />
-        <Route path="user/profile/:id" element={<UserProfile />} />
+        <Route path="user/profile" element={<UserProfile />} />
+        <Route path="user/profile/:id" element={<UserViewProfile />} />
         <Route path="omiljeno" element={<FavoriteOglasi />} />
         <Route path="/place/:id" element={<Oglas />} />
         <Route path="logout" element={<Logout />} />

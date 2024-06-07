@@ -15,9 +15,12 @@
     margin-left: 40px;
     margin-right: 40px;
     border-bottom: 1px solid black;
+    margin-bottom: 40px;;
+
 }
 .listPorudzbine{
     display: flex;
     flex-direction: column;
     gap:20px;
+    margin-bottom: 10px;
 }
