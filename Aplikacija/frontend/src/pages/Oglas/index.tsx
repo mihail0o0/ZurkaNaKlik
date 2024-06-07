@@ -25,9 +25,12 @@ import PageSpacer from "@/components/lib/page-spacer";
 import ImageOverview from "@/components/ImageOverview";
 import { enumToString } from "@/utils/enumMappings";
 import { Typography } from "@mui/material";
+import Datum from "../Home/DivFilteri/datum";
+import { DateRange } from "react-day-picker";
+import SelectDatum from "./calendar";
 
 const Oglas = () => {
-  const [brojLjudi, SetBrojLjudi] = useState("");
+  const [date, setDate] = useState<DateRange | undefined>();
   const { id } = useParams();
   const idOglasa = id ? parseInt(id) : undefined;
   const navigate = useNavigate();
@@ -111,6 +114,9 @@ const Oglas = () => {
   }, [images]);
 
   console.log(currentOglas?.listaTipProslava);
+  
+  // const testZauzetiDani = [new Date("2024-6-10"), new Date("2024-10-6")];
+
 
   if (!currentOglas) {
     return null;
@@ -245,8 +251,13 @@ const Oglas = () => {
                 <h5>{currentOglas?.brTel}</h5>
               </div>
             </div>
-            <div className={style.DodajteKetering}>
-              <h4>Unesite broj gostiju: </h4>
+            <div className={style.Calendar}>
+              <h4>Izaberite Datume</h4>
+              <SelectDatum
+                bussyDays={currentOglas.zauzetiDani}
+                date={date}
+                setDate={setDate}
+              />
             </div>
           </div>
         </div>

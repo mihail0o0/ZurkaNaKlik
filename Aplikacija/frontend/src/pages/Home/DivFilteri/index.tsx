@@ -114,7 +114,7 @@ const DivFilteri = () => {
       <div className={style.DugmeFilter}>
         <Grad value={gradValue} setValue={setGradValue} />
 
-        <Datum date={date} setDate={setDate} />
+        <Datum numberOfMonths={2} date={date} setDate={setDate} />
 
         <PopupRange
           icon="payments"

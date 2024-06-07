@@ -455,7 +455,7 @@ namespace backend.Controllers
 
                 //int idKorisnika = int.Parse((HttpContext.Items["idKorisnika"] as string)!);
 
-                var oglas = await Context.Agencije.FindAsync(idOglasa);
+                Agencija? oglas = await Context.Agencije.FindAsync(idOglasa);
 
                 if (oglas == null)
                 {
@@ -470,13 +470,9 @@ namespace backend.Controllers
 
 
                 Context.Agencije.Update(oglas);
-
                 await Context.SaveChangesAsync();
 
                 return Ok(oglas);
-
-
-
             }
             catch (Exception ex)
             {

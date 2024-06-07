@@ -139,6 +139,20 @@
   padding: 15px;
 }
 
+.Calendar {
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  border-radius: var(--borderRadiusMedium);
+  width: 60%;
+  align-items: center;
+  padding: 15px;
+}
+
+.Calendar > h4{
+  margin-bottom: 10px;
+}
+
 .DodajteKetering > h4 {
   padding-bottom: 5px;
   height: 20%;
