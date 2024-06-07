@@ -1,3 +1,4 @@
+import AgencyCard from "@/components/AgencyCard";
 import style from "./style.module.css";
 import Pagination from "@/components/lib/pagination";
 import { useAppDispatch } from "@/store";
@@ -74,6 +75,12 @@ const Results = () => {
     dispatch(setAgencyPaginationData({ ...paginationState, pageNumber: page }));
   };
 
+  console.log(agencies);
+
+  if (!agencies) {
+    return null;
+  }
+
   const paginationValues = [10, 20, 30, 40, 50, 100];
   return (
     <div className={style.resultsWrapper}>
@@ -112,6 +119,11 @@ const Results = () => {
             );
           })}
         </Select>
+      </div>
+      <div className={style.resultsContainer}>
+        {agencies.response.map((agency) => {
+          return <AgencyCard agency={agency} />;
+        })}
       </div>
       <Pagination
         selectedPageNumber={selectedPageNumber}

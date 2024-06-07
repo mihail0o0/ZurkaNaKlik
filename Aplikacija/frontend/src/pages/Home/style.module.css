@@ -9,7 +9,7 @@
 }
 
 .resultWrapper{
-  width: 90%;
+  max-width: 90%;
   margin: 50px auto;
 }
 
