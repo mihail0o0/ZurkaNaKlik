@@ -341,27 +341,6 @@ namespace backend.Controllers
         }
         #endregion
 
-
-        [HttpGet("VratiNaziveKategorija")]
-        public async Task<IActionResult> VratiNaziveKategorija()
-        {
-            try
-            {
-                List<string>? kategorije = await Context.Kategorije.Select(x => x.Naziv).Distinct().ToListAsync();
-
-                if (kategorije == null)
-                {
-                    return BadRequest("Nema kategorija");
-                }
-
-                return Ok(kategorije);
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
-        }
-
         #region VratiOglas
         [HttpGet("VratiOglas")]
         public async Task<IActionResult> VratiOglas()

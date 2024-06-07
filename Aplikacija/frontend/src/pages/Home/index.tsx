@@ -28,6 +28,7 @@ import { Filters, Sort, mapStringToSort } from "@/store/filters/types";
 import { useGetFilteredOglasesQuery } from "@/store/api/endpoints/oglas";
 import OglasKartica from "@/components/OglasKartica";
 import { ArrowLeft } from "lucide-react";
+import Pagination from "@/components/lib/pagination";
 
 const Home = () => {
   const filters = useSelector(selectFilters);
@@ -163,32 +164,11 @@ const Home = () => {
               );
             })}
         </div>
-        <div className={style.pageNumberContainer}>
-          {paginationNumbers.map((number) => {
-            number++;
-            if (number === selectedPageNumber)
-              return (
-                <div
-                  className={`${style.pageNumber} ${style.selected}`}
-                  onClick={() => {
-                    handlePageNumberChange(number);
-                  }}
-                >
-                  {number}
-                </div>
-              );
-            return (
-              <div
-                className={style.pageNumber}
-                onClick={() => {
-                  handlePageNumberChange(number);
-                }}
-              >
-                {number}
-              </div>
-            );
-          })}
-        </div>
+        <Pagination
+          handlePageNumberChange={handlePageNumberChange}
+          paginationNumbers={paginationNumbers}
+          selectedPageNumber={selectedPageNumber}
+        />
       </div>
     </>
   );

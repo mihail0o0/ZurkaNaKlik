@@ -1,5 +1,7 @@
+import { AgencyFilters } from "@/store/agencyFilters/types";
 import api from "../..";
 import { providesList, providesSingle } from "../../utils";
+import { FilteredAgenciesDTO } from "./types";
 
 const authApiSlice = api.injectEndpoints({
   endpoints: (builder) => ({
@@ -13,12 +15,19 @@ const authApiSlice = api.injectEndpoints({
         url: `Pregled/VratiMenije/Lista/listaMenija`,
       }),
     }),
-
-    getAllCategories: builder.query<string[], void>({
+    getAllGlobalCategories: builder.query<string[], void>({
       query: () => ({
-        url: `Oglas/VratiNaziveKategorija`,
+        url: `Pregled/VratiNaziveKategorija`,
       }),
       // providesTags: (result) => providesList("Categories", result),
+    }),
+    getFilteredAgencies: builder.query<FilteredAgenciesDTO, AgencyFilters>({
+      query: (body) => ({
+        url: `Pregled/VratiAgencije/${body.paginationData.pageNumber}/${body.paginationData.pageSize}/${body.sort}`,
+        method: "POST",
+        body: body.filtersData,
+      }),
+      providesTags: (result) => providesList("Agency", result?.response),
     }),
   }),
 });
@@ -26,5 +35,6 @@ const authApiSlice = api.injectEndpoints({
 export const {
   useGetAgencyMenuesQuery,
   useGetAgencyListMenuesQuery,
-  useGetAllCategoriesQuery,
+  useGetAllGlobalCategoriesQuery,
+  useGetFilteredAgenciesQuery,
 } = authApiSlice;

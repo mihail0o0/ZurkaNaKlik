@@ -297,16 +297,38 @@ namespace backend.Controllers
 
         #endregion
 
+        #region VratiNaziveKategorija
+        [HttpGet("VratiNaziveKategorija")]
+        public async Task<IActionResult> VratiNaziveKategorija()
+        {
+            try
+            {
+                List<string>? kategorije = await Context.Kategorije.Select(x => x.Naziv).Distinct().ToListAsync();
+
+                if (kategorije == null)
+                {
+                    return BadRequest("Nema kategorija");
+                }
+
+                return Ok(kategorije);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+        #endregion
+
         #region VratiAgencijeSaFilterimaISortiranjem
-        [HttpPost("VratiAgencije/{pageNumber}/{pageSize}")]
-        public async Task<ActionResult> VratiOglase([FromBody] FilteriAgencije filteri, int pageNumber, int pageSize)
+        [HttpPost("VratiAgencije/{pageNumber}/{pageSize}/{sort}")]
+        public async Task<ActionResult> VratiAgencije([FromBody] FilteriAgencije filteri, int pageNumber, int pageSize, string? sort)
         {
             try
             {
 
                 List<Agencija> agencije = await Context.Agencije.IgnoreQueryFilters().Include(i => i.KategorijeMenija).ToListAsync();
 
-                switch (filteri.sort)
+                switch (sort)
                 {
                     case "CenaDostaveRastuca":
                         agencije = agencije.OrderBy(o => o.CenaDostave).ToList();
@@ -338,12 +360,15 @@ namespace backend.Controllers
                 {
                     agencije = agencije.Where(oglas => oglas.MogucnostDostave == true).ToList();
 
-                    if (filteri.cenaDostaveOd >= 0 && filteri.cenaDostaveDo <= Int32.MaxValue && filteri.cenaDostaveOd < filteri.cenaDostaveDo)
+                    if (filteri.cenaDostaveOd != null && filteri.cenaDostaveOd >= 0 && (filteri.cenaDostaveDo == null || filteri.cenaDostaveOd < filteri.cenaDostaveDo))
                     {
-                        agencije = agencije.Where(agencija => agencija.CenaDostave >= filteri.cenaDostaveOd && agencija.CenaDostave <= filteri.cenaDostaveDo).ToList();
+                        agencije = agencije.Where(agencija => agencija.CenaDostave >= filteri.cenaDostaveOd).ToList();
+                    }
+                    if (filteri.cenaDostaveDo != null && filteri.cenaDostaveDo <= Int32.MaxValue && (filteri.cenaDostaveOd == null || filteri.cenaDostaveOd < filteri.cenaDostaveDo))
+                    {
+                        agencije = agencije.Where(agencija => agencija.CenaDostave <= filteri.cenaDostaveDo).ToList();
                     }
                 }
-
 
                 List<AgencijaBasic> response = new List<AgencijaBasic>();
 
@@ -352,7 +377,9 @@ namespace backend.Controllers
                     response.Add(ObjectCreatorSingleton.Instance.ToAgencijaBasic(agencija));
                 }
 
-                return Ok(response);
+                int brojAgencija = response.Count();
+
+                return Ok(new { brojAgencija, response });
             }
             catch (Exception e)
             {

@@ -24,6 +24,10 @@
   margin-bottom: 50px;
 }
 
+.content > h2 {
+  margin-block: 10px;
+}
+
 .filtersContainer {
   display: flex;
   flex-direction: column;

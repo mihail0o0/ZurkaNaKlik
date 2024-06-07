@@ -1,20 +1,9 @@
-.SearchKartice {
-  display: flex;
-  width: 80%;
-  margin-inline: 10%;
-  padding: 30px;
-  word-wrap: break-word;
-  gap: 50px;
-  flex-wrap: wrap;
-}
-
-.resultWrapper{
+.resultsWrapper{
   width: 90%;
   margin: 50px auto;
 }
 
-
-.filtersTop {
+.resultsTop {
   display: flex;
   gap: 30px;
   margin-bottom: 30px;

@@ -1,52 +1,37 @@
-import {
-  EnumDodatnaOprema,
-  EnumGrejanje,
-  EnumTipProslava,
-  EnumTipProstora,
-} from "../api/endpoints/oglas/types";
+import { PaginationData } from "../filters/types";
 
-export type Filters = {
-  filtersData: FiltersData;
-  sort: Sort;
+
+export type AgencyFilters = {
+  filtersData: AgencyFiltersData;
   paginationData: PaginationData;
+  sort: AgencySort;
 };
 
-export type FiltersData = {
-  tipProslava: EnumTipProslava[];
-  tipProstora: EnumTipProstora[];
-  grejanje: EnumGrejanje[];
-  dodatnaOprema: EnumDodatnaOprema[];
-  grad: string | null;
-  cenaOd?: number;
-  cenaDo?: number;
-  kvadraturaOd?: number;
-  kvadraturaDo?: number;
-  datumOd?: Date;
-  datumDo?: Date;
+export type AgencyFiltersData = {
+  listaKategorija: string[];
+  cenaDostaveOd?: number;
+  cenaDostaveDo?: number;
+  mogucnostDostave: boolean;
+  grad?: string;
 };
 
-export type PaginationData = {
-  pageNumber: number;
-  pageSize: number;
-};
-
-export enum Sort {
-  CenaRastuca = "CenaRastuca",
-  CenaOpadajuce = "CenaOpadajuce",
+export enum AgencySort {
+  CenaDostaveRastuca = "CenaDostaveRastuca",
+  CenaDostaveOpadajuce = "CenaDostaveOpadajuce",
   OcenaRastuce = "OcenaRastuce",
   OcenaOpadajuce = "OcenaOpadajuce",
 }
 
-export const mapStringToSort = (value: string): Sort | undefined => {
+export const mapStringToSort = (value: string): AgencySort | undefined => {
   switch (value) {
-    case "CenaRastuca":
-      return Sort.CenaRastuca;
-    case "CenaOpadajuce":
-      return Sort.CenaOpadajuce;
+    case "CenaDostaveRastuca":
+      return AgencySort.CenaDostaveRastuca;
+    case "CenaDostaveOpadajuce":
+      return AgencySort.CenaDostaveOpadajuce;
     case "OcenaRastuce":
-      return Sort.OcenaRastuce;
+      return AgencySort.OcenaRastuce;
     case "OcenaOpadajuce":
-      return Sort.OcenaOpadajuce;
+      return AgencySort.OcenaOpadajuce;
     default:
       return undefined;
   }

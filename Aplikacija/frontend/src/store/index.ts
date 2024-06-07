@@ -15,6 +15,7 @@ import {
 
 import authReducer from "./auth/index";
 import filtersReducer from "./filters/index";
+import agencyFiltersReducer from "./agencyFilters";
 
 const persistConfig = {
   key: "root",
@@ -27,6 +28,7 @@ const rootReducer = combineReducers({
   [api.reducerPath]: api.reducer,
   authSlice: authReducer,
   filtersSlice: filtersReducer,
+  agencyFiltersSlice: agencyFiltersReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

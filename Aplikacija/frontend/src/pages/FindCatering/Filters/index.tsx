@@ -1,29 +1,78 @@
 import { Autocomplete, Checkbox, TextField } from "@mui/material";
 import style from "./style.module.css";
-import { useGetAllCategoriesQuery } from "@/store/api/endpoints/pregled";
+import {
+  useGetAllGlobalCategoriesQuery,
+  useGetFilteredAgenciesQuery,
+} from "@/store/api/endpoints/pregled";
 import Grad from "@/pages/Home/DivFilteri/grad";
 import { useGetAllCitiesQuery } from "@/store/api/endpoints/oglas";
-import { useState } from "react";
+import { SyntheticEvent, useState } from "react";
 import PopupRange from "@/pages/Home/DivFilteri/popupRange";
 import MojButton from "@/components/lib/button";
+import { useSelector } from "react-redux";
+import {
+  selectAgencyFilters,
+  selectAgencyFiltersData,
+  setAgencyFilters,
+} from "@/store/agencyFilters";
+import { useAppDispatch } from "@/store";
+import { AgencyFilters } from "@/store/agencyFilters/types";
 
 const Filters = () => {
-  const { data: allCategories } = useGetAllCategoriesQuery();
-  const { data: allCities } = useGetAllCitiesQuery();
+  const filters = useSelector(selectAgencyFilters);
+  const filtersState = useSelector(selectAgencyFiltersData);
+  const dispatch = useAppDispatch();
 
-  const [city, setCity] = useState<string | null>(null);
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const { data: allCategories } = useGetAllGlobalCategoriesQuery();
 
-  const [cenaOd, setCenaOd] = useState("");
-  const [cenaDo, setCenaDo] = useState("");
+  const [city, setCity] = useState<string | null>(filtersState.grad ?? null);
+  const [selectedCategories, setSelectedCategories] = useState<string[]>(
+    filtersState.listaKategorija
+  );
 
-  const [mogucnostDostave, setMogucnostDostave] = useState(true);
+  const handleSelectCategory = (
+    event: SyntheticEvent<Element>,
+    newValue: string[]
+  ) => {
+    setSelectedCategories(newValue);
+  };
+
+  const [cenaOd, setCenaOd] = useState<string>(
+    `${filtersState.cenaDostaveOd ?? ""}`
+  );
+  const [cenaDo, setCenaDo] = useState(`${filtersState.cenaDostaveDo ?? ""}`);
+
+  const [mogucnostDostave, setMogucnostDostave] = useState<boolean>(
+    filtersState.mogucnostDostave
+  );
 
   const handleMogucnostDostaveChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     setMogucnostDostave(event.target.checked);
   };
+
+  const submit = async () => {
+    const newFiltersData: AgencyFilters = {
+      ...filters,
+      filtersData: {
+        ...filtersState,
+        cenaDostaveDo: parseInt(cenaDo),
+        cenaDostaveOd: parseInt(cenaOd),
+        grad: city ?? undefined,
+        listaKategorija: selectedCategories,
+        mogucnostDostave: mogucnostDostave,
+      },
+    };
+
+    dispatch(setAgencyFilters(newFiltersData));
+  };
+
+  const { data: agencies } = useGetFilteredAgenciesQuery(filters);
+
+  // console.log("AGENCIJE");
+  // console.log(agencies);
+
 
   return (
     <>
@@ -34,8 +83,7 @@ const Filters = () => {
             <p>
               Lorem ipsum, dolor sit amet consectetur adipisicing elit. Nisi
               architecto fuga cum mollitia, magnam dolores praesentium
-              reprehenderit? Saepe, soluta? Expedita perspiciatis nemo, tempora
-              autem ea error debitis exercitationem quisquam aut.
+              reprehenderit? Saepe, soluta?
             </p>
           </div>
           <div className={style.filtersContainer}>
@@ -44,7 +92,8 @@ const Filters = () => {
                 multiple
                 limitTags={2}
                 id="multiple-limit-tags"
-                options={allCities || []}
+                options={allCategories || []}
+                onChange={handleSelectCategory}
                 renderInput={(params) => (
                   <TextField {...params} label="Izaberite kategorije" />
                 )}
@@ -68,7 +117,7 @@ const Filters = () => {
               />
               <MojButton
                 text="Pretraži"
-                onClick={() => {}}
+                onClick={submit}
                 paddingX="50px"
                 paddingY="10px"
               />
