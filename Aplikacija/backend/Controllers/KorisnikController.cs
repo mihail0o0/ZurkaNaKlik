@@ -136,27 +136,36 @@ namespace backend.Controllers
 
         #region PrikaziSveZakupljeneOglase
         [HttpGet("PrikaziSveZakupljeneOglase")]
-        public async Task<IActionResult> PrikaziSveKorisnike()
+        public async Task<IActionResult> PrikaziSveZakupljeneOglase()
         {
             try
             {
                 int idKorisnika = int.Parse((HttpContext.Items["idKorisnika"] as string)!);
-                var korisnik = await Context.Korisnici.Where(x => x.Id == idKorisnika).IgnoreQueryFilters().Include(x => x.ListaZakupljenihOglasa).FirstAsync();
 
-                if (korisnik == null)
+                var listaZakupljenihOglasa = await Context.ZakupljeniOglasi
+                    .Include(i => i.ZahtevZaKetering)
+                    .Include(i => i.Oglas)
+                    .Include(i => i.Korisnik)
+                    .Where(f => f.Korisnik!.Id == idKorisnika)
+                    .ToListAsync();
+
+                if (!listaZakupljenihOglasa.Any())
                 {
-                    return BadRequest("Nema korisnika za prikaz");
+                    return BadRequest("Nisi rezervisao nijedan oglas");
                 }
 
-                var listaoglasa = korisnik.ListaZakupljenihOglasa;
-
-                if (listaoglasa == null)
+                var rezultat = listaZakupljenihOglasa.Select(o => new ZakupljeniOglasDTO
                 {
-                    return BadRequest("Dati korisnik nema zakupljenih oglasa");
-                }
+                    id = o.Id,
+                    oglasId = o.Oglas!.Id,
+                    korisnikId = o.Korisnik!.Id,
+                    datumZakupa = o.DatumZakupa,
+                    zakupljenOd = o.ZakupljenOd,
+                    zakupljenDo = o.ZakupljenDo,
+                    statusZahtevaZaKetering = o.ZahtevZaKetering?.StatusRezervacije
+                });
 
-                return Ok(new { listaoglasa });
-
+                return Ok(rezultat);
             }
             catch (Exception e)
             {
@@ -164,6 +173,7 @@ namespace backend.Controllers
             }
         }
         #endregion
+
 
         #region DodajOglas
         [HttpPost("DodajOglas")]
