@@ -18,10 +18,9 @@ type Props = {
   date: DateRange | undefined;
   setDate: (arg0: DateRange | undefined) => void;
   numberOfMonths: number;
-  asPopover: boolean;
 };
 
-const Datum = ({ asPopover, numberOfMonths, date, setDate }: Props) => {
+const Datum = ({ numberOfMonths, date, setDate }: Props) => {
   const [openCalendar, setOpenCalendar] = useState(false);
 
   const text = useMemo(() => {
@@ -39,23 +38,6 @@ const Datum = ({ asPopover, numberOfMonths, date, setDate }: Props) => {
     console.log("CLICK");
     setOpenCalendar(!openCalendar);
   };
-
-  if (!asPopover) {
-    return (
-      <div className="flex flex-col items-center">
-        <Calendar
-          initialFocus
-          mode="range"
-          defaultMonth={date?.from}
-          selected={date}
-          onSelect={setDate}
-          numberOfMonths={numberOfMonths}
-          className="border rounded-md"
-        />
-        <p className="mt-4">{text}</p>
-      </div>
-    );
-  }
 
   return (
     <div className={cn("grid gap-2")}>
