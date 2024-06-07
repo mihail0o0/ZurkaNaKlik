@@ -386,6 +386,7 @@ namespace backend.Controllers
 
                 var zahtevizaketering = await Context.ZahteviZaKetering
                                                                     .Include(i => i.Agencija)
+                                                                    .Include(i => i.ZakupljeniMeniji)
                                                                     .Where(i => i.Agencija!.Id == idAgencije)
                                                                     .IgnoreQueryFilters()
                                                                     .ToListAsync();
