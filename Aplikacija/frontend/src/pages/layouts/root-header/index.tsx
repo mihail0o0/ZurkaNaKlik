@@ -31,7 +31,7 @@ const RootHeader = () => {
     } else {
       objPrikaz = {
         message: "Postavke profila",
-        link: `/user/profile/${user.id}`,
+        link: `/user/profile`,
       };
     }
 
