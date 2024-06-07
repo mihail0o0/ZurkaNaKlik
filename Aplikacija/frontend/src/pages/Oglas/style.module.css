@@ -147,6 +147,8 @@
   width: 60%;
   align-items: center;
   padding: 15px;
+  padding-bottom: 50px;
+  margin-block: 20px;
 }
 
 .Calendar > h4{

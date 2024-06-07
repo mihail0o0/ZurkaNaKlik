@@ -66,9 +66,6 @@ const UserProfile = () => {
   const [updateUserAction] = useUpdateUserMutation();
   const [deleteUserAction] = useDeleteUserMutation();
 
-  console.log(user);
-  console.log(tudjiOglasi);
-
   const [ime, setIme] = useState("");
   const [prezime, setPrezime] = useState("");
   const [email, setEmail] = useState("");

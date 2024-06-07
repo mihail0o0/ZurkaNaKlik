@@ -7,10 +7,10 @@ import {
   useDeleteFavouriteMutation,
   useGetUserDataQuery,
   useIsFavoriteQuery,
+  useMakeReservationMutation,
 } from "@/store/api/endpoints/korisnik";
 import UserAvatar from "@/components/UserAvatar";
 import MojButton from "@/components/lib/button";
-import BrojLjudi from "../Home/DivFilteri/brojLjudi";
 import { skipToken } from "@reduxjs/toolkit/query";
 import { useEffect, useMemo, useState } from "react";
 import {
@@ -24,18 +24,30 @@ import { getRawLocation } from "@/utils/handleQueries";
 import PageSpacer from "@/components/lib/page-spacer";
 import ImageOverview from "@/components/ImageOverview";
 import { enumToString } from "@/utils/enumMappings";
-import { Typography } from "@mui/material";
-import Datum from "../Home/DivFilteri/datum";
-import { DateRange } from "react-day-picker";
+import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Typography,
+} from "@mui/material";
+import { Button, DateRange } from "react-day-picker";
 import SelectDatum from "./calendar";
+import { MakeReservationDTO } from "@/store/api/endpoints/korisnik/types";
+import { eachDayOfInterval } from "date-fns";
+import { toast } from "react-toastify";
 
 const Oglas = () => {
   const [date, setDate] = useState<DateRange | undefined>();
+  const [openDialog, setOpenDialog] = useState(false);
+
   const { id } = useParams();
   const idOglasa = id ? parseInt(id) : undefined;
   const navigate = useNavigate();
 
   const { data: currentOglas } = useGetOglasQuery(idOglasa ?? skipToken);
+
   const { data: VlasnikOglasa } = useGetUserDataQuery(
     currentOglas?.idVlasnika ?? skipToken
   );
@@ -51,6 +63,20 @@ const Oglas = () => {
   const [images, setImages] = useState<(string | null | undefined)[]>([]);
 
   const [getImageAction] = useLazyGetImageQuery();
+
+  const [makeReservationAction] = useMakeReservationMutation();
+
+  const bussyDates: Date[] = useMemo(() => {
+    if (!currentOglas) return [];
+
+    const datumi: Date[] = [];
+
+    currentOglas.zauzetiDani.forEach((dan) => {
+      datumi.push(new Date(dan));
+    });
+
+    return datumi;
+  }, [currentOglas]);
 
   const handleFavourite = async () => {
     if (!currentOglas) return;
@@ -113,10 +139,31 @@ const Oglas = () => {
     setBigImage(images[0]);
   }, [images]);
 
-  console.log(currentOglas?.listaTipProslava);
-  
   // const testZauzetiDani = [new Date("2024-6-10"), new Date("2024-10-6")];
 
+  const submit = async () => {
+    if (!currentOglas) return;
+
+    let dates: Date[] = [];
+
+    if (date && date.from && date.to) {
+      dates = eachDayOfInterval({ start: date.from, end: date.to });
+    }
+
+    const reservationObject: MakeReservationDTO = {
+      idOglasa: currentOglas.id,
+      trazeniDatumi: dates,
+    };
+
+    const result = await makeReservationAction(reservationObject);
+    if ("error" in result) {
+      return;
+    }
+
+    toast.success("Oglas je uspesno rezervisan");
+
+    setOpenDialog(true);
+  };
 
   if (!currentOglas) {
     return null;
@@ -254,14 +301,52 @@ const Oglas = () => {
             <div className={style.Calendar}>
               <h4>Izaberite Datume</h4>
               <SelectDatum
-                bussyDays={currentOglas.zauzetiDani}
+                bussyDays={bussyDates}
                 date={date}
                 setDate={setDate}
               />
             </div>
+            <MojButton
+              text={"Rezerviši Vikendicu"}
+              onClick={submit}
+              paddingX="60px"
+            />
           </div>
         </div>
       </div>
+      <Dialog
+        open={openDialog}
+        onClose={() => setOpenDialog(false)}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          Oglas je uspešno rezervisan
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Uspešno ste rezervisali ovaj oglas. Možete odabrati ketering za
+            oglas, ili nastaviti dalje na pregled svih zakupljenih oglasa.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <MojButton
+            small={true}
+            text="Zakupljeni Oglasi"
+            grey={true}
+            onClick={() => {
+              navigate("/poseceno");
+            }}
+          />
+          <MojButton
+            small={true}
+            text="Dodajte Ketering"
+            onClick={() => {
+              navigate("/findCatering");
+            }}
+          />
+        </DialogActions>
+      </Dialog>
     </>
   );
 };

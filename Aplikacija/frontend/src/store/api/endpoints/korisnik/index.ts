@@ -1,7 +1,12 @@
 import api from "../..";
 import { providesList, providesSingle } from "../../utils";
 import { OglasObjekata } from "../oglas/types";
-import { AllUserData, UpdateUserDTO } from "./types";
+import {
+  AllUserData,
+  MakeReservationDTO,
+  ReservedOglas,
+  UpdateUserDTO,
+} from "./types";
 
 const authApiSlice = api.injectEndpoints({
   endpoints: (builder) => ({
@@ -59,8 +64,18 @@ const authApiSlice = api.injectEndpoints({
       query: (id) => ({
         url: `Korisnik/DaLiOmiljen/${id}`,
       }),
-      providesTags: (result, error, id) => [
-        { type: 'OmiljeniOglasi', id },
+      providesTags: (result, error, id) => [{ type: "OmiljeniOglasi", id }],
+    }),
+    makeReservation: builder.mutation<ReservedOglas, MakeReservationDTO>({
+      query: (body) => ({
+        url: `Korisnik/ZakupiOglas/${body.idOglasa}`,
+        method: "POST",
+        body: body.trazeniDatumi,
+      }),
+      invalidatesTags: (result, err, arg) => [
+        { type: "Oglas", id: result?.oglasId },
+        { type: "ReservedOglasi", id: result?.id },
+        { type: "ReservedOglasi", id: "LISTRESERVEDOGLASI" },
       ],
     }),
   }),
@@ -74,4 +89,5 @@ export const {
   useDeleteFavouriteMutation,
   useDeleteUserMutation,
   useIsFavoriteQuery,
+  useMakeReservationMutation,
 } = authApiSlice;

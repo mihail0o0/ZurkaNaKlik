@@ -14,7 +14,6 @@ const ImageOverview = ({ image, tipoviProslava }: Props) => {
   const [visible, setVisible] = useState(false);
 
   const displayImage = `url(${image ?? defaultImage})`;
-  console.log(displayImage);
 
   const handleClickOff = () => {
     setVisible(false)

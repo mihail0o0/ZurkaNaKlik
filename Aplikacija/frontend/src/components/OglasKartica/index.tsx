@@ -1,8 +1,7 @@
 import { CSSProperties, useEffect, useMemo, useState } from "react";
 import style from "./style.module.css";
 import Icon from "../lib/icon";
-import { Typography, useMediaQuery } from "@mui/material";
-import MojButton from "../lib/button";
+import { Typography } from "@mui/material";
 import {
   OglasObjekata,
   tipProslavaMap,
@@ -153,7 +152,7 @@ const OglasKartica = ({ oglas, onClick }: Props) => {
             <Typography
               overflow={"hidden"}
               textOverflow={"ellipsis"}
-              maxHeight={100}
+              height={100}
               lineHeight={"1.5rem"}
             >
               {oglas.opis}

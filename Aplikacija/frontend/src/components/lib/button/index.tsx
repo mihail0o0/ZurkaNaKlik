@@ -1,4 +1,4 @@
-import React, { CSSProperties } from "react";
+import React, { CSSProperties, MouseEvent } from "react";
 import Icon from "../icon";
 
 type Props = {
@@ -16,6 +16,7 @@ type Props = {
   classes?: string;
   fontSize?: string;
   small?: boolean;
+  disabled?: boolean;
 };
 
 const MojButton = ({
@@ -33,6 +34,7 @@ const MojButton = ({
   classes,
   fontSize,
   small,
+  disabled,
 }: Props) => {
   color ??= grey ? "black" : "white";
   backgroundColor ??= grey ? "var(--lightGrey)" : "var(--mainColor)";
@@ -65,14 +67,18 @@ const MojButton = ({
 
   if (!text) iconMargin = "0px";
 
+  const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
+    if (disabled) return;
+    onClick(event);
+  };
+
   return icon ? (
     <button
       className={`mainButton ${classes}`}
       style={buttonStyle}
-      onClick={onClick}
+      onClick={(event) => handleClick(event)}
     >
       <Icon iconMargin={iconMargin} icon={icon} />
-
       <span style={textStyle}>{text}</span>
     </button>
   ) : (

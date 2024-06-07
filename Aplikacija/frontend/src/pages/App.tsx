@@ -28,6 +28,7 @@ import Oglas from "./Oglas";
 import IzmeniOglas from "./IzmeniOglas";
 import Porudzbine from "./Porudzbine";
 import AgencyView from "./Profile/AgencyView";
+import FindCateringPage from "./FindCatering";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -52,11 +53,13 @@ const router = createBrowserRouter(
           <Route path="profile" element={<UserProfile />} />
         </Route>
 
+        <Route path="findCatering" element={<FindCateringPage />} />
+
         {/* Agencija */}
         <Route path="catering">
           <Route path="profile" element={<AgencyProfile />} />
           <Route path="porudzbine" element={<Porudzbine />} />
-          <Route path="viewAgency/:id" element={<AgencyView />}/>
+          <Route path="viewAgency/:id" element={<AgencyView />} />
         </Route>
       </Route>
 

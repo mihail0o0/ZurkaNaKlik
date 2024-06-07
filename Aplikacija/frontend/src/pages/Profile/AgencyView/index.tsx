@@ -31,9 +31,7 @@ const AgencyView = () => {
   const currUser = useSelector(selectUser);
   const { id } = useParams();
   const idAgencije = id ? parseInt(id) : undefined;
-  console.log(idAgencije);
   const { data: agencyData } = useGetAgencyDataQuery(idAgencije ?? skipToken );
-  console.log(agencyData);
   const{data : meniDTO}=useGetAgencyMenuesQuery(idAgencije ?? skipToken );
   
  

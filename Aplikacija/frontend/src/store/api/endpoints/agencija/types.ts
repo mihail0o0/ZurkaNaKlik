@@ -52,12 +52,13 @@ type CateringOrder = {
   idAgencije?: number;
   idMenija?: number[];
 };
-type MenuForList={
-  id: number;
-  naziv:string;
-  cenaMenija: number;
-  slika:string;
-  opis:string;
-  sastavMenija:string[];
-}
 
+// TODO CHECK THIS
+type MenuForList = {
+  id: number;
+  naziv: string;
+  cenaMenija: number;
+  slika: string;
+  opis: string;
+  sastavMenija: string[];
+};

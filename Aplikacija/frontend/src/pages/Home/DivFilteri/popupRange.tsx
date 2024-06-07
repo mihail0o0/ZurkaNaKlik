@@ -13,9 +13,18 @@ type Props = {
   to: string;
   setFrom: React.Dispatch<React.SetStateAction<string>>;
   setTo: React.Dispatch<React.SetStateAction<string>>;
+  disabled?: boolean;
 };
 
-const PopupRange = ({ icon, inputText, from, to, setFrom, setTo }: Props) => {
+const PopupRange = ({
+  icon,
+  inputText,
+  from,
+  to,
+  setFrom,
+  setTo,
+  disabled,
+}: Props) => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -53,6 +62,7 @@ const PopupRange = ({ icon, inputText, from, to, setFrom, setTo }: Props) => {
         grey={true}
         color="black"
         wide={true}
+        disabled={disabled}
       />
       <Popover
         id={id}

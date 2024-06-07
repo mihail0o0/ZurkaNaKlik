@@ -99,7 +99,6 @@ const AgencySignUpForm = () => {
     dispatch(setUser(signUpResult.data.loginResult));
     dispatch(setIsFirstLogin(true));
 
-    console.log("Mrnjao");
     navigate("/catering/profile", { replace: true });
   };
 

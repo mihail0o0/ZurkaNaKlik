@@ -35,7 +35,6 @@ const Datum = ({ numberOfMonths, date, setDate }: Props) => {
   }, [date]);
 
   const handleOpen = () => {
-    console.log("CLICK");
     setOpenCalendar(!openCalendar);
   };
 

@@ -10,8 +10,15 @@ const authApiSlice = api.injectEndpoints({
     }),
     getAgencyListMenues: builder.query<MenuForList[], number[]>({
       query: (ids) => ({
-        url: `Pregled/VartiMenije/Lista/listaMenija`,
+        url: `Pregled/VratiMenije/Lista/listaMenija`,
       }),
+    }),
+
+    getAllCategories: builder.query<string[], void>({
+      query: () => ({
+        url: `Oglas/VratiNaziveKategorija`,
+      }),
+      // providesTags: (result) => providesList("Categories", result),
     }),
   }),
 });
@@ -19,4 +26,5 @@ const authApiSlice = api.injectEndpoints({
 export const {
   useGetAgencyMenuesQuery,
   useGetAgencyListMenuesQuery,
+  useGetAllCategoriesQuery,
 } = authApiSlice;

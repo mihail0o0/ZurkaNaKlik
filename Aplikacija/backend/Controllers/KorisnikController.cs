@@ -493,15 +493,13 @@ namespace backend.Controllers
         #endregion
 
         #region ZakupiOglas
-        [HttpPost("ZakupiOglas/{idOglasa}/trazenidatumi")]
-        public async Task<ActionResult> ZakupiOglas(int idOglasa, List<DateTime> trazenidatumi)
+        [HttpPost("ZakupiOglas/{idOglasa}")]
+        public async Task<ActionResult> ZakupiOglas(int idOglasa, [FromBody] List<DateTime> trazeniDatumi)
         {
             try
             {
                 int idKorisnika = int.Parse((HttpContext.Items["idKorisnika"] as string)!);
-
                 var korisnik = await Context.Korisnici.FindAsync(idKorisnika);
-
 
                 OglasObjekta? oglas = await Context.OglasiObjekta.FindAsync(idOglasa);
 
@@ -510,29 +508,27 @@ namespace backend.Controllers
                     return BadRequest("ne postoji takav objekat");
                 }
 
-                bool slobodan = !oglas.ZauzetiDani!.Any(date => trazenidatumi.Any(trazeniDatum => trazeniDatum.Date == date.Date));
-
+                bool slobodan = !oglas.ZauzetiDani!.Any(date => trazeniDatumi.Any(trazeniDatum => trazeniDatum.Date == date.Date));
 
                 if (slobodan)
                 {
-
-                    oglas.ZauzetiDani!.AddRange(trazenidatumi);
+                    oglas.ZauzetiDani!.AddRange(trazeniDatumi);
 
                     ZakupljeniOglas zakupljenoglas = new ZakupljeniOglas
                     {
                         Oglas = oglas,
                         Korisnik = korisnik!,
                         DatumZakupa = DateTime.Now,
-                        ZakupljenOd = trazenidatumi[0],
-                        ZakupljenDo = trazenidatumi[trazenidatumi.Count - 1],
+                        ZakupljenOd = trazeniDatumi[0],
+                        ZakupljenDo = trazeniDatumi[trazeniDatumi.Count - 1],
                         ZahtevZaKetering = null
                     };
 
                     Context.ZakupljeniOglasi.Add(zakupljenoglas);
                     await Context.SaveChangesAsync();
 
-                    return Ok(new { zakupljenoglas });
-
+                    ZakupljeniOglasDTO result = ObjectCreatorSingleton.Instance.ToZakupljeniOglasDTO(zakupljenoglas);
+                    return Ok(result);
                 }
                 else
                 {

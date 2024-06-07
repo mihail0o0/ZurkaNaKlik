@@ -300,7 +300,7 @@ namespace backend.Controllers
         #region VratiAgencijeSaFilterimaISortiranjem
         [HttpPost("VratiAgencije/{pageNumber}/{pageSize}")]
         public async Task<ActionResult> VratiOglase([FromBody] FilteriAgencije filteri, int pageNumber, int pageSize)
-        { //dodaj sortiranje
+        {
             try
             {
 
@@ -324,32 +324,35 @@ namespace backend.Controllers
                         return BadRequest("Ne postoji sort");
                 }
 
-                if (filteri.ListaKategorija != null && filteri.ListaKategorija!.Count != 0)
+                if (filteri.listaKategorija != null && filteri.listaKategorija!.Count != 0)
                 {
-                    agencije = agencije.Where(agencija => agencija.KategorijeMenija!.Any(tip => filteri.ListaKategorija!.Contains(tip.Naziv))).ToList();
+                    agencije = agencije.Where(agencija => agencija.KategorijeMenija!.Any(tip => filteri.listaKategorija!.Contains(tip.Naziv))).ToList();
                 }
 
-                if (filteri.Grad != null)
+                if (filteri.grad != null)
                 {
-                    agencije = agencije.Where(Agencija => Agencija.Lokacija.Equals(filteri.Grad)).ToList();
+                    agencije = agencije.Where(Agencija => Agencija.Lokacija.Equals(filteri.grad)).ToList();
                 }
 
-                if (filteri.MogucnostDostave == true)
+                if (filteri.mogucnostDostave == true)
                 {
                     agencije = agencije.Where(oglas => oglas.MogucnostDostave == true).ToList();
 
-                    if (filteri.CenaDostaveOd >= 0 && filteri.CenaDostaveDo <= Int32.MaxValue && filteri.CenaDostaveOd < filteri.CenaDostaveDo)
+                    if (filteri.cenaDostaveOd >= 0 && filteri.cenaDostaveDo <= Int32.MaxValue && filteri.cenaDostaveOd < filteri.cenaDostaveDo)
                     {
-                        agencije = agencije.Where(agencija => agencija.CenaDostave >= filteri.CenaDostaveOd && agencija.CenaDostave <= filteri.CenaDostaveDo).ToList();
+                        agencije = agencije.Where(agencija => agencija.CenaDostave >= filteri.cenaDostaveOd && agencija.CenaDostave <= filteri.cenaDostaveDo).ToList();
                     }
                 }
 
 
-                //List<OglasObjektaResponse> response = new List<OglasObjektaResponse>();
+                List<AgencijaBasic> response = new List<AgencijaBasic>();
 
+                foreach (Agencija agencija in agencije)
+                {
+                    response.Add(ObjectCreatorSingleton.Instance.ToAgencijaBasic(agencija));
+                }
 
-
-                return Ok(new { agencije });
+                return Ok(response);
             }
             catch (Exception e)
             {
