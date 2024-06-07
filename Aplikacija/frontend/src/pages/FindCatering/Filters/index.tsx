@@ -10,7 +10,6 @@ import MojButton from "@/components/lib/button";
 const Filters = () => {
   const { data: allCategories } = useGetAllCategoriesQuery();
   const { data: allCities } = useGetAllCitiesQuery();
-
   const [city, setCity] = useState<string | null>(null);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
@@ -32,21 +31,20 @@ const Filters = () => {
           <div className={style.content}>
             <h2>Pronadjite savršeni ketering!</h2>
             <p>
-              Lorem ipsum, dolor sit amet consectetur adipisicing elit. Nisi
-              architecto fuga cum mollitia, magnam dolores praesentium
-              reprehenderit? Saepe, soluta? Expedita perspiciatis nemo, tempora
-              autem ea error debitis exercitationem quisquam aut.
+              Dobrodošli na našu platformu gde možete jednostavno naručiti
+              vrhunski ketering za vašu žurku! Kod nas ćete pronaći sve što vam
+              je potrebno za savršeno gastronomsko iskustvo.
             </p>
           </div>
           <div className={style.filtersContainer}>
             <div className={style.filters}>
               <Autocomplete
-                multiple
-                limitTags={2}
-                id="multiple-limit-tags"
-                options={allCities || []}
+                disablePortal
+                id="combo-box-demo"
+                options={allCategories || []}
+                getOptionLabel={(option) => option.naziv}
                 renderInput={(params) => (
-                  <TextField {...params} label="Izaberite kategorije" />
+                  <TextField {...params} label="Kategorije" />
                 )}
                 sx={{
                   width: "300px",
