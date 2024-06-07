@@ -46,7 +46,7 @@ const Navbar = ({ user }: Props) => {
       {
         icon: "account_circle",
         text: "Profil",
-        link: isUser ? `/user/profile/${user.id}` : "/catering/profile",
+        link: isUser ? `/user/profile` : "/catering/profile",
       },
       isUser
         ? { icon: "favorite", text: "Omiljeno", link: "/omiljeno" }

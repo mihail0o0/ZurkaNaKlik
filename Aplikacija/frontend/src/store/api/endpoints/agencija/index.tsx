@@ -115,7 +115,7 @@ const authApiSlice = api.injectEndpoints({
     declineOrder: builder.mutation<boolean, number>({
       query: (id) => ({
         url: `Agencija/OdbijanjePorudzbine/${id}`,
-        method: "PUT",
+        method: "GET",
       }),
       invalidatesTags: (result, err, args) => [
         { type: "CateringOrder", id: args },

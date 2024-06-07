@@ -3,7 +3,11 @@ import style from "./style.module.css";
 import DisplayCard from "../DisplayCard";
 import MojButton from "../lib/button";
 import Icon from "../lib/icon";
-import { useAcceptOrderMutation, useDeclineOrderMutation, useGetMenuesQuery } from "@/store/api/endpoints/agencija";
+import {
+  useAcceptOrderMutation,
+  useDeclineOrderMutation,
+  useGetMenuesQuery,
+} from "@/store/api/endpoints/agencija";
 import { useGetOglasQuery } from "@/store/api/endpoints/oglas";
 import { skipToken } from "@reduxjs/toolkit/query";
 import { toast } from "react-toastify";
@@ -15,54 +19,56 @@ type MenyCardProps = {
   //meny
 };
 const MenyCardPorudzbine = ({ order, meni }: MenyCardProps) => {
-  const{data :oglas}=useGetOglasQuery(order?.idOglasa ?? skipToken);
-  const[acceptOrder]=useAcceptOrderMutation();
-  const[declineOrder]=useDeclineOrderMutation();
-  const [statusRezervacije, setStatusRezervacije] = useState(order?.statusRezervacije);
+  const { data: oglas } = useGetOglasQuery(order?.idOglasa ?? skipToken);
+  const [acceptOrder] = useAcceptOrderMutation();
+  const [declineOrder] = useDeclineOrderMutation();
+  const [statusRezervacije, setStatusRezervacije] = useState(
+    order?.statusRezervacije
+  );
 
-  const formatDate = (date:Date) => {
-    if (!(date instanceof Date)) return 'Invalid date';
-    
+  const formatDate = (date: Date) => {
+    if (!(date instanceof Date)) return "Invalid date";
+
     const day = date.getDate();
-    const month = date.getMonth() + 1; 
+    const month = date.getMonth() + 1;
     const year = date.getFullYear();
 
     return `${day}.${month}.${year}.`;
   };
   const accept = async () => {
-    if(!order) {
+    if (!order) {
       console.log("nema order");
       return;
     }
-   const result = await acceptOrder(order.id);
+    const result = await acceptOrder(order.id);
 
     if ("error" in result) {
       return;
     }
     setStatusRezervacije(true);
     toast.success("Porudzbina je prihvacena!");
-    
   };
+
   const decline = async () => {
-    if(!order) {
+    if (!order) {
       console.log("nema order");
       return;
     }
-   const result = await declineOrder(order.id);
+    const result = await declineOrder(order.id);
 
     if ("error" in result) {
       return;
     }
     setStatusRezervacije(false);
     toast.success("Porudzbina je odbijena!");
-    
   };
+
   useEffect(() => {
     if (order) {
       setStatusRezervacije(order.statusRezervacije);
     }
   }, [order]);
- console.log(order);
+
   return (
     <div className={`containerWrapper ${style.Container}`}>
       <div className={style.MenyPicture}>
@@ -70,14 +76,13 @@ const MenyCardPorudzbine = ({ order, meni }: MenyCardProps) => {
       </div>
       <div className={style.MenyTxt}>
         <h3>{meni && meni.naziv}</h3>
-        
+
         {/* <p>Opis menija neki mali./p> */}
         <div className={style.InfoOglas}>
           <div className={style.DisplayMenyInfo}>
             <>
               <Icon icon={"location_on"} />
               <label>{oglas && oglas.lokacija}</label>
-              
             </>
           </div>
           <div className={style.DisplayMenyInfo}>
@@ -98,28 +103,28 @@ const MenyCardPorudzbine = ({ order, meni }: MenyCardProps) => {
           </div>
         </div>
       </div>
-     {!order?.statusRezervacije &&
-     
-     <div className={style.acceptDecline}>
-        <div className={style.ButtonParentDiv}>
-          <MojButton
-            icon="check"
-            text="Prihvati"
-            backgroundColor="#00D615"
-            wide={true}
-            onClick={accept}
-          />
+      {order?.statusRezervacije === null && (
+        <div className={style.acceptDecline}>
+          <div className={style.ButtonParentDiv}>
+            <MojButton
+              icon="check"
+              text="Prihvati"
+              backgroundColor="#00D615"
+              wide={true}
+              onClick={accept}
+            />
+          </div>
+          <div className={style.ButtonParentDiv}>
+            <MojButton
+              icon="cancel"
+              text="Odbij"
+              backgroundColor="#FA3636"
+              wide={true}
+              onClick={decline}
+            />
+          </div>
         </div>
-        <div className={style.ButtonParentDiv}>
-          <MojButton
-            icon="cancel"
-            text="Odbij"
-            backgroundColor="#FA3636"
-            wide={true}
-            onClick={decline}
-          />
-        </div>
-      </div>}
+      )}
     </div>
   );
 };

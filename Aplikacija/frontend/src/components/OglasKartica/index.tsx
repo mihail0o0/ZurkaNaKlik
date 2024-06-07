@@ -1,8 +1,7 @@
 import { CSSProperties, useEffect, useMemo, useState } from "react";
 import style from "./style.module.css";
 import Icon from "../lib/icon";
-import { Typography, useMediaQuery } from "@mui/material";
-import MojButton from "../lib/button";
+import { Typography } from "@mui/material";
 import {
   OglasObjekata,
   tipProslavaMap,
@@ -42,9 +41,6 @@ const OglasKartica = ({ oglas, onClick }: Props) => {
   const { data: imageUrl } = useGetImageQuery(
     getRawLocation(oglas.slike[0]) ?? skipToken
   );
-
-  console.log(oglas.id);
-  console.log(isFavorite);
 
   useEffect(() => {
     if (isFavorite !== undefined) {
@@ -137,7 +133,6 @@ const OglasKartica = ({ oglas, onClick }: Props) => {
         </div>
       </div>
       <div className={style.ViseInfo}>
-        {/* treba mi za tekst gore i dole za cenu,broj,lokaciju*/}
         <div className={style.ViseInfoTekst}>
           <div className={style.ImeOcena}>
             <h2
@@ -154,23 +149,26 @@ const OglasKartica = ({ oglas, onClick }: Props) => {
             </div>
           </div>
           <div className={style.Opis}>
-            <Typography>{oglas.opis}</Typography>
+            <Typography
+              overflow={"hidden"}
+              textOverflow={"ellipsis"}
+              height={100}
+              lineHeight={"1.5rem"}
+            >
+              {oglas.opis}
+            </Typography>
           </div>
         </div>
-        {/* ovde cena broj lokacija */}
         <div className={style.CenaBrojLokacija}>
           <div className={style.BottomIcon}>
-            {/* cena  */}
             <Icon icon="payments" />
             <p>{oglas.cenaPoDanu}</p>
           </div>
           <div className={style.BottomIcon}>
-            {/* broj ljudi */}
             <Icon icon="view_in_ar" />
             <p>{oglas.kvadratura}</p>
           </div>
           <div className={style.BottomIcon}>
-            {/* lokacija */}
             <Icon icon="location_on" />
             <p>{oglas.grad}</p>
           </div>

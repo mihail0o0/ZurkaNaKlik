@@ -12,3 +12,18 @@ export type AllUserData = {
 };
 
 export type UpdateUserDTO = Omit<AllUserData, "role" | "profilePhoto">;
+
+export type MakeReservationDTO = {
+  idOglasa: number;
+  trazeniDatumi: Date[];
+};
+
+export type ReservedOglas = {
+  id: number;
+  oglasId?: number;
+  korisnikId: number;
+  datumZakupa: Date;
+  zakupljenOd: Date;
+  zakupljenDo: Date;
+  statusZahtevaZaKetering?: boolean;
+};

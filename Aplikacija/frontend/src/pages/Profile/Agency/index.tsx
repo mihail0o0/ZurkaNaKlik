@@ -46,7 +46,9 @@ const AgencyProfile = () => {
     }
     SetChecked(agencyData.mogucnostDostave);
   }, [agencyData]);
+
   useEffect(() => {
+    if (!meniDTO) return;
     <MenuList getMenuDTO={meniDTO} />;
   }, [meniDTO]);
 
@@ -61,10 +63,11 @@ const AgencyProfile = () => {
 
   const [addCategory] = useAddCategoryMutation();
   const [deleteCategory] = useDeleteCategoryMutation();
-  console.log(meniDTO);
+  
   type MenuListProps = {
     getMenuDTO: GetMenuDTO[];
   };
+
   const MenuList = ({ getMenuDTO }: MenuListProps) => (
     <div>
       {getMenuDTO.map((catering) =>
@@ -132,7 +135,6 @@ const AgencyProfile = () => {
     };
     addCategory(kategorija);
     setImeKategorije("");
-    console.log("Jao");
   };
 
   if (!currUser) {
@@ -232,12 +234,15 @@ const AgencyProfile = () => {
                     ></Chip>
                   );
                 })}
+              <div className="w-5"></div>
               <Input
                 text={imeKategorije}
                 placeholder="Ime Kategorije"
                 onChange={setImeKategorije}
               />
+              <div className="w-5"></div>
               <MojButton
+                text=""
                 icon="add"
                 onClick={dodajNovuKategoriju}
                 paddingY="10px"

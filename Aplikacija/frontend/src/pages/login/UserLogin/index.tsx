@@ -3,7 +3,7 @@ import style from "../style.module.css";
 import LoginLabel from "@/components/lib/labels/login";
 import UserLoginForm from "../../../components/UserLoginForm";
 import PageSpacer from "@/components/lib/page-spacer";
-import { useGetAllCategoriesQuery } from "@/store/api/endpoints/agencija";
+import { useGetAllAgencyCategoriesQuery } from "@/store/api/endpoints/agencija";
 
 function UserLoginPage() {
   return (

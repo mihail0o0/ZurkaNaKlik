@@ -54,13 +54,12 @@ const authApiSlice = api.injectEndpoints({
     }),
     deleteOglasImage: builder.mutation<void, DeleteOglasImageDTO>({
       query: (body) => ({
-        url: `Korisnik/ObrisiSlikuOglasa/${body.idOglasa}`,
+        url: `Korisnik/ObrisiSlikuOglasa/${body.idOglasa}/${body.slikaPath}`,
         method: "DELETE",
-        body: body.slikaPath,
       }),
       invalidatesTags: (result, err, args) => [
         { type: "Oglas", id: args.idOglasa },
-        { type: "Image", id: "IMAGEOGLAS" },
+        { type: "Image", id: "IMAGEOGLAS" }
       ],
     }),
   }),

@@ -1,3 +1,5 @@
+import { Filters, FiltersData, PaginationData, Sort } from "@/store/filters/types";
+
 export enum EnumDodatnaOprema {
   net,
   tv,
@@ -88,25 +90,25 @@ export const tipGrejanjaMap: { [key in EnumGrejanje]: string } = {
   [EnumGrejanje.Nema]: "Nema",
 };
 
-export type Filters = {
-  sort?: string;
-  tipProslava?: EnumTipProslava[];
-  tipProstora?: EnumTipProstora[];
-  grad?: string;
-  cenaOd: number;
-  cenaDo: number;
-  kvadraturaOd: number;
-  kvadraturaDo: number;
-  grejanje?: EnumGrejanje[];
-  dodatnaOprema?: EnumDodatnaOprema[];
-  datumOd: Date;
-  datumDo: Date;
-};
+// export type Filters = {
+//   sort?: string;
+//   tipProslava?: EnumTipProslava[];
+//   tipProstora?: EnumTipProstora[];
+//   grad?: string;
+//   cenaOd: number;
+//   cenaDo: number;
+//   kvadraturaOd: number;
+//   kvadraturaDo: number;
+//   grejanje?: EnumGrejanje[];
+//   dodatnaOprema?: EnumDodatnaOprema[];
+//   datumOd: Date;
+//   datumDo: Date;
+// };
 
-export type FiltersPaginationData = {
-  pageNumber: number;
-  pageSize: number;
-};
+// export type FiltersPaginationData = {
+//   pageNumber: number;
+//   pageSize: number;
+// };
 
 export type OglasObjekata = {
   id: number;
@@ -131,10 +133,22 @@ export type OglasObjekata = {
   idVlasnika: number;
 };
 
-export type AddOglasObjektaDTO = Omit<OglasObjekata, "id" | "zauzetiDani" | "idVlasnika">;
-export type UpdateOglasObjektaDTO = Omit<OglasObjekata, "zauzetiDani" | "idVlasnika">;
+export type AddOglasObjektaDTO = Omit<
+  OglasObjekata,
+  "id" | "zauzetiDani" | "idVlasnika"
+>;
+export type UpdateOglasObjektaDTO = Omit<
+  OglasObjekata,
+  "zauzetiDani" | "idVlasnika"
+>;
 
-export type GetOglasData = {
-  filters: Filters;
-  pageData: FiltersPaginationData;
+export type FilteredOglasObjektaRequest = {
+  filtersData: Partial<Pick<FiltersData, "grejanje" | "tipProstora" | "tipProslava" | "dodatnaOprema">>,
+  sort: Sort,
+  paginationData: PaginationData,
+}
+
+export type FilteredOglasObjektaResponse = {
+  brojOglasa: number;
+  response: OglasObjekata[];
 };

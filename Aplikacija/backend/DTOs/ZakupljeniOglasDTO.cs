@@ -7,7 +7,6 @@ namespace backend.DTOs
 {
     public class ZakupljeniOglasDTO
     {
-        [Key]
         public int id { get; set; }
         public int? oglasId { get; set; }
         public int? korisnikId { get; set; }

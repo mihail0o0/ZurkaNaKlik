@@ -9,3 +9,8 @@ export type ResultType =
       error: FetchBaseQueryError | SerializedError;
     }
   | undefined;
+
+export type tipProslave = {
+  value: string;
+  selected: boolean;
+};

@@ -232,5 +232,43 @@ namespace backend.Utilities
 
             return zahtevResult;
         }
+
+        public ZakupljeniOglasDTO ToZakupljeniOglasDTO(ZakupljeniOglas oglas)
+        {
+            ZakupljeniOglasDTO zakupljeniOglasDTO = new ZakupljeniOglasDTO
+            {
+                id = oglas.Id,
+                datumZakupa = oglas.DatumZakupa,
+                korisnikId = oglas.Korisnik?.Id,
+                zakupljenOd = oglas.ZakupljenOd,
+                zakupljenDo = oglas.ZakupljenDo,
+                oglasId = oglas.Oglas?.Id,
+                statusZahtevaZaKetering = oglas.ZahtevZaKetering?.StatusRezervacije,
+            };
+
+            return zakupljeniOglasDTO;
+        }
+
+        public AgencijaBasic ToAgencijaBasic(Agencija agencija)
+        {
+            AgencijaBasic agencijaBasic = new AgencijaBasic
+            {
+                id = agencija.Id,
+                brTel = agencija.BrTel,
+                brojOcena = agencija.BrojOcena,
+                email = agencija.Email,
+                ime = agencija.Ime,
+                lokacija = agencija.Lokacija,
+                cenaDostave = agencija.CenaDostave,
+                mogucnostDostave = agencija.MogucnostDostave,
+                ocena = agencija.Ocena,
+                opis = agencija.Opis,
+                slikaProfila = agencija.SlikaProfila,
+            };
+
+            return agencijaBasic;
+        }
+
+
     }
 }

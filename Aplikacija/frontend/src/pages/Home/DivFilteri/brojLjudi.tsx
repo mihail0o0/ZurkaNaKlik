@@ -30,7 +30,7 @@ const BrojLjudi = ({ broj, setBroj }: Props) => {
   return (
     <div>
       <MojButton
-        text="Broj ljudi"
+        text={(broj !== "") ? broj : "Broj ljudi"}
         onClick={handleClick}
         paddingX="80px"
         paddingY="14px"
@@ -61,7 +61,6 @@ const BrojLjudi = ({ broj, setBroj }: Props) => {
       >
         {/* <Typography sx={{ p: 2 }}>The content of the Popover.</Typography> */}
         <div className={style.CenaVelikiDiv}>
-         
           <div className={style.CenaOd}>
             <Typography sx={{ p: 2 }}>Broj ljudi :</Typography>
 

@@ -28,7 +28,6 @@ const TestingPage = () => {
   const [deleteCategory] = useDeleteCategoryMutation();
   const [addCategory] = useAddCategoryMutation();
 
-  console.log("ALL CATEGORIES");
   console.log(allCategories);
 
   // const categories = useMemo(() => {

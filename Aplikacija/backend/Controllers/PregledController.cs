@@ -49,13 +49,13 @@ namespace backend.Controllers
         }
         #endregion
 
-       #region PrikaziOglaseKorisnika
+        #region PrikaziOglaseKorisnika
         [HttpGet("PrikaziOglaseKorisnika/{idkorisnika}")]
         public async Task<ActionResult> PrikaziOglaseKorisnika(int idkorisnika)
         {
             try
             {
-    
+
 
                 Korisnik? korisnik = await Context.Korisnici.Include(o => o.ListaObjavljenihOglasaObjekta).FirstOrDefaultAsync(k => k.Id == idkorisnika);
 
@@ -64,7 +64,7 @@ namespace backend.Controllers
                     return BadRequest("Korisnik nema objavljene oglase");
                 }
 
-                
+
                 await Context.SaveChangesAsync();
 
                 List<OglasObjektaResponse> response = new List<OglasObjektaResponse>();
@@ -90,13 +90,14 @@ namespace backend.Controllers
         }
 
         #endregion
-       
+
         #region VratiKategorije
-        [HttpGet("VratiKategorije/{idagencije}")]       
-         public async Task<ActionResult> VratiKategorije(int idagencije) {
+        [HttpGet("VratiKategorije/{idagencije}")]
+        public async Task<ActionResult> VratiKategorije(int idagencije)
+        {
             try
             {
-                
+
 
                 Agencija? agencija = await Context.Agencije.FindAsync(idagencije);
                 if (agencija == null)
@@ -146,7 +147,7 @@ namespace backend.Controllers
 
         }
         #endregion
-        
+
         #region PrikaziAgenciju
         [HttpGet("PrikaziAgenciju/{idAgencije}")]
         public async Task<ActionResult> PrikaziAgenciju(int idAgencije)
@@ -177,7 +178,7 @@ namespace backend.Controllers
         // {
         //     try
         //     {
-                
+
         //         List<Kategorija>? kategorije = await Context.Kategorije.Where(k => k.Agencija!.Id == idagencije).ToListAsync();
 
         //         List<VratiMenijeResultElement>? meniKeteringa = new();
@@ -204,23 +205,28 @@ namespace backend.Controllers
         //     }
         // }
         // #endregion
-   
+
         #region  PrikaziSveMenijeKategorije
         [HttpGet("PrikaziSveMenijeKategorije/{idKategorije}")]
-        public async Task<IActionResult> PrikaziSveMenije(int idKategorije){
-            try{
+        public async Task<IActionResult> PrikaziSveMenije(int idKategorije)
+        {
+            try
+            {
 
-                var meniji = await Context.MenijiKeteringa.Where(k=>k.Kategorija!.Id== idKategorije).ToListAsync();
+                var meniji = await Context.MenijiKeteringa.Where(k => k.Kategorija!.Id == idKategorije).ToListAsync();
 
-            if (meniji == null){
-                return BadRequest("Nema takvih kategorija i agencija zajedno");
+                if (meniji == null)
+                {
+                    return BadRequest("Nema takvih kategorija i agencija zajedno");
+                }
+                else
+                {
+                    return Ok(meniji);
+                }
+
             }
-            else {
-                return Ok(meniji);
-            }   
-
-            }
-            catch(Exception ex){
+            catch (Exception ex)
+            {
                 return BadRequest(ex.Message);
             }
 
@@ -230,15 +236,18 @@ namespace backend.Controllers
 
         #region VratiSveKategorijeIMenijeAgencije
         [HttpGet("VratiSveKategorijeIMenijeAgencije/{idagencije}")]
-        public async Task<ActionResult> VratiSveKategorijeIMenijeAgencije(int idagencije) {
-            try {
+        public async Task<ActionResult> VratiSveKategorijeIMenijeAgencije(int idagencije)
+        {
+            try
+            {
                 var sveinfoagencije = await Context.Kategorije
                                                 .Include(x => x.Agencija)
                                                 .Include(x => x.ListaMenija)
                                                 .Where(x => x.Agencija!.Id == idagencije)
                                                 .ToListAsync();
 
-                if (sveinfoagencije == null || !sveinfoagencije.Any()) {
+                if (sveinfoagencije == null || !sveinfoagencije.Any())
+                {
                     return BadRequest("Nema agencije sa tim id-jem");
                 }
 
@@ -254,7 +263,7 @@ namespace backend.Controllers
                 //         m.Opis
                 //     })
                 // });
-                
+
                 List<VratiMenijeResultElement>? meniKeteringa = new();
 
                 if (sveinfoagencije == null)
@@ -278,7 +287,9 @@ namespace backend.Controllers
                 }
 
                 return Ok(meniKeteringa);
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 return BadRequest(e.Message);
             }
         }
@@ -286,16 +297,38 @@ namespace backend.Controllers
 
         #endregion
 
-        #region VratiAgencijeSaFilterimaISortiranjem
-        [HttpPost("VratiAgencije/{pageNumber}/{pageSize}")]
-        public async Task<ActionResult> VratiOglase([FromBody] FilteriAgencije filteri, int pageNumber, int pageSize)
-        { //dodaj sortiranje
+        #region VratiNaziveKategorija
+        [HttpGet("VratiNaziveKategorija")]
+        public async Task<IActionResult> VratiNaziveKategorija()
+        {
             try
             {
-                
+                List<string>? kategorije = await Context.Kategorije.Select(x => x.Naziv).Distinct().ToListAsync();
+
+                if (kategorije == null)
+                {
+                    return BadRequest("Nema kategorija");
+                }
+
+                return Ok(kategorije);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+        #endregion
+
+        #region VratiAgencijeSaFilterimaISortiranjem
+        [HttpPost("VratiAgencije/{pageNumber}/{pageSize}/{sort}")]
+        public async Task<ActionResult> VratiAgencije([FromBody] FilteriAgencije filteri, int pageNumber, int pageSize, string? sort)
+        {
+            try
+            {
+
                 List<Agencija> agencije = await Context.Agencije.IgnoreQueryFilters().Include(i => i.KategorijeMenija).ToListAsync();
 
-                switch (filteri.sort)
+                switch (sort)
                 {
                     case "CenaDostaveRastuca":
                         agencije = agencije.OrderBy(o => o.CenaDostave).ToList();
@@ -313,23 +346,27 @@ namespace backend.Controllers
                         return BadRequest("Ne postoji sort");
                 }
 
-                if (filteri.ListaKategorija != null && filteri.ListaKategorija!.Count != 0)
+                if (filteri.listaKategorija != null && filteri.listaKategorija!.Count != 0)
                 {
-                    agencije = agencije.Where(agencija => agencija.KategorijeMenija!.Any(tip => filteri.ListaKategorija!.Contains(tip.Naziv))).ToList();
+                    agencije = agencije.Where(agencija => agencija.KategorijeMenija!.Any(tip => filteri.listaKategorija!.Contains(tip.Naziv))).ToList();
                 }
 
-                if (filteri.Grad != null)
+                if (filteri.grad != null)
                 {
-                    agencije = agencije.Where(Agencija => Agencija.Lokacija.Equals(filteri.Grad)).ToList();
+                    agencije = agencije.Where(Agencija => Agencija.Lokacija.Equals(filteri.grad)).ToList();
                 }
 
-                if (filteri.MogucnostDostave == true)
+                if (filteri.mogucnostDostave == true)
                 {
                     agencije = agencije.Where(oglas => oglas.MogucnostDostave == true).ToList();
 
-                    if (filteri.CenaDostaveOd >= 0 && filteri.CenaDostaveDo <= Int32.MaxValue && filteri.CenaDostaveOd < filteri.CenaDostaveDo)
+                    if (filteri.cenaDostaveOd != null && filteri.cenaDostaveOd >= 0 && (filteri.cenaDostaveDo == null || filteri.cenaDostaveOd < filteri.cenaDostaveDo))
                     {
-                        agencije = agencije.Where(agencija => agencija.CenaDostave >= filteri.CenaDostaveOd && agencija.CenaDostave <= filteri.CenaDostaveDo).ToList();
+                        agencije = agencije.Where(agencija => agencija.CenaDostave >= filteri.cenaDostaveOd).ToList();
+                    }
+                    if (filteri.cenaDostaveDo != null && filteri.cenaDostaveDo <= Int32.MaxValue && (filteri.cenaDostaveOd == null || filteri.cenaDostaveOd < filteri.cenaDostaveDo))
+                    {
+                        agencije = agencije.Where(agencija => agencija.CenaDostave <= filteri.cenaDostaveDo).ToList();
                     }
                 }
 
@@ -337,11 +374,16 @@ namespace backend.Controllers
 
                 agencije = agencije.Skip((pageNumber - 1) * pageSize)
                              .Take(pageSize).ToList();
-                //List<OglasObjektaResponse> response = new List<OglasObjektaResponse>();
+                List<AgencijaBasic> response = new List<AgencijaBasic>();
+
+                foreach (Agencija agencija in agencije)
+                {
+                    response.Add(ObjectCreatorSingleton.Instance.ToAgencijaBasic(agencija));
+                }
 
                 
 
-                return Ok(new { agencije , brojAgencija});
+                return Ok(new { brojAgencija, response });
             }
             catch (Exception e)
             {
@@ -349,7 +391,7 @@ namespace backend.Controllers
             }
         }
         #endregion
-     
+
         #region VratiSliku
         [HttpGet("get-sliku/{putanja}")]
         public IActionResult VratiSliku(string putanja)
@@ -390,30 +432,35 @@ namespace backend.Controllers
         }
 
         #region VartiMenijeLista
-        [HttpGet("VartiMenijeLista/listaMenija")]
-        public async Task<ActionResult> VartiMenijeLista([FromQuery]List<int> menijiId)
+        [HttpPost("VratiMenijeLista")]
+        public async Task<ActionResult> VratiMenijeLista([FromBody] List<int> menijiId)
         {
-            try {
+            try
+            {
                 if (menijiId == null || menijiId.Count == 0)
                 {
                     return BadRequest("Lista ID-ova menija ne može biti prazna.");
                 }
 
                 // Dobavi menije iz baze na osnovu liste ID-ova
-                var result = await Context.MenijiKeteringa
+                List<MeniKeteringa>? sviMeniji = await Context.MenijiKeteringa
                     .Where(m => menijiId.Contains(m.Id))
                     .ToListAsync();
 
-                var provera = await Context.ZahteviZaKetering.Include(i => i.ZakupljeniMeniji)
-                    .FirstOrDefaultAsync(m => m.Id == menijiId[0]);
+                List<MeniKeteringaResult> result = new List<MeniKeteringaResult>();
 
-                return Ok(new { result });
+                foreach (MeniKeteringa meniKeteringa in sviMeniji)
+                {
+                    result.Add(ObjectCreatorSingleton.Instance.ToMeniKeteringaResult(meniKeteringa));
+                }
 
-            } catch (Exception e) {
+                return Ok(result);
+
+            }
+            catch (Exception e)
+            {
                 return BadRequest(e.Message);
             }
-
-            
         }
         #endregion
     }
