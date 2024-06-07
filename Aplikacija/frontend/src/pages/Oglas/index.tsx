@@ -24,6 +24,7 @@ import { getRawLocation } from "@/utils/handleQueries";
 import PageSpacer from "@/components/lib/page-spacer";
 import ImageOverview from "@/components/ImageOverview";
 import { enumToString } from "@/utils/enumMappings";
+import { Typography } from "@mui/material";
 
 const Oglas = () => {
   const [brojLjudi, SetBrojLjudi] = useState("");
@@ -110,6 +111,11 @@ const Oglas = () => {
   }, [images]);
 
   console.log(currentOglas?.listaTipProslava);
+
+  if (!currentOglas) {
+    return null;
+  }
+
   return (
     <>
       <PageSpacer variant="xs" />
@@ -170,7 +176,9 @@ const Oglas = () => {
                 </div>
               </div>
               <div>
-                <p>{currentOglas?.opis}</p>
+                <Typography lineHeight={"1.5rem"}>
+                  {currentOglas.opis}
+                </Typography>
               </div>
             </div>
             {/* ovde ide info o vlasniku */}
@@ -238,20 +246,7 @@ const Oglas = () => {
               </div>
             </div>
             <div className={style.DodajteKetering}>
-              <h4>Dodajte ketering: </h4>
-              <div>
-                <MojButton
-                  text="Vidite opcije"
-                  onClick={() => {}}
-                  wide={true}
-                  center={true}
-                  paddingY="10px"
-                />
-              </div>
-            </div>
-            <div className={style.DodajteKetering}>
               <h4>Unesite broj gostiju: </h4>
-              {<BrojLjudi broj={brojLjudi} setBroj={SetBrojLjudi} />}
             </div>
           </div>
         </div>

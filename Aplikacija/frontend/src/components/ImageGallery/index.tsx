@@ -75,19 +75,20 @@ const ImageGallery = ({
               }`}
               onClick={() => handleClick(image)}
             >
-              {deletable && (
-                <div
-                  className={style.Delete}
-                  onClick={() => handleDelete(index)}
-                >
-                  <Icon
-                    icon="delete"
-                    classes="colorWhite cursorPointer"
-                    fontSize="24px"
-                    iconMargin="0"
-                  />
-                </div>
-              )}
+              {deletable ||
+                (deletable == undefined && (
+                  <div
+                    className={style.Delete}
+                    onClick={() => handleDelete(index)}
+                  >
+                    <Icon
+                      icon="delete"
+                      classes="colorWhite cursorPointer"
+                      fontSize="24px"
+                      iconMargin="0"
+                    />
+                  </div>
+                ))}
             </div>
           );
         })}

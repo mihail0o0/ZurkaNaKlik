@@ -1,4 +1,4 @@
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useMemo, useState } from "react";
 import style from "./style.module.css";
 import HomeImage from "@/components/HomeImage";
 import { useSelector } from "react-redux";
@@ -7,6 +7,8 @@ import {
   selectFiltersData,
   selectPaginationData,
   selectSortData,
+  setPaginationData,
+  setSortingData,
 } from "@/store/filters";
 import { useAppDispatch } from "@/store";
 import {
@@ -15,12 +17,17 @@ import {
   MenuItem,
   Select,
   SelectChangeEvent,
+  inputAdornmentClasses,
 } from "@mui/material";
 import { stringToEnum } from "@/utils/enumMappings";
-import { FilteredOglasObjektaRequest, tipProslavaMap } from "@/store/api/endpoints/oglas/types";
+import {
+  FilteredOglasObjektaRequest,
+  tipProslavaMap,
+} from "@/store/api/endpoints/oglas/types";
 import { Filters, Sort, mapStringToSort } from "@/store/filters/types";
 import { useGetFilteredOglasesQuery } from "@/store/api/endpoints/oglas";
 import OglasKartica from "@/components/OglasKartica";
+import { ArrowLeft } from "lucide-react";
 
 const Home = () => {
   const filters = useSelector(selectFilters);
@@ -36,7 +43,6 @@ const Home = () => {
     filtersPagination.pageSize
   );
 
-
   const paginationValues = [12, 20, 30, 40, 50, 100];
 
   const handleSortChange = (event: SelectChangeEvent) => {
@@ -45,20 +51,69 @@ const Home = () => {
     if (str == undefined) return;
 
     setSelectedSort(str);
+    setSelectedPageNumber(1);
+    dispatch(setSortingData(str));
+    dispatch(setPaginationData({ ...filtersPagination, pageNumber: 1 }));
+  };
+
+  const handlePaginationChange = (event: SelectChangeEvent) => {
+    if (!event) return;
+    const selectedVal = parseInt(event.target.value);
+
+    setSelectedPageSize(selectedVal);
+    setSelectedPageNumber(1);
+    dispatch(setPaginationData({ pageNumber: 1, pageSize: selectedVal }));
+  };
+
+  const handlePageNumberChange = (page: number) => {
+    setSelectedPageNumber(page);
+    dispatch(setPaginationData({ ...filtersPagination, pageNumber: page }));
   };
 
   const requestFilters: FilteredOglasObjektaRequest = {
     ...filters,
     filtersData: {
       ...filters.filtersData,
-      dodatnaOprema: (filters.filtersData.dodatnaOprema.length > 0) ? filters.filtersData.dodatnaOprema : undefined,
-      grejanje: (filters.filtersData.grejanje.length > 0) ? filters.filtersData.grejanje : undefined,
-      tipProslava: (filters.filtersData.tipProslava.length > 0) ? filters.filtersData.tipProslava : undefined,
-      tipProstora: (filters.filtersData.tipProstora.length > 0) ? filters.filtersData.tipProstora : undefined,
-    }
+      dodatnaOprema:
+        filters.filtersData.dodatnaOprema.length > 0
+          ? filters.filtersData.dodatnaOprema
+          : undefined,
+      grejanje:
+        filters.filtersData.grejanje.length > 0
+          ? filters.filtersData.grejanje
+          : undefined,
+      tipProslava:
+        filters.filtersData.tipProslava.length > 0
+          ? filters.filtersData.tipProslava
+          : undefined,
+      tipProstora:
+        filters.filtersData.tipProstora.length > 0
+          ? filters.filtersData.tipProstora
+          : undefined,
+    },
   };
 
   const { data: oglasi } = useGetFilteredOglasesQuery(requestFilters);
+
+  const paginationNumbers: number[] = useMemo(() => {
+    const arr: number[] = [];
+    if (!oglasi) return arr;
+
+    let total = oglasi.brojOglasa / selectedPageSize;
+    let start = 0;
+
+    if (total > 10) {
+      start = selectedPageNumber - 5;
+      if (start < 0) start = 0;
+      if (selectedPageNumber + 10 > total) start = total - 13;
+    }
+
+    for (let i = start; i < total && i <= start + 10; i++) {
+      arr.push(i);
+    }
+
+    return arr;
+  }, [oglasi, selectedPageSize]);
 
   return (
     <>
@@ -85,7 +140,7 @@ const Home = () => {
           <Select
             id="selectSize"
             value={String(selectedPageSize)}
-            onChange={handleSortChange}
+            onChange={handlePaginationChange}
             sx={{
               borderRadius: "12px",
               color: "black",
@@ -100,13 +155,39 @@ const Home = () => {
             })}
           </Select>
         </div>
-        <div  className={style.resultContainer}>
+        <div className={style.resultContainer}>
           {oglasi &&
             oglasi.response.map((oglas) => {
               return (
                 <OglasKartica key={oglas.id} oglas={oglas} onClick={() => {}} />
               );
             })}
+        </div>
+        <div className={style.pageNumberContainer}>
+          {paginationNumbers.map((number) => {
+            number++;
+            if (number === selectedPageNumber)
+              return (
+                <div
+                  className={`${style.pageNumber} ${style.selected}`}
+                  onClick={() => {
+                    handlePageNumberChange(number);
+                  }}
+                >
+                  {number}
+                </div>
+              );
+            return (
+              <div
+                className={style.pageNumber}
+                onClick={() => {
+                  handlePageNumberChange(number);
+                }}
+              >
+                {number}
+              </div>
+            );
+          })}
         </div>
       </div>
     </>
