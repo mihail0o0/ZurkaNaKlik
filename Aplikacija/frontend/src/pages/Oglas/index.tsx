@@ -19,7 +19,7 @@ import {
   tipProslavaMap,
 } from "@/store/api/endpoints/oglas/types";
 import ImageGallery from "@/components/ImageGallery";
-import { useLazyGetImageQuery } from "@/store/api/endpoints/images";
+import { useGetImageQuery, useLazyGetImageQuery } from "@/store/api/endpoints/images";
 import { getRawLocation } from "@/utils/handleQueries";
 import PageSpacer from "@/components/lib/page-spacer";
 import ImageOverview from "@/components/ImageOverview";
@@ -51,6 +51,9 @@ const Oglas = () => {
   const [images, setImages] = useState<(string | null | undefined)[]>([]);
 
   const [getImageAction] = useLazyGetImageQuery();
+  const { data: imageUrl } = useGetImageQuery(
+    getRawLocation(VlasnikOglasa?.profilePhoto) ?? skipToken
+  );
 
   const handleFavourite = async () => {
     if (!currentOglas) return;
@@ -114,9 +117,8 @@ const Oglas = () => {
   }, [images]);
 
   console.log(currentOglas?.listaTipProslava);
-  
-  // const testZauzetiDani = [new Date("2024-6-10"), new Date("2024-10-6")];
 
+  // const testZauzetiDani = [new Date("2024-6-10"), new Date("2024-10-6")];
 
   if (!currentOglas) {
     return null;
@@ -189,32 +191,26 @@ const Oglas = () => {
             </div>
             {/* ovde ide info o vlasniku */}
             <div className={style.InfoOVlasniku}>
-              <div className={style.Slikaime}>
-                <UserAvatar size={100} src={VlasnikOglasa?.profilePhoto} />
+              <div className={style.Avatar}>
+                <UserAvatar size={100} src={imageUrl} />
                 <h2>
                   {VlasnikOglasa?.name} {VlasnikOglasa?.lastName}
                 </h2>
-                <div>
-                  <MojButton
-                    text="Prikazi profil"
-                    wide={true}
-                    center={true}
-                    onClick={() =>
-                      navigate(
-                        `/user/profile/${VlasnikOglasa && VlasnikOglasa.id}`
-                      )
-                    }
-                  />
-                </div>
               </div>
-              <div className={style.OpisVlasnika}>
-                {/* opis */}
-                {/* <p>{VlasnikOglasa?.}</p> */}
-                <p>
-                  Fina i opustena vlasnica nekoliko vila. Prijatna za
-                  konverzaciju. Bla bla bla malo duzi tekst treba biti radi
-                  boljeg opisa.
-                </p>
+              <div>
+                <MojButton
+                  text="Prikazi profil"
+                  wide={true}
+                  center={true}
+                  onClick={() =>
+                    navigate(
+                      `/user/profile/${VlasnikOglasa && VlasnikOglasa.id}`
+                    )
+
+                  }
+                  paddingX="50px"
+                  paddingY="6px"
+                />
               </div>
             </div>
             {/* ii opremljenost */}

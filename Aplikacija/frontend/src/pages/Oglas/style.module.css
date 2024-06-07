@@ -81,31 +81,27 @@
 
 .InfoOVlasniku {
   display: flex;
-  flex-direction: row;
   width: 100%;
   align-items: center;
+  justify-content: center;
   padding-top: 30px;
   padding-bottom: 30px;
   border-top: 3px solid var(--lightText);
   border-bottom: 3px solid var(--lightText);
   margin-block: 30px;
 }
-
-.Slikaime {
+.Avatar{
   display: flex;
-  flex-direction: column;
-  justify-content: center;
+  flex-direction: row;
+  width: 100%;
   align-items: center;
-  width: 30%;
+  gap:10px;
 }
 
-.Slikaime > h2 {
+.Avatar > h2 {
   margin-block: 10px;
 }
 
-.OpisVlasnika {
-  width: 50%;
-}
 
 .Kontakt {
   background-color: white;
