@@ -28,7 +28,6 @@ const Oglas = () => {
     currentOglas?.idVlasnika || skipToken
   );
 
-
   console.log(currentOglas?.listaTipProslava);
   return (
     <div className={`containerWrapper ${style.Glavni}`}>
@@ -40,7 +39,7 @@ const Oglas = () => {
         </div>
         {/* ovde da se doda u omiljeni */}
         <div onClick={() => {}} className={style.Podelite}>
-          <Icon icon="favorite" />
+          
           <label>Dodajte oglas u omiljene</label>
         </div>
       </div>

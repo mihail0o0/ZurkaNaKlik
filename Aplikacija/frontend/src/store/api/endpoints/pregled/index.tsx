@@ -10,7 +10,7 @@ const authApiSlice = api.injectEndpoints({
     }),
     getAgencyListMenues: builder.query<MenuForList[], number[]>({
       query: (ids) => ({
-        url: `Pregled/VratiMenije/Lista/listaMenija`,
+        url: `Pregled/VartiMenije/Lista/listaMenija`,
       }),
     }),
   }),
