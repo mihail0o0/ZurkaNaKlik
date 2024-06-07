@@ -19,12 +19,10 @@ import {
 } from "@/store/api/endpoints/korisnik";
 import UserAvatar from "@/components/UserAvatar";
 import { useNavigate, useParams } from "react-router-dom";
-import { Alert } from "@mui/material";
 import {
   useGetKorisnikOglasiQuery,
   useGetUserOglasiQuery,
 } from "@/store/api/endpoints/oglas";
-import { EnumTipProslava } from "@/store/api/endpoints/oglas/types";
 import { skipToken } from "@reduxjs/toolkit/query";
 import DisplayCard from "@/components/DisplayCard";
 import { UpdateUserDTO } from "@/store/api/endpoints/korisnik/types";
@@ -39,7 +37,6 @@ import {
 import { getRawLocation } from "@/utils/handleQueries";
 import UploadComponent from "@/components/UploadComponent";
 import { ResultType } from "@/types";
-import { url } from "inspector";
 import { useAppDispatch } from "@/store";
 
 const UserProfile = () => {

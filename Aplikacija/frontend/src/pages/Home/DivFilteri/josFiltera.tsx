@@ -52,8 +52,6 @@ function SimpleDialog(props: SimpleDialogProps) {
     onClose(value);
   };
 
-  console.log(selectedDodatnaOprema);
-
   return (
     <Dialog
       onClose={handleClose}
@@ -65,14 +63,14 @@ function SimpleDialog(props: SimpleDialogProps) {
       <div className={style.Tip}>
         <h3>Izaberite dodatnu opremu</h3>
         <div className={style.TipContainer}>
-          {Object.values(dodatnaOpremaMap).map((key) => {
+          {Object.values(dodatnaOpremaMap).map((value, index) => {
             return (
-              <div className={style.JedanChk} key={key}>
+              <div className={style.JedanChk} key={value}>
                 <FormControlLabel
                   control={
                     <Checkbox
-                      value={key}
-                      onChange={() => handleChangeDodatnaOprema(key)}
+                      checked={selectedDodatnaOprema.includes(index)}
+                      onChange={() => handleChangeDodatnaOprema(value)}
                       sx={{
                         color: pink[800],
                         "&.Mui-checked": {
@@ -81,7 +79,7 @@ function SimpleDialog(props: SimpleDialogProps) {
                       }}
                     />
                   }
-                  label={key}
+                  label={value}
                 />
               </div>
             );
@@ -91,14 +89,14 @@ function SimpleDialog(props: SimpleDialogProps) {
       <div className={style.Tip}>
         <h3>Tipovi prostora</h3>
         <div className={style.TipContainer}>
-          {Object.values(tipProstoraMap).map((key) => {
+          {Object.values(tipProstoraMap).map((value, index) => {
             return (
-              <div className={style.JedanChk} key={key}>
+              <div className={style.JedanChk} key={value}>
                 <FormControlLabel
                   control={
                     <Checkbox
-                      value={key}
-                      onChange={() => handleChangeTipProstora(key)}
+                      checked={selectedTipoviProstora.includes(index)}
+                      onChange={() => handleChangeTipProstora(value)}
                       sx={{
                         color: pink[800],
                         "&.Mui-checked": {
@@ -107,7 +105,7 @@ function SimpleDialog(props: SimpleDialogProps) {
                       }}
                     />
                   }
-                  label={key}
+                  label={value}
                 />
               </div>
             );
@@ -117,14 +115,14 @@ function SimpleDialog(props: SimpleDialogProps) {
       <div className={style.Tip}>
         <h3>Grejanje</h3>
         <div className={style.TipContainer}>
-          {Object.values(tipGrejanjaMap).map((key) => {
+          {Object.values(tipGrejanjaMap).map((value, index) => {
             return (
-              <div className={style.JedanChk} key={key}>
+              <div className={style.JedanChk} key={value}>
                 <FormControlLabel
                   control={
                     <Checkbox
-                      value={key}
-                      onChange={() => handleChangeTipGrejanja(key)}
+                      checked={selectedTipoviGrejanja.includes(index)}
+                      onChange={() => handleChangeTipGrejanja(value)}
                       sx={{
                         color: pink[800],
                         "&.Mui-checked": {
@@ -133,7 +131,7 @@ function SimpleDialog(props: SimpleDialogProps) {
                       }}
                     />
                   }
-                  label={key}
+                  label={value}
                 />
               </div>
             );
@@ -160,7 +158,6 @@ const JosFiltera = (props: JosFilteraProps) => {
   };
 
   const handleClose = (value: string) => {
-    console.log(value);
     setOpen(false);
   };
   return (

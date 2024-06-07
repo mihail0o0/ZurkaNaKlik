@@ -115,7 +115,6 @@ const IzmeniOglas = () => {
     fetchImages();
   }, [oglas?.slike, getImageAction]);
 
-  console.log(images);
 
   useEffect(() => {
     if (!oglas) return;
@@ -320,6 +319,8 @@ const IzmeniOglas = () => {
       id: oglas.id,
       formData,
     };
+    console.log("ULOPADOBJECT");
+    console.log(uploadData);
     const result = await uploadAgencija(uploadData);
     return result;
   };
@@ -345,11 +346,16 @@ const IzmeniOglas = () => {
           </div>
         </div>
         <h2>Slike prostora</h2>
-        <ImageGallery idOglasa={idOglasa} imagePaths={oglas.slike} images={images} />
+        <ImageGallery
+          idOglasa={idOglasa}
+          imagePaths={oglas.slike}
+          images={images}
+        />
         <div className={style.NAJJACEDUGME}>
           <div className={style.DodajSLikuDugme}>
             <UploadComponent uploadFn={uploadFn}>
               <MojButton
+                onClick={() => {}}
                 text="Dodaj sliku"
                 icon="add_photo_alternate"
                 backgroundColor="lightgrey"
