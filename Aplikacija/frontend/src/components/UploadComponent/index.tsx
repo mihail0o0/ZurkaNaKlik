@@ -1,16 +1,9 @@
-import React, { ReactNode, useEffect, useMemo, useRef, useState } from "react";
-import { MutationTrigger } from "@reduxjs/toolkit/dist/query/react/buildHooks";
+import React, { ReactNode, useRef } from "react";
 import { toast } from "react-toastify";
-import {
-  FetchArgs,
-  FetchBaseQueryError,
-  MutationDefinition,
-} from "@reduxjs/toolkit/query";
-import { BaseQueryFn } from "@reduxjs/toolkit/query";
 import { ResultType } from "@/types";
 
 type Props = {
-  uploadFn: (formData: FormData) => Promise<ResultType>;
+  uploadFn: (formData: FormData) => Promise<ResultType> | void;
   children: ReactNode;
 };
 
@@ -32,7 +25,7 @@ const UploadComponent = ({ uploadFn, children }: Props) => {
     fD.append("file", file);
 
     const result = await uploadFn(fD);
-    if (!result || "error" in result) {
+    if (result && "error" in result) {
       return;
     }
 

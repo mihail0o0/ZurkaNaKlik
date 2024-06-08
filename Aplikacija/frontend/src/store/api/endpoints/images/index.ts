@@ -2,6 +2,7 @@ import api from "../..";
 import { providesSingle } from "../../utils";
 import {
   DeleteOglasImageDTO,
+  UploadMenuDTO,
   UploadMultipleOglasDTO,
   UploadOglasDTO,
 } from "./types";
@@ -18,6 +19,7 @@ const authApiSlice = api.injectEndpoints({
         { type: "Image", id: "IMAGEOGLAS" },
         { type: "Image", id: "IMAGEKORISNIK" },
         { type: "Image", id: "IMAGEAGENCY" },
+        { type: "Image", id: "IMAGEMENU" },
       ],
     }),
     uploadKorisnik: builder.mutation<void, FormData>({
@@ -74,6 +76,17 @@ const authApiSlice = api.injectEndpoints({
         { type: "Image", id: "IMAGEOGLAS" },
       ],
     }),
+    uploadMenu: builder.mutation<void, UploadMenuDTO>({
+      query: (body) => ({
+        url: `Agencija/UploadujSlikuMenija/${body.idMenija}`,
+        method: "POST",
+        body: body.formData,
+      }),
+      invalidatesTags: (result, err, args) => [
+        { type: "AgencyMenu", id: args.idMenija },
+        { type: "Image", id: "IMAGEMENU" },
+      ],
+    }),
   }),
 });
 
@@ -85,4 +98,5 @@ export const {
   useUploadOglasMutation,
   useUploadMultipleOglasMutation,
   useDeleteOglasImageMutation,
+  useUploadMenuMutation,
 } = authApiSlice;

@@ -11,7 +11,7 @@ namespace backend.Models
         public int id { get; set; }
         public required string naziv { get; set; }
         public required int cenaMenija { get; set; }
-        public required string slika { get; set; }
+        public  string? slika { get; set; }
         public required string opis { get; set; }
         public required List<string> sastavMenija {get; set; }
         public int? idKategorije { get; set; }

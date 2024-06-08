@@ -12,3 +12,9 @@ export type DeleteOglasImageDTO = {
     idOglasa: number;
     slikaPath: string;
 }
+
+
+export type UploadMenuDTO = {
+  idMenija: number;
+  formData: FormData;
+};
