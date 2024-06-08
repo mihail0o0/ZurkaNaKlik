@@ -1,31 +1,14 @@
-import Input from "@/components/lib/inputs/text-input";
 import style from "./style.module.css";
-import { ChangeEvent, useEffect, useState } from "react";
-import MojButton from "@/components/lib/button";
-
-import {
-  useAddCategoryMutation,
-  useDeleteCategoryMutation,
-  useGetAgencyDataQuery,
-  useGetAllCategoriesQuery,
-  useGetMenuesQuery,
-  useUpdateAgencyDataMutation,
-} from "@/store/api/endpoints/agencija";
+import { useGetAgencyDataQuery } from "@/store/api/endpoints/agencija";
 import { Chip, Typography } from "@mui/material";
 import { useSelector } from "react-redux";
 import { selectUser } from "@/store/auth";
-import { updateAgencySchema } from "@/utils/validators";
-import { getMessage } from "@reduxjs/toolkit/dist/actionCreatorInvariantMiddleware";
-import { getValidationMessage } from "@/utils/validationMessage";
-import { toast } from "react-toastify";
 import { skipToken } from "@reduxjs/toolkit/query";
 import UserAvatar from "@/components/UserAvatar";
 import PageSpacer from "@/components/lib/page-spacer";
 import { useParams } from "react-router-dom";
 import DisplayCard from "@/components/DisplayCard";
 import { useGetAgencyMenuesQuery } from "@/store/api/endpoints/pregled";
-import MenyCardPorudzbine from "@/components/MenyCardPorudzbine";
-import MenyCardView from "@/components/MenyCardView";
 import CategoryMenuCard from "./CategoryMenuCard";
 import UploadComponent from "@/components/UploadComponent";
 import {
@@ -83,9 +66,11 @@ const AgencyView = () => {
           <div className={style.DodatneInfo}>
             {/* txt box */}
             <div>
-              {/* <input type="text" className={style.TxtBox} /> */}
-
-              <Typography maxWidth={"400px"}>{agencyData.opis}</Typography>
+              <Typography
+                maxWidth={500}
+              >
+                {agencyData.opis}
+              </Typography>
             </div>
             {/* inputi za grad br cenu i check */}
             <div className={style.Inputs}>

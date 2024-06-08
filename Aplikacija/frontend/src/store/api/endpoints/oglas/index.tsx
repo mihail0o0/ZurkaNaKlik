@@ -83,6 +83,7 @@ export const {
   useGetAllCitiesQuery,
   useGetFilteredOglasesQuery,
   useGetOglasQuery,
+  useLazyGetOglasQuery,
   useGetUserOglasiQuery,
   useAddUserOglasMutation,
   useUpdateUserOglasMutation,
