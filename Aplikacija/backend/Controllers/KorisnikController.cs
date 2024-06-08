@@ -154,16 +154,25 @@ namespace backend.Controllers
                     return BadRequest("Nisi rezervisao nijedan oglas");
                 }
 
-                var rezultat = listaZakupljenihOglasa.Select(o => new ZakupljeniOglasDTO
-                {
-                    id = o.Id,
-                    oglasId = o.Oglas!.Id,
-                    korisnikId = o.Korisnik!.Id,
-                    datumZakupa = o.DatumZakupa,
-                    zakupljenOd = o.ZakupljenOd,
-                    zakupljenDo = o.ZakupljenDo,
-                    statusZahtevaZaKetering = o.ZahtevZaKetering?.StatusRezervacije
+                List<ZakupljeniOglasDTO> rezultat = new List<ZakupljeniOglasDTO>();
+
+                listaZakupljenihOglasa.ForEach(o => {
+                    var zakupljeniOglasDTO = new ZakupljeniOglasDTO
+                    {
+                        id = o.Id,
+                        oglasId = o.Oglas?.Id,
+                        korisnikId = o.Korisnik?.Id,
+                        datumZakupa = o.DatumZakupa,
+                        zakupljenOd = o.ZakupljenOd,
+                        zakupljenDo = o.ZakupljenDo,
+                        statusZahtevaZaKetering = o.ZahtevZaKetering?.StatusRezervacije,
+                        cena = o.Cena,
+                        idZakupljeniKetering = o.ZahtevZaKetering?.Id ?? 0,
+                    };
+
+                    rezultat.Add(zakupljeniOglasDTO);
                 });
+                
 
                 return Ok(rezultat);
             }
@@ -633,7 +642,7 @@ namespace backend.Controllers
                 Context.ZahteviZaKetering.Add(novizahtev);
                 await Context.SaveChangesAsync();
 
-                return Ok(new { novizahtev.ZakupljeniMeniji });
+                return Ok(new { novizahtev });
             }
             catch (Exception e)
             {

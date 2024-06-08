@@ -66,6 +66,12 @@ const authApiSlice = api.injectEndpoints({
       }),
       providesTags: (result, error, id) => [{ type: "OmiljeniOglasi", id }],
     }),
+    getReservedOglasi: builder.query<ReservedOglas[], void>({
+      query: () => ({
+        url: "Korisnik/PrikaziSveZakupljeneOglase",
+      }),
+      providesTags: (result) => providesList("ReservedOglasi", result),
+    }),
     makeReservation: builder.mutation<ReservedOglas, MakeReservationDTO>({
       query: (body) => ({
         url: `Korisnik/ZakupiOglas/${body.idOglasa}`,
@@ -89,5 +95,6 @@ export const {
   useDeleteFavouriteMutation,
   useDeleteUserMutation,
   useIsFavoriteQuery,
+  useGetReservedOglasiQuery,
   useMakeReservationMutation,
 } = authApiSlice;

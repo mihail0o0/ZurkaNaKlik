@@ -14,7 +14,7 @@ namespace backend.Models
 
         public required int CenaMenija { get; set; } //po kg
     
-        public required string Slika { get; set; }
+        public string? Slika { get; set; }
 
         public required string Opis { get; set; }
 

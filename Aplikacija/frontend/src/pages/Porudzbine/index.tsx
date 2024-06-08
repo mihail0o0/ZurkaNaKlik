@@ -16,6 +16,7 @@ const Porudzbine = () => {
   const narudzbineNaCekanju = narudzbine
     ? narudzbine.filter((narudzbina) => narudzbina.statusRezervacije === null)
     : [];
+
   console.log(narudzbineNaCekanju + "odobrene naruzbine");
   const menijiOdobreniID = odobreneNarudzbine.flatMap(
     (order) => order.idMenija || []

@@ -23,7 +23,7 @@ type Category = {
 type Menu = {
   id: number;
   naziv: string;
-  slika: string;
+  slika?: string;
   opis: string;
   cenaMenija: number;
   sastavMenija: string[];

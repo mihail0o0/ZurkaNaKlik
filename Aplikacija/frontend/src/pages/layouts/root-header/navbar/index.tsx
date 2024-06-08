@@ -10,6 +10,7 @@ import { useGetImageQuery } from "@/store/api/endpoints/images";
 import { useGetUserDataQuery } from "@/store/api/endpoints/korisnik";
 import { skipToken } from "@reduxjs/toolkit/query";
 import { getRawLocation } from "@/utils/handleQueries";
+import { useGetAgencyDataQuery } from "@/store/api/endpoints/agencija";
 
 type Props = {
   user: User;
@@ -26,10 +27,18 @@ const Navbar = ({ user }: Props) => {
   const [open, setOpen] = useState(false);
 
   const { data: allUserData } = useGetUserDataQuery(user.id);
+  const { data: allAgencyData } = useGetAgencyDataQuery(user.id);
 
-  const { data: imageUrl } = useGetImageQuery(
+  const { data: userUrl } = useGetImageQuery(
     getRawLocation(allUserData?.profilePhoto) ?? skipToken
   );
+
+  const { data: agencyUrl } = useGetImageQuery(
+    getRawLocation(allAgencyData?.slikaProfila) ?? skipToken
+  );
+
+  console.log("MJAU");
+  console.log(userUrl, agencyUrl);
 
   const onClick = (event: React.MouseEvent<HTMLDivElement>) => {
     setAnchor(event.currentTarget);
@@ -74,7 +83,7 @@ const Navbar = ({ user }: Props) => {
     <div>
       <div onClick={onClick}>
         <LabeledAvatar
-          src={imageUrl}
+          src={userUrl ?? agencyUrl}
           classes="cursorPointer"
           heading
           text={user.name}

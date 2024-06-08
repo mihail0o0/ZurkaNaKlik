@@ -50,6 +50,16 @@ const RootHeader = () => {
               <img src="/images/logo.png" />
             </NavLink>
 
+            <div className={style.HeaderButtons}>
+              <NavLink to="/home">
+                <h4>Vikendice</h4>
+              </NavLink>
+
+              <NavLink to="/findCatering">
+                <h4>Ketering</h4>
+              </NavLink>
+            </div>
+
             {user && <Navbar user={user} />}
 
             {!user && (

@@ -2,6 +2,7 @@ import api from "../..";
 import { providesSingle } from "../../utils";
 import {
   DeleteOglasImageDTO,
+  UploadMenuDTO,
   UploadMultipleOglasDTO,
   UploadOglasDTO,
 } from "./types";
@@ -17,6 +18,8 @@ const authApiSlice = api.injectEndpoints({
       providesTags: () => [
         { type: "Image", id: "IMAGEOGLAS" },
         { type: "Image", id: "IMAGEKORISNIK" },
+        { type: "Image", id: "IMAGEAGENCY" },
+        { type: "Image", id: "IMAGEMENU" },
       ],
     }),
     uploadKorisnik: builder.mutation<void, FormData>({
@@ -28,6 +31,17 @@ const authApiSlice = api.injectEndpoints({
       invalidatesTags: () => [
         { type: "User", id: "LISTUSER" },
         { type: "Image", id: "IMAGEKORISNIK" },
+      ],
+    }),
+    uploadAgency: builder.mutation<void, FormData>({
+      query: (formData) => ({
+        url: "Agencija/AzurirajSlikuAgencije",
+        method: "PUT",
+        body: formData,
+      }),
+      invalidatesTags: () => [
+        { type: "Agency", id: "LISTAGENCY" },
+        { type: "Image", id: "IMAGEAGENCY" },
       ],
     }),
     uploadOglas: builder.mutation<void, UploadOglasDTO>({
@@ -59,7 +73,18 @@ const authApiSlice = api.injectEndpoints({
       }),
       invalidatesTags: (result, err, args) => [
         { type: "Oglas", id: args.idOglasa },
-        { type: "Image", id: "IMAGEOGLAS" }
+        { type: "Image", id: "IMAGEOGLAS" },
+      ],
+    }),
+    uploadMenu: builder.mutation<void, UploadMenuDTO>({
+      query: (body) => ({
+        url: `Agencija/UploadujSlikuMenija/${body.idMenija}`,
+        method: "POST",
+        body: body.formData,
+      }),
+      invalidatesTags: (result, err, args) => [
+        { type: "AgencyMenu", id: args.idMenija },
+        { type: "Image", id: "IMAGEMENU" },
       ],
     }),
   }),
@@ -69,7 +94,9 @@ export const {
   useGetImageQuery,
   useLazyGetImageQuery,
   useUploadKorisnikMutation,
+  useUploadAgencyMutation,
   useUploadOglasMutation,
   useUploadMultipleOglasMutation,
   useDeleteOglasImageMutation,
+  useUploadMenuMutation,
 } = authApiSlice;

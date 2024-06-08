@@ -28,11 +28,13 @@
 }
 
 .ZurkaNaKlik {
-  font-family: "Poppins";
-  font-weight: bold;
-  font-size: 24px;
-  text-decoration: none;
-  color: black;
+  width: 250px;
+  height: 70px;
+}
+
+.ZurkaNaKlik img {
+  width: 100%;
+  height: auto;
 }
 
 .LoginButtonHeader {
@@ -142,4 +144,13 @@
 
 .timLevl {
   color: var(--mainColor);
+}
+
+.HeaderButtons {
+  position: absolute;
+  display: flex;
+  gap: 50px;
+  left: 50%;
+  transform: translateX(-50%);
+  cursor: pointer;
 }

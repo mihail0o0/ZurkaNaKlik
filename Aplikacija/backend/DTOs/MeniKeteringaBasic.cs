@@ -10,8 +10,8 @@ namespace backend.Models
     {
         public required string naziv { get; set; }
         public required int cenaMenija { get; set; }
-        public required string slika { get; set; }
+        public string? slika { get; set; }
         public required string opis { get; set; }
-        public required List<string> sastavMenija {get; set; }// pecivo, cevapi
+        public required List<string> sastavMenija { get; set; }
     }
 }

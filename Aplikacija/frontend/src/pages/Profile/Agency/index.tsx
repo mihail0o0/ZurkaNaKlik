@@ -22,6 +22,12 @@ import { skipToken } from "@reduxjs/toolkit/query";
 import UserAvatar from "@/components/UserAvatar";
 import PageSpacer from "@/components/lib/page-spacer";
 import Meniji from "./Meniji";
+import UploadComponent from "@/components/UploadComponent";
+import {
+  useGetImageQuery,
+  useUploadAgencyMutation,
+} from "@/store/api/endpoints/images";
+import { getRawLocation } from "@/utils/handleQueries";
 
 const AgencyProfile = () => {
   const currUser = useSelector(selectUser);
@@ -63,7 +69,7 @@ const AgencyProfile = () => {
 
   const [addCategory] = useAddCategoryMutation();
   const [deleteCategory] = useDeleteCategoryMutation();
-  
+
   type MenuListProps = {
     getMenuDTO: GetMenuDTO[];
   };
@@ -80,6 +86,12 @@ const AgencyProfile = () => {
         )
       )}
     </div>
+  );
+
+  const [uploadAction] = useUploadAgencyMutation();
+
+  const { data: displayImage } = useGetImageQuery(
+    getRawLocation(agencyData?.slikaProfila) ?? skipToken
   );
 
   const submit = async () => {
@@ -157,7 +169,14 @@ const AgencyProfile = () => {
               </p>
             </div>
             <div className={style.AvatarText}>
-              <UserAvatar size={100} letter={currUser.name[0]} />
+              <UploadComponent uploadFn={uploadAction}>
+                <UserAvatar
+                  src={displayImage}
+                  uploadable={true}
+                  size={100}
+                  letter={currUser.name[0]}
+                />
+              </UploadComponent>
               <Typography fontSize={24}>{currUser.name}</Typography>
             </div>
           </div>
