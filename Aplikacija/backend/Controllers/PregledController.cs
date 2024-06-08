@@ -325,7 +325,6 @@ namespace backend.Controllers
         {
             try
             {
-
                 List<Agencija> agencije = await Context.Agencije.IgnoreQueryFilters().Include(i => i.KategorijeMenija).ToListAsync();
 
                 switch (sort)

@@ -1,29 +1,37 @@
-.Container{
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    background-color: white;
-    border-radius: var(--borderRadiusMedium);
-    box-shadow: var(--boxShadowSoft);
-    width: 60%;
-    
-
- 
-}
-.MenyPicture{
-  
-    margin:20px;
-}
-.MenyTxt{
-    display: flex;
-    flex-direction: column;
- 
-    height: 100%;
-    align-items: center;
-    
-    
-
-
-    
+.Container {
+  display: flex;
+  flex-direction: row;
+  background-color: white;
+  border-radius: var(--borderRadiusMedium);
+  box-shadow: var(--boxShadowSoft);
+  width: 60%;
+  margin-block: 30px;
 }
 
+.MenyPicture {
+  width: 200px;
+  height: 150px;
+  margin-right: 20px;
+  border-radius: var(--borderRadiusMedium);
+}
+
+.picture {
+  border-radius: var(--borderRadiusMedium);
+  height: 100%;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.MenyTxt {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: top;
+  align-items: top;
+  margin-top: 20px;
+}
+
+.dialogPictureContainer{
+    width: 100%;
+    height: 200px;
+}

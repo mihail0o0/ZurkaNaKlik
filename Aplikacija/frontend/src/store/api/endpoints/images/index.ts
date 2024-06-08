@@ -17,6 +17,7 @@ const authApiSlice = api.injectEndpoints({
       providesTags: () => [
         { type: "Image", id: "IMAGEOGLAS" },
         { type: "Image", id: "IMAGEKORISNIK" },
+        { type: "Image", id: "IMAGEAGENCY" },
       ],
     }),
     uploadKorisnik: builder.mutation<void, FormData>({
@@ -28,6 +29,17 @@ const authApiSlice = api.injectEndpoints({
       invalidatesTags: () => [
         { type: "User", id: "LISTUSER" },
         { type: "Image", id: "IMAGEKORISNIK" },
+      ],
+    }),
+    uploadAgency: builder.mutation<void, FormData>({
+      query: (formData) => ({
+        url: "Agencija/AzurirajSlikuAgencije",
+        method: "PUT",
+        body: formData,
+      }),
+      invalidatesTags: () => [
+        { type: "Agency", id: "LISTAGENCY" },
+        { type: "Image", id: "IMAGEAGENCY" },
       ],
     }),
     uploadOglas: builder.mutation<void, UploadOglasDTO>({
@@ -59,7 +71,7 @@ const authApiSlice = api.injectEndpoints({
       }),
       invalidatesTags: (result, err, args) => [
         { type: "Oglas", id: args.idOglasa },
-        { type: "Image", id: "IMAGEOGLAS" }
+        { type: "Image", id: "IMAGEOGLAS" },
       ],
     }),
   }),
@@ -69,6 +81,7 @@ export const {
   useGetImageQuery,
   useLazyGetImageQuery,
   useUploadKorisnikMutation,
+  useUploadAgencyMutation,
   useUploadOglasMutation,
   useUploadMultipleOglasMutation,
   useDeleteOglasImageMutation,
