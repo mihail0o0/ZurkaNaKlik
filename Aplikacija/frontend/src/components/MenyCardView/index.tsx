@@ -12,15 +12,26 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  MenuItem,
+  Select,
   Typography,
 } from "@mui/material";
+import { useGetUserDataQuery } from "@/store/api/endpoints/korisnik";
+import { selectUser } from "@/store/auth";
+import { useSelector } from "react-redux";
+import { Role } from "@/models/role";
 
 type MenyCardProps = {
   meni: Menu;
 };
 
 const MenyCardView = ({ meni }: MenyCardProps) => {
-  const [open, setOpen] = useState(true);
+  const user = useSelector(selectUser);
+  const [open, setOpen] = useState(false);
+
+  const { data: userInfo } = useGetUserDataQuery(user?.id ?? skipToken, {
+    skip: !user || user.role == Role.AGENCIJA,
+  });
 
   const { data: image } = useGetImageQuery(meni.slika ?? skipToken);
   const defaultImage = "/images/imageNotFound.jpg";
@@ -47,17 +58,10 @@ const MenyCardView = ({ meni }: MenyCardProps) => {
       <Dialog open={open}>
         <DialogTitle>Zakupite ovaj meni</DialogTitle>
         <DialogContent>
-          <div className={style.dialogPictureContainer}>
-            <img className={style.dialogPicture} src={displayImage} />
+          <div className={style.dialogContainer}>
+            <h3>{meni.naziv}</h3>
+            <Select></Select>
           </div>
-          <div className={style.nazivOcena}>
-            <Typography>{meni.naziv}</Typography>
-            <div className={style.ocena}>
-              <Icon icon="payments" />
-              <p>{meni.cenaMenija}</p>
-            </div>
-          </div>
-          <Typography>{meni.opis}</Typography>
           <DialogActions>
             <MojButton text="Zakazi" small={true} onClick={() => {}} />
           </DialogActions>
