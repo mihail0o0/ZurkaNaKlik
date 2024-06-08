@@ -279,7 +279,7 @@ namespace backend.Controllers
 
                 List<DateTime> sviDaniUOpsegu = new List<DateTime>();
 
-                if (filteri.datumDo != null && filteri.datumOd != null)
+                if (filteri?.datumDo != null && filteri?.datumOd != null)
                 {
                     if (filteri.datumDo.Date < filteri.datumDo.Date)
                     {

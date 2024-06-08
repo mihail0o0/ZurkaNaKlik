@@ -521,7 +521,8 @@ namespace backend.Controllers
                         DatumZakupa = DateTime.Now,
                         ZakupljenOd = trazeniDatumi[0],
                         ZakupljenDo = trazeniDatumi[trazeniDatumi.Count - 1],
-                        ZahtevZaKetering = null
+                        ZahtevZaKetering = null,
+                        Cena = trazeniDatumi.Count * oglas.CenaPoDanu
                     };
 
                     Context.ZakupljeniOglasi.Add(zakupljenoglas);

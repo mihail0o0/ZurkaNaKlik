@@ -17,6 +17,7 @@ namespace backend.Models
         public DateTime DatumZakupa { get; set; }
         public DateTime ZakupljenOd { get; set; }
         public DateTime ZakupljenDo { get; set; }
+        public int Cena { get; set; }
 
         [ForeignKey("ZakupljeniOglas")]
         [JsonIgnore]
