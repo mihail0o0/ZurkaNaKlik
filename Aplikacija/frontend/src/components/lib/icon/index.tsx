@@ -1,3 +1,4 @@
+import zIndex from "@mui/material/styles/zIndex";
 import React from "react";
 
 type Props = {
@@ -21,6 +22,8 @@ const Icon = ({
     display: "block",
     fontSize: fontSize ?? "28px",
     marginRight: iconMargin ?? "8px",
+    
+
   };
 
   if (!icon) return <></>;

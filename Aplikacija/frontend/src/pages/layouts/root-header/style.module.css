@@ -82,7 +82,11 @@
 }
 
 .headerMessage {
+  position: relative;
+  z-index: -100 !important;
+  
 }
+
 
 .profileButton {
   padding: 10px;
