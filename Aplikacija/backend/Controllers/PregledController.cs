@@ -369,6 +369,10 @@ namespace backend.Controllers
                     }
                 }
 
+                int brojAgencija = agencije.Count;
+
+                agencije = agencije.Skip((pageNumber - 1) * pageSize)
+                             .Take(pageSize).ToList();
                 List<AgencijaBasic> response = new List<AgencijaBasic>();
 
                 foreach (Agencija agencija in agencije)
@@ -376,7 +380,7 @@ namespace backend.Controllers
                     response.Add(ObjectCreatorSingleton.Instance.ToAgencijaBasic(agencija));
                 }
 
-                int brojAgencija = response.Count();
+                
 
                 return Ok(new { brojAgencija, response });
             }
