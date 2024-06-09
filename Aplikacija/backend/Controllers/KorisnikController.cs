@@ -152,7 +152,7 @@ namespace backend.Controllers
 
                 if (!listaZakupljenihOglasa.Any())
                 {
-                    return BadRequest("Nisi rezervisao nijedan oglas");
+                    return Ok();
                 }
 
                 List<ZakupljeniOglasDTO> rezultat = new List<ZakupljeniOglasDTO>();
