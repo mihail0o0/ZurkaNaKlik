@@ -55,15 +55,15 @@ namespace backend.Controllers
                 await Context.Korisnici.AddAsync(korisnik);
                 await Context.SaveChangesAsync();
 
-                var kor = Context.Korisnici.FirstOrDefaultAsync(f => f.Email == request.email);
-                string accessToken = prijava(korisnik);
+                // var kor = Context.Korisnici.FirstOrDefaultAsync(f => f.Email == request.email);
+                // string accessToken = prijava(korisnik);
 
-                await Context.SaveChangesAsync();
+                // await Context.SaveChangesAsync();
 
 
                 LoginResult loginResult = ObjectCreatorSingleton.Instance.ToLoginResult(korisnik);
 
-                return Ok(new { accessToken, loginResult });
+                return Ok(new { loginResult });
             }
             catch (Exception e)
             {
@@ -95,15 +95,15 @@ namespace backend.Controllers
                 await Context.Agencije.AddAsync(agencija);
                 await Context.SaveChangesAsync();
 
-                var kor = Context.Agencije.FirstOrDefaultAsync(f => f.Email == request.email);
+                // var kor = Context.Agencije.FirstOrDefaultAsync(f => f.Email == request.email);
                 
                 
-                string accessToken = prijava(agencija);
+                // string accessToken = prijava(agencija);
 
-                await Context.SaveChangesAsync();
+                // await Context.SaveChangesAsync();
 
                 
-                return Ok(new { accessToken, loginResult });
+                return Ok(new { loginResult });
             }
             catch (Exception e)
             {

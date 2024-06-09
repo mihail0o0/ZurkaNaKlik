@@ -665,18 +665,27 @@ namespace backend.Controllers
 
                 var korisnik = await Context.Korisnici.FindAsync(idKorisnika);
 
-                var ketering = await Context.ZahteviZaKetering
-                .Where(x => x.Id == idZakupljenogKeteringa).FirstOrDefaultAsync();
+                var ketering = await Context.ZahteviZaKetering.Include(i => i.Agencija).ThenInclude(t => t!.ListaZahtevZaKetering).Include(i => i.ZakupljeniOglas).ThenInclude(t => t!.Korisnik).FirstOrDefaultAsync(x => x.Id == idZakupljenogKeteringa);
+                
 
                 if (ketering == null)
                 {
-                    return BadRequest("Ne postoji takav zakupljen oglas");
+                    return BadRequest("Ne postoji takav zakupljen ketering");
                 }
 
-                ketering!.Agencija!.ListaZahtevZaKetering!.Remove(ketering);
-                Context.ZahteviZaKetering.Remove(ketering);
+                if (ketering.ZakupljeniOglas?.Korisnik?.Id != idKorisnika){
+                    return BadRequest("Nisti ti taj bebo");
+                }
 
-                return Ok(ketering.Id);
+                ketering.StatusRezervacije = false;
+                ketering!.Agencija!.ListaZahtevZaKetering!.Remove(ketering);
+                //Context.ZahteviZaKetering.Remove(ketering);
+
+                await Context.SaveChangesAsync();
+
+                return Ok(ketering);
+
+
             }
             catch (Exception ex)
             {
@@ -696,11 +705,12 @@ namespace backend.Controllers
 
 
 
-                var korisnik = await Context.Korisnici.FindAsync(idKorisnika);
+                var korisnik = await Context.Korisnici.Include(i => i.ListaZakupljenihOglasa).FirstOrDefaultAsync(f => f.Id == idKorisnika);
 
-                var oglas = await Context.ZakupljeniOglasi.Include(x => x.Korisnik).Where(x => x.Korisnik!.Id == idKorisnika)
-                .Where(x => x.Id == idZakupljenogOglasa).FirstOrDefaultAsync();
+                var oglas = await Context.ZakupljeniOglasi.Include(i => i.Oglas).Include(i => i.ZahtevZaKetering).Include(x => x.Korisnik).Where(x => x.Korisnik!.Id == idKorisnika)
+                .IgnoreQueryFilters().FirstOrDefaultAsync(x => x.Id == idZakupljenogOglasa);
 
+                
                 if (oglas == null)
                 {
                     return BadRequest("Ne postoji takav zakupljen oglas");
@@ -720,11 +730,22 @@ namespace backend.Controllers
                 // Ukloni datume iz liste ZauzetiDani
                 oglas.Oglas?.ZauzetiDani!.RemoveAll(d => sviDaniUOpsegu.Contains(d));
 
+                if (oglas.ZahtevZaKetering != null){
+                    oglas.ZahtevZaKetering!.StatusRezervacije = false;
+                }
+
+                if(korisnik!.ListaZakupljenihOglasa != null && korisnik.ListaZakupljenihOglasa.Count > 0){
+                    korisnik.ListaZakupljenihOglasa.Remove(oglas);
+                }  
                 // Sačuvaj promene u bazi
-                Context.SaveChanges();
+
                 Context.ZakupljeniOglasi.Remove(oglas);
 
-                return Ok(oglas.Id);
+                await Context.SaveChangesAsync();
+
+                return Ok(oglas);
+
+
             }
 
             catch (Exception ex)
