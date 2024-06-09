@@ -335,6 +335,7 @@ const OglasiProstor = () => {
           <UploadMultiple handleUpload={handleUpload}>
             <MojButton
               text="Dodaj sliku"
+              onClick={() => {}}
               icon="add_photo_alternate"
               backgroundColor="lightgrey"
               color="black"

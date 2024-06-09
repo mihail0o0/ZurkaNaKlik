@@ -38,4 +38,5 @@ export type ReservedOglas = {
   zakupljenOd: Date;
   zakupljenDo: Date;
   statusZahtevaZaKetering?: boolean;
+  idZakupljeniKetering: number;
 };
