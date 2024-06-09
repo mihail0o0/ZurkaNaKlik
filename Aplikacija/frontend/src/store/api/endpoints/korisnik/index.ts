@@ -81,7 +81,7 @@ const authApiSlice = api.injectEndpoints({
     }),
     oceniOglas: builder.mutation<boolean, Oceni>({
       query: (body) => ({
-        url: `Korisnik/OceniAgenciju/${body.id}/${body.ocena}`,
+        url: `Korisnik/OceniOglas/${body.id}/${body.ocena}`,
         method: "PUT",
       }),
       invalidatesTags: (result, err, arg) => [
