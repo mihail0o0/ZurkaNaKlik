@@ -127,6 +127,7 @@ const ReservedOglasCard = ({ reservedOglas }: Props) => {
         id:agency.id,
         ocena:valueAgencijaOcena as number
       }
+      console.log(valueAgencijaOcena as number)
       const response=await oceniAgenciju(oceni);
       if ("error" in response) {
         navigate(`/history`);
