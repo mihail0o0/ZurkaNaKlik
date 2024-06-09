@@ -40,8 +40,12 @@ import SelectDatum from "./calendar";
 import { MakeReservationDTO } from "@/store/api/endpoints/korisnik/types";
 import { areIntervalsOverlapping, eachDayOfInterval } from "date-fns";
 import { toast } from "react-toastify";
+import { selectUser } from "@/store/auth";
+import { useSelector } from "react-redux";
+import { Role } from "@/models/role";
 
 const Oglas = () => {
+  const currUser = useSelector(selectUser);
   const [date, setDate] = useState<DateRange | undefined>();
   const [openDialog, setOpenDialog] = useState(false);
 
@@ -54,6 +58,14 @@ const Oglas = () => {
   const { data: VlasnikOglasa } = useGetUserDataQuery(
     currentOglas?.idVlasnika ?? skipToken
   );
+
+  const canReserve: boolean = useMemo(() => {
+    if (!currUser) return false;
+    if (currUser.role === Role.AGENCIJA) return false;
+    if (!VlasnikOglasa) return false;
+    if (currUser.id === VlasnikOglasa.id) return false;
+    return true;
+  }, [currUser, VlasnikOglasa]);
 
   const { data: isFavorite } = useIsFavoriteQuery(
     currentOglas?.idVlasnika ?? skipToken
@@ -200,14 +212,11 @@ const Oglas = () => {
             <label>Podelite</label>
           </div>
           <div onClick={handleFavourite} className={style.Podelite}>
-            <img
-              src={
-                localFavorite
-                  ? "/images/favorite.png"
-                  : "/images/not_favorite.png"
-              }
-              alt={localFavorite ? "Favorite" : "Not Favorite"}
-              className="cursorPointer"
+            <Icon
+              icon="favorite"
+              classes={`${
+                localFavorite ? "colorMain" : undefined
+              } cursorPointer`}
             />
             <label>Dodajte oglas u omiljene</label>
           </div>
@@ -319,13 +328,16 @@ const Oglas = () => {
                 date={date}
                 setDate={setDate}
                 overlap={overlap}
+                disabled={!canReserve}
               />
             </div>
-            <MojButton
-              text={`Rezerviši Vikendicu • ${totalPrice} din`}
-              onClick={submit}
-              paddingX="60px"
-            />
+            {canReserve && (
+              <MojButton
+                text={`Rezerviši Vikendicu • ${totalPrice} din`}
+                onClick={submit}
+                paddingX="60px"
+              />
+            )}
           </div>
         </div>
       </div>

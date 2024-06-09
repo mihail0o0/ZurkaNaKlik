@@ -41,6 +41,8 @@
   --delete: rgb(214, 46, 46);
   --deleteHover: rgb(171, 22, 22);
   --golden: #ffc700;
+  --green: #29bf1c;
+
   /* other */
   --blur: 8px;
   --borderRadiusBig: 35px;
@@ -102,6 +104,7 @@ h6 {
   font-weight: 500;
 }
 
+
 p {
   font-size: 20px;
 }
@@ -110,6 +113,13 @@ p {
 .colorWhite {
   color: white;
 }
+
+
+.colorMain {
+  color: var(--mainColor);
+}
+
+
 
 .page-spacer-xs {
   width: 100%;
@@ -141,7 +151,7 @@ p {
   height: 50px;
 }
 
-.bs{
+.bs {
   box-shadow: var(--boxShadowSoft);
 }
 

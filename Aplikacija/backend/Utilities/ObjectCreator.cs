@@ -244,7 +244,7 @@ namespace backend.Utilities
                 zakupljenDo = oglas.ZakupljenDo,
                 oglasId = oglas.Oglas?.Id,
                 statusZahtevaZaKetering = oglas.ZahtevZaKetering?.StatusRezervacije,
-                cena = oglas.Cena,
+                cenaOglasa = oglas.Cena,
             };
 
             return zakupljeniOglasDTO;

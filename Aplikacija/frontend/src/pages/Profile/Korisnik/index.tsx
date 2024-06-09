@@ -135,6 +135,12 @@ const UserProfile = () => {
     return result;
   };
 
+
+  // const canUpload: boolean = React.useMemo(() => {
+
+  // }, []);
+
+
   if (!user) {
     return null;
   }

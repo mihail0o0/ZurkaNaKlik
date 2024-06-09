@@ -38,4 +38,13 @@ export type ReservedOglas = {
   zakupljenOd: Date;
   zakupljenDo: Date;
   statusZahtevaZaKetering?: boolean;
+  idZakupljeniKetering: number;
+  idAgencije: number;
+  cenaKeteringa: number;
+  cenaOglasa?: number;
 };
+
+export type Oceni = {
+  id: number;
+  ocena: number;
+}

@@ -22,30 +22,33 @@ const Porudzbine = () => {
     ? narudzbine.filter((narudzbina) => narudzbina.statusRezervacije === null)
     : [];
 
-  // const menijiOdobreniID = odobreneNarudzbine.flatMap(
-  //   (order) => order.idMenija || []
-  // );
-  // const menijiNaCekanjuID = narudzbineNaCekanju.flatMap(
-  //   (order) => order.idMenija || []
-  // );
-  // const menijiOdbijeniID = odbijeneNarudzbine.flatMap(
-  //   (order) => order.idMenija || []
-  // );
+  const menijiOdobreniID = odobreneNarudzbine.flatMap(
+    (order) => order.idMenija || []
+  );
+  const menijiNaCekanjuID = narudzbineNaCekanju.flatMap(
+    (order) => order.idMenija || []
+  );
+  const menijiOdbijeniID = odbijeneNarudzbine.flatMap(
+    (order) => order.idMenija || []
+  );
 
-  // const { data: menuOdobreni } = useGetAgencyListMenuesQuery(menijiOdobreniID, {
-  //   skip: menijiOdobreniID.length < 1,
-  // });
+  const { data: menuOdobreni } = useGetAgencyListMenuesQuery(menijiOdobreniID, {
+    skip: menijiOdobreniID.length < 1,
+  });
+  console.log(menuOdobreni);
+  console.log(menijiOdobreniID);
+  console.log(menijiOdbijeniID);
 
-  // const { data: menuNaCekanju } = useGetAgencyListMenuesQuery(
-  //   menijiNaCekanjuID,
-  //   {
-  //     skip: menijiNaCekanjuID.length < 1,
-  //   }
-  // );
+  const { data: menuNaCekanju } = useGetAgencyListMenuesQuery(
+    menijiNaCekanjuID,
+    {
+      skip: menijiNaCekanjuID.length < 1,
+    }
+  );
 
-  // const { data: menuOdbijeni } = useGetAgencyListMenuesQuery(menijiOdbijeniID, {
-  //   skip: menijiOdbijeniID.length < 1,
-  // });
+  const { data: menuOdbijeni } = useGetAgencyListMenuesQuery(menijiOdbijeniID, {
+    skip: menijiOdbijeniID.length < 1,
+  });
 
   return (
     <>
