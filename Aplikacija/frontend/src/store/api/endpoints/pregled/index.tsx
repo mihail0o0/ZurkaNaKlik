@@ -12,8 +12,11 @@ const authApiSlice = api.injectEndpoints({
     }),
     getAgencyListMenues: builder.query<MenuForList[], number[]>({
       query: (ids) => ({
-        url: `Pregled/VratiMenije/Lista/listaMenija`,
+        url: `Pregled/VratiMenijeLista`,
+        method: "POST",
+        body: ids,
       }),
+      providesTags: (result) => providesList("PregledMenu", result),
     }),
     getAllGlobalCategories: builder.query<string[], void>({
       query: () => ({

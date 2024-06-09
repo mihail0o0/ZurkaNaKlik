@@ -33,18 +33,15 @@ import {
 } from "@/store/api/endpoints/oglas";
 import { format } from "date-fns";
 import Input from "../lib/inputs/text-input";
+import { PorucenMeni } from "@/store/api/endpoints/korisnik/types";
 
-type SelectOglas = {
-  text: string;
-  date: Date;
-  value: number;
-};
 
 type MenyCardProps = {
   meni: Menu;
+  addMenu: (menu: PorucenMeni) => void;
 };
 
-const MenyCardView = ({ meni }: MenyCardProps) => {
+const MenyCardView = ({ meni, addMenu }: MenyCardProps) => {
   const user = useSelector(selectUser);
   const [open, setOpen] = useState(false);
 
@@ -52,50 +49,13 @@ const MenyCardView = ({ meni }: MenyCardProps) => {
     skip: !user || user.role == Role.AGENCIJA,
   });
 
-  const { data: reservedOglasi } = useGetReservedOglasiQuery(undefined, {
-    skip: !user || user.role == Role.AGENCIJA,
-  });
-
-  console.log(reservedOglasi);
-
   const { data: image } = useGetImageQuery(
     getRawLocation(meni.slika) ?? skipToken
   );
   const defaultImage = "/images/imageNotFound.jpg";
-
   const displayImage = `${image ?? defaultImage}`;
 
-  const [getOglasAction] = useLazyGetOglasQuery();
-
-  const [selectOglasOptions, setSelectOglasOptions] = useState<SelectOglas[]>(
-    []
-  );
-
-  const [selectedOglas, setSelectedOglas] = useState<number | null>(null);
   const [amount, selectedAmount] = useState("");
-
-  const handleSelectOglas = (event: SelectChangeEvent) => {
-    setSelectedOglas(parseInt(event.target.value));
-  };
-
-  useEffect(() => {
-    const oglasOptions: SelectOglas[] = [];
-    if (!reservedOglasi) return;
-
-    reservedOglasi.forEach(async (oglas) => {
-      if (!oglas.oglasId) return;
-
-      const { data: oglasData } = await getOglasAction(oglas.oglasId);
-      if (!oglasData) return;
-      oglasOptions.push({
-        text: oglasData.naziv,
-        date: new Date(oglas.zakupljenOd),
-        value: oglas.id,
-      });
-    });
-
-    setSelectOglasOptions(oglasOptions);
-  }, [reservedOglasi]);
 
   const handleClick = () => {
     if (!user || user?.role == Role.AGENCIJA) return;
@@ -103,8 +63,17 @@ const MenyCardView = ({ meni }: MenyCardProps) => {
   };
 
   const handleClose = () => {
-    setSelectedOglas(null);
+    // setSelectedOglas(null);
     setOpen(false);
+  };
+
+  const handleAdd = () => {
+    const newMenu: PorucenMeni = {
+      idMenija: meni.id,
+      kg: parseInt(amount),
+    };
+
+    addMenu(newMenu);
   };
 
   return (
@@ -129,33 +98,18 @@ const MenyCardView = ({ meni }: MenyCardProps) => {
         <DialogTitle>Zakupite ovaj meni</DialogTitle>
         <DialogContent>
           <div className={style.dialogContainer}>
-            <h3>{meni.naziv}</h3>
+            <h3 className={style.nazivMenija}>{meni.naziv}</h3>
             <FormControl sx={{ m: 1, minWidth: 200 }}>
-              <InputLabel id="Select-Vikendica">Odaberite oglas</InputLabel>
-              <Select
-                value={selectedOglas != null ? String(selectedOglas) : ""}
-                onChange={handleSelectOglas}
-                labelId="Select-Vikendica"
-                label="Mjau"
-              >
-                {selectOglasOptions.map((oglasOption, index) => {
-                  return (
-                    <MenuItem value={index}>
-                      <div className={style.selectOglasOption}>
-                        <p>{oglasOption.text}</p>
-                        <p>{format(oglasOption.date, "d. M. yyyy.")}</p>
-                      </div>
-                    </MenuItem>
-                  );
-                })}
-              </Select>
-            </FormControl>
-            <FormControl sx={{ m: 1, minWidth: 200 }}>
-              <Input icon="scale" text={amount} onChange={selectedAmount} placeholder="Količina" />
+              <Input
+                icon="scale"
+                text={amount}
+                onChange={selectedAmount}
+                placeholder="Količina"
+              />
             </FormControl>
           </div>
           <DialogActions>
-            <MojButton text="Zakazi" small={true} onClick={() => {}} />
+            <MojButton text="Dodaj meni" small={true} onClick={handleAdd} />
           </DialogActions>
         </DialogContent>
       </Dialog>

@@ -17,6 +17,9 @@ import {
 } from "@/store/api/endpoints/images";
 import { ResultType } from "@/types";
 import { getRawLocation } from "@/utils/handleQueries";
+import { PorucenMeni } from "@/store/api/endpoints/korisnik/types";
+import { useState } from "react";
+import Checkout from "./Checkout";
 
 const AgencyView = () => {
   const currUser = useSelector(selectUser);
@@ -36,6 +39,37 @@ const AgencyView = () => {
     return result;
   };
 
+  const [menues, setMenues] = useState<PorucenMeni[]>([]);
+
+  const addMenu = (newMenu: PorucenMeni) => {
+    for (let i = 0; i < menues.length; i++) {
+      if (menues[i].idMenija === newMenu.idMenija) {
+        return;
+      }
+    }
+
+    const newMenues = [...menues, newMenu];
+    setMenues(newMenues);
+  };
+
+  const deleteMenu = (menuId: number) => {
+    const newMenues: PorucenMeni[] = [];
+    console.log("POZVANA SAMA");
+
+    menues.forEach((menu) => {
+      if (menu.idMenija != menuId) {
+        newMenues.push(menu);
+      }
+    });
+
+    setMenues(newMenues);
+  };
+
+  const resetMenues = () => {
+    const emptyArr: PorucenMeni[] = [];
+    setMenues(emptyArr);
+  };
+
   if (!agencyData) {
     return null;
   }
@@ -45,7 +79,6 @@ const AgencyView = () => {
       <PageSpacer variant="xs" />
       <div className={`containerWrapper ${style.Glavni}`}>
         <div className={style.Gore}>
-          {/* DIV TXT */}
           <div className={style.Heading}>
             <div className={style.HeadingText}>
               <h2>Osnovne informacije o agenciji {agencyData?.ime}</h2>
@@ -66,11 +99,7 @@ const AgencyView = () => {
           <div className={style.DodatneInfo}>
             {/* txt box */}
             <div>
-              <Typography
-                maxWidth={500}
-              >
-                {agencyData.opis}
-              </Typography>
+              <Typography maxWidth={500}>{agencyData.opis}</Typography>
             </div>
             {/* inputi za grad br cenu i check */}
             <div className={style.Inputs}>
@@ -91,11 +120,19 @@ const AgencyView = () => {
             )}
             {meniDTO &&
               meniDTO.map((category) => {
-                return <CategoryMenuCard category={category} />;
+                return (
+                  <CategoryMenuCard category={category} addMenu={addMenu} />
+                );
               })}
           </div>
         </div>
       </div>
+      <Checkout
+        meniji={menues}
+        agencyId={idAgencije}
+        resetMenues={resetMenues}
+        removeMenu={deleteMenu}
+      />
     </>
   );
 };

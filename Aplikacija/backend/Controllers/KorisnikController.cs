@@ -545,7 +545,7 @@ namespace backend.Controllers
         #endregion
 
         #region  PosaljiZahtevZaKetering
-        [HttpPost("PosaljiZahtevZaKetering/{idZakupljenOglas}/{idAgencije}/{mogucnostDostave}/listamenija")]
+        [HttpPost("PosaljiZahtevZaKetering/{idZakupljenOglas}/{idAgencije}/{mogucnostDostave}")]
         public async Task<IActionResult> PosaljiZahtevZaKetering(bool mogucnostDostave, int idZakupljenOglas, int idAgencije, [FromBody] List<PorucenMeni> listamenija)
         {
             try
@@ -632,7 +632,9 @@ namespace backend.Controllers
                 Context.ZahteviZaKetering.Add(novizahtev);
                 await Context.SaveChangesAsync();
 
-                return Ok(new { novizahtev.ZakupljeniMeniji });
+                ZahtevZaKeteringResult result = ObjectCreatorSingleton.Instance.ToZahtevZaKeteringResult(novizahtev);
+
+                return Ok(result);
             }
             catch (Exception e)
             {

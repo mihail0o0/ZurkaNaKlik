@@ -37,9 +37,6 @@ const Navbar = ({ user }: Props) => {
     getRawLocation(allAgencyData?.slikaProfila) ?? skipToken
   );
 
-  console.log("MJAU");
-  console.log(userUrl, agencyUrl);
-
   const onClick = (event: React.MouseEvent<HTMLDivElement>) => {
     setAnchor(event.currentTarget);
     setOpen((prevOpen) => !prevOpen);

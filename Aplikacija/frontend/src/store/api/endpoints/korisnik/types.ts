@@ -18,6 +18,18 @@ export type MakeReservationDTO = {
   trazeniDatumi: Date[];
 };
 
+export type MakeCateringReservationDTO = {
+  idZakupljenOglas: number;
+  idAgencije: number;
+  mogucnostDostave: boolean;
+  porucenMeni: PorucenMeni[];
+};
+
+export type PorucenMeni = {
+  kg: number;
+  idMenija: number;
+};
+
 export type ReservedOglas = {
   id: number;
   oglasId?: number;

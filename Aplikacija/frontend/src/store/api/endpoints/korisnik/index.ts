@@ -3,6 +3,7 @@ import { providesList, providesSingle } from "../../utils";
 import { OglasObjekata } from "../oglas/types";
 import {
   AllUserData,
+  MakeCateringReservationDTO,
   MakeReservationDTO,
   ReservedOglas,
   UpdateUserDTO,
@@ -84,6 +85,18 @@ const authApiSlice = api.injectEndpoints({
         { type: "ReservedOglasi", id: "LISTRESERVEDOGLASI" },
       ],
     }),
+    makeCateringReservation: builder.mutation<CateringOrder, MakeCateringReservationDTO>({
+      query: (body) => ({
+        url: `Korisnik/PosaljiZahtevZaKetering/${body.idZakupljenOglas}/${body.idAgencije}/${body.mogucnostDostave}`,
+        method: "POST",
+        body: body.porucenMeni,
+      }),
+      invalidatesTags: (result, err, arg) => [
+        // { type: "Oglas", id: result?.oglasId },
+        { type: "CateringOrder", id: result?.id },
+        { type: "CateringOrder", id: "LISTCATERINGORDER" },
+      ],
+    }),
   }),
 });
 
@@ -97,4 +110,5 @@ export const {
   useIsFavoriteQuery,
   useGetReservedOglasiQuery,
   useMakeReservationMutation,
+  useMakeCateringReservationMutation,
 } = authApiSlice;
