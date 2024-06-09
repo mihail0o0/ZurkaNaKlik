@@ -9,9 +9,10 @@ type Props = {
   setDate: (arg0: DateRange | undefined) => void;
   bussyDays: Date[];
   overlap: boolean;
+  disabled?: boolean;
 };
 
-const SelectDatum = ({ bussyDays, date, setDate, overlap }: Props) => {
+const SelectDatum = ({ disabled, bussyDays, date, setDate, overlap }: Props) => {
   const [openCalendar, setOpenCalendar] = useState(false);
 
   const text = useMemo(() => {
@@ -38,6 +39,7 @@ const SelectDatum = ({ bussyDays, date, setDate, overlap }: Props) => {
         onSelect={setDate}
         numberOfMonths={1}
         className="border rounded-md"
+        disabled={disabled}
       />
     </div>
   );

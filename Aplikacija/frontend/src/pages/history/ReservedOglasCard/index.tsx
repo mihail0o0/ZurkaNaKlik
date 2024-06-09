@@ -52,6 +52,9 @@ const ReservedOglasCard = ({ reservedOglas }: Props) => {
   );
 
   const oglasDisplayImage = oglasImage ?? defaultImage;
+  
+  console.log("STATUS");
+  console.log(reservedOglas.statusZahtevaZaKetering);
 
   const statusKeteringa: string = useMemo(() => {
     if (reservedOglas.statusZahtevaZaKetering == undefined) return "Na čekanju";

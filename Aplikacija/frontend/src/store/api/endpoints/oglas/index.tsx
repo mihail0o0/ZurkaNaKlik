@@ -23,7 +23,6 @@ const authApiSlice = api.injectEndpoints({
         method: "POST",
         body: body.filtersData,
       }),
-      
     }),
     getOglas: builder.query<OglasObjekata, number>({
       query: (id) => ({

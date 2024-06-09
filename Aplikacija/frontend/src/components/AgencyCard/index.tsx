@@ -5,6 +5,7 @@ import { skipToken } from "@reduxjs/toolkit/query";
 import { Typography } from "@mui/material";
 import Icon from "../lib/icon";
 import { useNavigate } from "react-router-dom";
+import { getRawLocation } from "@/utils/handleQueries";
 
 type Props = {
   agency: Agency;
@@ -12,7 +13,9 @@ type Props = {
 
 const AgencyCard = ({ agency }: Props) => {
   const navigate = useNavigate();
-  const { data: image } = useGetImageQuery(agency.slikaProfila ?? skipToken);
+  const { data: image } = useGetImageQuery(
+    getRawLocation(agency.slikaProfila) ?? skipToken
+  );
 
   return (
     <div
