@@ -10,7 +10,7 @@ const AgencySignUp = () => {
   return (
     <>
       <PageSpacer variant="xs" />
-      <div className={`containerWrapper ${style.container}`}>
+      <div className={`containerWrapper bs ${style.container}`}>
         <div className={style.textContent}>
           <div className={style.textWrapper}>
             <h1>Izdajte vaše usluge</h1>

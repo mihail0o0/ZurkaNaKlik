@@ -7,7 +7,7 @@ const UserSignUpPage = () => {
   return (
     <>
       <PageSpacer variant="xs" />
-      <div className={`containerWrapper ${style.container}`}>
+      <div className={`containerWrapper bs ${style.container}`}>
         <div className={style.textContent}>
           <div className={style.textWrapper}>
             <h1>Napravite Nalog</h1>
@@ -27,8 +27,8 @@ const UserSignUpPage = () => {
               link={"/catering/register"}
             />
             <LoginLabel
-              text={"Nemate nalog?"}
-              linkText={"Registrujte se"}
+              text={"Već imate nalog?"}
+              linkText={"Prijavite se"}
               link={"/login"}
             />
           </div>

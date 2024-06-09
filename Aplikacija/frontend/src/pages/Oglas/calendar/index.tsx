@@ -8,9 +8,10 @@ type Props = {
   date: DateRange | undefined;
   setDate: (arg0: DateRange | undefined) => void;
   bussyDays: Date[];
+  overlap: boolean;
 };
 
-const SelectDatum = ({ bussyDays, date, setDate }: Props) => {
+const SelectDatum = ({ bussyDays, date, setDate, overlap }: Props) => {
   const [openCalendar, setOpenCalendar] = useState(false);
 
   const text = useMemo(() => {
@@ -26,12 +27,12 @@ const SelectDatum = ({ bussyDays, date, setDate }: Props) => {
 
   return (
     <div className="flex flex-col items-center">
-      <p className="mt-4">{text}</p>
+      <p className={`mt-4 ${overlap ? style.red : ""}`}>{text}</p>
       <Calendar
         initialFocus
         mode="range"
-        modifiers={{ bussy: bussyDays}}
-        modifiersClassNames={{ bussy: style.bussy}}
+        modifiers={{ bussy: bussyDays }}
+        modifiersClassNames={{ bussy: style.bussy }}
         defaultMonth={date?.from}
         selected={date}
         onSelect={setDate}

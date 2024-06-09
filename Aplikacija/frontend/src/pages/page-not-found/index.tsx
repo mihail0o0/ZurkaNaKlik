@@ -17,7 +17,8 @@ function PageNotFound() {
 
   return (
     <>
-      <div className={`containerWrapper ${style.wrapper}`}>
+      <PageSpacer variant="xs"/>
+      <div className={`containerWrapper bs ${style.wrapper}`}>
         <div className={style.text}>
           <div className="pageNotFoundTextContainer">
             <h1>Uuuups!</h1>

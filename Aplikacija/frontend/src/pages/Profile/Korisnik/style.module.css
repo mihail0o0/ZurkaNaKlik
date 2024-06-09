@@ -10,6 +10,10 @@
   margin-top: 30px;
 }
 
+.PostavkeProfila h2 {
+  margin-bottom: 10px;
+}
+
 .PostavkeProfilaTXT {
   display: flex;
   flex-direction: row;
@@ -32,6 +36,7 @@
   border-radius: 30px;
   width: 40%;
   max-height: 500px;
+  box-shadow: var(--boxShadowSoft);
 }
 
 .SlikaImeIPrezime {
@@ -59,6 +64,7 @@
   background-color: white;
   border-radius: 30px;
   width: 80%;
+  box-shadow: var(--boxShadowSoft);
 }
 
 .Inputi {
@@ -74,7 +80,6 @@
   align-items: center;
   justify-content: space-around;
 }
-
 
 .TxtArea {
   width: 700px;
@@ -141,7 +146,7 @@
   background-color: var(--deleteHover);
   transition: all 250ms;
 }
-.obrrrisibhrate{
+.obrrrisibhrate {
   display: flex;
   flex-direction: row;
   align-items: center;

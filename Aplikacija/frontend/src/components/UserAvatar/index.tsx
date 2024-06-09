@@ -29,17 +29,22 @@ const UserAvatar = ({
 
   if (!uploadable) {
     return (
-      <Avatar
-        src={src}
-        sx={{
-          position: "relative",
-          fontSize: size ? size / 2 : undefined,
-          width: size,
-          height: size,
-          color: color,
-          backgroundColor: bgColor,
-        }}
-      ></Avatar>
+      <>
+        <div className={style.content}>
+          <Avatar
+            src={src}
+            sx={{
+              position: "relative",
+              fontSize: size ? size / 2 : undefined,
+              width: size,
+              height: size,
+              color: color,
+              backgroundColor: bgColor,
+            }}
+          ></Avatar>
+          <div className={style.dashedBorder}></div>
+        </div>
+      </>
     );
   }
 
@@ -69,6 +74,7 @@ const UserAvatar = ({
           iconMargin="0"
         ></Icon>
       </div>
+      <div className={style.dashedBorder}></div>
     </div>
   );
 };

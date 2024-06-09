@@ -66,7 +66,7 @@ const Navbar = ({ user }: Props) => {
             link: "/catering/porudzbine",
           },
       isUser
-        ? { icon: "schedule", text: "Već posećeno", link: "/poseceno" }
+        ? { icon: "schedule", text: "Već posećeno", link: "/history" }
         : null,
       isUser
         ? {

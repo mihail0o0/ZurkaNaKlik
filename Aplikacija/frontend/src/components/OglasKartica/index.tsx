@@ -102,11 +102,8 @@ const OglasKartica = ({ oglas, onClick }: Props) => {
 
   let flagAgency = userCurr?.role === Role.AGENCIJA;
   return (
-    <div
-      className={style.GlavniDiv}
-    
-    >
-      <div className={style.SlikaKartica} style={SlikaKartica}>
+    <div className={style.GlavniDiv}>
+      <div className={`${style.SlikaKartica} bs`} style={SlikaKartica}>
         {/* ovde ide slika , pa onda tip proslave i dal je omiljeno ili ne */}
         <div className={style.TipOmiljeno}>
           <div>
@@ -136,10 +133,12 @@ const OglasKartica = ({ oglas, onClick }: Props) => {
           )}
         </div>
       </div>
-      <div className={
-`cursorPointer ${style.ViseInfo}`}  onClick={() => {
-        navigate(`/place/${oglas.id}`);
-      }}>
+      <div
+        className={`cursorPointer ${style.ViseInfo}`}
+        onClick={() => {
+          navigate(`/place/${oglas.id}`);
+        }}
+      >
         <div className={style.ViseInfoTekst}>
           <div className={style.ImeOcena}>
             <h2>{oglas.naziv}</h2>

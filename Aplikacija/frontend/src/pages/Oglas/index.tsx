@@ -19,7 +19,10 @@ import {
   tipProslavaMap,
 } from "@/store/api/endpoints/oglas/types";
 import ImageGallery from "@/components/ImageGallery";
-import { useGetImageQuery, useLazyGetImageQuery } from "@/store/api/endpoints/images";
+import {
+  useGetImageQuery,
+  useLazyGetImageQuery,
+} from "@/store/api/endpoints/images";
 import { getRawLocation } from "@/utils/handleQueries";
 import PageSpacer from "@/components/lib/page-spacer";
 import ImageOverview from "@/components/ImageOverview";
@@ -35,7 +38,7 @@ import {
 import { Button, DateRange } from "react-day-picker";
 import SelectDatum from "./calendar";
 import { MakeReservationDTO } from "@/store/api/endpoints/korisnik/types";
-import { eachDayOfInterval } from "date-fns";
+import { areIntervalsOverlapping, eachDayOfInterval } from "date-fns";
 import { toast } from "react-toastify";
 
 const Oglas = () => {
@@ -137,23 +140,36 @@ const Oglas = () => {
     fetchImages();
   }, [currentOglas?.slike, getImageAction]);
 
+  const dates: Date[] = useMemo(() => {
+    if (!date || !date.from || !date.to) return [];
+    return eachDayOfInterval({ start: date.from, end: date.to });
+  }, [date]);
+
+  const overlap: boolean = useMemo(() => {
+    if (!date || !date.from || !date.to || bussyDates.length < 2) return false;
+
+    return areIntervalsOverlapping(
+      { start: date.from, end: date.to },
+      { start: bussyDates[0], end: bussyDates[bussyDates.length - 1] }
+    );
+  }, [date, bussyDates]);
+
+  const numberOfDays: number = useMemo(() => {
+    return dates.length;
+  }, [dates]);
+
+  const totalPrice: number = useMemo(() => {
+    if (!currentOglas) return 0;
+    return currentOglas.cenaPoDanu * numberOfDays;
+  }, [currentOglas, numberOfDays]);
+
   useEffect(() => {
     if (!images[0]) return;
     setBigImage(images[0]);
   }, [images]);
 
-  console.log(currentOglas?.listaTipProslava);
-  
-  // const testZauzetiDani = [new Date("2024-6-10"), new Date("2024-10-6")];
-
   const submit = async () => {
     if (!currentOglas) return;
-
-    let dates: Date[] = [];
-
-    if (date && date.from && date.to) {
-      dates = eachDayOfInterval({ start: date.from, end: date.to });
-    }
 
     const reservationObject: MakeReservationDTO = {
       idOglasa: currentOglas.id,
@@ -256,7 +272,6 @@ const Oglas = () => {
                     navigate(
                       `/user/profile/${VlasnikOglasa && VlasnikOglasa.id}`
                     )
-
                   }
                   paddingX="50px"
                   paddingY="6px"
@@ -303,10 +318,11 @@ const Oglas = () => {
                 bussyDays={bussyDates}
                 date={date}
                 setDate={setDate}
+                overlap={overlap}
               />
             </div>
             <MojButton
-              text={"Rezerviši Vikendicu"}
+              text={`Rezerviši Vikendicu • ${totalPrice} din`}
               onClick={submit}
               paddingX="60px"
             />
@@ -334,7 +350,7 @@ const Oglas = () => {
             text="Zakupljeni Oglasi"
             grey={true}
             onClick={() => {
-              navigate("/poseceno");
+              navigate("/history");
             }}
           />
           <MojButton

@@ -16,7 +16,7 @@ const AgencyCard = ({ agency }: Props) => {
 
   return (
     <div
-      className={`${style.container} cursorPointer`}
+      className={`${style.container} cursorPointer bs`}
       onClick={() => navigate(`/catering/viewAgency/${agency.id}`)}
     >
       <div className={style.avatarName}>

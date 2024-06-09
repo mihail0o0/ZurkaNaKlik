@@ -3,13 +3,12 @@ import style from "../style.module.css";
 import LoginLabel from "@/components/lib/labels/login";
 import UserLoginForm from "../../../components/UserLoginForm";
 import PageSpacer from "@/components/lib/page-spacer";
-import { useGetAllAgencyCategoriesQuery } from "@/store/api/endpoints/agencija";
 
 function UserLoginPage() {
   return (
     <>
       <PageSpacer variant="xs" />
-      <div className={`containerWrapper ${style.container}`}>
+      <div className={`containerWrapper bs ${style.container}`}>
         <div className={style.textContent}>
           <div className={style.textWrapper}>
             <h1>Prijavite se</h1>

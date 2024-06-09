@@ -29,6 +29,7 @@ import Porudzbine from "./Porudzbine";
 import AgencyView from "./Profile/AgencyView";
 import FindCateringPage from "./FindCatering";
 import UserViewProfile from "./Profile/UserView";
+import HistoryPage from "./history";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -37,14 +38,15 @@ const router = createBrowserRouter(
 
       {/* za prijavljene korisnike */}
       <Route element={<ProtectedRoute />}>
+        {/* <Route path="testing" element={<TestingPage />} /> */}
         <Route path="home" element={<Home />} />
-        <Route path="testing" element={<TestingPage />} />
         <Route path="mix" element={<TestingPage />} />
         <Route path="user/profile" element={<UserProfile />} />
         <Route path="user/profile/:id" element={<UserViewProfile />} />
         <Route path="omiljeno" element={<FavoriteOglasi />} />
         <Route path="/place/:id" element={<Oglas />} />
         <Route path="logout" element={<Logout />} />
+        <Route path="/history" element={<HistoryPage />} />
 
         <Route path="prostor">
           <Route path="oglasiProstor" element={<OglasiProstor />} />

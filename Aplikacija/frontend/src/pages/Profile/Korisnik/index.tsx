@@ -70,16 +70,16 @@ const UserProfile = () => {
   const [openDialog, setOpenDialog] = useState(false);
   const [deleteUser] = useDeleteUserMutation();
 
-  // useEffect(() => {
-  //   if (!vlasnikOglasa) return;
+  useEffect(() => {
+    if (!user) return;
 
-  //   setIme(vlasnikOglasa.name);
-  //   setPrezime(vlasnikOglasa.lastName);
-  //   setEmail(vlasnikOglasa.email);
-  //   setBrTel(vlasnikOglasa.phoneNumber);
-  //   setSlikaProfila(vlasnikOglasa.profilePhoto);
-  //   setLokacija(vlasnikOglasa.location);
-  // }, [user]);
+    setIme(user.name);
+    setPrezime(user.lastName);
+    setEmail(user.email);
+    setBrTel(user.phoneNumber);
+    setSlikaProfila(user.profilePhoto);
+    setLokacija(user.location);
+  }, [user]);
 
   const handleDelete = () => {
     setOpenDialog(true);
@@ -142,7 +142,7 @@ const UserProfile = () => {
   return (
     <div className={`containerWrapper ${style.Container}`}>
       <div className={style.PostavkeProfila}>
-        <div>{<h2>Postavke profila</h2>}</div>
+        <h2>Postavke profila</h2>
         <div className={style.Postavke2}>
           {/* odje ide slika od kad je clan broj oglasa i prosecna ocena */}
           <div className={style.KarticaSaSlikom}>

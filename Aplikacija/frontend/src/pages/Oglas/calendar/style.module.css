@@ -2,3 +2,7 @@
 .bussy {
     background-color: var(--lightGrey);
 }
+
+.red {
+    color: var(--delete);
+}

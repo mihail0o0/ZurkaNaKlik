@@ -23,3 +23,19 @@
   display: flex;
   background-color: rgba(0, 0, 0, 0.5);
 }
+
+.content{
+  position: relative;
+}
+
+.dashedBorder{
+  position: absolute;
+  background-color: transparent;
+  left: -5px;
+  top: -5px;
+  width: calc(100% + 10px);
+  height: calc(100% + 10px);
+  border: 1px dashed var(--lightText);
+  border-radius: 300px;
+  z-index: 1;
+}
