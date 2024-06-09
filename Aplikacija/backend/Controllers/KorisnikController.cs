@@ -143,7 +143,8 @@ namespace backend.Controllers
                 int idKorisnika = int.Parse((HttpContext.Items["idKorisnika"] as string)!);
 
                 var listaZakupljenihOglasa = await Context.ZakupljeniOglasi
-                    .Include(i => i.ZahtevZaKetering)
+                    .Include(i => i.ZahtevZaKetering!)
+                    .ThenInclude(i => i.Agencija)
                     .Include(i => i.Oglas)
                     .Include(i => i.Korisnik)
                     .Where(f => f.Korisnik!.Id == idKorisnika)
@@ -167,7 +168,9 @@ namespace backend.Controllers
                         zakupljenDo = o.ZakupljenDo,
                         statusZahtevaZaKetering = o.ZahtevZaKetering?.StatusRezervacije,
                         cena = o.Cena,
+                        cenaKeteringa = o.ZahtevZaKetering?.KonacnaCena ?? 0,
                         idZakupljeniKetering = o.ZahtevZaKetering?.Id ?? 0,
+                        idAgencije = o.ZahtevZaKetering?.Agencija?.Id ?? 0,
                     };
 
                     rezultat.Add(zakupljeniOglasDTO);
