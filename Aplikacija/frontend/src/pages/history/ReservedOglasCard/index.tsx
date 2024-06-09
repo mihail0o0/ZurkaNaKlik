@@ -91,9 +91,9 @@ const ReservedOglasCard = ({ reservedOglas }: Props) => {
   const handleCloseOceniOglas = async (agree: boolean) => {
     setOpenOceniOglas(false);
 
-    if (agree && valueOglasOcena != null) {
+    if (agree && valueOglasOcena != null && reservedOglas.oglasId != null) {
       const oceni: Oceni = {
-        id: oglas.id,
+        id: reservedOglas.oglasId,
         ocena: valueOglasOcena,
       };
 
