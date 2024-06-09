@@ -74,7 +74,8 @@ const ReservedOglasCard = ({ reservedOglas }: Props) => {
 
   const totalPrice = useMemo(() => {
     let price = 0;
-    if (reservedOglas.cenaKeteringa) price += reservedOglas.cenaKeteringa;
+    if (agency && reservedOglas.cenaKeteringa)
+      price += reservedOglas.cenaKeteringa;
     if (reservedOglas.cenaOglasa) price += reservedOglas.cenaOglasa;
     return price;
   }, [reservedOglas]);
@@ -185,13 +186,16 @@ const ReservedOglasCard = ({ reservedOglas }: Props) => {
               </div>
               <div className={style.agency}>
                 {agency && (
-                  <div className={style.avatarContainer}>
-                    <UserAvatar
-                      size={100}
-                      src={agencyImage}
-                      letter={agency?.ime}
-                    />
-                  </div>
+                  <>
+                    <div className={style.avatarContainer}>
+                      <UserAvatar
+                        size={100}
+                        src={agencyImage}
+                        letter={agency.ime}
+                      />
+                    </div>
+                    <h3>{agency.ime}</h3>
+                  </>
                 )}
               </div>
             </div>
@@ -211,7 +215,7 @@ const ReservedOglasCard = ({ reservedOglas }: Props) => {
             )}
             <div className={style.total}>
               <p>Prostor: {reservedOglas.cenaOglasa} din</p>
-              <p>Ketering: {reservedOglas.cenaKeteringa} din</p>
+              <p>Ketering: {agency ? reservedOglas.cenaKeteringa : "0"} din</p>
               <p>Ukupno: {totalPrice} din</p>
             </div>
           </div>
