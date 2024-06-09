@@ -326,13 +326,15 @@ namespace backend.Controllers
             try
             {
                 List<string>? gradovi = await Context.OglasiObjekta.Select(x => x.Grad).Distinct().ToListAsync();
+                List<string>? gradoviAgencija = await Context.Agencije.Select(x => x.Lokacija).Distinct().ToListAsync();
 
+                List<string>? sve = gradovi.Union(gradoviAgencija).ToList();
                 if (gradovi == null)
                 {
                     return BadRequest("Nema jos objekata pa ni gradova");
                 }
 
-                return Ok(gradovi);
+                return Ok(sve);
             }
             catch (Exception e)
             {
