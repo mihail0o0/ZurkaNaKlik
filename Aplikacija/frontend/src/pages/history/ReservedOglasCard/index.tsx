@@ -90,6 +90,7 @@ const ReservedOglasCard = ({ reservedOglas }: Props) => {
         id:oglas.id,
         ocena:valueOglasOcena as number
       }
+      console.log(valueOglasOcena);
       const response= await oceniOglas(oceni);
       if ("error" in response) {
         navigate(`/history`);
@@ -163,14 +164,16 @@ const ReservedOglasCard = ({ reservedOglas }: Props) => {
                 <h3>{oglas.naziv}</h3>
               </div>
               <div className={style.agency}>
-                {agency && (
+                {agency && (<>
                   <div className={style.avatarContainer}>
                     <UserAvatar
                       size={100}
                       src={agencyImage}
-                      letter={agency?.ime}
+                      letter={agency.ime}
                     />
                   </div>
+                  <h3>{agency.ime}</h3>
+                  </>
                 )}
               </div>
             </div>
