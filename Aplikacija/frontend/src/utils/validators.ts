@@ -227,7 +227,7 @@ export const updateUserOglasSchema = Joi.object({
 export const updateAgencySchema = Joi.object<UpdateAgencyDTO>({
   id: Joi.number(),
   brojOcena: Joi.number(),
-  cenaDostave: Joi.number(),
+  cenaDostave: Joi.any(),
   email: emailVal,
   ime: nameVal,
   brTel: phoneNumberVal,
