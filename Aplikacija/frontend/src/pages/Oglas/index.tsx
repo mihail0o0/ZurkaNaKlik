@@ -212,14 +212,11 @@ const Oglas = () => {
             <label>Podelite</label>
           </div>
           <div onClick={handleFavourite} className={style.Podelite}>
-            <img
-              src={
-                localFavorite
-                  ? "/images/favorite.png"
-                  : "/images/not_favorite.png"
-              }
-              alt={localFavorite ? "Favorite" : "Not Favorite"}
-              className="cursorPointer"
+            <Icon
+              icon="favorite"
+              classes={`${
+                localFavorite ? "colorMain" : undefined
+              } cursorPointer`}
             />
             <label>Dodajte oglas u omiljene</label>
           </div>

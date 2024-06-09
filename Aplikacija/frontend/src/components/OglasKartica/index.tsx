@@ -28,14 +28,14 @@ type Props = {
 };
 
 const OglasKartica = ({ oglas, onClick }: Props) => {
+  const userCurr = useSelector(selectUser);
   const navigate = useNavigate();
-  //const [favorite, setFavorite] = useState(false);
   const [addFavorite] = useAddFavouriteMutation();
   const [deleteFavorite] = useDeleteFavouriteMutation();
+
   const { data: isFavorite } = useIsFavoriteQuery(oglas.id ?? skipToken);
-  const userCurr = useSelector(selectUser ?? skipToken);
   const { data: user } = useGetUserDataQuery(userCurr?.id!, {
-    skip: !userCurr,
+    skip: !userCurr || userCurr.role == Role.AGENCIJA,
   });
   const [localFavorite, setLocalFavorite] = useState<boolean>();
 
@@ -44,7 +44,7 @@ const OglasKartica = ({ oglas, onClick }: Props) => {
   );
 
   useEffect(() => {
-    if (isFavorite !== undefined) {
+    if (!isFavorite) {
       setLocalFavorite(isFavorite);
     }
   }, [isFavorite]);
@@ -112,15 +112,12 @@ const OglasKartica = ({ oglas, onClick }: Props) => {
             </Typography>
           </div>
           {user && user.id !== oglas.idVlasnika ? (
-            <img
+            <Icon
+              icon="favorite"
+              classes={`${
+                localFavorite ? "colorMain" : "colorWhite"
+              } cursorPointer`}
               onClick={handleFavoriteClick}
-              src={
-                localFavorite
-                  ? "/images/favorite.png"
-                  : "/images/not_favorite.png"
-              }
-              alt={localFavorite ? "Favorite" : "Not Favorite"}
-              className="cursorPointer"
             />
           ) : (
             !flagAgency && (

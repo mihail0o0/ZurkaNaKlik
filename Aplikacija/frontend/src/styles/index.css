@@ -104,6 +104,7 @@ h6 {
   font-weight: 500;
 }
 
+
 p {
   font-size: 20px;
 }
@@ -112,6 +113,13 @@ p {
 .colorWhite {
   color: white;
 }
+
+
+.colorMain {
+  color: var(--mainColor);
+}
+
+
 
 .page-spacer-xs {
   width: 100%;

@@ -16,22 +16,14 @@ const ImageOverview = ({ image, tipoviProslava }: Props) => {
   const displayImage = `url(${image ?? defaultImage})`;
 
   const handleClickOff = () => {
-    setVisible(false)
-  };
-
-  const handleLeft = () => {
-    alert("FUK");
-  };
-
-  const handleRight = () => {
-    alert("FUK");
+    setVisible(false);
   };
 
   return (
     <>
       <div className={style.ImageContainer}>
         <div
-        onClick={() => setVisible(true)}
+          onClick={() => setVisible(true)}
           className={style.Image}
           style={{ backgroundImage: displayImage }}
         ></div>
@@ -44,18 +36,11 @@ const ImageOverview = ({ image, tipoviProslava }: Props) => {
       <div
         style={{ visibility: `${visible ? "visible" : "hidden"}` }}
         className={style.fullscreenContainer}
-        onClick={handleLeft}
       >
-        <div className={style.Controller}>
-          <Icon iconMargin="0" classes="colorWhite" icon="arrow_back_ios" />
-        </div>
         <div
           className={style.hugeImage}
           style={{ backgroundImage: displayImage }}
         ></div>
-        <div className={style.Controller} onClick={handleRight}>
-          <Icon iconMargin="0" classes="colorWhite" icon="arrow_forward_ios" />
-        </div>
 
         <div className={style.clickOffTarget} onClick={handleClickOff}></div>
       </div>
