@@ -1,3 +1,7 @@
+.Wrapper{
+    margin-bottom: 80px;
+}
+
 .Container {
   display: flex;
   justify-content: space-between;
@@ -8,13 +12,14 @@
 .contentWrapper {
   display: flex;
   flex-direction: column;
+  gap: 70px;
   align-items: center;
   margin: auto;
 }
 
 .agencyOglasContainer {
   display: flex;
-  align-items: center;
+  align-items: end;
   gap: 100px;
 }
 
@@ -33,6 +38,11 @@
   margin-top: 15px;
 }
 
+.avatarContainer {
+  width: fit-content;
+  margin: auto;
+}
+
 .oglas img {
   height: 100%;
   width: 100%;
@@ -41,7 +51,10 @@
   background-repeat: no-repeat;
 }
 
-.total {
+.right {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   margin-inline: 20px;
   padding-left: 20px;
   border-left: 2px dashed var(--lightText);
@@ -55,4 +68,7 @@
   width: 100%;
   margin-top: 15px;
   margin-bottom: 30px;
+}
+
+.bottomText {
 }

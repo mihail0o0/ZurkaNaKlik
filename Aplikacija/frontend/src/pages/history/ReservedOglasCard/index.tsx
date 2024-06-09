@@ -15,7 +15,7 @@ type Props = {
 };
 
 const ReservedOglasCard = ({ reservedOglas }: Props) => {
-  const defaultImage = "/image/imageNotFound.jpg";
+  const defaultImage = "/images/imageNotFound.jpg";
   const { data: agency } = useGetAgencyDataQuery(
     reservedOglas.idAgencije || skipToken
   );
@@ -37,6 +37,13 @@ const ReservedOglasCard = ({ reservedOglas }: Props) => {
     return "Odbijeno";
   }, [reservedOglas]);
 
+  const totalPrice = useMemo(() => {
+    let price = 0;
+    if (reservedOglas.cenaKeteringa) price += reservedOglas.cenaKeteringa;
+    if (reservedOglas.cenaOglasa) price += reservedOglas.cenaOglasa;
+    return price;
+  }, [reservedOglas]);
+
   if (!oglas) {
     return;
   }
@@ -52,7 +59,13 @@ const ReservedOglasCard = ({ reservedOglas }: Props) => {
                 <h3>{oglas.naziv}</h3>
               </div>
               <div className={style.agency}>
-                <UserAvatar size={100} src={agencyImage} letter={agency?.ime} />
+                <div className={style.avatarContainer}>
+                  <UserAvatar
+                    size={100}
+                    src={agencyImage}
+                    letter={agency?.ime}
+                  />
+                </div>
                 <h3>{oglas.naziv}</h3>
               </div>
             </div>
@@ -63,9 +76,16 @@ const ReservedOglasCard = ({ reservedOglas }: Props) => {
               </p>
             </div>
           </div>
-          <div className={style.total}>
-            <p>Status Keteringa:</p>
-            <p>{statusKeteringa}</p>
+          <div className={style.right}>
+            <div className={style.status}>
+              <p>Status Keteringa:</p>
+              <p>{statusKeteringa}</p>
+            </div>
+            <div className={style.total}>
+              <p>Prostor: {reservedOglas.cenaOglasa} din</p>
+              <p>Ketering: {reservedOglas.cenaKeteringa} din</p>
+              <p>Ukupno: {totalPrice} din</p>
+            </div>
           </div>
         </div>
         <div className={style.Actions}>
