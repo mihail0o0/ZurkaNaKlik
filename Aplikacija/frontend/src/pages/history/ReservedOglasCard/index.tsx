@@ -180,21 +180,36 @@ const ReservedOglasCard = ({ reservedOglas }: Props) => {
         <div className={`${style.Container} bs`}>
           <div className={style.contentWrapper}>
             <div className={style.agencyOglasContainer}>
-              <div className={style.oglas}>
+              <div
+                className={`${style.oglas} cursorPointer`}
+                onClick={() => navigate(`/place/${reservedOglas.oglasId}`)}
+              >
                 <img src={oglasDisplayImage} />
                 <h3>{oglas.naziv}</h3>
               </div>
               <div className={style.agency}>
                 {agency && (
                   <>
-                    <div className={style.avatarContainer}>
+                    <div
+                      className={`${style.avatarContainer} cursorPointer`}
+                      onClick={() =>
+                        navigate(`/catering/viewAgency/${agency.id}`)
+                      }
+                    >
                       <UserAvatar
                         size={100}
                         src={agencyImage}
                         letter={agency.ime}
                       />
                     </div>
-                    <h3>{agency.ime}</h3>
+                    <h3
+                      className="cursorPointer"
+                      onClick={() =>
+                        navigate(`/catering/viewAgency/${agency.id}`)
+                      }
+                    >
+                      {agency.ime}
+                    </h3>
                   </>
                 )}
               </div>
