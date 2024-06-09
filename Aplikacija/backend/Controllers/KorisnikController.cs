@@ -482,7 +482,7 @@ namespace backend.Controllers
 
                 if (oglas == null)
                 {
-                    return BadRequest("Ne postoji takva agencija");
+                    return BadRequest("Ne postoji takva oglas");
                 }
 
 
