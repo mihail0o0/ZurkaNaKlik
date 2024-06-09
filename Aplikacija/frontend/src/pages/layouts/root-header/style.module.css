@@ -84,9 +84,7 @@
 .headerMessage {
   position: relative;
   z-index: -100 !important;
-  
 }
-
 
 .profileButton {
   padding: 10px;
@@ -97,7 +95,7 @@
   padding-bottom: 600px;
 }
 
-.footer{
+.footer {
   position: absolute;
   bottom: 0;
   display: flex;
@@ -109,18 +107,24 @@
   box-shadow: var(--boxShadowSoft);
 }
 
-.footerTop{
+.footerTop {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-
 }
 
-.footerBottom{
+@media (max-width: 1200px) {
+  .footerTop{
+    flex-direction: column;
+  }
+}
+
+.footerBottom {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   margin-top: 30px;
+  margin-bottom: 20px;
 }
 
 .footerContent {
@@ -135,6 +139,7 @@
 }
 
 .footerLink {
+  position: relative;
   color: black;
   text-decoration: none;
   font-size: 20px;
@@ -147,6 +152,7 @@
 }
 
 .timLevl {
+  cursor: pointer;
   color: var(--mainColor);
 }
 

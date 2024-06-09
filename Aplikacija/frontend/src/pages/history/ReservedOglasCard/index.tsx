@@ -20,7 +20,12 @@ import {
   DialogTitle,
   Rating,
 } from "@mui/material";
-import { useOceniAgencijuMutation, useOceniOglasMutation, useRemoveCateringReservationMutation, useRemoveReservationMutation} from "@/store/api/endpoints/korisnik";
+import {
+  useOceniAgencijuMutation,
+  useOceniOglasMutation,
+  useRemoveCateringReservationMutation,
+  useRemoveReservationMutation,
+} from "@/store/api/endpoints/korisnik";
 import { toast } from "react-toastify";
 
 type Props = {
@@ -40,8 +45,8 @@ const ReservedOglasCard = ({ reservedOglas }: Props) => {
   );
   const [oceniOglas] = useOceniOglasMutation();
   const [oceniAgenciju] = useOceniAgencijuMutation();
-  const[otkaziKetering]=useRemoveCateringReservationMutation();
-  const[otkaziRezervaciju]=useRemoveReservationMutation();
+  const [otkaziKetering] = useRemoveCateringReservationMutation();
+  const [otkaziRezervaciju] = useRemoveReservationMutation();
   const defaultImage = "/images/imageNotFound.jpg";
   const navigate = useNavigate();
   const { data: agency } = useGetAgencyDataQuery(
@@ -58,7 +63,7 @@ const ReservedOglasCard = ({ reservedOglas }: Props) => {
   );
 
   const oglasDisplayImage = oglasImage ?? defaultImage;
-  
+
   console.log("STATUS");
   console.log(reservedOglas.statusZahtevaZaKetering);
 
@@ -83,14 +88,14 @@ const ReservedOglasCard = ({ reservedOglas }: Props) => {
     setOpenOceniOglas(true);
   };
 
-  const handleCloseOceniOglas =async (agree: boolean) => {
+  const handleCloseOceniOglas = async (agree: boolean) => {
     setOpenOceniOglas(false);
     if (agree) {
-      const oceni : Oceni={
-        id:oglas.id,
-        ocena:valueOglasOcena as number
-      }
-      const response= await oceniOglas(oceni);
+      const oceni: Oceni = {
+        id: oglas.id,
+        ocena: valueOglasOcena as number,
+      };
+      const response = await oceniOglas(oceni);
       if ("error" in response) {
         navigate(`/history`);
         return;
@@ -106,11 +111,16 @@ const ReservedOglasCard = ({ reservedOglas }: Props) => {
     setOpenDialogOtkaziKetering(false);
 
     if (agree) {
-      const response=await otkaziKetering(reservedOglas.idZakupljeniKetering);
+      const response = await otkaziKetering({
+        idCatering: reservedOglas.idZakupljeniKetering,
+        idReservedOglas: reservedOglas.id,
+      });
+
       if ("error" in response) {
         navigate(`/history`);
         return;
       }
+
       toast.success("Uspesno otkazan ketering");
     }
   };
@@ -122,11 +132,11 @@ const ReservedOglasCard = ({ reservedOglas }: Props) => {
   const handleCloseOceniAgenciju = async (agree: boolean) => {
     setOpenOceniAgenciju(false);
     if (agree && agency) {
-     const oceni: Oceni={
-        id:agency.id,
-        ocena:valueAgencijaOcena as number
-      }
-      const response=await oceniAgenciju(oceni);
+      const oceni: Oceni = {
+        id: agency.id,
+        ocena: valueAgencijaOcena as number,
+      };
+      const response = await oceniAgenciju(oceni);
       if ("error" in response) {
         navigate(`/history`);
         return;
@@ -134,7 +144,7 @@ const ReservedOglasCard = ({ reservedOglas }: Props) => {
       toast.success("Uspesno ocenjena agencija");
     }
   };
- //otkazi rezervaciju
+  //otkazi rezervaciju
   const handleOtkaziRezervaciju = () => {
     setOpenDialogOtkaziRezervaciju(true);
   };
@@ -143,9 +153,8 @@ const ReservedOglasCard = ({ reservedOglas }: Props) => {
     setOpenDialogOtkaziRezervaciju(false);
 
     if (agree) {
-      const response=await otkaziRezervaciju(reservedOglas.id);
+      const response = await otkaziRezervaciju(reservedOglas.id);
       if ("error" in response) {
-
         navigate(`/history`);
         return;
       }
@@ -204,14 +213,16 @@ const ReservedOglasCard = ({ reservedOglas }: Props) => {
             small={true}
             backgroundColor="var(--golden)"
           />
-         {agency && <MojButton
-            icon="star"
-            color="white"
-            text="Oceni agenciju"
-            onClick={handleClickOpenOceniAgenciju}
-            small={true}
-            backgroundColor="var(--golden)"
-          />}
+          {agency && (
+            <MojButton
+              icon="star"
+              color="white"
+              text="Oceni agenciju"
+              onClick={handleClickOpenOceniAgenciju}
+              small={true}
+              backgroundColor="var(--golden)"
+            />
+          )}
           {!agency && (
             <MojButton
               icon="add"
@@ -302,8 +313,8 @@ const ReservedOglasCard = ({ reservedOglas }: Props) => {
           </Box>
         </DialogContent>
         <DialogActions>
-          <Button onClick={()=>handleCloseOceniOglas(false)}>Cancel</Button>
-          <Button onClick={()=>handleCloseOceniOglas(true)} autoFocus>
+          <Button onClick={() => handleCloseOceniOglas(false)}>Cancel</Button>
+          <Button onClick={() => handleCloseOceniOglas(true)} autoFocus>
             Submit
           </Button>
         </DialogActions>
@@ -327,8 +338,10 @@ const ReservedOglasCard = ({ reservedOglas }: Props) => {
           </Box>
         </DialogContent>
         <DialogActions>
-          <Button onClick={()=>handleCloseOceniAgenciju(false)}>Cancel</Button>
-          <Button onClick={()=>handleCloseOceniAgenciju(true)} autoFocus>
+          <Button onClick={() => handleCloseOceniAgenciju(false)}>
+            Cancel
+          </Button>
+          <Button onClick={() => handleCloseOceniAgenciju(true)} autoFocus>
             Submit
           </Button>
         </DialogActions>
