@@ -51,11 +51,11 @@ const RootHeader = () => {
             </NavLink>
 
             <div className={style.HeaderButtons}>
-              <NavLink to="/home">
+              <NavLink to="/home" className="uL">
                 <h4>Oglaseni prostori</h4>
               </NavLink>
 
-              <NavLink to="/findCatering">
+              <NavLink to="/findCatering" className="uL">
                 <h4>Ketering</h4>
               </NavLink>
             </div>
@@ -110,18 +110,18 @@ const RootHeader = () => {
             </p>
           </div>
 
-          <div className={style.footerContent}>
+          <div className={`${style.footerContent} `}>
             <h2>Radite sa nama</h2>
-            <NavLink className={style.footerLink} to="/user/signup">
+            <NavLink className={`${style.footerLink} uL`} to="/user/signup">
               Registrujte se kao korisnik
             </NavLink>
-            <NavLink className={style.footerLink} to="/catering/signup">
+            <NavLink className={`${style.footerLink} uL`} to="/catering/signup">
               Ponudite usluge keteringa
             </NavLink>
-            <NavLink className={style.footerLink} to="/login">
+            <NavLink className={`${style.footerLink} uL`} to="/login">
               Prijavite se
             </NavLink>
-            <NavLink className={style.footerLink} to="/login">
+            <NavLink className={`${style.footerLink} uL`} to="/login">
               Oglasite Vaš prostor
             </NavLink>
           </div>
@@ -129,13 +129,13 @@ const RootHeader = () => {
           <div className={style.footerContent}>
             <h2>Kontaktirajte nas</h2>
             <NavLink
-              className={style.footerLink}
+              className={`${style.footerLink} uL`}
               to="mailto:zurkanaklik@gmail.com"
             >
               Email: zurkanaklik@gmail.com
             </NavLink>
             <NavLink
-              className={style.footerLink}
+              className={`${style.footerLink} uL`}
               to="https://www.instagram.com/zurkanaklik"
             >
               Instagram: @ZurkaNaKlik
@@ -146,7 +146,7 @@ const RootHeader = () => {
         <div className={style.footerBottom}>
           <p>ZurkaNaKlik</p>
           <p>
-            Tim <span className={style.timLevl}>LeVl</span>
+            Tim <span className={`${style.timLevl} uL`}>LeVl</span>
           </p>
         </div>
       </footer>

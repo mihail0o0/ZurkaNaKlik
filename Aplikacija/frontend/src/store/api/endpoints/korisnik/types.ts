@@ -48,3 +48,8 @@ export type Oceni = {
   id: number;
   ocena: number;
 }
+
+export type RemoveCateringReservationDTO = {
+  idCatering: number;  
+  idReservedOglas: number;  
+}
