@@ -27,7 +27,7 @@ const ImageGallery = ({
   const [deleteImageAction] = useDeleteOglasImageMutation();
 
   const handleDelete = async (index: number) => {
-    if (!deletable) return;
+    if (deletable == false) return;
     if (deleteHandler) deleteHandler(index);
 
     if (!imagePaths) return;

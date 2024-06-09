@@ -18,8 +18,9 @@ import {
 import { ResultType } from "@/types";
 import { getRawLocation } from "@/utils/handleQueries";
 import { PorucenMeni } from "@/store/api/endpoints/korisnik/types";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import Checkout from "./Checkout";
+import { Role } from "@/models/role";
 
 const AgencyView = () => {
   const currUser = useSelector(selectUser);
@@ -54,7 +55,6 @@ const AgencyView = () => {
 
   const deleteMenu = (menuId: number) => {
     const newMenues: PorucenMeni[] = [];
-    console.log("POZVANA SAMA");
 
     menues.forEach((menu) => {
       if (menu.idMenija != menuId) {
@@ -70,10 +70,13 @@ const AgencyView = () => {
     setMenues(emptyArr);
   };
 
+  const canAddMenu = useMemo(() => {
+    return currUser && currUser.role == Role.USER;
+  }, [currUser]);
+
   if (!agencyData) {
     return null;
   }
-
   return (
     <>
       <PageSpacer variant="xs" />
@@ -127,12 +130,14 @@ const AgencyView = () => {
           </div>
         </div>
       </div>
-      <Checkout
-        meniji={menues}
-        agencyId={idAgencije}
-        resetMenues={resetMenues}
-        removeMenu={deleteMenu}
-      />
+      {canAddMenu && (
+        <Checkout
+          meniji={menues}
+          agencyId={idAgencije}
+          resetMenues={resetMenues}
+          removeMenu={deleteMenu}
+        />
+      )}
     </>
   );
 };

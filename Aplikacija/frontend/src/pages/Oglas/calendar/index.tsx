@@ -16,11 +16,11 @@ const SelectDatum = ({ bussyDays, date, setDate }: Props) => {
   const text = useMemo(() => {
     if (!date) return "Odaberite";
     if (date.from && date.to)
-      return `${format(date.from, "LLL dd, y")} - ${format(
+      return `${format(date.from, "LLL d, y")} - ${format(
         date.to,
         "LLL dd, y"
       )}`;
-    if (date.from) return `${format(date.from, "LLL dd, y")}`;
+    if (date.from) return `${format(date.from, "LLL d, y")}`;
     return "Odaberite";
   }, [date]);
 

@@ -26,8 +26,12 @@ const Navbar = ({ user }: Props) => {
   const [anchor, setAnchor] = useState<HTMLDivElement | null>();
   const [open, setOpen] = useState(false);
 
-  const { data: allUserData } = useGetUserDataQuery(user.id);
-  const { data: allAgencyData } = useGetAgencyDataQuery(user.id);
+  const { data: allUserData } = useGetUserDataQuery(user.id, {
+    skip: user.role == Role.AGENCIJA,
+  });
+  const { data: allAgencyData } = useGetAgencyDataQuery(user.id, {
+    skip: user.role == Role.USER,
+  });
 
   const { data: userUrl } = useGetImageQuery(
     getRawLocation(allUserData?.profilePhoto) ?? skipToken
@@ -61,7 +65,6 @@ const Navbar = ({ user }: Props) => {
             text: "Porudzbine",
             link: "/catering/porudzbine",
           },
-      { icon: "forum", text: "Čet", link: "/chat" },
       isUser
         ? { icon: "schedule", text: "Već posećeno", link: "/poseceno" }
         : null,

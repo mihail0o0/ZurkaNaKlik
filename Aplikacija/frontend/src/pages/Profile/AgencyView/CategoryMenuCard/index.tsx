@@ -8,10 +8,13 @@ type Props = {
   addMenu: (menu: PorucenMeni) => void;
 };
 
-const CategoryMenuCard = ({ category, addMenu  }: Props) => {
+const CategoryMenuCard = ({ category, addMenu }: Props) => {
   return (
     <div>
       <h4 className={style.heading}>{category.naziv}</h4>
+      {category.meniKeteringa.length < 1 && (
+        <p>Nema nijednog menija u ovoj kategroiji.</p>
+      )}
       {category.meniKeteringa.map((menu) => {
         return <MenyCardView meni={menu} addMenu={addMenu} />;
       })}

@@ -203,8 +203,17 @@ const Checkout = ({ meniji, agencyId, removeMenu, resetMenues }: Props) => {
     return null;
   }
 
+  const displayedCheckout: boolean = useMemo(() => {
+    if (!open && meniji.length < 1) return false;
+    return true;
+  }, [open, meniji]);
+
   return (
-    <div className={style.checkoutContainer}>
+    <div
+      className={`${style.checkoutContainer} ${
+        displayedCheckout ? style.displayedCheckout : ""
+      }`}
+    >
       <h4>Naruceni Meniji</h4>
       {!displayChooseOglas && (
         <div
@@ -220,7 +229,7 @@ const Checkout = ({ meniji, agencyId, removeMenu, resetMenues }: Props) => {
           <div className={style.oglasCardText}>
             <p>{selectedOglasData.naziv}</p>
             <p>
-              {format(selectedReservedOglasData.zakupljenOd, "d. M. yyyy.")}
+              {format(selectedReservedOglasData.zakupljenOd, "LLL d, y")}
             </p>
           </div>
           <Icon
@@ -300,7 +309,7 @@ const Checkout = ({ meniji, agencyId, removeMenu, resetMenues }: Props) => {
                     <div className={style.selectOglasOption}>
                       <p>{oglasOption.text}</p>
                       <Typography>
-                        {format(oglasOption.date, "d. M. yyyy.")}
+                        {format(oglasOption.date, "LLL d, y")}
                       </Typography>
                     </div>
                   </MenuItem>

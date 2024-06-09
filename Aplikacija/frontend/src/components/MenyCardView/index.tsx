@@ -35,7 +35,6 @@ import { format } from "date-fns";
 import Input from "../lib/inputs/text-input";
 import { PorucenMeni } from "@/store/api/endpoints/korisnik/types";
 
-
 type MenyCardProps = {
   meni: Menu;
   addMenu: (menu: PorucenMeni) => void;
@@ -57,8 +56,12 @@ const MenyCardView = ({ meni, addMenu }: MenyCardProps) => {
 
   const [amount, selectedAmount] = useState("");
 
+  const canAddMenu = useMemo(() => {
+    return user && user.role == Role.USER;
+  }, [user]);
+
   const handleClick = () => {
-    if (!user || user?.role == Role.AGENCIJA) return;
+    if (!canAddMenu) return;
     setOpen(true);
   };
 
@@ -78,7 +81,10 @@ const MenyCardView = ({ meni, addMenu }: MenyCardProps) => {
 
   return (
     <>
-      <div className={`${style.Container} cursorPointer`} onClick={handleClick}>
+      <div
+        className={`${style.Container} ${canAddMenu ? "cursorPointer" : ""}`}
+        onClick={handleClick}
+      >
         <div className={style.MenyPicture}>
           <img className={style.picture} src={displayImage} />
         </div>

@@ -46,7 +46,7 @@ type AddCategoryDTO = Omit<Category, "id">;
 type CateringOrder = {
   id: number;
   konacnaCena: number;
-  statusRezervacije: boolean;
+  statusRezervacije: boolean | null;
   datumRezervacije: Date;
   idOglasa?: number;
   idAgencije?: number;
