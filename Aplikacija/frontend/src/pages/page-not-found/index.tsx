@@ -17,7 +17,7 @@ function PageNotFound() {
 
   return (
     <>
-      <PageSpacer variant="xs"/>
+      <PageSpacer variant="xs" />
       <div className={`containerWrapper bs ${style.wrapper}`}>
         <div className={style.text}>
           <div className="pageNotFoundTextContainer">
@@ -27,7 +27,9 @@ function PageNotFound() {
           <MojButton text={"Nazad na pocetnu"} onClick={handleClick} />
         </div>
         {/* // TODO configure svgs correctly */}
-        <img src="/public/images/not_found.png" />
+        <div className={style.image}>
+          <img src="/public/images/not_found.png" />
+        </div>
       </div>
       <PageSpacer />
     </>

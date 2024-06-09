@@ -104,7 +104,6 @@ h6 {
   font-weight: 500;
 }
 
-
 p {
   font-size: 20px;
 }
@@ -114,12 +113,9 @@ p {
   color: white;
 }
 
-
 .colorMain {
   color: var(--mainColor);
 }
-
-
 
 .page-spacer-xs {
   width: 100%;
@@ -282,4 +278,16 @@ p {
 
 textarea {
   resize: none !important;
+}
+
+@media (max-width: 1000px) {
+  p {
+    all: unset;
+    font-size: 18px;
+  }
+
+  h1 {
+    all: unset;
+    font-size: 18px;
+  }
 }
