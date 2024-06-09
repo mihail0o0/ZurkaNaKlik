@@ -1,35 +1,13 @@
-import Input from "@/components/lib/inputs/text-input";
 import style from "./style.module.css";
-import { useEffect, useState } from "react";
-import MojButton from "@/components/lib/button";
-import { useSelector } from "react-redux";
-import { logOut, selectUser } from "@/store/auth";
 import OglasKartica from "@/components/OglasKartica";
 import * as React from "react";
-import Button from "@mui/material/Button";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
-import {
-  useDeleteUserMutation,
-  useGetUserDataQuery,
-  useUpdateUserMutation,
-} from "@/store/api/endpoints/korisnik";
+import { useGetUserDataQuery } from "@/store/api/endpoints/korisnik";
 import UserAvatar from "@/components/UserAvatar";
 import { useNavigate, useParams } from "react-router-dom";
-import {
-  useGetKorisnikOglasiQuery,
-  useGetUserOglasiQuery,
-} from "@/store/api/endpoints/oglas";
+import { useGetKorisnikOglasiQuery } from "@/store/api/endpoints/oglas";
 import { skipToken } from "@reduxjs/toolkit/query";
 import DisplayCard from "@/components/DisplayCard";
-import { UpdateUserDTO } from "@/store/api/endpoints/korisnik/types";
-import { updateUserSchema } from "@/utils/validators";
-import { getValidationMessage } from "@/utils/validationMessage";
-import { toast } from "react-toastify";
-import Icon from "@/components/lib/icon";
+
 import {
   useGetImageQuery,
   useUploadKorisnikMutation,
@@ -38,8 +16,12 @@ import { getRawLocation } from "@/utils/handleQueries";
 import UploadComponent from "@/components/UploadComponent";
 import { ResultType } from "@/types";
 import { useAppDispatch } from "@/store";
+import { selectUser } from "@/store/auth";
+import { Role } from "@/models/role";
+import { useSelector } from "react-redux";
 
 const UserViewProfile = () => {
+  const userCurr = useSelector(selectUser);
   const navigate = useNavigate();
 
   const { id } = useParams();
@@ -56,6 +38,11 @@ const UserViewProfile = () => {
     getRawLocation(vlasnikOglasa?.profilePhoto) ?? skipToken
   );
 
+  const canUpload: boolean = React.useMemo(() => {
+    if (!userCurr || userCurr.role == Role.AGENCIJA) return false;
+    return true;
+  }, [userCurr]);
+
   const [uploadKorisnikAction] = useUploadKorisnikMutation();
 
   const uploadKorisnik = async (formData: FormData): Promise<ResultType> => {
@@ -70,18 +57,28 @@ const UserViewProfile = () => {
           {/* odje ide slika od kad je clan broj oglasa i prosecna ocena */}
           <div className={style.KarticaSaSlikom}>
             <div className={style.SlikaImeIPrezime}>
-              <UploadComponent uploadFn={uploadKorisnik}>
+              {canUpload && (
+                <UploadComponent uploadFn={uploadKorisnik}>
+                  <UserAvatar
+                    uploadable={canUpload}
+                    size={100}
+                    letter={vlasnikOglasa && vlasnikOglasa.name[0]}
+                    src={imageUrl}
+                  />
+                </UploadComponent>
+              )}
+              {!canUpload && (
                 <UserAvatar
-                  uploadable={true}
+                  uploadable={canUpload}
                   size={100}
                   letter={vlasnikOglasa && vlasnikOglasa.name[0]}
                   src={imageUrl}
                 />
-              </UploadComponent>
-              <p>
+              )}
+              <h4>
                 {vlasnikOglasa && vlasnikOglasa.name}{" "}
                 {vlasnikOglasa && vlasnikOglasa.lastName}
-              </p>
+              </h4>
             </div>
           </div>
           <div className={style.OsnovnePostavkeProfila}>

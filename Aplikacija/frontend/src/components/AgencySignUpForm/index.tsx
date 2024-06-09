@@ -95,11 +95,12 @@ const AgencySignUpForm = () => {
 
     const signUpResult = await handleSignUp(signUpData);
     if ("error" in signUpResult) return;
-    dispatch(setToken(signUpResult.data.accessToken));
-    dispatch(setUser(signUpResult.data.loginResult));
+    // dispatch(setToken(signUpResult.data.accessToken));
+    // dispatch(setUser(signUpResult.data.loginResult));
     dispatch(setIsFirstLogin(true));
 
-    navigate("/catering/profile", { replace: true });
+    toast.success("Nalog je uspesno kreiran");
+    navigate("/login", { replace: true });
   };
 
   return (
