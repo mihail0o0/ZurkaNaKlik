@@ -1,16 +1,58 @@
-
-
 .Container {
-    border-radius: var(--borderRadiusMedium);
+  display: flex;
+  justify-content: space-between;
+  padding: 15px;
+  border-radius: var(--borderRadiusMedium);
+}
+
+.contentWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: auto;
+}
+
+.agencyOglasContainer {
+  display: flex;
+  align-items: center;
+  gap: 100px;
+}
+
+.oglas {
+  text-align: center;
+  width: 200px;
+  height: 150px;
+  border-radius: var(--borderRadiusMedium);
+}
+
+.agency {
+  text-align: center;
+}
+
+.agencyOglasContainer h3 {
+  margin-top: 15px;
+}
+
+.oglas img {
+  height: 100%;
+  width: 100%;
+  border-radius: var(--borderRadiusMedium);
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.total {
+  margin-inline: 20px;
+  padding-left: 20px;
+  border-left: 2px dashed var(--lightText);
 }
 
 .Actions {
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 30px;
-    width: 100%;
-    margin-top: 15px;
-    margin-bottom: 30px;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 30px;
+  width: 100%;
+  margin-top: 15px;
+  margin-bottom: 30px;
 }
-

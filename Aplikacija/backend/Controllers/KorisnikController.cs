@@ -167,7 +167,7 @@ namespace backend.Controllers
                         zakupljenOd = o.ZakupljenOd,
                         zakupljenDo = o.ZakupljenDo,
                         statusZahtevaZaKetering = o.ZahtevZaKetering?.StatusRezervacije,
-                        cena = o.Cena,
+                        cenaOglasa = o.Cena,
                         cenaKeteringa = o.ZahtevZaKetering?.KonacnaCena ?? 0,
                         idZakupljeniKetering = o.ZahtevZaKetering?.Id ?? 0,
                         idAgencije = o.ZahtevZaKetering?.Agencija?.Id ?? 0,

@@ -13,7 +13,7 @@ namespace backend.DTOs
         public DateTime datumZakupa { get; set; }
         public DateTime zakupljenOd { get; set; }
         public DateTime zakupljenDo { get; set; }
-        public int? cena { get; set; }
+        public int? cenaOglasa { get; set; }
         public bool? statusZahtevaZaKetering { get; set; }
         public int idAgencije { get; set; }
         public int cenaKeteringa { get; set; }
