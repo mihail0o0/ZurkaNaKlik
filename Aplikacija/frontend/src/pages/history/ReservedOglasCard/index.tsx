@@ -91,10 +91,10 @@ const ReservedOglasCard = ({ reservedOglas }: Props) => {
   const handleCloseOceniOglas = async (agree: boolean) => {
     setOpenOceniOglas(false);
 
-    if (agree) {
+    if (agree && valueOglasOcena != null) {
       const oceni: Oceni = {
         id: oglas.id,
-        ocena: valueOglasOcena as number,
+        ocena: valueOglasOcena,
       };
 
       const response = await oceniOglas(oceni);
@@ -136,13 +136,13 @@ const ReservedOglasCard = ({ reservedOglas }: Props) => {
   };
 
   const handleCloseOceniAgenciju = async (agree: boolean) => {
-    if (agree && agency) {
+    if (agree && agency && valueAgencijaOcena != null) {
       console.log("AGENCY");
       console.log(agency);
 
       const oceni: Oceni = {
         id: agency.id,
-        ocena: valueAgencijaOcena as number,
+        ocena: valueAgencijaOcena,
       };
 
       const response = await oceniAgenciju(oceni);
