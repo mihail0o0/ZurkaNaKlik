@@ -219,7 +219,7 @@ const AgencyProfile = () => {
               <Input
                 text={cenaAgencija}
                 placeholder="Cena"
-                icon="euro_symbol"
+                icon="payments"
                 onChange={setCenaAgencija}
                 disabled={!checked}
               />
