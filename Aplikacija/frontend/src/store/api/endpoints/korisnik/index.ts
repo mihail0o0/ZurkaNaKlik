@@ -5,6 +5,7 @@ import {
   AllUserData,
   MakeCateringReservationDTO,
   MakeReservationDTO,
+  Oceni,
   ReservedOglas,
   UpdateUserDTO,
 } from "./types";
@@ -67,6 +68,27 @@ const authApiSlice = api.injectEndpoints({
       }),
       providesTags: (result, error, id) => [{ type: "OmiljeniOglasi", id }],
     }),
+    oceniAgenciju: builder.mutation<boolean, Oceni>({
+      query: (body) => ({
+        url: `Korisnik/OceniAgenciju/${body.id}/${body.ocena}`,
+        method: "PUT",
+      }),
+      invalidatesTags: (result, err, arg) => [
+        { type: "Agency", id: arg.id },
+        { type: "Agency", id: "LISTAGENCY" },
+      ],
+    }),
+    oceniOglas: builder.mutation<boolean, Oceni>({
+      query: (body) => ({
+        url: `Korisnik/OceniAgenciju/${body.id}/${body.ocena}`,
+        method: "PUT",
+      }),
+      invalidatesTags: (result, err, arg) => [
+        { type: "Oglas", id: arg.id },
+        { type: "Oglas", id: "LISTOGLAS" },
+        { type: "ReservedOglasi", id: "RESERVEDOGLASI" },
+      ],
+    }),
     getReservedOglasi: builder.query<ReservedOglas[], void>({
       query: () => ({
         url: "Korisnik/PrikaziSveZakupljeneOglase",
@@ -85,7 +107,22 @@ const authApiSlice = api.injectEndpoints({
         { type: "ReservedOglasi", id: "LISTRESERVEDOGLASI" },
       ],
     }),
-    makeCateringReservation: builder.mutation<CateringOrder, MakeCateringReservationDTO>({
+    removeReservation: builder.mutation<number, number>({
+      query: (id) => ({
+        url: `Korisnik/OtkaziRezervacijuObjekta/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: (result, err, arg) => [
+        { type: "Oglas", id: "LISTOGLAS" },
+        { type: "ReservedOglasi", id: result },
+        { type: "ReservedOglasi", id: "LISTRESERVEDOGLASI" },
+        { type: "CateringOrder", id: "LISTCATERINGORDER" },
+      ],
+    }),
+    makeCateringReservation: builder.mutation<
+      CateringOrder,
+      MakeCateringReservationDTO
+    >({
       query: (body) => ({
         url: `Korisnik/PosaljiZahtevZaKetering/${body.idZakupljenOglas}/${body.idAgencije}/${body.mogucnostDostave}`,
         method: "POST",
@@ -95,6 +132,18 @@ const authApiSlice = api.injectEndpoints({
         // { type: "Oglas", id: result?.oglasId },
         { type: "CateringOrder", id: result?.id },
         { type: "CateringOrder", id: "LISTCATERINGORDER" },
+        { type: "ReservedOglasi", id: "LISTRESERVEDOGLASI" },
+      ],
+    }),
+    removeCateringReservation: builder.mutation<number, number>({
+      query: (id) => ({
+        url: `Korisnik/OtkaziZahtevZaKetering/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: (result, err, arg) => [
+        { type: "CateringOrder", id: result },
+        { type: "CateringOrder", id: "LISTCATERINGORDER" },
+        { type: "ReservedOglasi", id: "LISTRESERVEDOGLASI" },
       ],
     }),
   }),

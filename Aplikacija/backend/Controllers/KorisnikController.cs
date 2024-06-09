@@ -548,7 +548,6 @@ namespace backend.Controllers
 
                     return BadRequest("Objekat je zauzet u datom periodu");
                 }
-
             }
             catch (Exception ex)
             {
@@ -677,9 +676,7 @@ namespace backend.Controllers
                 ketering!.Agencija!.ListaZahtevZaKetering!.Remove(ketering);
                 Context.ZahteviZaKetering.Remove(ketering);
 
-                return Ok(ketering);
-
-
+                return Ok(ketering.Id);
             }
             catch (Exception ex)
             {
@@ -725,12 +722,9 @@ namespace backend.Controllers
 
                 // Sačuvaj promene u bazi
                 Context.SaveChanges();
-
                 Context.ZakupljeniOglasi.Remove(oglas);
 
-                return Ok(oglas);
-
-
+                return Ok(oglas.Id);
             }
 
             catch (Exception ex)

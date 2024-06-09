@@ -43,3 +43,8 @@ export type ReservedOglas = {
   cenaKeteringa: number;
   cenaOglasa?: number;
 };
+
+export type Oceni = {
+  id: number;
+  ocena: number;
+}
