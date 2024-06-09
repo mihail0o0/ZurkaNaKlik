@@ -20,6 +20,7 @@ import { toast } from "react-toastify";
 import { skipToken } from "@reduxjs/toolkit/query";
 import { useGetImageQuery } from "@/store/api/endpoints/images";
 import { getRawLocation } from "@/utils/handleQueries";
+import { Role } from "@/models/role";
 
 type Props = {
   oglas: OglasObjekata;
@@ -99,8 +100,12 @@ const OglasKartica = ({ oglas, onClick }: Props) => {
     return finalString;
   }, [oglas]);
 
+  let flagAgency = userCurr?.role === Role.AGENCIJA;
   return (
-    <div className={style.GlavniDiv}>
+    <div
+      className={style.GlavniDiv}
+    
+    >
       <div className={style.SlikaKartica} style={SlikaKartica}>
         {/* ovde ide slika , pa onda tip proslave i dal je omiljeno ili ne */}
         <div className={style.TipOmiljeno}>
@@ -109,9 +114,6 @@ const OglasKartica = ({ oglas, onClick }: Props) => {
               {textTipProslave}
             </Typography>
           </div>
-
-          {/* // TODO izmeni u icon */}
-          {/* ovde treba da ide u zavisnosti od toga da li je svoj oglas ikonica za izmeni */}
           {user && user.id !== oglas.idVlasnika ? (
             <img
               onClick={handleFavoriteClick}
@@ -124,25 +126,23 @@ const OglasKartica = ({ oglas, onClick }: Props) => {
               className="cursorPointer"
             />
           ) : (
-            <Icon
-              icon="edit"
-              onClick={() => navigate(`/prostor/izmeniProstor/${oglas.id}`)}
-              classes="cursorPointer colorWhite"
-            />
+            !flagAgency && (
+              <Icon
+                icon="edit"
+                onClick={() => navigate(`/prostor/izmeniProstor/${oglas.id}`)}
+                classes="cursorPointer colorWhite"
+              />
+            )
           )}
         </div>
       </div>
-      <div className={style.ViseInfo}>
+      <div className={
+`cursorPointer ${style.ViseInfo}`}  onClick={() => {
+        navigate(`/place/${oglas.id}`);
+      }}>
         <div className={style.ViseInfoTekst}>
           <div className={style.ImeOcena}>
-            <h2
-              onClick={() => {
-                navigate(`/place/${oglas.id}`);
-              }}
-              className="cursorPointer"
-            >
-              {oglas.naziv}
-            </h2>
+            <h2>{oglas.naziv}</h2>
             <div className={style.Ocena}>
               <Icon icon="grade" />
               <p>{oglas.ocena}</p>

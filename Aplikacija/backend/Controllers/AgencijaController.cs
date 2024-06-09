@@ -243,7 +243,7 @@ namespace backend.Controllers
             {
                 int idAgencije = int.Parse((HttpContext.Items["idAgencije"] as string)!);
 
-                var meni = await Context.MenijiKeteringa.Include(i => i.Kategorija!).ThenInclude(t => t.Agencija).FirstOrDefaultAsync(f => f.Id == MeniID);
+                var meni = await Context.MenijiKeteringa.Include(i => i.Kategorija!).ThenInclude(t => t.Agencija).Include(i => i.ListaZahetevaZaKetering!).ThenInclude(t => t.ZakupljeniOglas).FirstOrDefaultAsync(f => f.Id == MeniID);
 
                 if (meni == null)
                 {
@@ -261,6 +261,10 @@ namespace backend.Controllers
                     Directory.Delete(folderPath, true); // true znači da će se obrisati i svi fajlovi i podfolderi
                 }
 
+                meni.ListaZahetevaZaKetering?.ForEach(i => {
+                    i.StatusRezervacije = false;
+                    i.ZakupljeniOglas!.ZahtevZaKetering = null;
+                });
 
                 // var kategorijaMenija = await Context.Kategorije.FindAsync();
 

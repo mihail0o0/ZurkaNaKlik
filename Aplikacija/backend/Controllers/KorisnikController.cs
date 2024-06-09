@@ -154,16 +154,25 @@ namespace backend.Controllers
                     return BadRequest("Nisi rezervisao nijedan oglas");
                 }
 
-                var rezultat = listaZakupljenihOglasa.Select(o => new ZakupljeniOglasDTO
-                {
-                    id = o.Id,
-                    oglasId = o.Oglas!.Id,
-                    korisnikId = o.Korisnik!.Id,
-                    datumZakupa = o.DatumZakupa,
-                    zakupljenOd = o.ZakupljenOd,
-                    zakupljenDo = o.ZakupljenDo,
-                    statusZahtevaZaKetering = o.ZahtevZaKetering?.StatusRezervacije
+                List<ZakupljeniOglasDTO> rezultat = new List<ZakupljeniOglasDTO>();
+
+                listaZakupljenihOglasa.ForEach(o => {
+                    var zakupljeniOglasDTO = new ZakupljeniOglasDTO
+                    {
+                        id = o.Id,
+                        oglasId = o.Oglas?.Id,
+                        korisnikId = o.Korisnik?.Id,
+                        datumZakupa = o.DatumZakupa,
+                        zakupljenOd = o.ZakupljenOd,
+                        zakupljenDo = o.ZakupljenDo,
+                        statusZahtevaZaKetering = o.ZahtevZaKetering?.StatusRezervacije,
+                        cena = o.Cena,
+                        idZakupljeniKetering = o.ZahtevZaKetering?.Id ?? 0,
+                    };
+
+                    rezultat.Add(zakupljeniOglasDTO);
                 });
+                
 
                 return Ok(rezultat);
             }
@@ -521,7 +530,8 @@ namespace backend.Controllers
                         DatumZakupa = DateTime.Now,
                         ZakupljenOd = trazeniDatumi[0],
                         ZakupljenDo = trazeniDatumi[trazeniDatumi.Count - 1],
-                        ZahtevZaKetering = null
+                        ZahtevZaKetering = null,
+                        Cena = trazeniDatumi.Count * oglas.CenaPoDanu
                     };
 
                     Context.ZakupljeniOglasi.Add(zakupljenoglas);

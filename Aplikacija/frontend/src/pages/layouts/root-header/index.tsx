@@ -52,7 +52,7 @@ const RootHeader = () => {
 
             <div className={style.HeaderButtons}>
               <NavLink to="/home">
-                <h4>Vikendice</h4>
+                <h4>Oglaseni prostori</h4>
               </NavLink>
 
               <NavLink to="/findCatering">
@@ -69,24 +69,27 @@ const RootHeader = () => {
             )}
           </nav>
         </header>
-        {showMessage && (
-          <div className={style.headerPoopup}>
-            <div className="headerMessage">
-              <p>{zaPrikaz.message}</p>
+        {user?.role === Role.AGENCIJA &&
+          zaPrikaz &&
+          zaPrikaz.message &&
+          zaPrikaz.link && (
+            <div className={style.headerPoopup}>
+             <div className="headerMessage">
+                <p>{zaPrikaz.message}</p>
+              </div>
+              <div className={style.profileButton}>
+                <MojButton
+                  classes={style.profileButton}
+                  small={true}
+                  grey={true}
+                  text="Profil"
+                  onClick={() => {
+                    navigate(zaPrikaz.link);
+                  }}
+                />
+              </div>
             </div>
-            <div className={style.profileButton}>
-              <MojButton
-                classes={style.profileButton}
-                small={true}
-                grey={true}
-                text="Profil"
-                onClick={() => {
-                  navigate(zaPrikaz.link);
-                }}
-              />
-            </div>
-          </div>
-        )}
+          )}
       </div>
 
       <main>
