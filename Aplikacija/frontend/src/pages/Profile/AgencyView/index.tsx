@@ -70,6 +70,11 @@ const AgencyView = () => {
     setMenues(emptyArr);
   };
 
+  const canUpload: boolean = useMemo(() => {
+    if (!currUser || currUser.role != Role.AGENCIJA) return false;
+    return true;
+  }, [currUser]);
+
   const canAddMenu = useMemo(() => {
     return currUser && currUser.role == Role.USER;
   }, [currUser]);
@@ -87,15 +92,28 @@ const AgencyView = () => {
               <h2>Osnovne informacije o agenciji {agencyData?.ime}</h2>
             </div>
             <div className={style.AvatarText}>
-              <UploadComponent uploadFn={uploadAgency}>
-                <UserAvatar
-                  uploadable={true}
-                  src={profileImage}
-                  size={100}
-                  letter={agencyData.ime[0]}
-                />
-                <Typography fontSize={24}>{agencyData.ime}</Typography>
-              </UploadComponent>
+              {canUpload && (
+                <UploadComponent uploadFn={uploadAgency}>
+                  <UserAvatar
+                    uploadable={canUpload}
+                    src={profileImage}
+                    size={100}
+                    letter={agencyData.ime[0]}
+                  />
+                  <Typography fontSize={24}>{agencyData.ime}</Typography>
+                </UploadComponent>
+              )}
+              {!canUpload && (
+                <>
+                  <UserAvatar
+                    uploadable={canUpload}
+                    src={profileImage}
+                    size={100}
+                    letter={agencyData.ime[0]}
+                  />
+                  <Typography fontSize={24}>{agencyData.ime}</Typography>
+                </>
+              )}
             </div>
           </div>
           {/* div za opis agencije i grad,brtel, cenu i mogucnost dostave */}

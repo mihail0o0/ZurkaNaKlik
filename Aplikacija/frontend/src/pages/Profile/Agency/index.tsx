@@ -13,7 +13,7 @@ import {
 } from "@/store/api/endpoints/agencija";
 import { Chip, Typography } from "@mui/material";
 import { useSelector } from "react-redux";
-import { selectUser } from "@/store/auth";
+import { selectUser, setIsFirstLogin } from "@/store/auth";
 import { updateAgencySchema } from "@/utils/validators";
 import { getMessage } from "@reduxjs/toolkit/dist/actionCreatorInvariantMiddleware";
 import { getValidationMessage } from "@/utils/validationMessage";
@@ -28,9 +28,11 @@ import {
   useUploadAgencyMutation,
 } from "@/store/api/endpoints/images";
 import { getRawLocation } from "@/utils/handleQueries";
+import { useAppDispatch } from "@/store";
 
 const AgencyProfile = () => {
   const currUser = useSelector(selectUser);
+  const dispatch = useAppDispatch();
 
   const { data: agencyData } = useGetAgencyDataQuery(currUser?.id ?? skipToken);
 
@@ -127,6 +129,8 @@ const AgencyProfile = () => {
     if ("error" in result) {
       return;
     }
+
+    dispatch(setIsFirstLogin(false));
 
     toast.success("Profil agencije uspesno izmenjena!");
   };
