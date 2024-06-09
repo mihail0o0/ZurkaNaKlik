@@ -38,6 +38,7 @@ import { getRawLocation } from "@/utils/handleQueries";
 import UploadComponent from "@/components/UploadComponent";
 import { ResultType } from "@/types";
 import { useAppDispatch } from "@/store";
+import { Role } from "@/models/role";
 
 const UserProfile = () => {
   const navigate = useNavigate();
@@ -135,11 +136,10 @@ const UserProfile = () => {
     return result;
   };
 
-
-  // const canUpload: boolean = React.useMemo(() => {
-
-  // }, []);
-
+  const canUpload: boolean = React.useMemo(() => {
+    if (!userCurr || userCurr.role == Role.AGENCIJA) return false;
+    return true;
+  }, [userCurr]);
 
   if (!user) {
     return null;
@@ -153,14 +153,26 @@ const UserProfile = () => {
           {/* odje ide slika od kad je clan broj oglasa i prosecna ocena */}
           <div className={style.KarticaSaSlikom}>
             <div className={style.SlikaImeIPrezime}>
-              <UploadComponent uploadFn={uploadKorisnik}>
-                <UserAvatar
-                  uploadable={true}
-                  size={100}
-                  letter={user.name[0]}
-                  src={imageUrl}
-                />
-              </UploadComponent>
+              {canUpload && (
+                <UploadComponent uploadFn={uploadKorisnik}>
+                  <UserAvatar
+                    uploadable={true}
+                    size={100}
+                    letter={user.name[0]}
+                    src={imageUrl}
+                  />
+                </UploadComponent>
+              )}
+              {!canUpload && (
+                <UploadComponent uploadFn={uploadKorisnik}>
+                  <UserAvatar
+                    uploadable={true}
+                    size={100}
+                    letter={user.name[0]}
+                    src={imageUrl}
+                  />
+                </UploadComponent>
+              )}
               <p></p>
               {
                 <div className={style.obrrrisibhrate}>

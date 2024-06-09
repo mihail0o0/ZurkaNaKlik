@@ -13,7 +13,8 @@
 .PostavkeProfilaTXT {
   display: flex;
   flex-direction: row;
-  padding-left: 80px;
+  padding-left: 20px;
+  margin-bottom: 20px;
 }
 
 .Postavke2 {
@@ -39,6 +40,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  text-align: center;
+  gap: 20px
 }
 
 .InfoOClanu {

@@ -25,6 +25,15 @@
 }
 
 .image {
-  width: 500px;
+  max-width: 600px;
   height: auto;
+  margin: auto;
+}
+
+@media (max-width: 1000px) {
+  .wrapper {
+    flex-direction: column;
+    width: fit-content !important;
+    gap: 60px;
+  }
 }

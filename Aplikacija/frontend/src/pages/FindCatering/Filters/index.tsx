@@ -68,11 +68,6 @@ const Filters = () => {
     dispatch(setAgencyFilters(newFiltersData));
   };
 
-  const { data: agencies } = useGetFilteredAgenciesQuery(filters);
-
-  // console.log("AGENCIJE");
-  // console.log(agencies);
-
   return (
     <>
       <div className={style.backgroundImage}>

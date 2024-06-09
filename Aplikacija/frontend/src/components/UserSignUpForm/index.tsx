@@ -5,13 +5,12 @@ import Input from "@/components/lib/inputs/text-input";
 
 // import authAction from "../../actions/authAction";
 import { userSignUpSchema } from "@/utils/validators";
-import {
-  useUserSignUpMutation,
-} from "@/store/api/endpoints/auth";
+import { useUserSignUpMutation } from "@/store/api/endpoints/auth";
 import { CreateUserDTO } from "@/store/api/endpoints/auth/types";
 import { Role } from "@/models/role";
 import { logOut, setToken, setUser } from "@/store/auth";
 import { useAppDispatch } from "@/store";
+import { toast } from "react-toastify";
 
 const UserSignUpForm = () => {
   const dispatch = useAppDispatch();
@@ -87,10 +86,11 @@ const UserSignUpForm = () => {
 
     const signUpResult = await handleSignUp(signUpData);
     if ("error" in signUpResult) return;
-    dispatch(setToken(signUpResult.data.accessToken));
-    dispatch(setUser(signUpResult.data.loginResult));
+    // dispatch(setToken(signUpResult.data.accessToken));
+    // dispatch(setUser(signUpResult.data.loginResult));
 
-    navigate("/home");
+    toast.success("Nalog je uspesno kreiran.");
+    navigate("/login");
   };
 
   return (
