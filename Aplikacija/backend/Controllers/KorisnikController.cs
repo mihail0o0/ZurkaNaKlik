@@ -152,7 +152,7 @@ namespace backend.Controllers
 
                 if (!listaZakupljenihOglasa.Any())
                 {
-                    return Ok();
+                    return NoContent();
                 }
 
                 List<ZakupljeniOglasDTO> rezultat = new List<ZakupljeniOglasDTO>();
