@@ -656,8 +656,8 @@ namespace backend.Controllers
         #endregion
 
         #region OtkaziZahtevZaKetering
-        [HttpDelete("OtkaziZahtevZaKetering/{idZakupljenogKeteringa}")]
-        public async Task<ActionResult> OtkaziZahtevZaKetering(int idZakupljenogKeteringa)
+        [HttpDelete("OtkaziZahtevZaKetering/{idZakupljenogKeteringa}/{idZaOglasa}")]
+        public async Task<ActionResult> OtkaziZahtevZaKetering(int idZakupljenogKeteringa, int idZaOglasa)
         {
             try
             {
@@ -667,6 +667,7 @@ namespace backend.Controllers
 
                 var ketering = await Context.ZahteviZaKetering.Include(i => i.Agencija).ThenInclude(t => t!.ListaZahtevZaKetering).Include(i => i.ZakupljeniOglas).ThenInclude(t => t!.Korisnik).FirstOrDefaultAsync(x => x.Id == idZakupljenogKeteringa);
                 
+                var oglas = await Context.ZakupljeniOglasi.Include(i => i.ZahtevZaKetering).IgnoreQueryFilters().FirstOrDefaultAsync(f => f.Id == idZaOglasa);
 
                 if (ketering == null)
                 {
@@ -677,9 +678,18 @@ namespace backend.Controllers
                     return BadRequest("Nisti ti taj bebo");
                 }
 
+                if (oglas == null)
+                {
+                    return BadRequest("Ne postoji takav zakupljeni oglas");
+                }
+
                 ketering.StatusRezervacije = false;
+                
+                oglas.ZahtevZaKetering = null;
                 ketering!.Agencija!.ListaZahtevZaKetering!.Remove(ketering);
-                //Context.ZahteviZaKetering.Remove(ketering);
+                
+                
+                Context.ZahteviZaKetering.Remove(ketering);
 
                 await Context.SaveChangesAsync();
 
