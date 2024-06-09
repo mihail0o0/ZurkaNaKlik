@@ -6,6 +6,7 @@ import {
   MakeCateringReservationDTO,
   MakeReservationDTO,
   Oceni,
+  RemoveCateringReservationDTO,
   ReservedOglas,
   UpdateUserDTO,
 } from "./types";
@@ -135,9 +136,12 @@ const authApiSlice = api.injectEndpoints({
         { type: "ReservedOglasi", id: "LISTRESERVEDOGLASI" },
       ],
     }),
-    removeCateringReservation: builder.mutation<number, number>({
-      query: (id) => ({
-        url: `Korisnik/OtkaziZahtevZaKetering/${id}`,
+    removeCateringReservation: builder.mutation<
+      number,
+      RemoveCateringReservationDTO
+    >({
+      query: (body) => ({
+        url: `Korisnik/OtkaziZahtevZaKetering/${body.idCatering}/${body.idReservedOglas}`,
         method: "DELETE",
       }),
       invalidatesTags: (result, err, arg) => [
@@ -162,6 +166,6 @@ export const {
   useMakeCateringReservationMutation,
   useOceniAgencijuMutation,
   useOceniOglasMutation,
-  useRemoveCateringReservationMutation,
   useRemoveReservationMutation,
+  useRemoveCateringReservationMutation,
 } = authApiSlice;
