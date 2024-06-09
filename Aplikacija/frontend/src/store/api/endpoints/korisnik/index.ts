@@ -160,4 +160,8 @@ export const {
   useGetReservedOglasiQuery,
   useMakeReservationMutation,
   useMakeCateringReservationMutation,
+  useOceniAgencijuMutation,
+  useOceniOglasMutation,
+  useRemoveCateringReservationMutation,
+  useRemoveReservationMutation,
 } = authApiSlice;
