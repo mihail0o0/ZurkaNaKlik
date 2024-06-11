@@ -183,7 +183,6 @@ namespace backend.Controllers
 
                 }
 
-                return Ok(noviOglasi);
                 int brojOglasa = noviOglasi.Count();
 
                 noviOglasi = noviOglasi.Skip((pageNumber - 1) * pageSize)
