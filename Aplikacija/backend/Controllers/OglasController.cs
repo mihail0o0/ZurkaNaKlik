@@ -143,32 +143,56 @@ namespace backend.Controllers
                 }
 
                 List<DateTime> sviDaniUOpsegu = new List<DateTime>();
-
+                List<OglasObjekta> noviOglasi = new List<OglasObjekta>();
                 if(filteri?.datumDo != null && filteri?.datumOd != null){
 
-                    if(filteri.datumDo.Date < filteri.datumDo.Date){
+                    if(filteri.datumDo.Date < filteri.datumOd.Date){
                         return BadRequest("Datum do je manji od datuma od");
                     }
                     sviDaniUOpsegu = Enumerable.Range(0, (filteri.datumDo.Date - filteri.datumOd.Date).Days + 1)
                                                 .Select(offset => filteri.datumOd.Date.AddDays(offset))
                                                 .ToList();
 
-                    if(sviDaniUOpsegu.Count != 0){
-                        oglasi = oglasi.Where(oglas => !oglas.ZauzetiDani!.Any(zauzetDan => sviDaniUOpsegu.Contains(zauzetDan)))
-                                    .ToList();
+                    
+
+                    if (sviDaniUOpsegu.Count != 0)
+                    {
+                        foreach (var oglas in oglasi)
+                        {
+                            
+                            bool imaZauzetihDana = false;
+                            foreach (var zauzetDan in oglas.ZauzetiDani!)
+                            {
+                                if (sviDaniUOpsegu.Contains(zauzetDan.Date))
+                                {
+                                    imaZauzetihDana = true;
+                                    break;
+                                }
+                            }
+
+                            if (!imaZauzetihDana)
+                            {
+                                noviOglasi.Add(oglas);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        noviOglasi = oglasi;
                     }
 
                 }
 
-                int brojOglasa = oglasi.Count();
+                return Ok(noviOglasi);
+                int brojOglasa = noviOglasi.Count();
 
-                oglasi = oglasi.Skip((pageNumber - 1) * pageSize)
+                noviOglasi = noviOglasi.Skip((pageNumber - 1) * pageSize)
                              .Take(pageSize).ToList();
 
                 //return Ok(oglasi);
                 List<OglasObjektaResponse> response = new List<OglasObjektaResponse>();
 
-                foreach (OglasObjekta oglas in oglasi)
+                foreach (OglasObjekta oglas in noviOglasi)
                 {
                     response.Add(ObjectCreatorSingleton.Instance.ToOglasResult(oglas));
                 }
