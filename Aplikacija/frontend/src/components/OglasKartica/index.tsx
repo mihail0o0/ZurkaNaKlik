@@ -37,6 +37,7 @@ const OglasKartica = ({ oglas, onClick }: Props) => {
   const { data: user } = useGetUserDataQuery(userCurr?.id!, {
     skip: !userCurr || userCurr.role == Role.AGENCIJA,
   });
+
   const [localFavorite, setLocalFavorite] = useState<boolean>();
 
   const { data: imageUrl } = useGetImageQuery(
@@ -44,9 +45,7 @@ const OglasKartica = ({ oglas, onClick }: Props) => {
   );
 
   useEffect(() => {
-    if (!isFavorite) {
-      setLocalFavorite(isFavorite);
-    }
+    setLocalFavorite(isFavorite);
   }, [isFavorite]);
 
   const handleFavoriteClick = async () => {
