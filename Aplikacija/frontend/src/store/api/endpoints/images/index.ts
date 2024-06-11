@@ -20,6 +20,7 @@ const authApiSlice = api.injectEndpoints({
         { type: "Image", id: "IMAGEKORISNIK" },
         { type: "Image", id: "IMAGEAGENCY" },
         { type: "Image", id: "IMAGEMENU" },
+        { type: "Image", id: "IMAGEAGENCYMENU" },
       ],
     }),
     uploadKorisnik: builder.mutation<void, FormData>({
@@ -84,7 +85,9 @@ const authApiSlice = api.injectEndpoints({
       }),
       invalidatesTags: (result, err, args) => [
         { type: "AgencyMenu", id: args.idMenija },
+        { type: "AgencyMenu", id: "LISTAGENCYMENU" },
         { type: "Image", id: "IMAGEMENU" },
+        { type: "Image", id: "IMAGEAGENCYMENU" },
       ],
     }),
   }),

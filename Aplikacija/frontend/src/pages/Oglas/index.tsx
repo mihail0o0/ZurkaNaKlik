@@ -68,8 +68,9 @@ const Oglas = () => {
   }, [currUser, VlasnikOglasa]);
 
   const { data: isFavorite } = useIsFavoriteQuery(
-    currentOglas?.idVlasnika ?? skipToken
+    currentOglas?.id ?? skipToken
   );
+
   const [addFavouriteAction] = useAddFavouriteMutation();
   const [removeFavouriteAction] = useDeleteFavouriteMutation();
 
