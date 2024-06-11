@@ -27,7 +27,7 @@ const DivFilteri = () => {
 
   const [broj, setBroj] = useState(`${filtersState ?? ""}`);
   const [cenaOd, setCenaOd] = useState(`${filtersState.cenaOd ?? ""}`);
-  const [cenaDo, setCenaDo] = useState(`${filtersState.cenaOd ?? ""}`);
+  const [cenaDo, setCenaDo] = useState(`${filtersState.cenaDo ?? ""}`);
   const [kvadraturaOd, setKvadraturaOd] = useState(
     `${filtersState.kvadraturaOd ?? ""}`
   );

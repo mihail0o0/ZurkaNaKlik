@@ -105,7 +105,7 @@ const AgencyProfile = () => {
     const novaAgencija: UpdateAgencyDTO = {
       ime: imeAgencije,
       brTel: broj,
-      cenaDostave: parseInt(cenaAgencija),
+      cenaDostave: checked ? parseInt(cenaAgencija) : 0,
       lokacija: grad,
       mogucnostDostave: checked,
       opis: opisAgencije,
@@ -127,12 +127,13 @@ const AgencyProfile = () => {
     const result = await updateAgency(novaAgencija);
 
     if ("error" in result) {
+      console.log(result);
       return;
     }
 
     dispatch(setIsFirstLogin(false));
 
-    toast.success("Profil agencije uspesno izmenjena!");
+    toast.success("Profil agencije uspesno izmenjen!");
   };
 
   const handleChange = () => {

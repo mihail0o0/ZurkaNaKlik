@@ -16,7 +16,7 @@ export const initialState: Filters = {
   },
   paginationData: {
     pageNumber: 1,
-    pageSize: 12,
+    pageSize: 8,
   },
   sort: Sort.OcenaRastuce,
 };

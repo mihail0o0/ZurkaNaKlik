@@ -57,8 +57,8 @@ const Filters = () => {
       ...filters,
       filtersData: {
         ...filtersState,
-        cenaDostaveDo: parseInt(cenaDo),
-        cenaDostaveOd: parseInt(cenaOd),
+        cenaDostaveDo: cenaDo != "" ?  parseInt(cenaDo) : undefined,
+        cenaDostaveOd: cenaOd != "" ?  parseInt(cenaOd) : undefined,
         grad: city ?? undefined,
         listaKategorija: selectedCategories,
         mogucnostDostave: mogucnostDostave,

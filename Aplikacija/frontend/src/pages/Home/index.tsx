@@ -44,7 +44,7 @@ const Home = () => {
     filtersPagination.pageSize
   );
 
-  const paginationValues = [12, 20, 30, 40, 50, 100];
+  const paginationValues = [8, 15, 20, 30, 50, 100];
 
   const handleSortChange = (event: SelectChangeEvent) => {
     if (!event) return;
