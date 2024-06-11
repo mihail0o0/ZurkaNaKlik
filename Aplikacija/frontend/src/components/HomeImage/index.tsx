@@ -106,7 +106,7 @@ const HomeImage = () => {
         </div>
 
         <div className={style.DoleDiv}>
-          {user ? (
+          
             <div className={style.Dugmad}>
               {tipoviProslave.map((dugme, index) => {
                 return (
@@ -127,32 +127,8 @@ const HomeImage = () => {
                 );
               })}
             </div>
-          ) : (
-            <div className={style.PrijavaPretrazi}>
-              <MojButton
-                text="Prijava"
-                backgroundColor="white"
-                color="black"
-                onClick={() => {
-                  navigate("/Login");
-                }}
-                paddingX="40px"
-                paddingY="15px"
-              />
-              <MojButton
-                text="Pretrazi"
-                backgroundColor="white"
-                color="black"
-                onClick={() => {
-                  navigate("/search");
-                }}
-                paddingX="40px"
-                paddingY="15px"
-              />
-            </div>
-          )}
 
-          {user ? <DivFilteri /> : ""}
+           <DivFilteri />
         </div>
       </div>
     </div>
