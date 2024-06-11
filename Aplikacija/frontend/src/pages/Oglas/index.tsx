@@ -73,13 +73,16 @@ const Oglas = () => {
   const [addFavouriteAction] = useAddFavouriteMutation();
   const [removeFavouriteAction] = useDeleteFavouriteMutation();
 
-  const [localFavorite, setLocalFavorite] = useState(false);
+  const [localFavorite, setLocalFavorite] = useState<boolean>();
   const [bigImage, setBigImage] = useState<string | null>(null);
   const [images, setImages] = useState<(string | null | undefined)[]>([]);
 
+  console.log(localFavorite);
+
   useEffect(() => {
+    if (isFavorite == undefined) return;
     setLocalFavorite(isFavorite);
-  }, [isFavorite])
+  }, [isFavorite]);
 
   const [getImageAction] = useLazyGetImageQuery();
 

@@ -45,6 +45,7 @@ const OglasKartica = ({ oglas, onClick }: Props) => {
   );
 
   useEffect(() => {
+    if(isFavorite == undefined) return;
     setLocalFavorite(isFavorite);
   }, [isFavorite]);
 
