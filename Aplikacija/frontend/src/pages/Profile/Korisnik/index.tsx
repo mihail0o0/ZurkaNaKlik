@@ -51,6 +51,7 @@ const UserProfile = () => {
     skip: !userCurr,
   });
   const { data: MojiOglasi } = useGetUserOglasiQuery();
+  console.log(MojiOglasi);
 
   const { data: imageUrl } = useGetImageQuery(
     getRawLocation(user?.profilePhoto) ?? skipToken
@@ -173,19 +174,7 @@ const UserProfile = () => {
                   />
                 </UploadComponent>
               )}
-              <p></p>
-              {
-                <div className={style.obrrrisibhrate}>
-                  <div className={style.DeleteIcon} onClick={handleDelete}>
-                    <Icon
-                      icon="delete"
-                      classes={"cursorPointer"}
-                      iconMargin="0px"
-                    />
-                  </div>
-                  <label>Izbrisi nalog</label>
-                </div>
-              }
+              <p>{user.name} {user.lastName}</p>
             </div>
           </div>
           <div className={style.OsnovnePostavkeProfila}>

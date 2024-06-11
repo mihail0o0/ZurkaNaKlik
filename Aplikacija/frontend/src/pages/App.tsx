@@ -9,7 +9,7 @@ import {
 import RootHeader from "./layouts/root-header";
 
 // pages
-import HomePage from "./home-page";
+import Index from "./Index";
 import PageNotFound from "./page-not-found";
 import UserLoginPage from "./login/UserLogin";
 import TestingPage from "./testing";
@@ -34,7 +34,7 @@ import HistoryPage from "./history";
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<RootHeader />}>
-      <Route index element={<HomePage />} />
+      <Route index element={<Index />} />
 
       {/* za prijavljene korisnike */}
       <Route element={<ProtectedRoute />}>

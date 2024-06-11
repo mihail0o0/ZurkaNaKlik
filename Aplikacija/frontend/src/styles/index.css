@@ -280,7 +280,7 @@ textarea {
   resize: none !important;
 }
 
-.uL{
+.uL {
   position: relative;
 }
 
@@ -297,9 +297,40 @@ textarea {
   transition: all 150ms;
 }
 
-.uL:hover::after{
+.uL:hover::after {
   transform: scaleX(1);
   transition: all 150ms;
+}
+
+
+.specialButton {
+  padding: 15px 40px;
+  font-size: 24px;
+  font-weight: 700;
+  margin-right: 30px;
+  border-radius: 100px;
+  width: fit-content;
+}
+
+.specialMainButton {
+  background-color: var(--mainColor);
+  color: white;
+}
+
+.specialMainButton:hover {
+  background-color: #d53b50;
+  transition: all 200ms;
+}
+
+.specialAccentButton {
+  border: 1px solid var(--mainColor);
+  color: var(--mainColor);
+  transition: all 200ms;
+}
+
+.specialAccentButton:hover {
+  color: white;
+  background-color: #d53b50;
 }
 
 @media (max-width: 1000px) {
@@ -332,3 +363,4 @@ textarea {
     font-size: 20px !important;
   }
 }
+

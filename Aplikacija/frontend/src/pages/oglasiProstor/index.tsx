@@ -312,7 +312,7 @@ const OglasiProstor = () => {
     }
 
     toast.success("Oglas kao i slike oglasa dodat");
-    navigate(`/user/profile/${user.id}`);
+    navigate(`/user/profile`);
   };
 
   return (
